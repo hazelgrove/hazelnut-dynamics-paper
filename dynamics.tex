@@ -114,11 +114,21 @@
           { n_1 + n_2 = n_3 }
           { \hadd{\hnum{n_1}}{\hnum{n_2}} \longrightarrow \hnum{n_3} }
 
-   \Infer{S-plus$_4$}
-          { \hexp_1~\textsf{final} ~~ ~~ ~~
+   \Infer{S-plus$_{4a}$}
+          { \hexp_1~\textsf{final}
+            \\
             \hexp_2~\textsf{final} 
-            \\\\
-            \left(\hexp_1 \ne \hnum{n_1} \vee \hexp_2 \ne \hnum{n_2}\right)
+            \\
+            \hexp_1 \ne \hnum{n_1}
+          }
+          { \hadd{\hexp_1}{\hexp_2} \longrightarrow \hindet{\hadd{\hexp_1}{\hexp_2}} }
+
+   \Infer{S-plus$_{4b}$}
+          { \hexp_1~\textsf{final}
+            \\
+            \hexp_2~\textsf{final} 
+            \\
+            \hexp_2 \ne \hnum{n_2}
           }
           { \hadd{\hexp_1}{\hexp_2} \longrightarrow \hindet{\hadd{\hexp_1}{\hexp_2}} }
 
@@ -210,7 +220,7 @@ that enjoy type soundness with respect to the dynamics.
 \\
 If $\hGamma, x : \tau_x \vdash \hexp : \htau$
 \\
-and $\hexp'~\textsf{final}$~~~(do we actually need this condition?)
+and $\hexp'~\textsf{final}$~~~(do we actually need this condition? We do not have effects, yet.)
 \\
 and $\hGamma \vdash \hexp' : \htau_x$
 \\
