@@ -1,0 +1,397 @@
+\def\OPTIONConf{1}%
+%\newif\iftr\trfalse
+\newif\iftr\trtrue
+%\documentclass[12pt]{article}
+\RequirePackage{etex}
+\documentclass[preprint,9pt]{sigplanconf}
+% The following \documentclass options may be useful:
+%
+% 10pt          To set in 10-point type instead of 9-point.
+% 11pt          To set in 11-point type instead of 9-point.
+% authoryear    To obtain author/year citation style instead of numeric.
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{ stmaryrd }
+\usepackage{mathpartir}
+\usepackage{stmaryrd}
+\usepackage{wasysym}
+\usepackage{multicol}
+\usepackage{extarrows}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\definecolor{light-gray}{gray}{0.9}
+\usepackage{soul}
+\setulcolor{red}
+\usepackage{mathpazo}
+\usepackage{colortab}
+\usepackage{url}
+\usepackage{todonotes}
+\usepackage{listings}
+\lstset{tabsize=2,
+basicstyle=\ttfamily\fontsize{8pt}{1em}\selectfont}
+\usepackage{microtype}
+\sloppy
+\def \TirNameStyle #1{\small\rulename{#1}}
+\renewcommand{\MathparLineskip}{\lineskiplimit=.3\baselineskip\lineskip=.3\baselineskip plus .2\baselineskip}
+
+\usepackage{joshuadunfield}
+\usepackage{llproof}
+\usepackage{rulelinks}
+
+%\usepackage{balance} %% Balance last page's two columns
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newenvironment{proof-sketch}{\noindent{\emph{Proof Sketch.}}}{\qed}
+\makeatletter
+
+\renewcommand\topfraction{0.85}
+\renewcommand\bottomfraction{0.85}
+\renewcommand\textfraction{0.1}
+\renewcommand\floatpagefraction{0.85}
+
+\AtBeginDocument{%
+ \abovedisplayskip=2pt
+ \abovedisplayshortskip=0pt
+ \belowdisplayskip=2pt
+ \belowdisplayshortskip=0pt
+}
+
+\setlength{\floatsep}{10pt}
+\setlength{\textfloatsep}{12pt}
+
+\usepackage[compact]{titlesec}
+\titlespacing*{\section}{0pt}{4pt}{2pt}
+\titlespacing*{\subsection}{0pt}{4pt}{2pt}
+\titlespacing*{\subsubsection}{0pt}{4pt}{2pt}
+\titlespacing*{\paragraph}{0pt}{4pt}{2pt}
+\setlength{\skip\footins}{3pt plus 1px minus 5px}
+
+\usepackage[colorlinks=true,allcolors=blue,breaklinks,draft=false]{hyperref}   % hyperlinks, including DOIs and URLs in bibliography
+% known bug: http://tex.stackexchange.com/questions/1522/pdfendlink-ended-up-in-different-nesting-level-than-pdfstartlink
+
+\usepackage{enumitem}
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=4px plus 2px minus 2px
+  \thm@postskip=\thm@preskip % or whatever, if you don't want them to be equal
+}
+\makeatother
+
+\usepackage{todonotes}
+\usepackage{xcolor}
+%\usepackage{adjustbox}
+
+\input{macros}
+\begin{document}
+
+\conferenceinfo{-}{-}
+\copyrightyear{-}
+\copyrightdata{[to be supplied]}
+
+%\titlebanner{}        % These are ignored unless
+\preprintfooter{Draft}   % 'preprint' option specified.
+
+\title{Hazelnut: A Bidirectionally Typed \\ Structure Editor
+ Calculus}
+% \title{Hazelnut:\\A Bidirectionally Typed Structure Editor Calculus}
+
+%\authorinfo{\vspace{-2px}}{}{}
+%\authorinfo{~}{~}{\vspace{-10px}}
+%\authorinfo{Cyrus Omar \and Jonathan Aldrich}
+%         {Carnegie Mellon University}
+%         {\{comar, aldrich\}@cs.cmu.edu}
+\iftr
+\authorinfo{
+        Cyrus Omar$^1$
+        \and Ian Voysey$^1$
+        \and Michael Hilton$^2$
+        \and Jonathan Aldrich$^1$
+        \and Matthew A. Hammer$^3$
+}
+{
+ $^1$~Carnegie Mellon University
+ \and
+ $^2$~Oregon State University
+ \and
+ $^3$~University of Colorado Boulder\vspace{-10px}
+}
+{
+%\email{comar@cs.cmu.edu}\\
+%\texttt{http://www.cs.cmu.edu/\homedir comar/}
+%\email{hiltonm@eecs.oregonstate.edu}\\
+}
+\else
+\authorinfo{~}{~}{\vspace{-10px}}
+\fi
+
+%
+%\authorrunning{Omar et al.} % abbreviated author list (for running head)
+%
+%%%% list of authors for the TOC (use if author list has to be modified)
+%\tocauthor{Ivar Ekeland, Roger Temam, Jeffrey Dean, David Grove,
+%Craig Chambers, Kim B. Bruce, and Elisa Bertino}
+%
+%\email{Matthew.Hammer@colorado.edu}
+
+
+\maketitle
+\begin{abstract}
+% Programmers typically construct and manipulate well-typed expressions  only indirectly, as text that must pass through a parser and type\-checker. Not all text survives this journey. In particular, text that arises transiently, or when the programmer makes a mistake, is often malformed or ill-typed.
+% Not all text that arises during the programming process survives the journey through a parser and typechecker. In particular, text that arises transiently during the editing process, or when the programmer has made a mistake, is often malformed or ill-typed.
+% Contending with malformed program text or well-formed but meaningless syntax trees is difficult for programmers and their tools alike.
+
+%  \emph{Structure editors} have long promised to alleviate these burdens by exposing only edit actions that  cause sensible changes to the program structure.
+% Existing designs for structure editors, however, are complex and somewhat \emph{ad hoc}. They also focus primarily on syntactic well-formedness, so programs can still be left semantically meaningless as they are being constructed.
+% Structure editors (e.g. Scratch) eliminate the possibility of syntax errors. 
+
+\emph{Structure editors} allow programmers to edit the tree structure of a program directly. This can have cognitive benefits, particularly for novice and end-user programmers (as evidenced by the popularity of structure editors like Scratch.) It also simplifies matters for tool designers, because they do not need to contend with malformed program text.
+
+This paper defines Hazelnut, a {structure editor} based on a small bidirectionally typed lambda calculus extended with \emph{holes} and a \emph{cursor} (\emph{ala} Huet's zipper.) Hazelnut goes one step beyond syntactic well-formedness: it's {edit actions} operate over statically meaningful (i.e. well-typed) terms.  
+Na\"ively, this prohibition on ill-typed edit states would force the programmer to construct terms in a rigid ``outside-in'' manner. To avoid this problem, the {action semantics} automatically places terms assigned a type that is inconsistent with the expected type {inside} a {hole}. This safely defers the type consistency check until the term inside the hole is \emph{finished}.
+
+Hazelnut is a foundational type-theoretic account of typed structure editing, rather than an end-user tool itself. To that end, we describe how Hazelnut's rich metatheory, which we have mechanized in Agda, guides the definition of an extension to the calculus. We also discuss various plausible evaluation strategies for terms with holes, and in so doing reveal connections with gradual typing and contextual modal type theory (the Curry-Howard interpretation of contextual modal logic.) Finally, we  discuss how Hazelnut's semantics lends itself to implementation as a functional reactive program. Our reference implementation is written using \lstinline{js_of_ocaml}.
+
+%Formally, Hazelnut is a bidirectionally typed lambda calculus extended with \emph{holes}, a \emph{focus model} (based on Huet's zipper) and an \emph{action model}.
+\end{abstract}
+
+%\category{D.3.2}{Programming Languages}{Language Classifications}[Extensible Languages]
+%\category{D.3.4}{Programming Languages}{Processors}[Compilers]
+%\category{F.3.1}{Logics \& Meanings of Programs}{Specifying and Verifying and Reasoning about Programs}[Specification Techniques]
+%\keywords
+%extensible languages; module systems; type abstraction; typed compilation; type-level computation
+
+\section{Introduction}\label{sec:introduction}
+\input{intro}
+
+\section{Programming in Hazelnut}\label{sec:example}
+\input{example}
+
+\section{Hazelnut, Formally}
+\label{sec:hazel}
+\input{formally}
+
+\subsection{Mechanization}
+\label{sec:mech}\label{sec:mt}
+\input{agda}
+
+% \clearpage
+
+% \section{Dynamics of Hazelnut}\label{sec:dynamics}
+
+% \subsection{Complete Expressions}
+% ... canonical forms and type safety with e complete in it ...
+
+% \subsection{Holes as TODOs}
+% ... add an e err and define new type safety ...
+
+% \subsection{Indeterminate Expressions}
+% \input{dynamics}
+
+% \clearpage
+
+\section{Extending Hazelnut}\label{sec:extending}
+%% \todo{write this section} Add sum types.
+%% H-expression
+%% Z-expression + Erasure rules
+%% Statics
+%% Movement actions
+%% Construct actions
+\input{sumtypes}
+
+\section{Implementation}
+\label{sec:impl}
+\input{implementation}
+
+\section{Related Work and Discussion}\label{sec:rw}
+%\subsection{Structure Editors}
+\subsection{Structure Editors}
+Syntactic structure editors have a long history -- the Cornell Program Synthesizer~\cite{teitelbaum_cornell_1981} was first introduced in 1981. Novice programmers have been a common target for structure editors. For example, 
+GNOME~\cite{garlan_gnome:_1984} was developed to teach programming to undergraduates. 
+Alice~\cite{Conway:2000:ALL:332040.332481} is a 3-D programming language with an integrated structure editor for teaching novice CS undergraduate students. Scratch~\cite{Resnick:2009:SP:1592761.1592779} is a structure editor targeted at children ages 8 to 16.  TouchDevelop \cite{tillmann_touchdevelop:_2011} incorporates a structure editor for programming on touch-based devices, and is used to teach high school students. An implementation of Hazelnut might be useful in teaching students about the typed lambda calculus, though that has not been our explicit aim with this work.
+
+Not all structure editors are for educational purposes. For example,
+mbeddr \cite{voelter_mbeddr:_2012} is a structure editor for a C-based programming language (nominally, for programming embedded systems.)  
+Lamdu~\cite{lamdu}, like Hazelnut, is a structure editor for a statically typed functional language. It is designed for use by professional programmers. 
+
+The examples given so far either define a language with a trivial static semantics, or do not attempt to maintain well-typedness as an edit invariant. This can pose problems, for reasons discussed in the Introduction. One apparent exception is Unison~\cite{unison}, a structure editor for a typed functional language similar to Haskell. Like Hazelnut, it seems to define some notion of well-typedness for expressions with holes (though there is no technical documentation on virtually any aspect of its design.) Unlike Hazelnut, it does not have a notion analagous to Hazelnut's notion of a non-empty hole. As such, programmers must construct programs in a rigid outside-in manner, as discussed in Sec. \ref{sec:example}. Another system with the same problem is Polymorphic Blocks, a block-based user interface where the structure of block connectors encodes a type \cite{DBLP:conf/chi/LernerFG15}.
+
+We fundamentally differ from these projects in our design philosophy: we consider it essential to start by building type theoretic foundations, which are independent of nearly all decisions about the user interface. In contrast, these editors have developed innovative user interfaces (e.g. see the discussion in \cite{DBLP:conf/sle/VolterSBK14}) but lack a principled foundational calculus. In this respect, we follow the philosophical approach taken by languages that are rooted in the type theoretic tradition and have gone to great effort to develop a clear metatheory, like Standard ML \cite{mthm97-for-dart,Harper00atype-theoretic}.  In the future, we hope that these lines of research will merge to produce a human-usable typed structure editor with sound formal foundations. Our contribution, then, is in defining and analyzing the theoretical properties of a small foundational calculus that could be extended to achieve this vision.
+
+Some structure editor generators do operate on formal or semi-formal definitions of an underlying language. For example, the Synthesizer Generator~\cite{Reps:1984:SG:390010.808247} allows the user to define an attribute grammar-based language implementation that then can be used to generate a structured editor. CENTAUR~\cite{Borras:1988:CS:64140.65005} produces a language specific environment from a user defined formal specification of a language. Barista is a programmatic toolkit for building structure editors \cite{ko_barista:_2006}. mbeddr is built on top of the commercial JetBrains MPS framework for constructing structure editors \cite{voelter2011language,DBLP:journals/software/VoelterWK15}. These systems do not give a semantics to the edit states of the structure editor itself, or maintain non-trivial edit invariants, as Hazelnut does. 
+%These early systems were developed  of the systems are rooted in the type-theoretic tradition.
+
+Related to structure editors are value editors, which operate directly on simple values (but not generally expressions or functions) of a programming language. For example, Eros is a typed value editor based in Haskell \cite{DBLP:conf/icfp/Elliott07}.
+
+
+\subsection{Gradual Type Systems}
+A significant contribution of this paper is the discovery of a clear technical relationship between typed structure editing and gradual typing. In particular, the machinery necessary to give a reasonable semantics to type holes -- i.e. type consistency and type matching -- coincides with that developed in the study of gradual type systems for functional languages. The pioneering work of Siek and Taha \cite{Siek06a} introduced type consistency. Subsequent work developed the concept of type matching \cite{DBLP:conf/popl/RastogiCH12,DBLP:conf/popl/GarciaC15}. In retrospect, this relationship is perhaps unsurprising: gradual typing is, notionally, also motivated by the idea of iterated development of a program where every intermediate state is well-defined in some sense. %Typed structure editing endows this intuitive notion with technical force.
+
+Recent work has discovered a systematic procedure for generating a ``gradual version'' of a standard type system \cite{DBLP:conf/popl/CiminiS16}. This system, called the Gradualizer, operates on a logic program that specifies a simple type assignment system with some additional annotations to generate a corresponding specification of a gradual type system. The authors leave support for working with bidirectional type systems as future work. This suggests the possibility of an analagous ``Editorializer'' that generates a specification of a typed structure editor from a simple language definition. Our exposition in Sec. \ref{sec:extending} certainly suggests that many of the necessary definitions follow seemingly mechanically from the definition of the static semantics, and the relationship with gradual typing suggests that many of the technical details of this transformation may already exist in the Gradualizer. One possibility we have explored informally is to use Agda's reflection features to implement such a system.
+
+An aspect of gradual typing that we did not touch on directly here is its concern with  assigning a dynamics to programs where type information is not known, by inserting dynamic type casts. This would correspond to assigning a dynamics to Hazelnut expressions with type holes such that a run-time error occurs when a type hole is found to be unfillable through evaluation.
+
+\subsection{Type Holes as Unification Variables}
+Another possible interpretation of type holes is as explicit unification variables. In other words, we might define the dynamics of Hazelnut such that a program cannot be run if some automated type inference procedure cannot statically fill in any type holes that arise. For a simple calculus, e.g. the STLC upon which Hazelnut is based, type inference is known to be decidable \cite{damas1982principal}. In more complex settings, e.g. in a dependently typed language, a partial decision procedure may still be useful in this regard, both at edit-time and (just prior to) run-time. Indeed, text editor modes for proof assistants, e.g. for Agda, attempt to do exactly this for indicated ``type holes'' (and do not always succeed.)
+
+\subsection{Exceptions}
+Expression holes, too, could dynamically be interpreted in several ways. One straightforward approach would be to dynamically raise an exception if evaluation encounters an expression hole. Indeed, placing \textt{raise Unimplemented} or similar in portions of an expression that are under construction is a common practice across programming languages.
+
+\subsection{Type-Directed Program Synthesis}
+Some text editor modes, e.g. those for proof assistants like Agda \cite{norell:thesis} and Idris \cite{brady2013idris}, support a more explicit hole-based programming model where indicated expression holes are treated as sites where the system can be asked to automatically generate an expression of an appropriate type. These systems are not statically well-defined themselves (though see below.)
+
+The Graphite system used an informal model of typed holes in Java to allow library providers to associate interactive code generation interfaces with types \cite{Omar:2012:ACC:2337223.2337324}. %RThis system was limited in that these interfaces could not themselves manipulate terms.
+
+More generally, the topic of type-directed program synthesis an active area of research, e.g. \cite{DBLP:conf/pldi/OseraZ15}. By maintaining static well-definedness throughout the editing process, Hazelnut provides researchers interested in editor-integrated type-directed program synthesis  with a formal foundation upon which to build.% such systems could be integrated directly into editors.
+
+\subsection{Contextual Modal Type Theory}
+Expression holes can also be understood by invoking the notion of a \emph{metavariable} as found in contextual modal type theory (CMTT) \cite{DBLP:journals/tocl/NanevskiPP08}. In particular, expression holes have types and are surrounded by contexts, just as metavariables in CMTT are associated with types and contexts. This helps to clarify the logical meaning of a typing derivation in Hazelnut -- it conveys well-typedness relative to an (implicit) modal context that extracts each expression hole's type and context. The modal context must be emptied -- i.e. the expression holes must be instantiated with expressions of the proper type in the proper context -- before the expression can be considered complete. This corresponds to the notion of modal necessity in contextual modal logic.
+
+Making the modal context explicit in our semantics is not technically useful given our stated purpose -- interactive program editing is not merely hole filling in Hazelnut (i.e. the cursor need not be on a hole). Moreover, the hole's type and context become apparent as our action semantics traverses the zipper structure on each step. Some interactive proof assistants, however, support a tactic model based directly on hole filling, so the connection to CMTT and similar systems is more useful. For example,  Beluga \cite{DBLP:conf/flops/Pientka10} is based on dependent CMTT and aspects of Idris' editor support \cite{brady2013idris} are based on McBride's OLEG \cite{mcbride2000dependently} and Lee and Friedman have explored a lambda calculus with contexts for a similar purpose \cite{DBLP:conf/icfp/LeeF96}.
+
+One interesting avenue of future work is to elaborate expression holes to CMTT's closures, i.e. CMTT terms of the form $\mathsf{clo}(u; \text{id}(\Gamma))$ where $u$ is a unique metavariable associated with each hole and $\text{id}(\Gamma)$ is the explicit identity substitution. This would allow us to evaluate expressions with holes such that the closure ``accumulates'' substitutions explicitly. When evaluation gets ``stuck'' (as it can, for CMTT does not define a dynamics equipped with a notion of progress under a non-empty modal context), it would then be possible for the programmer to choose holes from amongst the visible holes (which may have been duplicated) to edit in their original context. Once finished, the CMTT hole instantiation operation, together with a metatheorem that establishes that reduction commutes with instantiation, would enable an ``edit and resume'' feature with a clear formal basis. This notion of reduction commuting with instantiation has also been studied in other calculi \cite{DBLP:journals/entcs/Sands97}. Being able to edit a running program also has connections to less formal work on ``live programming'' interfaces \cite{burckhardt2013s,lamdu}. %, e.g. 
+
+\subsection{Evaluation Strategies: A High-Dimensional Space}
+To summarize, we have discussed three different evaluation strategies in the presence of type holes:
+\begin{enumerate}[noitemsep]
+\item ...as preventing evaluation (the standard approach.)
+\item ...as unknown types, in the gradual sense.
+\item ...as unification variables.
+\end{enumerate}
+In addition, we have discussed four different evaluation strategies in the presence of expression holes:
+\begin{enumerate}[noitemsep]
+\item ...as preventing evaluation (the standard approach.)
+\item ...as causing exceptions.
+\item ...as sites for automatic program synthesis.
+\item ...as the closures of CMTT.
+\end{enumerate}
+
+Every combination of these choices could well be considered in the design of a full-scale programming system in the spirit of Hazelnut. Indeed, the user might be given several options from among these combinations, depending on their usage scenario. Many of these warrant further inquiry.
+
+% \todo{Eclipse parsing partial programs // other heuristics}
+
+
+% \paragraph{Gradual typing: Has Matched Relation}
+% %
+% A. Rastogi, A. Chaudhuri, and B. Hosmer. The ins and outs of gradual type inference.
+% \\
+% Definition 3.1 is similar to our ``has matched'' relations:
+% \\
+% \url{https://www.cs.umd.edu/~avik/papers/iogti.pdf}
+
+% This paper defines ``has matched'' relation for arrow, just like us:
+% \\
+% \url{http://cimini.info/publications/Gradualizer_Draft.pdf}
+% \\
+% They credit this technique to the following paper:
+% \\
+% \url{http://www.cs.ubc.ca/~rxg/ptsgp.pdf}
+% \\
+% But, the Rastogi paper came earlier.
+
+
+% \todo{TODO: \url{http://research.nii.ac.jp/~hu/pub/hosc07.pdf}}
+
+
+% Agda and Idris are two dependently typed languages that attempt to simulate a structured editor from within a rich text editor (e.g. Emacs.) These systems also have notions of holes and use types to guide the user toward filling these holes. These  systems are also, to our knowledge, not formally well-defined but rather exist only as part of system implementations.
+
+
+% Our work differs from all of these in that we begin with a formal editor calculus and build from there, rather than starting with an implementation and leaving many of the formal details formally unspecified. For example, while Lamdu has many interesting features, there is no theoretical basis presented for their work -- it is a rather large body of Haskell code with an unclear (and indeed, often somewhat perplexing, in our experience) action model. Unison is also a rather large body of Haskell code, though its action model appears superficially more similar to ours. We maintain what we believe to be a stronger action sensibility invariant than Unison (i.e. in Unison, one must construct expressions from the outside-in.) These systems are rich sources of interesting ideas, however -- there is room enough for many different approaches in this (re-)emerging space.
+
+% \todo{TODO: cite \url{http://cseweb.ucsd.edu/~lerner/pb.html}}
+
+% \todo{TODO: cite} \url{http://delivery.acm.org/10.1145/1060000/1056965/p1557-ko.pdf?ip=73.154.143.34&id=1056965&acc=AUTHOR-IZED&key=4D4702B0C3E38B35%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35%2EC2CC0A83071F7605&CFID=780613712&CFTOKEN=33786941&__acm__=1462392463_f29fc98965004c61bfb1291d07756a23}
+
+%Drag-and-drop / for novices: lots of examples, e.g. Alice and others
+%
+%Contemporary: Lamdu, MPS/Mbeddr, TouchDevelop
+%
+%Hybrid: Cyrus' active code completion paper
+
+%\subsection{Refactoring Models}
+%(Michael, can you fill this section out?)
+
+%\subsection{Formal Editor Models}
+%Need to do a search to see what else has been done...
+
+\section{Conclusion}
+\label{sec:future}
+This paper presented Hazelnut, a type theoretic structure editor calculus. Our aim was to take a principled approach to its design by formally defining its static semantics as well as its action semantics and developing a rich metatheory. Moreover, we have mechanized substantial portions of the metatheory, including the crucial Sensibility theorem that establishes that every edit state is statically meaningful.
+
+In addition to simplifying the job of an editor designer, typed structure editors also promise to increase the speed of development by eliminating redundant syntax and supporting higher-level primitive actions. However, we did not discuss such ``edit costs'' here, because they depend on particular implementation details, e.g. whether a keyboard or a mouse is in use. Indeed, we consider it a virtue of this work that such implementation details do not enter into our design.
+
+% By keeping the program in both a structurally and semantically well-defined state at all times, Hazelnut allows users to avoid premature commitment~\cite{green1996usability}.  
+% By inserting a hole, the user can leave certain parts of the program unfinished, \todo{What is the best word to define this concept?  In progress, unfinished, incomple?} and yet still in a well defined type state. 
+% This also enables progressive evaluation~\cite{green1996usability}, because unfinished solutions are also are well-defined at all times, thus enabling tools to provide evaluation of unfinished solutions.\todo{integrate this} 
+
+\subsection{Future Work}
+\subsubsection{Richer Languages}
+Hazelnut is, obviously, a very limited language at its core. So the most obvious avenue for future work is to increase the expressive power of this language by extension. Our plan is to simultaneously maintain a mechanization and implementation (following, for example, Standard ML) as we proceed, ultimately producing the first large-scale, formally verified bidirectionally typed structure editor.
+
+It is interesting to note that the demarcation between the language and the editor is fuzzy (indeed, non-existent) in Hazelnut. There may well be interesting opportunities in language design when the language is being codesigned with a typed structure editor. It may be that certain language features are unnecessary given a sufficiently advanced type-aware structure editor (e.g. SML's \texttt{open}?), while other features may only be practical with editor support. We intend to use Hazelnut and derivative systems thereof as a platform for rigorously exploring such questions.
+
+\subsubsection{Editor Services}
+There are various aspects of the editor model that we have not yet formalized. For example, our action model does not consider how actions are actually entered using, for example, key combinations or chords. In practice, we would want also to rank available actions in some reasonable manner (perhaps based on usage data gathered from other users or code repositories.) Designing a rigorous typed probability model over actions and H-expressions is one avenue of research that we have started to explore, with intriguing initial results.
+
+\subsubsection{Programmable Actions}
+Our language of actions is intentionally primitive. However, even now it acts much like a simple imperative command language. This suggests future expansion to, for example, a true tactic language. Alternatively, it may be more useful to develop the notion of an \emph{action macro}, whereby functional programs could themselves be lifted to the level of actions to compute non-trivial compound actions. 
+
+\subsubsection{Views}
+Another research direction is in exploring how types can be used to control the presentation of expressions in the editor. For example, following an approach developed in a textual setting of developing \emph{type-specific languages} (TSLs), it should be possible to have the type that an expression is being analyzed against define alternative display forms and interaction modes \cite{TSLs}.
+
+It should also be possible to develop a semantics of semantic comments, i.e. comments that mention semantic structures. These would be subject to the same operations, e.g. renaming, as other structures, helping to address the problem of comments becoming inconsistent with code.
+
+\subsubsection{Collaborative Programming}
+Finally, we did not consider any aspects of \emph{collaborative programming}, such as a packaging system, a differencing algorithm for use in a source control system, support for multiple simultaneous focii for different users, and so on. These are all interesting avenues for future work.
+
+\subsubsection{Empirical Evaluation}
+Although we make few empirical claims in this paper, it is ultimately an empirical question as to whether structure editors, and typed structure editors, are practical. We hope to conduct user studies once a richer semantics has been developed.
+
+\subsubsection{More Theory}
+Connections with gradual type systems and CMTT, discussed in the previous section, seem likely to continue to be revealing. 
+
+The notion of having one of many possible locations within a term under a cursor has a very strong intuitive connection to the proof theoretic notion of focusing \cite{Simmons11tr}. Building closer connections with proof theory (and category theory) is likely to be a fruitful avenue of further inquiry. 
+
+
+
+
+
+% We already discussed a connection to gradual typing \cite{Siek06a}. We hope to explore this connection more thoroughly. In particular, it may be possible to better support exploratory and live programming by allowing even programs with holes in them to execute as long as those holes are only in the type portions, by deferring to the semantics given in work on gradual typing.
+
+% It may also be possible to give a dynamics to incomplete expressions. Prior work on staged evaluation suggests that there may be a connection to modal logic, viewing holes as quantifying over all possible terms that may fill them \cite{DBLP:journals/jacm/DaviesP01}. In developing a dynamic semantics, we will also need to handle terms like $\hhole{\hehole}$ and
+% $\hhole{\hhole{\hexp}}$. In our semantics given here, we eliminated them as they came up in a somewhat \emph{ad hoc} manner. We have not yet
+% explored an equational theory for terms with holes, but intend to once our
+% formalization effort is more mature.\todo{fix bib}
+
+% \todo{new action form that makes actions extensible given proofs of
+% admissiblity of a derived form, like prevSib}
+
+\begin{quote}
+\emph{In any case, these are but steps toward more graphical program-description
+systems, for we will not forever stay confined to mere strings of symbols.}
+
+--- Marvin Minsky, Turing Award lecture \cite{DBLP:journals/jacm/Minsky70}
+\end{quote}
+
+\clearpage
+% We recommend abbrvnat bibliography style.
+\bibliographystyle{abbrvnat}
+
+% The bibliography should be embedded for final submission.
+\bibliography{bibliography}
+%\softraggedright
+%P. Q. Smith, and X. Y. Jones. ...reference text...
+
+\iftr
+\clearpage
+%\onecolumn
+\appendix
+\input{appendix}
+\else
+% No Appendix Here
+\fi
+
+\end{document}

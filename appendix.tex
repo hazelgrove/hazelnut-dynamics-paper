@@ -1,0 +1,1243 @@
+% !TEX root = hazelnut-popl17.tex
+
+\section{Hazelnut}
+The full collection of rules defining the semantics of Hazelnut are reproduced here in their definitional order for reference.
+\subsection{H-Types and H-Expressions}
+\subsubsection{Type Compatibility and Incompatibility}
+
+\noindent\fbox{$\tcompat{\htau}{\htau'}$}
+\begin{subequations}%%\label{rules:tcompat}
+% \begin{equation}%%\label{rule:tcompat-comm}
+% \inferrule
+% %[TCSym]
+% {
+%   \tcompat{\htau}{\htau'}
+% }{
+%   \tcompat{\htau'}{\htau}
+% }
+% \end{equation}
+\begin{equation}
+\inferrule{ }{
+	\tcompat{\tehole}{\htau}
+}
+\end{equation}
+\begin{equation}%%\label{rule:tcompat-hole}
+\inferrule{ }{
+  \tcompat{\htau}{\tehole}
+}
+\end{equation}
+\begin{equation}%%\label{rule:tcompat-num}
+\inferrule{ }{
+  \tcompat{\htau}{\htau}
+}
+\end{equation}
+\begin{equation}%%\label{rule:tcompat-arr}
+\inferrule{
+  \tcompat{\htau_1}{\htau_1'}\\
+  \tcompat{\htau_2}{\htau_2'}
+}{
+  \tcompat{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}
+}
+\end{equation}
+\end{subequations}
+
+\noindent\fbox{$\tincompat{\htau}{\htau'}$}
+\begin{subequations}
+  % \begin{equation}
+  %   \inferrule{
+  %     \tincompat{\htau}{\htau'}
+  %   }{
+  %     \tincompat{\htau'}{\htau}
+  %   }
+  % \end{equation}
+  \begin{equation}
+  	\inferrule{ }{
+  		\tincompat{\tarr{\htau_1}{\htau_2}}{\tnum}
+  	}
+  \end{equation}
+  \begin{equation}
+    \inferrule{ }{
+      \tincompat{\tnum}{\tarr{\htau_1}{\htau_2}}
+    }
+  \end{equation}
+  \begin{equation}
+    \inferrule{
+      \tincompat{\htau_1}{\htau_1'}
+    }{
+      \tincompat{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}
+    }
+  \end{equation}
+  \begin{equation}
+    \inferrule{
+      \tincompat{\htau_2}{\htau_2'}
+    }{
+      \tincompat{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}
+    }
+  \end{equation}
+\end{subequations}
+
+\subsubsection{Function Type Matching}~
+
+% \noindent\fbox{$\tcompat{\htau}{\htau'}$}~~\text{$\tau$ and $\tau'$ are consistent}
+% % \begin{subequations}%%\label{rules:tcompat}
+% % \begin{equation}%%\label{rule:tcompat-comm}
+% % \inferrule
+% % %[TCSym]
+% % {
+% %   \tcompat{\htau}{\htau'}
+% % }{
+% %   \tcompat{\htau'}{\htau}
+% % }
+% % \end{equation}
+% \begin{equation}
+% \inferrule{ }{
+%   \tcompat{\tehole}{\htau}
+% }
+% \end{equation}
+% \begin{equation}%%\label{rule:tcompat-hole}
+% \inferrule{ }{
+%   \tcompat{\htau}{\tehole}
+% }
+
+% \inferrule{ }{
+%   \tcompat{\htau}{\htau}
+% }
+
+% \inferrule{
+%   \tcompat{\htau_1}{\htau_1'}\\
+%   \tcompat{\htau_2}{\htau_2'}
+% }{
+%   \tcompat{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}
+% }
+% \end{mathpar}
+% \begin{equation}%%\label{rule:tcompat-num}
+% \end{equation}
+% \begin{equation}%%\label{rule:tcompat-arr}
+% \end{equation}
+% \end{subequations}
+\noindent
+\fbox{$\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$}~~\text{$\tau$ has matched arrow type $\tarr{\htau_1}{\htau_2}$}
+% \begin{mathpar}
+\begin{subequations}
+\begin{equation}
+\inferrule{ }{
+  \arrmatch{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1}{\htau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule{ }{
+  \arrmatch{\tehole}{\tarr{\tehole}{\tehole}}
+}
+\end{equation}
+\end{subequations}
+% \end{mathpar}
+% \noindent\fbox{$\tincompat{\htau}{\htau'}$}
+% \begin{subequations}
+%   % \begin{equation}
+%   %   \inferrule{
+%   %     \tincompat{\htau}{\htau'}
+%   %   }{
+%   %     \tincompat{\htau'}{\htau}
+%   %   }
+%   % \end{equation}
+%   \begin{equation}
+%     \inferrule{ }{
+%       \tincompat{\tarr{\htau_1}{\htau_2}}{\tnum}
+%     }
+%   \end{equation}
+%   \begin{equation}
+%     \inferrule{ }{
+%       \tincompat{\tnum}{\tarr{\htau_1}{\htau_2}}
+%     }
+%   \end{equation}
+%   \begin{equation}
+%     \inferrule{
+%       \tincompat{\htau_1}{\htau_1'}
+%     }{
+%       \tincompat{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}
+%     }
+%   \end{equation}
+%   \begin{equation}
+%     \inferrule{
+%       \tincompat{\htau_2}{\htau_2'}
+%     }{
+%       \tincompat{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}
+%     }
+%   \end{equation}
+% \end{subequations}
+
+\subsubsection{Synthesis and Analysis}
+The judgements $\hsyn{\hGamma}{\hexp}{\htau}$ and
+$\hana{\hGamma}{\hexp}{\htau}$ are defined mutually inductively by Rules
+(\ref{Arules:hana}) and Rules (\ref{Arules:hsyn}), respectively.
+
+\noindent\fbox{$\hana{\hGamma}{\hexp}{\htau}$}~~\text{$\hexp$ analyzes against $\htau$}
+\begin{subequations}\label{Arules:hana}
+\begin{equation}%\label{rule:ana-subsume}
+\inferrule{
+  \hsyn{\hGamma}{\hexp}{\htau'}\\
+  \tcompat{\htau}{\htau'}
+}{
+  \hana{\hGamma}{\hexp}{\htau}
+}
+\end{equation}
+\begin{equation}%\label{rule:syn-lam}
+\inferrule{
+  \arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}\\
+  \hana{\hGamma, x : \htau_1}{\hexp}{\htau_2}
+}{
+  \hana{\hGamma}{\hlam{x}{\hexp}}{\htau}
+}
+\end{equation}
+\end{subequations}
+\fbox{$\hsyn{\hGamma}{\hexp}{\htau}$}~~\text{$\hexp$ synthesizes $\htau$}
+\begin{subequations}\label{Arules:hsyn}
+\begin{equation}%\label{rule:syn-asc}
+\inferrule{
+  \hana{\hGamma}{\hexp}{\htau}
+}{
+  \hsyn{\hGamma}{\hexp : \htau}{\htau}
+}
+\end{equation}
+\begin{equation}%\label{rule:syn-var}
+\inferrule{ }{
+  \hsyn{\hGamma, x : \htau}{x}{\htau}
+}
+\end{equation}
+\begin{equation}%\label{rule:syn-ap}
+\inferrule{
+  \hsyn{\hGamma}{\hexp_1}{\htau}\\
+  \arrmatch{\htau}{\tarr{\htau_2}{\htau'}}\\
+  \hana{\hGamma}{\hexp_2}{\htau_2}
+}{
+  \hsyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau'}
+}
+\end{equation}
+\begin{equation}%\label{rule:syn-num}
+\inferrule{ }{
+  \hsyn{\hGamma}{\hnum{n}}{\tnum}
+}
+\end{equation}
+\begin{equation}%\label{rule:syn-plus}
+\inferrule{
+  \hana{\hGamma}{\hexp_1}{\tnum}\\
+  \hana{\hGamma}{\hexp_2}{\tnum}
+}{
+  \hsyn{\hGamma}{\hadd{\hexp_1}{\hexp_2}}{\tnum}
+}
+\end{equation}
+\begin{equation}%\label{rule:syn-ehole}
+\inferrule{ }{
+  \hsyn{\hGamma}{\hehole}{\tehole}
+}
+\end{equation}
+\begin{equation}%\label{rule:syn-hole}
+\inferrule{
+  \hsyn{\hGamma}{\hexp}{\htau}
+}{
+  \hsyn{\hGamma}{\hhole{\hexp}}{\tehole}
+}
+\end{equation}
+\end{subequations}
+
+\subsubsection{Complete H-Types and H-Expressions}
+By convention, we use the metavariable $\tau$ rather than $\htau$ for
+complete H-types, and $e$ rather than $\hexp$ for complete H-expressions.
+
+\noindent\fbox{$\hcomplete{\tau}$}
+\begin{subequations}
+\begin{equation}
+\inferrule{
+  \hcomplete{\tau_1}\\
+  \hcomplete{\tau_2}
+}{
+  \hcomplete{\tarr{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule{ }{
+  \hcomplete{\tnum}
+}
+\end{equation}
+\end{subequations}
+
+\noindent\fbox{$\hcomplete{e}$}
+\begin{subequations}
+\begin{equation}
+  \inferrule{
+    \hcomplete{\hexp}\\
+    \hcomplete{\htau}
+  }{
+    \hcomplete{\hexp : \htau}
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \hcomplete{x}
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{
+    \hcomplete{\hexp}
+  }{
+    \hcomplete{\hlam{x}{\hexp}}
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{
+    \hcomplete{\hexp_1}\\
+    \hcomplete{\hexp_2}
+  }{
+    \hcomplete{\hap{\hexp_1}{\hexp_2}}
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{\hcomplete{\hnum{n}}}
+\end{equation}
+\begin{equation}
+  \inferrule{
+    \hcomplete{\hexp_1}\\
+    \hcomplete{\hexp_2}
+  }{
+    \hcomplete{\hadd{\hexp_1}{\hexp_2}}
+  }
+\end{equation}
+\end{subequations}
+
+\subsection{Z-Types and Z-Expressions}
+\subsubsection{Type Focus Erasure}
+\noindent\fbox{$\removeSel{\ztau}=\htau$} is a metafunction defined as follows:
+\begin{subequations}
+\begin{align}
+%\removeSel{(\zlsel{\htau})} & = \htau\\
+\removeSel{(\zwsel{\htau})} & = \htau\\
+%\removeSel{(\zrsel{\htau})} & = \htau\\
+\removeSel{(\tarr{\ztau}{\htau})} & = \tarr{\removeSel{\ztau}}{\htau}\\
+\removeSel{(\tarr{\htau}{\ztau})} & = \tarr{\htau}{\removeSel{\ztau}}
+\end{align}
+\end{subequations}
+
+\subsubsection{Expression Focus Erasure}
+\noindent\fbox{$\removeSel{\zexp}=\hexp$} is a metafunction defined as follows:
+\begin{subequations}
+\begin{align}
+%\removeSel{(\zlsel{\hexp})} & = \hexp\\
+\removeSel{(\zwsel{\hexp})} & = \hexp\\
+%\removeSel{(\zrsel{\hexp})} & = \hexp\\
+\removeSel{(\zexp : \htau)} & = \removeSel{\zexp} : \htau\\
+\removeSel{(\hexp : \ztau)} & = \hexp : \removeSel{\ztau}\\
+\removeSel{(\hlam{x}{\zexp})} & = \hlam{x}{\removeSel{\zexp}}\\
+\removeSel{(\hap{\zexp}{\hexp})} & = \hap{\removeSel{\zexp}}{\hexp}\\
+\removeSel{(\hap{\hexp}{\zexp})} & = \hap{\hexp}{\removeSel{\zexp}}\\
+\removeSel{(\hadd{\zexp}{\hexp})} & = \hadd{\removeSel{\zexp}}{\hexp}\\
+\removeSel{(\hadd{\hexp}{\zexp})} & = \hadd{\hexp}{\removeSel{\zexp}}\\
+\removeSel{\hhole{\zexp}} &= \hhole{\removeSel{\zexp}}
+\end{align}
+\end{subequations}
+\subsection{Action Model}
+\subsubsection{Type Actions}
+\noindent\fbox{$\performTyp{\ztau}{\alpha}{\ztau'}$}
+\paragraph{Type Movement}
+\begin{subequations}
+\begin{equation}
+  \inferrule{ }{
+    \performTyp{
+      \zwsel{\tarr{\htau_1}{\htau_2}}
+    }{
+      \aMove{\dChild}
+    }{
+      \tarr{\zwsel{\htau_1}}{\htau_2}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performTyp{
+      \tarr{\zwsel{\htau_1}}{\htau_2}
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\tarr{\htau_1}{\htau_2}}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performTyp{
+      \tarr{{\htau_1}}{\zwsel{\htau_2}}
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\tarr{\htau_1}{\htau_2}}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performTyp{
+      \tarr{\zwsel{\htau_1}}{{\htau_2}}
+    }{
+      \aMove{\dNext}
+    }{
+      {\tarr{\htau_1}{\zwsel{\htau_2}}}
+    }
+  }
+\end{equation}
+% \begin{equation}
+%   \inferrule{ }{
+%     \performTyp{
+%       \tarr{{\htau_1}}{\zwsel{\htau_2}}
+%     }{
+%       \aMove{\dPrev}
+%     }{
+%       {\tarr{\zwsel{\htau_1}}{{\htau_2}}}
+%     }
+%   }
+% \end{equation}
+
+\paragraph{Type Deletion}
+\begin{equation}
+  \inferrule{ }{
+    \performTyp{
+      \zwsel{\htau}
+    }{
+      \aDel
+    }{
+      \zwsel{\tehole}
+    }
+  }
+\end{equation}
+
+\paragraph{Type Construction}
+\begin{equation}
+    %%\label{r:contarr}
+  \inferrule{ }{
+    \performTyp{
+      \zwsel{\htau}
+    }{
+      \aConstruct{\farr}
+    }{
+      \tarr{\htau}{\zwsel{\tehole}}
+    }
+  }
+\end{equation}
+
+  \begin{equation}
+    %%\label{r:contnum}
+  \inferrule{ }{
+    \performTyp{
+      \zwsel{\tehole}
+    }{
+      \aConstruct{\fnum}
+    }{
+      \zwsel{\tnum}
+    }
+  }
+\end{equation}
+
+
+\paragraph{Zipper Cases}
+  \begin{equation}
+    %%\label{r:contarrL}
+  \inferrule{
+    \performTyp{\ztau}{\alpha}{\ztau'}
+  }{
+    \performTyp{
+      \tarr{\ztau}{\htau}
+    }{
+      \alpha
+    }{
+      \tarr{\ztau'}{\htau}
+    }
+  }
+\end{equation}
+  \begin{equation}
+    %%\label{r:contarrR}
+  \inferrule{
+    \performTyp{\ztau}{\alpha}{\ztau'}
+  }{
+    \performTyp{
+      \tarr{\htau}{\ztau}
+    }{
+      \alpha
+    }{
+      \tarr{\htau}{\ztau'}
+    }
+  }
+\end{equation}
+\end{subequations}
+
+\subsubsection{Expression Movement Actions} 
+\noindent\fbox{$\performMove{\zexp}{\aMove{\delta}}{\zexp'}$}
+
+\begin{subequations}
+\paragraph{Ascription}
+
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \zwsel{\hexp : \htau}
+    }{
+      \aMove{\dChild}
+    }{
+      \zwsel{\hexp} : \htau
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \zwsel{\hexp} : \htau
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\hexp : \htau}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \hexp : \zwsel{\htau}
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\hexp : \htau}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \zwsel{\hexp} : \htau
+    }{
+      \aMove{\dNext}
+    }{
+      \hexp : \zwsel{\htau}
+    }
+  }
+\end{equation}
+% \begin{equation}
+%   \inferrule{ }{
+%     \performMove{
+%       \hexp : \zwsel{\htau}
+%     }{
+%       \aMove{\dPrev}
+%     }{
+%       \zwsel{\hexp} : \htau
+%     }
+%   }
+% \end{equation}
+% \begin{equation}
+% \inferrule{
+%   \performMove{
+%     \zexp
+%   }{
+%     \aMove{\delta}
+%   }{
+%     \zexp'
+%   }
+% }{
+%   \performMove{
+%     \zexp : \htau
+%   }{
+%     \aMove{\delta}
+%   }{
+%     \zexp' : \htau
+%   }
+% }
+% \end{equation}
+% \begin{equation}
+%   \inferrule{
+%     \performMove{
+%       \ztau
+%     }{
+%       \aMove{\delta}
+%     }{
+%       \ztau'
+%     }
+%   }{
+%     \performMove{
+%       \hexp : \ztau
+%     }{
+%       \aMove{\delta}
+%     }{
+%       \hexp : \ztau'
+%     }
+%   }
+% \end{equation}
+
+\paragraph{Lambda}
+\begin{equation}%\label{r:movefirstchild-lam}
+\inferrule{ }{
+  \performMove{
+    \zwsel{\hlam{x}{\hexp}}
+  }{
+    \aMove{\dChild}
+  }{
+    \hlam{x}{\zwsel{\hexp}}
+  }
+}
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \hlam{x}{\zwsel{\hexp}}
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\hlam{x}{\hexp}}
+    }
+  }
+\end{equation}
+\paragraph{Application}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \zwsel{\hap{\hexp_1}{\hexp_2}}
+    }{
+      \aMove{\dChild}
+    }{
+      \hap{\zwsel{\hexp_1}}{\hexp_2}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \hap{\zwsel{\hexp_1}}{\hexp_2}
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\hap{\hexp_1}{\hexp_2}}
+    }
+  }
+\end{equation}
+\begin{equation}%\label{r:moveparent-ap2}
+  \inferrule{ }{
+    \performMove{
+      \hap{{\hexp_1}}{\zwsel{\hexp_2}}
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\hap{\hexp_1}{\hexp_2}}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \hap{\zwsel{\hexp_1}}{\hexp_2}
+    }{
+      \aMove{\dNext}
+    }{
+      \hap{\hexp_1}{\zwsel{\hexp_2}}
+    }
+  }
+\end{equation}
+% \begin{equation}
+%   \inferrule{ }{
+%     \performMove{
+%       \hap{\hexp_1}{\zwsel{\hexp_2}}
+%     }{
+%       \aMove{\dPrev}
+%     }{
+%       \hap{\zwsel{\hexp_1}}{\hexp_2}
+%     }
+%   }
+% \end{equation}
+
+\paragraph{Plus}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \zwsel{\hadd{\hexp_1}{\hexp_2}}
+    }{
+      \aMove{\dChild}
+    }{
+      \hadd{\zwsel{\hexp_1}}{\hexp_2}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \hadd{\zwsel{\hexp_1}}{\hexp_2}
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\hadd{\hexp_1}{\hexp_2}}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \hadd{{\hexp_1}}{\zwsel{\hexp_2}}
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\hadd{\hexp_1}{\hexp_2}}
+    }
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{ }{
+    \performMove{
+      \hadd{\zwsel{\hexp_1}}{\hexp_2}
+    }{
+      \aMove{\dNext}
+    }{
+      \hadd{\hexp_1}{\zwsel{\hexp_2}}
+    }
+  }
+\end{equation}
+% \begin{equation}
+%   \inferrule{ }{
+%     \performMove{
+%       \hadd{\hexp_1}{\zwsel{\hexp_2}}
+%     }{
+%       \aMove{\dPrev}
+%     }{
+%       \hadd{\zwsel{\hexp_1}}{\hexp_2}
+%     }
+%   }
+% \end{equation}
+
+\paragraph{Non-Empty Hole}
+\begin{equation}
+\inferrule{ }{
+  \performMove{
+    \zwsel{\hhole{\hexp}}
+  }{
+    \aMove{\dChild}
+  }{
+    \hhole{\zwsel{\hexp}}
+  }
+}
+\end{equation}
+\begin{equation}%\label{r:moveparent-hole}
+  \inferrule{ }{
+    \performMove{
+      \hhole{\zwsel{\hexp}}
+    }{
+      \aMove{\dParent}
+    }{
+      \zwsel{\hhole{\hexp}}
+    }
+  }
+\end{equation}
+
+\end{subequations}
+\subsubsection{Synthetic and Analytic Expression Actions}
+The synthetic and analytic expression action performance judgements are defined mutually inductively by Rules (\ref{Arules:performSyn}) and Rules (\ref{Arules:performAna}), respectively.
+
+
+\noindent\fbox{$\performSyn{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}{\htau'}$}
+
+\begin{subequations}\label{Arules:performSyn}
+\paragraph{Movement}
+\begin{equation}
+\inferrule{
+  \performMove{\zexp}{\aMove{\delta}}{\zexp'}
+}{
+  \performSyn{\hGamma}{\zexp}{\htau}{\aMove{\delta}}{\zexp'}{\htau}
+}
+\end{equation}
+
+\paragraph{Deletion}
+\begin{equation}
+  \inferrule{ }{
+    \performSyn{\hGamma}{\zwsel{\hexp}}{\htau}{\aDel}{\zwsel{\hehole}}{\tehole}
+  }
+\end{equation}
+
+\paragraph{Construction}
+\begin{equation}
+  \inferrule{ }{
+    \performSyn{\hGamma}{\zwsel{\hexp}}{\htau}{\aConstruct{\fasc}}{\hexp : \zwsel{\htau}}{\htau}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{ }{
+    \performSyn{\hGamma, x : \htau}{\zwsel{\hehole}}{\tehole}{\aConstruct{\fvar{x}}}{\zwsel{x}}{\htau}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{ }{
+    \performSyn
+      {\hGamma}
+      {\zwsel{\hehole}}
+      {\tehole}
+      {\aConstruct{\flam{x}}}
+      {\hlam{x}{\hehole} : \tarr{\zwsel{\tehole}}{\tehole}}
+      {\tarr{\tehole}{\tehole}}
+  }
+\end{equation}
+
+\begin{equation}
+  %\label{r:coneapfn}
+  \inferrule{
+    \arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}
+  }{
+    \performSyn
+      {\hGamma}
+      {\zwsel{\hexp}}
+      {\htau}
+      {\aConstruct{\fap}}
+      {\hap{\hexp}{\zwsel{\hehole}}}
+      {\htau_2}
+  }
+\end{equation}
+
+% \begin{equation}
+%   \inferrule{ }{
+%     \performSyn
+%       {\hGamma}
+%       {\zwsel{\hexp}}
+%       {\tehole}
+%       {\aConstruct{\fap}}
+%       {\hap{\hexp}{\zwsel{\hehole}}}
+%       {\tehole}
+%   }
+% \end{equation}
+
+\begin{equation}
+  \inferrule{
+    \tincompat{\htau}{\tarr{\tehole}{\tehole}}
+  }{
+    \performSyn
+      {\hGamma}
+      {\zwsel{\hexp}}
+      {\htau}
+      {\aConstruct{\fap}}
+      {\hap{\hhole{\hexp}}{\zwsel{\hehole}}}
+      {\tehole}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{ }{
+    \performSyn
+      {\hGamma}
+      {\zwsel{\hexp}}
+      {\htau}
+      {\aConstruct{\farg}}
+      {\hap{\zwsel{\hehole}}{\hexp}}
+      {\tehole}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{ }{
+    \performSyn
+      {\hGamma}
+      {\zwsel{\hehole}}
+      {\tehole}
+      {\aConstruct{\fnumlit{n}}}
+      {\zwsel{\hnum{n}}}
+      {\tnum}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{
+    \tcompat{\htau}{\tnum}
+  }{
+    \performSyn
+      {\hGamma}
+      {\zwsel{\hexp}}
+      {\htau}
+      {\aConstruct{\fplus}}
+      {\hadd{\hexp}{\zwsel{\hehole}}}
+      {\tnum}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{
+    \tincompat{\htau}{\tnum}
+  }{
+    \performSyn
+      {\hGamma}
+      {\zwsel{\hexp}}
+      {\htau}
+      {\aConstruct{\fplus}}
+      {\hadd{\hhole{\hexp}}{\zwsel{\hehole}}}
+      {\tnum}
+  }
+\end{equation}
+
+\begin{equation}
+\inferrule{ }{
+  \performSyn
+    {\hGamma}
+    {\zwsel{\hexp}}
+    {\htau}
+    {\aConstruct{\fnehole}}
+    {\hhole{\zwsel{\hexp}}}
+    {\tehole}
+}
+\end{equation}
+\paragraph{Finishing}
+  \begin{equation}
+    %% %\label{r:finishana} %% TODO; get labels right
+  \inferrule{
+    \hsyn{\hGamma}{\hexp}{\htau'}
+  }{
+    \performSyn
+      {\hGamma}
+      {\zwsel{\hhole{\hexp}}}
+      {\tehole}
+      {\aFinish}
+      {\zwsel{\hexp}}
+      {\htau'}
+  }
+\end{equation}
+
+
+\paragraph{Zipper Cases}
+\begin{equation}
+\inferrule{
+  \performAna
+    {\hGamma}
+    {\zexp}
+    {\htau}
+    {\alpha}
+    {\zexp'}
+}{
+  \performSyn
+    {\hGamma}
+    {\zexp : \htau}
+    {\htau}
+    {\alpha}
+    {\zexp' : \htau}
+    {\htau}
+}
+\end{equation}
+\begin{equation}
+\inferrule{
+  \performTyp{\ztau}{\alpha}{\ztau'}\\
+  \hana{\hGamma}{\hexp}{\removeSel{\ztau'}}
+}{
+  \performSyn
+    {\hGamma}
+    {\hexp : \ztau}
+    {\removeSel{\ztau}}
+    {\alpha}
+    {\hexp : \ztau'}
+    {\removeSel{\ztau'}}
+}
+\end{equation}
+\begin{equation}
+  \inferrule{
+    \hsyn{\hGamma}{\removeSel{\zexp}}{\htau_2}\\
+    \performSyn
+      {\hGamma}
+      {\zexp}
+      {\htau_2}
+      {\alpha}
+      {\zexp'}
+      {\htau_3}\\\\
+    \arrmatch{\htau_3}{\tarr{\htau_4}{\htau_5}}\\
+    \hana{\hGamma}{\hexp}{\htau_4}
+  }{
+    \performSyn
+      {\hGamma}
+      {\hap{\zexp}{\hexp}}
+      {\htau_1}
+      {\alpha}
+      {\hap{\zexp'}{\hexp}}
+      {\htau_5}
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{
+    \hsyn{\hGamma}{\hexp}{\htau_2}\\
+    \arrmatch{\htau_2}{\tarr{\htau_3}{\htau_4}}\\
+    \performAna
+      {\hGamma}
+      {\zexp}
+      {\htau_3}
+      {\alpha}
+      {\zexp'}
+  }{
+    \performSyn
+      {\hGamma}
+      {\hap{\hexp}{\zexp}}
+      {\htau_1}
+      {\alpha}
+      {\hap{\hexp}{\zexp'}}
+      {\htau_4}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{
+    \performAna
+      {\hGamma}
+      {\zexp}
+      {\tnum}
+      {\alpha}
+      {\zexp'}
+  }{
+    \performSyn
+      {\hGamma}
+      {\hadd{\zexp}{\hexp}}
+      {\tnum}
+      {\alpha}
+      {\hadd{\zexp'}{\hexp}}
+      {\tnum}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{
+    \performAna
+      {\hGamma}
+      {\zexp}
+      {\tnum}
+      {\alpha}
+      {\zexp'}
+  }{
+    \performSyn
+      {\hGamma}
+      {\hadd{\hexp}{\zexp}}
+      {\tnum}
+      {\alpha}
+      {\hadd{\hexp}{\zexp'}}
+      {\tnum}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{
+    \hsyn{\hGamma}{\removeSel{\zexp}}{\htau}\\
+    \performSyn
+      {\hGamma}
+      {\zexp}
+      {\htau}
+      {\alpha}
+      {\zexp'}
+      {\htau'}
+  }{
+    \performSyn
+      {\hGamma}
+      {\hhole{\zexp}}
+      {\tehole}
+      {\alpha}
+      {\hhole{\zexp'}}
+      {\tehole}
+  }
+\end{equation}
+% \begin{equation}
+%   \inferrule{
+%     \hsyn{\hGamma}{\removeSel{\zexp}}{\htau}\\
+%     \performSyn
+%       {\hGamma}
+%       {\zexp}
+%       {\htau}
+%       {\alpha}
+%       {\zwsel{\hehole}}
+%       {\tehole}\\
+%   }{
+%     \performSyn
+%       {\hGamma}
+%       {\hhole{\zexp}}
+%       {\tehole}
+%       {\alpha}
+%       {\zwsel{\hehole}}
+%       {\tehole}
+%   }
+% \end{equation}
+\end{subequations}
+
+\noindent\fbox{$\performAna{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}$}
+\begin{subequations}\label{Arules:performAna}
+\paragraph{Subsumption}
+\begin{equation}
+  \inferrule{
+    \hsyn{\hGamma}{\removeSel{\zexp}}{\htau'}\\
+    \performSyn{\hGamma}{\zexp}{\htau'}{\alpha}{\zexp'}{\htau''}\\
+    \tcompat{\htau}{\htau''}%\\\\
+    % \alpha \neq \aConstruct{\fasc}\\
+    % \alpha \neq \aConstruct{\flam{x}}
+  }{
+    \performAna{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}
+  }
+\end{equation}
+
+\paragraph{Movement}
+\begin{equation}
+  \inferrule{
+  \performMove{\zexp}{\aMove{\delta}}{\zexp'}
+}{
+  \performAna{\hGamma}{\zexp}{\htau}{\aMove{\delta}}{\zexp'}
+}
+\end{equation}
+
+\paragraph{Deletion}
+\begin{equation}
+  \inferrule{ }{
+    \performAna{\hGamma}{\zwsel{\hexp}}{\htau}{\aDel}{\zwsel{\hehole}}
+  }
+\end{equation}
+
+\paragraph{Construction}
+\begin{equation}
+  \inferrule{ }{
+    \performAna{\hGamma}{\zwsel{\hexp}}{\htau}{\aConstruct{\fasc}}{\hexp : \zwsel{\htau}}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{
+    \tincompat{\htau}{\htau'}
+  }{
+    \performAna{\hGamma, x : \htau'}{\zwsel{\hehole}}{\htau}{\aConstruct{\fvar{x}}}{\hhole{\zwsel{x}}}
+  }
+\end{equation}
+
+\begin{equation}%\label{rule:performAna-lam-1}
+  \inferrule{
+    \arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}
+  }{
+    \performAna
+      {\hGamma}
+      {\zwsel{\hehole}}
+      {\htau}
+      {\aConstruct{\flam{x}}}
+      {\hlam{x}{\zwsel{\hehole}}}
+  }
+\end{equation}
+
+\begin{equation}
+  \inferrule{
+    \tincompat{\htau}{\tarr{\tehole}{\tehole}}
+  }{
+    \performAna
+      {\hGamma}
+      {\zwsel{\hehole}}
+      {\htau}
+      {\aConstruct{\flam{x}}}
+      {\hhole{
+        \hlam{x}{\hehole} : \tarr{\zwsel{\tehole}}{\tehole}
+      }}
+  }
+\end{equation}
+\begin{equation}
+  \inferrule{
+    \tincompat{\htau}{\tnum}
+  }{
+    \performAna
+      {\hGamma}
+      {\zwsel{\hehole}}
+      {\htau}
+      {\aConstruct{\fnumlit{n}}}
+      {\hhole{\zwsel{\hnum{n}}}}
+  }
+\end{equation}
+\paragraph{Finishing}
+\begin{equation}
+  \inferrule{
+    \hana{\hGamma}{\hexp}{\htau}
+  }{
+    \performAna
+      {\hGamma}
+      {\zwsel{\hhole{\hexp}}}
+      {\htau}
+      {\aFinish}
+      {\zwsel{\hexp}}
+  }
+\end{equation}
+
+\paragraph{Zipper Cases}
+\begin{equation}
+\inferrule{
+  \arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}\\
+  \performAna
+    {\hGamma, x : \htau_1}
+    {\zexp}
+    {\htau_2}
+    {\alpha}
+    {\zexp'}
+}{
+  \performAna
+    {\hGamma}
+    {\hlam{x}{\zexp}}
+    {\htau}
+    {\alpha}
+    {\hlam{x}{\zexp'}}
+}
+\end{equation}
+
+\end{subequations}
+\subsubsection{Iterated Action Judgements} ~
+
+\noindent $\mathsf{ActionList}$~~$\bar{\alpha} ::= \cdot ~\vert~ \alpha; \bar{\alpha}$\vspace{4px}\\
+\fbox{$\performTypI{\ztau}{\bar{\alpha}}{\ztau'}$}
+\begin{subequations}
+\begin{equation}
+\inferrule{ }{
+    \performTypI{\ztau}{\cdot}{\ztau}
+}
+\end{equation}
+\begin{equation}
+\inferrule{
+  \performTyp{\ztau}{\alpha}{\ztau'}\\
+  \performTypI{\ztau'}{\bar{\alpha}}{\ztau''}
+}{
+  \performTypI{\ztau}{\alpha; \bar{\alpha}}{\ztau''}
+}
+\end{equation}
+\end{subequations}
+\begin{subequations}
+\fbox{$\performSynI{\hGamma}{\zexp}{\htau}{\bar{\alpha}}{\zexp'}{\htau'}$}
+\begin{equation}
+\inferrule{ }{
+  \performSynI{\hGamma}{\zexp}{\htau}{\cdot}{\zexp}{\htau}
+}
+\end{equation}
+\begin{equation}
+\inferrule{
+  \performSyn{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}{\htau'}\\
+  \performSynI{\hGamma}{\zexp'}{\htau'}{\bar{\alpha}}{\zexp''}{\htau''}
+}{
+  \performSynI{\hGamma}{\zexp}{\htau}{\alpha; \bar{\alpha}}{\zexp''}{\htau''}
+}
+\end{equation}
+\end{subequations}
+\begin{subequations}
+\fbox{$\performAnaI{\hGamma}{\zexp}{\htau}{\bar{\alpha}}{\zexp'}$}
+\begin{equation}
+\inferrule{ }{
+  \performAnaI{\hGamma}{\zexp}{\htau}{\cdot}{\zexp}
+}
+\end{equation}
+\begin{equation}
+\inferrule{
+  \performAna{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}\\
+  \performAnaI{\hGamma}{\zexp'}{\htau}{\bar\alpha}{\zexp''}
+}{
+  \performAnaI{\hGamma}{\zexp}{\htau}{\alpha; \bar\alpha}{\zexp''}
+}
+\end{equation}
+\end{subequations}
+\noindent \fbox{$\bar\alpha~\mathsf{movements}$}
+\begin{subequations}
+\begin{equation}
+\inferrule{ }{
+	\cdot~\mathsf{movements}
+}
+\end{equation}
+
+\begin{equation}
+\inferrule{
+	\bar\alpha~\mathsf{movements}
+}{
+	\aMove{\delta}; \bar\alpha~\mathsf{movements}
+}
+\end{equation}
+\end{subequations}

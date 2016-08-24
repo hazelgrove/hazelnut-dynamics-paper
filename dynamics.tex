@@ -1,0 +1,255 @@
+%% Cyrus: We took a look at the dynamics. Overall it seems like the
+%% right idea. We noticed:
+
+%% Done: 1) The stepping rules are non-deterministic (i.e. you can
+%% step the right or left of e1 + e2 in any order). Might be useful to
+%% make them deterministic.
+
+%% Done (mostly): 2) The premises that have disjunctions in them could
+%% be broken out into two rules -- this would take a little more space
+%% but follows the usual conventions more closely.
+
+%% Done (mostly): 3) We need to add the ``ceil'' forms to the grammar
+%% of \dot{e} (you just used e) and give them a static semantics.
+
+%% TODO: 4) We need to figure out (the analogs of) canonical forms,
+%% preservation and progress -- I guess we had decided on defining a
+%% declarative statics to do that. Ian has started to prove the
+%% correspondence (sans the ceil forms).
+
+%% #4 seems like the most important next step.
+
+\begin{figure}[htbp]
+  \centering
+
+  \judgbox{\hexp~\textsf{value}}{H-Expression $\hexp$ is a closed value}
+  \begin{mathpar}
+    \Infer{V-num}
+          { }
+          {\hnum{n}~\textsf{value}}
+    \and
+    \Infer{V-lam}
+        {}
+        {\hlam{x}{\hexp}~\textsf{value}}
+  \end{mathpar}
+  
+  \caption{Value forms}
+  \label{fig:judg-value}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+
+  \judgbox{\hexp~\textsf{final}}{H-Expression $\hexp$ is final}
+  \begin{mathpar}
+    \Infer{F-val}
+          {\hexp~\textsf{value}}
+          {\hexp~\textsf{final}}
+    \and
+    \Infer{F-filled}
+          {\hexp~\textsf{final}}
+          {\hhole{\hexp}~\textsf{final}}
+    \and
+    \Infer{F-unfilled}
+          { }
+          {\hhole{}~\textsf{final}}
+    \and
+    \Infer{F-indet}
+        {\hexp~\textsf{indet}}
+        {\hindet{\hexp}~\textsf{final}}
+  \end{mathpar}
+  
+  \caption{Final forms}
+  \label{fig:judg-value}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+
+  \judgbox{\hexp~\textsf{indet}}{H-Expression~$\hexp$ is indeterminate}
+  \begin{mathpar}
+    \Infer{I-plus$_1$}
+          { \hexp_1~\textsf{final} \\
+            \hexp_2~\textsf{final} \\
+            \hexp_1 \ne \hnum{n_1}
+          }
+          {\hadd{e_1}{e_2}~\textsf{indet}}
+    \and
+    \Infer{I-plus$_2$}
+          { \hexp_1~\textsf{final} \\
+            \hexp_2~\textsf{final} \\
+            \hexp_2 \ne \hnum{n_2}
+          }
+          {\hadd{\hexp_1}{\hexp_2}~\textsf{indet}}
+    \and
+    \Infer{I-app}
+          { \hexp_1~\textsf{final} \\
+            \hexp_2~\textsf{final} \\
+            \hexp_1 \ne \hlam{x}{\hexp_1'}
+          }
+          {\hap{\hexp_1}{\hexp_2}~\textsf{indet}}
+    \and
+  \end{mathpar}
+  
+  \caption{Indeterminate forms}
+  \label{fig:judg-value}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+
+  \judgbox{\hexp_1 \longrightarrow \hexp_2}{H-Expression $\hexp_1$ steps to~$\hexp_2$}
+  \begin{mathpar}
+    \Infer{S-plus$_1$}
+          { \hexp_1 \longrightarrow \hexp_1' }
+          { \hadd{\hexp_1}{\hexp_2} \longrightarrow \hadd{\hexp_1'}{\hexp_2} }
+
+    \Infer{S-plus$_2$}
+          { \hexp_1~\textsf{final}
+            \\
+            \hexp_2 \longrightarrow \hexp_2' }
+          { \hadd{\hexp_1}{\hexp_2} \longrightarrow \hadd{\hexp_1}{\hexp_2'} }
+
+    \Infer{S-plus$_3$}
+          { n_1 + n_2 = n_3 }
+          { \hadd{\hnum{n_1}}{\hnum{n_2}} \longrightarrow \hnum{n_3} }
+
+   \Infer{S-plus$_4$}
+          { \hexp_1~\textsf{final} ~~ ~~ ~~
+            \hexp_2~\textsf{final} 
+            \\\\
+            \left(\hexp_1 \ne \hnum{n_1} \vee \hexp_2 \ne \hnum{n_2}\right)
+          }
+          { \hadd{\hexp_1}{\hexp_2} \longrightarrow \hindet{\hadd{\hexp_1}{\hexp_2}} }
+
+    \Infer{S-ap$_1$}
+          { \hexp_1 \longrightarrow \hexp_1' }
+          { \hap{\hexp_1}{\hexp_2} \longrightarrow \hap{\hexp_1'}{\hexp_2} }
+
+    \Infer{S-ap$_2$}
+          { \hexp_2 \longrightarrow \hexp_2'
+            \\
+            \hexp_1~\textsf{final}
+          }
+          { \hap{\hexp_1}{\hexp_2} \longrightarrow \hap{\hexp_1}{\hexp_2'} }
+
+    \Infer{S-ap$_3$}
+          { \hexp_2~\textsf{final} }
+          { \hap{\hlam{x}{\hexp_1}}{\hexp_2} \longrightarrow [\hexp_2/x]\hexp_1 }
+
+   \Infer{S-ap$_4$}
+          { \hexp_1~\textsf{final} ~~ ~~ ~~
+            \hexp_2~\textsf{final}
+            \\\\
+            \hexp_1 \ne \hlam{x}{\hexp_1'} ~~ ~~ ~~ ~~ ~~ ~~ ~~ { }
+          }
+          { \hap{\hexp_1}{\hexp_2} \longrightarrow \hindet{\hap{\hexp_1}{\hexp_2}} }
+
+  \end{mathpar}
+  
+  \caption{Small-step operational semantics.}
+  \label{fig:judg-value}
+\end{figure}
+
+% Q: Are we running programs with ascriptions?
+% No. We erase the ascriptions before running. Ascriptions below are
+%
+% Q: Are the ascriptions needed to type-check the programs?
+% No. The ascriptions are needed to check the programs algorithmically, not to derive typing derivations.
+% (Q: How do ascriptions, holes, and typing derivations interact?)
+%
+% Q: Does it ever make sense to run open programs? (i.e., run programs with ``free variables''?)
+%  -- Yes, but only in the sense that we can bind holes to variables,
+%     ascribe them types, and (attempt to) compute with them.
+%
+% Example: (where '?' means "empty hole")
+%  let x = ? : int -> int in
+%  let y = ? : int in
+%  x y : int
+% ==erase==>
+%  let x = ? in
+%  let y = ? in
+%  x y
+% -->
+%  let y = ? in
+%  ? y
+% -->
+%  ? ?
+% --> 
+%  (indet ? ?)
+
+We extend the syntax of H-Expressions as follows:
+\[
+\hexp ::= \cdots~|~\hindet{\hexp}
+\]
+
+Here are some things that we want to prove:
+
+\textbf{Def}~(Ascription erasure). 
+\\
+$\herase{\hexp}$ is the same as $\hexp$, but without its type ascriptions.
+%
+All cases are congruences, except for the ascription case, where $\herase{\hexp : \htau} = \hexp$.
+
+\textbf{Def}~(Declarative typing).
+\\
+The judgement $\hGamma \vdash \hexp : \htau$ is a type assignment
+system for erased terms.  It is declarative, and unlike the
+bidirectional rules, is not algorithmic.
+%
+We employ it to relate bidirectionally-typed terms to (erased) terms
+that enjoy type soundness with respect to the dynamics.
+
+\textbf{Conjecture}~(Bidirectional implies declarative).
+\\
+(i) If $\hsyn{\hGamma}{\hexp}{\htau}$ then $\hGamma \vdash \herase{\hexp} : \htau$.
+\\
+(ii) If $\hana{\hGamma}{\hexp}{\htau}$ then $\hGamma \vdash \herase{\hexp} : \htau$.
+
+\textbf{Conjecture}~(Substitution).
+\\
+If $\hGamma, x : \tau_x \vdash \hexp : \htau$
+\\
+and $\hexp'~\textsf{final}$~~~(do we actually need this condition?)
+\\
+and $\hGamma \vdash \hexp' : \htau_x$
+\\
+then $\hGamma \vdash \hexp[\hexp' / x] : \htau$
+
+% Q: Do we need to enforce that hexp' is final?
+
+\textbf{Conjecture}~(Canonical forms)
+\\
+If $\cdot \vdash \hexp : \htau$
+\\
+and $\hexp~\textsf{final}$ then
+\begin{itemize}
+\item if $\hexp = \hindet{\hexp'}$ then $\hexp'~\textsf{indet}$ and $\cdot \vdash \hexp' : \htau$
+%\marginnote{Since $\hexp'~\textsf{indet}$, the conjecture applies to $\hexp'$.}
+\item else:
+\begin{itemize}
+\item if $\htau = \tnum$ then exists $\hnum{n}$ such that $\hexp = \hnum{n}$.
+\item else if $\htau = \tarr{\htau_1}{\htau_2}$ then exists $x$ and $\hexp'$ such that $\hexp = \hlam{x}{\hexp'}$
+\item else if $\htau = \tehole$ then either:
+\begin{itemize}
+\item $\hexp = \hehole$, or
+\item exists $\htau'$ and $\hexp'$ such that $\hexp = \hhole{\hexp'}$, $\hexp'~\textsf{final}$ and $\cdot \vdash \hexp' : \htau'$
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\textbf{Conjecture}~(Progresss).
+\\
+If $\cdot \vdash \hexp_1 : \htau$
+\\
+then either $\hexp_1~\textsf{final}$
+\\
+or exists $\hexp_2$ such that $\hexp_1 \longrightarrow \hexp_2$.
+
+\textbf{Conjecture}~(Preservation).
+\\
+If $\cdot\vdash \hexp_1 : \htau$ 
+\\
+and $\hexp_1 \longrightarrow \hexp_2$
+\\
+then $\cdot \vdash \hexp_2 : \htau$

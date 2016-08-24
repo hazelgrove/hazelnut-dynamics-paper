@@ -1,0 +1,58 @@
+% !TEX root = hazelnut-popl17.tex
+So far, we have given an overview of the most important judgements and rules in
+the semantics of Hazelnut, and stated the critical metatheorem, Sensibility, and several auxiliary ``checks''. In a few
+cases, we have informally sketched out why these metatheorems will hold. In order to formally establish that our design meets our stated objectives, we
+have mechanized the semantics of Hazelnut using the Agda proof assistant \cite{norell:thesis} (also see the Agda Wiki, hosted
+at \url{http://wiki.portal.chalmers.se/agda/}.)
+
+This development is available in the supplemental material. At the time of submission, the full set of rules is available and the proofs of Theorem \ref{thrm:actsafe}, Theorem \ref{lemma:movement-erasure} and a number of technical lemmas that we elided or mentioned informally in the text are complete. We also have nearly all of the cases of Reachability and Constructability complete, and we see no major barrier to the remaining cases -- we prioritized developing a clear exposition of our contributions after proving representative cases and finding that they were straightforward. The remaining cases will be completed in the repository linked in the non-anonymous supplementary material.
+
+The documentation 
+includes a more detailed discussion of the technical representation
+decisions that we made. The main idea is standard: we encode each judgement as a
+dependent type. The rules defining the judgements become the constructors of this
+type, and derivations are terms of these type. This is a rich
+setting that allows proofs to take advantage of pattern matching on the
+shape of derivations, closely matching standard on-paper proofs. No proof automation was used, because the proof structure itself is likely to be interesting to researchers who plan to build upon our work. 
+% The formalization differs from the calculus defined here in a few small 
+% ways. Most interestingly, instead of giving separate movement rules for each 
+% form of Z-expression, we abstract
+% over different corresponding forms that happen to have the same arity, e.g. 
+% additions and applications. Formalizing this intuition
+% reduces the number of cases we need to consider 
+% somewhat, but more importantly allows us to write a slightly more
+% general calculus -- it will be easier to extend Hazelnut with more 
+% interesting language features with this generic infrastructure in place.
+We adopt Barendregt's convention for
+bound variables \cite{urban}. Hazelnut's semantics does not need substitution, so we do not need to adopt more sophisticated encodings (e.g. \cite{lh09unibind,Pouillard11}.)
+
+\subsection{Determinism}
+A useful property would be \emph{action determinism}, i.e. that performing an action produces a unique result. Formally, this would be established as follows:
+% \begin{theorem}[Action Determinism] All of the following hold:
+% \label{thrm:actdet}
+\begin{enumerate}[itemsep=0px,partopsep=0px,topsep=0px]
+\item If $\performTyp{\ztau}{\alpha}{\ztau'}$ and $\performTyp{\ztau}{\alpha}{\ztau''}$ then $\ztau'=\ztau''$.
+\item If $\hsyn{\hGamma}{\removeSel{\zexp}}{\htau}$ and
+  $\performSyn{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}{\htau'}$ and
+  $\performSyn{\hGamma}{\zexp}{\htau}{\alpha}{\zexp''}{\htau''}$ then
+  $\zexp' = \zexp''$ and $\htau' = \htau''$.
+% \item If all of
+
+  % \begin{quote}
+  %   \begin{enumerate}
+  %   \item $\hsyn{\hGamma}{\removeSel{\zexp}}{\htau}$, and
+  %   \item $\performSyn{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}{\htau'}$, and
+  %   \item $\tcompat{\htau}{\htau'}$, and
+  %   \item either $\performAna{\hGamma}{\zexp}{\htau}{\alpha}{\zexp''}$ or
+  %     $\performAna{\hGamma}{\zexp}{\htau'}{\alpha}{\zexp''}$
+  %   \end{enumerate}
+  % \end{quote}
+  % hold, then $\zexp' = \zexp''$.
+\item If $\hana{\hGamma}{\removeSel{\zexp}}{\htau}$ and
+  $\performAna{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}$ and
+  $\performAna{\hGamma}{\zexp}{\htau}{\alpha}{\zexp''}$ then $\zexp' =
+  \zexp''$.
+\end{enumerate}
+% \end{theorem}
+
+This is not a theorem of the system as described in this paper. The reason is quite subtle: the semantics of two construction actions, $\aConstruct{\fasc}$ and $\aConstruct{\flam{x}}$, behave differently in the analytic case than they do in the synthetic case -- the difference has to do with what the generated ascription contains. Both cases can technically ``fire'' due to action subsumption. The mechanization includes a ``proof'' of determinism for all cases but these two. Resolving this ambiguity formally requires some rather inelegant machinery to exclude these particular base cases from action subsumption, so we are content to admonish implementors who apply action subsumption when another analytic rule would do. 

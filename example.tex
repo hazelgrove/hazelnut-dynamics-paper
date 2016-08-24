@@ -1,0 +1,239 @@
+% !TEX root = hazelnut-popl17.tex
+The reader is encouraged to follow along with the examples that we will discuss in this section using the implementation.
+
+%
+\subsection{Example 1: Constructing the Increment Function}
+
+Figure~\ref{fig:first-example} shows an edit sequence that constructs the increment function, of type $\tarr{\tnum}{\tnum}$, starting from the empty hole via the indicated sequence of {actions}. We will introduce Hazelnut's formal syntax and define the referenced rules in Sec. \ref{sec:hazel}. First, let us build some high-level intuitions. 
+
+%In the first task (Lines 1-9), the user constructs the identity function over numbers. In the second task (Lines 10-19), the user applies this function (assumed to be bound to a variable, $id$), to the number expression $\hnum{3}$.
+% Each of these tasks is carried out interactively, through the sequence of \emph{actions} shown in the  column labeled \textbf{Next Action}. For reference, we cite the relevant rules from Sec. \ref{sec:hazel} in the final column.
+
+% The second and third columns of the
+% table show the program as it is being constructed in two forms. The second column shows it as an \textbf{H-expression}, which is an expression that can contain \emph{holes}, delimited by $\llparenthesis$ and $\rrparenthesis$. The third column shows a corresponding \textbf{Z-expression}. Z-expressions are H-expressions with a single focus on some sub-term, delimited by $\triangleright$ and $\triangleleft$. The focus need not be on a hole.
+% on working on filling just one of the holes.
+% Each action produces a new Z-expression, but this may or may not correspond to a new H-expression (in particular, some actions only move the focus, without changing the structure of the term.)
+% to the hole in
+%focus in the Z-Expression to produce the next line, which may or may not
+%produce a substantively different H-Expression.
+
+The edit state in Hazelnut is a {Z-expression}, $\zexp$. Every Z-expression has a single {H-expression}, $\hexp$, or {H-type}, $\htau$, under the {cursor}, typeset $\zwsel{\hexp}$ or $\zwsel{\htau}$, respectively. For example, on Line 1, the empty expression hole, $\hhole{}$, is under the cursor. 
+
+Actions act relative to the cursor. The first action that we perform is $\aConstruct{\flam{x}}$, which instantiates the hole with a lambda abstraction binding the variable $x$. This results in the Z-expression on Line 2, consisting of a lambda abstraction with an arrow type ascription. The cursor is placed on the argument type hole. Type holes are typeset like empty expression holes for visual consistency. 
+
+The actions on Lines 2-4 complete the type ascription. In particular, the $\aConstruct{\fnum}$ action constructs the $\tnum$ type at the cursor and the $\aMove{\dNext}$ action moves the cursor to the next hole.
+
+
+
+\begin{figure}[t!]
+\begin{center}
+$\arraycolsep=4px
+\begin{array}{|r||l|l||l|l|}
+\hline
+\# & \textbf{Z-Expression} & 
+%\textbf{H-Expression} & 
+% \textbf{Type} & 
+\textbf{Next Action} & \textbf{Rule}
+\\
+\hline
+1 &
+\zwsel{\hhole{}} & 
+% \hhole{} &
+% \tehole 
+% &
+\aConstruct{\flam{x}} & 
+\text{(\ref{r:conelamhole})}
+\\ 2 &
+\hlam{x}{\hhole{}} : \tarr{\zwsel{\hhole{}}}{\hhole{}} & 
+% \hlam{x}{\hhole{}} : \tarr{\hhole{}}{\hhole{}} &
+% \tarr{\tehole}{\tehole} &
+\aConstruct{\fnum{}} &
+\text{(\ref{r:contnum})}
+\\ 3 &
+\hlam{x}{\hhole{}} : \tarr{\zwsel{\tnum{}}}{\hhole{}} &
+% \hlam{x}{\hhole{}} : \tarr{\tnum{}}{\hhole{}} &
+% \tarr{\tnum}{\tehole} & 
+\aMove{\dNext{}} & 
+\text{({\ref{rule:move-nextSib-arr}})}
+\\ 4 &
+\hlam{x}{\hhole{}} : \tarr{\tnum}{\zwsel{\hhole{}}}
+&
+% \text{\textquotedbl}&
+% \tarr{\tnum}{\tehole} & 
+\aConstruct{\fnum{}} & 
+\text{(\ref{r:contnum})}
+\\ 5 &
+\hlam{x}{\hhole{}} : \tarr{\tnum{}}{\zwsel{\tnum{}}} & 
+% \hlam{x}{\hhole{}} : \tarr{\tnum{}}{\tnum{}} &
+% \tarr{\tnum}{\tnum} &
+\aMove{\dParent{}} & 
+\text{(\ref{rule:move-parent-arr-right})}
+\\ 6 &
+\hlam{x}{\hhole{}} : \zwsel{\tarr{\tnum{}}{\tnum{}}}
+&
+% \text{\textquotedbl}&
+% \tarr{\tnum}{\tnum} & 
+\aMove{\dParent{}} & 
+\text{(\ref{rule:move-parent-asc-right})}
+\\ 7 & 
+\zwsel{\hlam{x}{\hhole{}} : \tarr{\tnum}{\tnum}} & 
+\aMove{\dChild} & 
+\text{(\ref{r:movefirstchild})}
+\\ 8 &
+% &
+\zwsel{\hlam{x}{\hhole{}}} : \tarr{\tnum{}}{\tnum{}} & 
+% \tarr{\tnum}{\tnum} &
+% &
+\aMove{\dChild{}} & 
+\text{(\ref{r:movefirstchild-lam})}
+\\ 9 &
+% &
+\hlam{x}{\zwsel{\hhole{}}} : \tarr{\tnum{}}{\tnum{}} &
+% \tarr{\tnum}{\tnum} & 
+\aConstruct{\fvar{x}} & 
+\text{(\ref{r:conevar})}
+\\ 10 &
+% \hlam{x}{{x}} : \tarr{\tnum{}}{\tnum{}}
+% &
+\hlam{x}{\zwsel{{x}}} : \tarr{\tnum{}}{\tnum{}} &
+% \tarr{\tnum}{\tnum} & 
+{\aConstruct{\fplus}}
+&
+\text{(\ref{rule:construct-plus-compat})}
+\\ 11 & 
+\hlam{x}{\hadd{x}{\zwsel{\hhole{}}}} : \tarr{\tnum{}}{\tnum{}} & 
+\aConstruct{\fnumlit{1}} & 
+\text{(\ref{r:conenumnum})}
+\\ 12 & 
+\hlam{x}{\hadd{x}{\zwsel{\hnum{1}}}} : \tarr{\tnum}{\tnum} & 
+\textrm{---} & 
+{\textrm{---}}
+\\ \hline
+\end{array}
+$\end{center}\vspace{-6px}
+\caption{Constructing an increment function in Hazelnut.}
+\label{fig:first-example}
+\end{figure}
+
+The actions on Lines 5-8 move the cursor to the function body. For simplicity, Hazelnut defines only a small collection of primitive movement actions. In practice, an editor would also define compound movement actions, e.g. an action that moves the cursor directly to the next remaining hole, in terms of these primitive movement actions.
+
+Lines 9-11 complete the function body by first constructing the variable $x$, then  constructing the plus form, and finally constructing the number $\hnum{1}$. Notice that we did not need to construct the function body in an ``outside-in'' manner, i.e. we constructed $x$ before constructing the outer plus form. Luckily, the transient function bodies, $x$ and $x + \hhole{}$, could be checked against type $\tnum$ (as we will detail in Sec. \ref{sec:holes}.)
+
+\subsection{Example 2: Applying the Increment Function}
+
+\begin{figure}[t!]
+\begin{center}
+\colorbox{light-gray}{\hspace{53px} now assume $incr : \tarr{\tnum}{\tnum}$ \hspace{54px}}
+% \vspace{-6px}
+$\arraycolsep=4px
+\begin{array}{|r||l|l||l|l|}
+% \\
+\hline
+\# & \textbf{Z-Expression} & 
+%\textbf{H-Expression} & 
+% \textbf{Type} & 
+\textbf{Next Action} & \textbf{Rule}
+\\
+\hline
+13 &
+\zwsel{\hhole{}} & 
+% \hhole{} &
+% \tehole 
+% &
+\aConstruct{\fvar{incr}} \hphantom{~\,\,~~}& 
+\text{(\ref{r:conevar})}
+\\ 14 & 
+\zwsel{incr} & 
+\aConstruct{\fap} & 
+\text{(\ref{r:coneapfn})}
+\\ 15 & 
+incr(\zwsel{\hhole{}}) & 
+\aConstruct{\fvar{incr}} & 
+\text{(\ref{r:conevar2})}
+\\ 16 & 
+incr(\hhole{\zwsel{incr}}) & 
+\aConstruct{\fap} & 
+\text{(\ref{r:coneapfn})}
+\\ 17 & 
+incr(\hhole{incr(\zwsel{\hhole{}})}) \hphantom{~~~~} & 
+\aConstruct{\fnumlit{3}} & 
+\text{(\ref{r:conenumnum})}
+\\ 18 & 
+incr(\hhole{incr(\zwsel{\hnum{3}})}) & 
+\aMove{\dParent}& 
+\text{(\ref{r:moveparent-ap2})}
+\\ 19 & 
+incr(\hhole{\zwsel{incr(\hnum{3})}}) & 
+\aMove{\dParent} & 
+\text{(\ref{r:moveparent-hole})}
+\\ 20 &
+incr(\zwsel{\hhole{incr(\hnum{3})}})& 
+\aFinish & 
+\text{(\ref{r:finishana})}
+\\ 21 & 
+incr(\zwsel{incr(\hnum{3})}) & 
+\textrm{---} & 
+{\textrm{---}}
+\\ \hline
+\end{array}
+$\end{center}\vspace{-6px}
+\caption{Appyling the increment function.}
+\label{fig:second-example}
+\end{figure}
+
+Figure \ref{fig:second-example} shows an edit sequence that constructs the expression $incr(incr(\hnum{3}))$, where $incr$ is assumed bound to the increment function from Figure \ref{fig:first-example}.
+
+We begin on Line 13 by constructing the variable $incr$. Line 14 then constructs the application form with $incr$ in function position, leaving the cursor on a hole in the argument position. Notice that we did not need to construct the outer application form before identifying the function being applied. Again, the transient edit state happens to be well-typed, so we needed to make no special allowances for this order of actions.
+
+We now need to apply $incr$ again, so we perform the same action on Line 15 as we did on Line 13, i.e. $\aConstruct{\fvar{incr}}$. In a syntactic structure editor, performing such an action would result in the following edit state: 
+\[
+incr(\zwsel{incr})
+\]
+This edit state is ill-typed (after \emph{cursor erasure}): the argument of $incr$ must be of type $\tnum$ but here it is of type $\tarr{\tnum}{\tnum}$. Hazelnut cannot allow such an edit state to arise. 
+
+The programmer could alternatively have performed the $\aConstruct{\fap}$ action on Line 15. This would result in the following edit state, which is well-typed according to the static semantics that we will define in the next section:
+\[
+incr(\hhole{}(\zwsel{\hhole{}}))
+\]
+The problem is that the programmer is not able to identify the intended function before constructing the function application form. This stands in contrast to Lines 13-14. % This is qualitatively unnatural.
+
+Hazelnut's action semantics addresses this problem: rather than disallowing the $\aConstruct{\fvar{incr}}$ action on Line 15, it leaves $incr$ inside a hole:
+\[
+incr(\hhole{\zwsel{incr}})
+\]
+This defers the type consistency check, exactly as an empty hole in the same position does. One way to think about non-empty holes is as an internalization of the ``squiggly underline'' that text or syntactic structure editors display to indicate a type inconsistency. By internalizing this concept, the presence of a type inconsistency does not leave the entire program formally meaningless.
+
+The expression inside a non-empty hole must itself be well-typed, so the programmer can continue to edit it. Lines 16-17 proceed to apply the inner mention of $incr$ to a number literal, $\hnum{3}$. Finally, Lines 18-19 move the cursor to the non-empty hole and Line 20 performs the $\aFinish$ action. The $\aFinish$ action removes the hole if the type of the expression inside the hole is consistent with the expected type, as it now is. This results in the final edit state on Line 20, as desired. In practice, the editor might automatically perform the $\aFinish$ action as soon as it becomes possible, but for simplicity, Hazelnut formally requires that it be performed explicitly.
+
+% So far, editing has proceeded in an essentially type-directed, outside-in fashion -- the user first specified the type of the function, then produced a body of that type by the action on Line 8. Lines 10-12 similarly begin in a type-directed manner with the user giving an explicit type ascription, indicating that the expression that they are constructing will have type $\tnum$. 
+
+% However, on Line 13, the user performs the $\aConstruct{\fvar{id}}$ action. Notice that $id$ has type $\tarr{\tnum}{\tnum}$, which is not consistent with the type $\tnum$ given in the ascription. Na\"ively, this would produce a type error, leaving the program in a well-formed but semantically undefined state. One way to avoid this state is to simply not make this action available in the program configuration on Line 12. This is inflexible, forcing an outside-in approach to program construction (i.e. the user would need to construct the function application form before constructing the variable $id$.) Instead, Hazelnut permits this action, but places the variable $id$ inside a hole. This defers the consistency check that would normally occur: a hole can be checked against any type, as long as its contents have some type. The cursor is placed inside the hole. The user then proceeds to apply $id$ to the number expression $\hnum{3}$. At this point, the expression inside the hole has a type consistent with the ascription, so the user can \emph{finish} the hole. In our simple formalism, this requires moving the cursor to the hole (in practice, the system might find the nearest parent of hole form.) The result is the complete, well-typed program shown on Line 19 (notice that \emph{complete} is distinct from \emph{closed} -- the variable $id$ is free on Line 19, so this is not a closed program.)
+
+%% The third column~(\textbf{Next Action}) lists the first user action:
+%% Constructing a lambda abstraction using variable~$x$.
+%% %
+%% The final column~(\textbf{Semantics}) indicates the semantic rule for this
+%% action, Rule (\ref{r:conelamhole}), which gives general semantics for
+%% introducing lambda terms into holes.
+%% %
+%% In Section~\ref{sec:hazel}, we list this rule, and the other rules used in
+%% this final column. In total, these rules give a formal semantics to the
+%% user actions, which relate each line's Z-Expression to the Z-Expression on
+%% the subsequent line.
+
+%% In addition to introducing the lambda term, and its variable, the
+%% first user action~$\aConstruct{\flam{x}}$ also introduces a type
+%% ascription for this function, as an arrow type, with holes for the
+%% type of its domain and codomain.
+%% %
+%% The actions for Lines~2--5 consist of the user filling these holes
+%% with the basetype $\tnum{}$.
+%% %
+%% To do so, the user constructs the type constructor twice (Lines 2 and
+%% 4), and navigates between the holes with a move action (Line~3).
+%% %
+%% Generally, the move action~$\dNext$ moves the focus from one
+%% sub-structure to the next sibling sub-structure of the (common) parent
+%% structure; in this case, it moves from the domain type of the arrow
+%% type to the codomain of the arrow type.
+%% %
