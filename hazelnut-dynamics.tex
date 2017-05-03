@@ -26,6 +26,11 @@
 \usepackage{enumitem}
 \usepackage{bbm}
 
+%% Joshua Dunfield macros
+\def\OPTIONConf{1}%
+\usepackage{joshuadunfield}
+
+
 % \newtheorem{theorem}{Theorem}[chapter]
 % \newtheorem{lemma}[theorem]{Lemma}
 % \newtheorem{corollary}[theorem]{Corollary}
@@ -199,11 +204,7 @@
 %% environment and commands, and keywords command.
 \maketitle
 
-\newcommand{\introSec}{Introduction}
-\section{\protect\introSec}
-\label{sec:intro}
-\todo{intro}
-
-\begin{figure}
+\input{intro}
+\input{calculus}
 
 \end{document}

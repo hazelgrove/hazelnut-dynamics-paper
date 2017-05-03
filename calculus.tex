@@ -1,0 +1,49 @@
+% !TEX root = hazelnut-dynamics.tex
+
+\clearpage
+\newcommand{\calculusSec}{Hazelnut Live, Formally}
+\section{\protect\calculusSec}
+\label{sec:calculus}
+\todo{exposition}
+\todo{add sums and products}
+
+\begin{figure}[h]
+...
+\caption{Syntax of H-expressions and H-types.}
+\end{figure}
+
+\begin{figure}[h]
+\judgbox{\tconsistent{\htau_1}{\htau_2}}{$\htau_1$ is consistent with $\htau_2$}
+...
+
+\judgbox{\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}}{$\htau$ has matched arrow type $\tarr{\htau_1}{\htau_2}$}
+...
+\caption{Type consistency and matched types.}
+\end{figure}
+
+\begin{figure}[h]
+\judgbox{\expandSyn{\hGamma}{\hexp}{M}{\htau}{\Delta}}{ }
+...
+
+\judgbox{\expandAna{\hGamma}{\hexp}{M}{\htau}{\Delta}}{ }
+...
+\caption{Bidirectionally Typed Expansion}
+\end{figure}
+
+\begin{figure}[h!]
+\judgbox{\hasType{\hGamma}{M}{\htau}{\Delta}}{$M$ has type $\htau$ with holes $\Delta$}
+...
+\caption{Declarative Statics}
+\end{figure}
+
+\begin{figure}[h!]
+\judgbox{\isValue{M}}{$M$ is a value}
+...
+
+\judgbox{\isIndet{M}}{$M$ is indeterminate}
+...
+
+\judgbox{\stepsTo{M}{N}}{$M$ steps to $N$}
+...
+\caption{Structural Dynamics}
+\end{figure}

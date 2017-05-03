@@ -1,4 +1,4 @@
-% !TEX root = hazelnut-popl17.tex
+% !TEX root = hazelnut-dynamics.tex
 
 % Violet hotdogs; highlight color helps distinguish them
 \newcommand{\llparenthesiscolor}{\textcolor{violet}{\llparenthesis}}
@@ -16,8 +16,8 @@
 \newcommand{\tehole}{\llparenthesiscolor\rrparenthesiscolor}
 \newcommand{\tsum}[2]{{#1} + {#2}}
 
-\newcommand{\tcompat}[2]{#1 \sim #2}
-\newcommand{\tincompat}[2]{#1 \nsim #2}
+\newcommand{\tconsistent}[2]{#1 \sim #2}
+\newcommand{\tinconsistent}[2]{#1 \nsim #2}
 
 % HExp
 \newcommand{\hexp}{\dot{e}}
@@ -122,3 +122,11 @@
 \newcommand{\TABperformDel}[2]{#1 \xlongrightarrow{\aDel} #2}
 
 \newcommand{\sumhasmatched}[2]{#1 \mathrel{\textcolor{black}{\blacktriangleright_{+}}} #2}
+
+%%%% DYNAMICS %%%%
+\newcommand{\expandAna}[5]{#1 \vdash #2 \leadsto #3 \Leftarrow #4 \dashv #5}
+\newcommand{\expandSyn}[5]{#1 \vdash #2 \leadsto #3 \Rightarrow #4 \dashv #5}
+\newcommand{\hasType}[4]{#1 \vdash #2 : #3 \dashv #4}
+\newcommand{\isValue}[1]{#1~\mathsf{val}}
+\newcommand{\isIndet}[1]{#1~\mathsf{indet}}
+\newcommand{\stepsTo}[2]{#1 \mapsto #2}
