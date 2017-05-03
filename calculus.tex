@@ -19,9 +19,18 @@ $\arraycolsep=4pt\begin{array}{lllllll}
   \hap{\hexp}{\hexp} ~\vert~
   \hnum{n} ~\vert~
   \hadd{\hexp}{\hexp} ~\vert~
-  \hexp : \htau ~\vert~
   \hehole ~\vert~
-  \hhole{\hexp}\\
+  \hhole{\hexp} ~\vert~
+  \hexp : \htau\\
+ \mathsf{DHExp} & \dhexp  & ::= &
+  x ~\vert~
+  {\hlam{x}{\dhexp}} ~\vert~
+  \hap{\dhexp}{\dhexp} ~\vert~
+  \hnum{n} ~\vert~
+  \hadd{\dhexp}{\dhexp} ~\vert~
+  \hehole ~\vert~
+  \hhole{\dhexp}\\
+
 \end{array}$
 \caption{Syntax of H-types and H-expressions.}
 \label{fig:HTyp}
@@ -67,10 +76,10 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 \end{figure}
 
 \begin{figure}[h]
-\judgbox{\expandSyn{\hGamma}{\hexp}{M}{\htau}{\Delta}}{ }
+\judgbox{\expandSyn{\hGamma}{\hexp}{\dhexp}{\htau}{\Delta}}{ }
 ...
 
-\judgbox{\expandAna{\hGamma}{\hexp}{M}{\htau}{\Delta}}{ }
+\judgbox{\expandAna{\hGamma}{\hexp}{\dhexp}{\htau}{\Delta}}{ }
 ...
 \caption{Bidirectionally Typed Expansion}
 \label{fig:expandSyn}
@@ -78,20 +87,20 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 \end{figure}
 
 \begin{figure}[h!]
-\judgbox{\hasType{\hGamma}{M}{\htau}{\Delta}}{$M$ has type $\htau$ with holes $\Delta$}
+\judgbox{\hasType{\hGamma}{\dhexp}{\htau}{\Delta}}{$\dhexp$ has type $\htau$ with holes $\Delta$}
 ...
 \caption{Declarative Statics}
 \label{fig:hasType}
 \end{figure}
 
 \begin{figure}[h!]
-\judgbox{\isValue{M}}{$M$ is a value}
+\judgbox{\isValue{\dhexp}}{$\dhexp$ is a value}
 ...
 
-\judgbox{\isIndet{M}}{$M$ is indeterminate}
+\judgbox{\isIndet{\dhexp}}{$\dhexp$ is indeterminate}
 ...
 
-\judgbox{\stepsTo{M}{N}}{$M$ steps to $N$}
+\judgbox{\stepsTo{\dhexp}{\dhexp'}}{$\dhexp$ steps to $\dhexp'$}
 ...
 \caption{Structural Dynamics}
 \label{fig:isValue}
