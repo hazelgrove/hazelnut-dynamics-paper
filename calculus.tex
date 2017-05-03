@@ -8,17 +8,62 @@
 \todo{add sums and products}
 
 \begin{figure}[h]
-...
-\caption{Syntax of H-expressions and H-types.}
+$\arraycolsep=4pt\begin{array}{lllllll}
+\mathsf{HTyp} & \htau & ::= &
+  \tarr{\htau}{\htau} ~\vert~
+  \tnum ~\vert~
+  \tehole\\
+\mathsf{HExp} & \hexp & ::= &
+  x ~\vert~
+  {\hlam{x}{\hexp}} ~\vert~
+  \hap{\hexp}{\hexp} ~\vert~
+  \hnum{n} ~\vert~
+  \hadd{\hexp}{\hexp} ~\vert~
+  \hexp : \htau ~\vert~
+  \hehole ~\vert~
+  \hhole{\hexp}\\
+\end{array}$
+\caption{Syntax of H-types and H-expressions.}
+\label{fig:HTyp}
+\label{fig:HExp}
 \end{figure}
 
 \begin{figure}[h]
 \judgbox{\tconsistent{\htau_1}{\htau_2}}{$\htau_1$ is consistent with $\htau_2$}
-...
+\begin{mathpar}
+\inferrule{ }{
+  \tconsistent{\tehole}{\htau}
+}
+
+\inferrule{ }{
+  \tconsistent{\htau}{\tehole}
+}
+
+\inferrule{ }{
+  \tconsistent{\htau}{\htau}
+}
+
+\inferrule{
+  \tconsistent{\htau_1}{\htau_1'}\\
+  \tconsistent{\htau_2}{\htau_2'}
+}{
+  \tconsistent{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}
+}
+\end{mathpar}
 
 \judgbox{\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}}{$\htau$ has matched arrow type $\tarr{\htau_1}{\htau_2}$}
-...
+\begin{mathpar}
+\inferrule{ }{
+  \arrmatch{\tehole}{\tarr{\tehole}{\tehole}}
+}
+
+\inferrule{ }{
+  \arrmatch{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1}{\htau_2}}
+}
+\end{mathpar}
 \caption{Type consistency and matched types.}
+\label{fig:tconsistent}
+\label{fig:arrmatch}
 \end{figure}
 
 \begin{figure}[h]
@@ -28,12 +73,15 @@
 \judgbox{\expandAna{\hGamma}{\hexp}{M}{\htau}{\Delta}}{ }
 ...
 \caption{Bidirectionally Typed Expansion}
+\label{fig:expandSyn}
+\label{fig:expandAna}
 \end{figure}
 
 \begin{figure}[h!]
 \judgbox{\hasType{\hGamma}{M}{\htau}{\Delta}}{$M$ has type $\htau$ with holes $\Delta$}
 ...
 \caption{Declarative Statics}
+\label{fig:hasType}
 \end{figure}
 
 \begin{figure}[h!]
@@ -46,4 +94,7 @@
 \judgbox{\stepsTo{M}{N}}{$M$ steps to $N$}
 ...
 \caption{Structural Dynamics}
+\label{fig:isValue}
+\label{fig:isIndet}
+\label{fig:stepsTo}
 \end{figure}
