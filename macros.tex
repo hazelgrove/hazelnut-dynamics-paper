@@ -124,9 +124,25 @@
 \newcommand{\sumhasmatched}[2]{#1 \mathrel{\textcolor{black}{\blacktriangleright_{+}}} #2}
 
 %%%% DYNAMICS %%%%
+\newcommand{\dexp}[0]{\ddot{e}}
+\newcommand{\dval}[0]{\ddot{v}}
+\newcommand{\dcast}[2]{\left(#1 \hookrightarrow #2\right)}
+\newcommand{\dlam}[2]{\lambda #1.#2}
+\newcommand{\dap}[2]{#1(#2)}
+\newcommand{\dapP}[2]{(#1)~(#2)} % Extra paren around function term
+\newcommand{\dnum}[1]{\underline{#1}}
+\newcommand{\dadd}[2]{#1 + #2}
+\newcommand{\dehole}{\llparenthesiscolor\rrparenthesiscolor}
+\newcommand{\dhole}[1]{\llparenthesiscolor#1\rrparenthesiscolor}
+\newcommand{\dindet}[1]{\lceil#1\rceil}
+\newcommand{\dinj}[2]{\texttt{inj}_{#1}({#2})}
+\newcommand{\dcase}[5]{\texttt{case}({#1},{#2}.{#3},{#4}.{#5})}
+
 \newcommand{\expandAna}[5]{#1 \vdash #2 \leadsto #3 \Leftarrow #4 \dashv #5}
 \newcommand{\expandSyn}[5]{#1 \vdash #2 \leadsto #3 \Rightarrow #4 \dashv #5}
 \newcommand{\hasType}[4]{#1 \vdash #2 : #3 \dashv #4}
 \newcommand{\isValue}[1]{#1~\mathsf{val}}
 \newcommand{\isIndet}[1]{#1~\mathsf{indet}}
+\newcommand{\isFinal}[1]{#1~\mathsf{final}}
+\newcommand{\isErr}[1]{#1~\mathsf{err}}
 \newcommand{\stepsTo}[2]{#1 \mapsto #2}
