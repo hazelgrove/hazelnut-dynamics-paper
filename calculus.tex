@@ -53,11 +53,11 @@
 \begin{mathpar}
 \Infer{i-ehole}
 { }
-{\isIndet{\dehole}}
+{\isIndet{\dehole{\mvar}{\subst}}}
 \and
 \Infer{i-hole}
 {\isFinal{\dexp}}
-{\isIndet{\dhole{\dexp}}}
+{\isIndet{\dhole{\dexp}{\mvar}{\subst}}}
 \\
 \Infer{i-add$_1$}
 {\isIndet{\dexp_1} \\ \isFinal{\dexp_2}}
@@ -116,7 +116,7 @@
 \begin{mathpar}
 \Infer{s-hole}
 {\stepsTo{\dexp_1}{\dexp_2} }
-{\stepsTo{\dhole{\dexp_1}}{\dhole{\dexp_2}}}
+{\stepsTo{\dhole{\dexp_1}{\mvar}{\subst}}{\dhole{\dexp_2}{\mvar}{\subst}}}
 \and
 \Infer{s-cast}
 % XXX use macro type assignment judgement here
