@@ -40,7 +40,7 @@
 \judgbox{\isValue{\dexp}}{$\dexp$ is a value}
 \begin{mathpar}
 \Infer{v-lam}
-{ }{\isValue{\hlam{\dexp}}}
+{ }{\isValue{\hlam{x}{\dexp}}}
 \and
 \Infer{v-num}
 { }{\isValue{\hnum{n}}}
@@ -60,11 +60,11 @@
 {\isIndet{\dhole{\dexp}}}
 \\
 \Infer{i-add$_1$}
-{\isIndet{\dexp_1}}
+{\isIndet{\dexp_1} \\ \isFinal{\dexp_2}}
 {\isIndet{\dadd{\dexp_1}{\dexp_2}}}
 \and
 \Infer{i-add$_2$}
-{\isIndet{\dexp_2}}
+{\isFinal{\dexp_1} \\ \isIndet{\dexp_2}}
 {\isIndet{\dadd{\dexp_1}{\dexp_2}}}
 \and
 \Infer{i-app}
@@ -100,7 +100,7 @@
 {\isErr{\dcase{\dexp}{x}{\dexp_x}{y}{\dexp_y}}}
 \end{mathpar}
 
-\judgbox{\isValue{\dexp}}{$\dexp$ is final}
+\judgbox{\isValue{\dexp}}{$\dexp$ is a value}
 \begin{mathpar}
 \Infer{f-val}
 {\isValue{\dexp}}{\isFinal{\dexp}}
