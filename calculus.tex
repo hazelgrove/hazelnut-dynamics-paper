@@ -37,6 +37,45 @@
 \end{figure}
 
 \begin{figure}[h!]
+\judgbox{[\dexp_1 / x] \dexp_2 = \dexp_3}{Substitution}
+\[
+\begin{array}{lcl}
+[\dexp_1 / x] \dehole{\mvar}{\subst}
+&=&
+\dehole{\mvar}{[\dexp_1 / x] \cdot \subst}
+\\
+{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}}
+&=& 
+\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}
+\\
+{[\dexp_1 / x] \dlam{y}{\dexp_2}}
+&=&
+{\dlam{y}{[\dexp_1 / x] \dexp_2}}
+\\
+{[\dexp_1 / x] \dapP{e_2}{e_3}}
+&=&
+{\dapP{[\dexp_1 / x] e_2}{[\dexp_1 / x] e_3}}
+\\
+{[\dexp_1 / x] \dinj{i}{e_2}}
+&=&
+{\dinj{i}{[\dexp_1 / x] e_2}}
+\\
+{[\dexp_1 / x] \dcase{e}{x}{e_x}{y}{e_y}}
+&=&
+{\dcase{[\dexp_1 / x]e}{x}{[\dexp_1 / x]e_x}{y}{[\dexp_1 / x]e_y}}
+\\
+{[\dexp_1 / x] \dnum{n}}
+&=&
+{\dnum{n}}
+\\
+{[\dexp_1 / x] \dadd{e_2}{e_3}}
+&=&
+{\dadd{[\dexp_1 / x] e_2}{[\dexp_1 / x] e_3}}
+\end{array}
+\]
+\end{figure}
+
+\begin{figure}
 \judgbox{\isValue{\dexp}}{$\dexp$ is a value}
 \begin{mathpar}
 \Infer{v-lam}
