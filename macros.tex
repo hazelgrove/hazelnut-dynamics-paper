@@ -12,6 +12,7 @@
 % HTyp
 \newcommand{\htau}{\dot{\tau}}
 \newcommand{\tarr}[2]{#1 \rightarrow #2}
+\newcommand{\tprod}[2]{#1 \times #2}
 \newcommand{\tnum}{\texttt{num}}
 \newcommand{\tehole}{\llparenthesiscolor\rrparenthesiscolor}
 \newcommand{\tsum}[2]{{#1} + {#2}}
@@ -22,13 +23,16 @@
 % HExp
 \newcommand{\hexp}{\dot{e}}
 \newcommand{\hlam}[2]{\lambda #1.#2}
+\newcommand{\halam}[3]{\lambda #1{:}#2.#3}
 \newcommand{\hap}[2]{#1(#2)}
 \newcommand{\hapP}[2]{(#1)~(#2)} % Extra paren around function term
+\newcommand{\hpair}[2]{(#1, #2)}
+\newcommand{\hprj}[2]{\mathsf{prj}_{#1}(#2)}
 \newcommand{\hnum}[1]{\underline{#1}}
 \newcommand{\hadd}[2]{#1 + #2}
-\newcommand{\hehole}{\llparenthesiscolor\rrparenthesiscolor}
+\newcommand{\hehole}[1]{\llparenthesiscolor\rrparenthesiscolor^{#1}}
 % \newcommand{\hhole}[1]{\setlength{\fboxsep}{0pt}\fcolorbox{red}{white}{\vphantom{)}$#1$}}
-\newcommand{\hhole}[1]{\llparenthesiscolor#1\rrparenthesiscolor}
+\newcommand{\hhole}[2]{\llparenthesiscolor#1\rrparenthesiscolor^{#2}}
 % \newcommand{\hhole}[1]{
   % \setlength{\fboxsep}{0pt}
   % \colorbox{violet!10!white!100}{\ensuremath{\llparenthesiscolor#1\rrparenthesiscolor}}}
@@ -124,7 +128,7 @@
 \newcommand{\sumhasmatched}[2]{#1 \mathrel{\textcolor{black}{\blacktriangleright_{+}}} #2}
 
 %%%% DYNAMICS %%%%
-\newcommand{\mvar}[0]{\mu}
+\newcommand{\mvar}[0]{u}
 \newcommand{\subst}[0]{\sigma}
 \newcommand{\dexp}[0]{\ddot{e}}
 \newcommand{\dval}[0]{\ddot{v}}

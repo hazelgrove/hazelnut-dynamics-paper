@@ -5,31 +5,41 @@
 \section{\protect\calculusSec}
 \label{sec:calculus}
 \todo{exposition}
-\todo{add sums and products}
 
 \begin{figure}[h]
 $\arraycolsep=4pt\begin{array}{lllllll}
 \mathsf{HTyp} & \htau & ::= &
   \tarr{\htau}{\htau} ~\vert~
+  \tprod{\htau}{\htau} ~\vert~
+  \tsum{\htau}{\htau} ~\vert~
   \tnum ~\vert~
   \tehole\\
 \mathsf{HExp} & \hexp & ::= &
   x ~\vert~
-  {\hlam{x}{\hexp}} ~\vert~
+  \halam{x}{\htau}{\hexp} ~\vert~
   \hap{\hexp}{\hexp} ~\vert~
+  \hpair{\hexp}{\hexp} ~\vert~
+  \hprj{i}{\hexp} ~\vert~
+  \hinj{i}{\hexp} ~\vert~
+  \hcase{\hexp}{x}{\hexp}{x}{\hexp} ~\vert~
   \hnum{n} ~\vert~
   \hadd{\hexp}{\hexp} ~\vert~
-  \hehole ~\vert~
-  \hhole{\hexp} ~\vert~
+  \hehole{u} ~\vert~
+  \hhole{\hexp}{u} ~\vert~
+  {\hlam{x}{\hexp}} ~\vert~
   \hexp : \htau\\
- \mathsf{DHExp} & \dhexp  & ::= &
+ \mathsf{DHExp} & \dexp  & ::= &
   x ~\vert~
-  {\hlam{x}{\dhexp}} ~\vert~
-  \hap{\dhexp}{\dhexp} ~\vert~
+  {\halam{x}{\htau}{\dexp}} ~\vert~
+  \hap{\dexp}{\dexp} ~\vert~
+  \hpair{\dexp}{\dexp} ~\vert~
+  \hprj{i}{\dexp} ~\vert~
+  \hinj{i}{\dexp} ~\vert~
+  \hcase{\dexp}{x}{\dexp}{x}{\dexp} ~\vert~
   \hnum{n} ~\vert~
-  \hadd{\dhexp}{\dhexp} ~\vert~
-  \hehole ~\vert~
-  \hhole{\dhexp}\\
+  \hadd{\dexp}{\dexp} ~\vert~
+  \dehole{\mvar}{\subst} ~\vert~
+  \dhole{\dexp}{\mvar}{\subst}\\
 
 \end{array}$
 \caption{Syntax of H-types and H-expressions}
@@ -76,7 +86,7 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 \end{figure}
 
 \begin{figure}[h]
-\judgbox{\expandSyn{\hGamma}{\hexp}{\dhexp}{\htau}{\Delta}}{ }
+\judgbox{\expandSyn{\hGamma}{\hexp}{\dexp}{\htau}{\Delta}}{ }
 \begin{mathpar}
 (var)
 
@@ -93,7 +103,7 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 (asc)
 \end{mathpar}
 
-\judgbox{\expandAna{\hGamma}{\hexp}{\dhexp}{\htau}{\Delta}}{ }
+\judgbox{\expandAna{\hGamma}{\hexp}{\dexp}{\htau}{\Delta}}{ }
 \begin{mathpar}
 (lam)
 
@@ -105,7 +115,7 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 \end{figure}
 
 \begin{figure}[h!]
-\judgbox{\hasType{\hGamma}{\dhexp}{\htau}{\Delta}}{$\dhexp$ has type $\htau$ with holes $\Delta$}
+\judgbox{\hasType{\hGamma}{\dexp}{\htau}{\Delta}}{$\dexp$ has type $\htau$ with holes $\Delta$}
 \begin{mathpar}
 \inferrule[decl-var]{
 	\tconsistent{\htau}{\htau'}
@@ -116,7 +126,7 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 \inferrule[decl-abs]{
 	a
 }{
-	\hasType{\hGamma}{\hlam{x}{\dhexp}}{\htau}{\Delta}
+	\hasType{\hGamma}{\hlam{x}{\dexp}}{\htau}{\Delta}
 }
 (ap)
 
@@ -296,7 +306,6 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 { }
 {\stepsTo{\dcase{\dinj{2}{\dexp}}{x}{\dexp_x}{y}{\dexp_y}}{ [\dexp/y]\dexp_y }}
 \end{mathpar}
->>>>>>> ec645cb14354727d178641867cdf5bd2764c2c74
 \caption{Structural Dynamics}
 \label{fig:isValue}
 \label{fig:isIndet}
