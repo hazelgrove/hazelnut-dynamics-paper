@@ -133,14 +133,170 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 \end{figure}
 
 \begin{figure}[h!]
-\judgbox{\isValue{\dhexp}}{$\dhexp$ is a value}
-...
+\judgbox{[\dexp_1 / x] \dexp_2 = \dexp_3}{Substitution}
+\[
+\begin{array}{lcl}
+[\dexp_1 / x] \dehole{\mvar}{\subst}
+&=&
+\dehole{\mvar}{[\dexp_1 / x] \cdot \subst}
+\\
+{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}}
+&=& 
+\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}
+\\
+{[\dexp_1 / x] \dlam{y}{\dexp_2}}
+&=&
+{\dlam{y}{[\dexp_1 / x] \dexp_2}}
+\\
+{[\dexp_1 / x] \dapP{e_2}{e_3}}
+&=&
+{\dapP{[\dexp_1 / x] e_2}{[\dexp_1 / x] e_3}}
+\\
+{[\dexp_1 / x] \dinj{i}{e_2}}
+&=&
+{\dinj{i}{[\dexp_1 / x] e_2}}
+\\
+{[\dexp_1 / x] \dcase{e}{x}{e_x}{y}{e_y}}
+&=&
+{\dcase{[\dexp_1 / x]e}{x}{[\dexp_1 / x]e_x}{y}{[\dexp_1 / x]e_y}}
+\\
+{[\dexp_1 / x] \dnum{n}}
+&=&
+{\dnum{n}}
+\\
+{[\dexp_1 / x] \dadd{e_2}{e_3}}
+&=&
+{\dadd{[\dexp_1 / x] e_2}{[\dexp_1 / x] e_3}}
+\end{array}
+\]
+\end{figure}
 
-\judgbox{\isIndet{\dhexp}}{$\dhexp$ is indeterminate}
-...
+\begin{figure}
+\judgbox{\isValue{\dexp}}{$\dexp$ is a value}
+\begin{mathpar}
+\Infer{v-lam}
+{ }{\isValue{\hlam{x}{\dexp}}}
+\and
+\Infer{v-num}
+{ }{\isValue{\hnum{n}}}
+\and
+\Infer{v-inj}
+{\isValue{\dexp}}{\isValue{\hinj{i}{\dexp}}}
+\end{mathpar}
 
-\judgbox{\stepsTo{\dhexp}{\dhexp'}}{$\dhexp$ steps to $\dhexp'$}
-...
+\judgbox{\isIndet{\dexp}}{$\dexp$ is indeterminate}
+\begin{mathpar}
+\Infer{i-ehole}
+{ }
+{\isIndet{\dehole{\mvar}{\subst}}}
+\and
+\Infer{i-hole}
+{\isFinal{\dexp}}
+{\isIndet{\dhole{\dexp}{\mvar}{\subst}}}
+\\
+\Infer{i-add$_1$}
+{\isIndet{\dexp_1} \\ \isFinal{\dexp_2}}
+{\isIndet{\dadd{\dexp_1}{\dexp_2}}}
+\and
+\Infer{i-add$_2$}
+{\isFinal{\dexp_1} \\ \isIndet{\dexp_2}}
+{\isIndet{\dadd{\dexp_1}{\dexp_2}}}
+\and
+\Infer{i-app}
+{\isIndet{\dexp_1}}
+{\isIndet{\dap{\dexp_1}{\dexp_2}}}
+\and
+\Infer{i-case}
+{\isIndet{\dexp}}
+{\isIndet{\dcase{\dexp}{x}{\dexp_x}{y}{\dexp_y}}}
+\end{mathpar}
+
+\judgbox{\isErr{\dexp}}{$\dexp$ is error}
+\begin{mathpar}
+\Infer{e-cast}
+% XXX use macro type assignment judgement here
+{ \vdash e : \htau_2 \\ \tinconsistent{\htau_1}{\htau_2}}
+{\isErr{\dcast{\dexp}{\htau_1}}}
+\and
+\Infer{e-add$_1$}
+{\isErr{\dexp_1}}
+{\isErr{\dadd{\dexp_1}{\dexp_2}}}
+\and
+\Infer{e-add$_2$}
+{\isErr{\dexp_2}}
+{\isErr{\dadd{\dexp_1}{\dexp_2}}}
+\and
+\Infer{e-app}
+{\isErr{\dexp_1}}
+{\isErr{\dap{\dexp_1}{\dexp_2}}}
+\and
+\Infer{e-case}
+{\isErr{\dexp}}
+{\isErr{\dcase{\dexp}{x}{\dexp_x}{y}{\dexp_y}}}
+\end{mathpar}
+
+\judgbox{\isValue{\dexp}}{$\dexp$ is a value}
+\begin{mathpar}
+\Infer{f-val}
+{\isValue{\dexp}}{\isFinal{\dexp}}
+\and
+\Infer{f-indet}
+{\isIndet{\dexp}}{\isFinal{\dexp}}
+\and
+\Infer{f-err}
+{\isErr{\dexp}}{\isFinal{\dexp}}
+\end{mathpar}
+
+\judgbox{\stepsTo{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
+\begin{mathpar}
+\Infer{s-hole}
+{\stepsTo{\dexp_1}{\dexp_2} }
+{\stepsTo{\dhole{\dexp_1}{\mvar}{\subst}}{\dhole{\dexp_2}{\mvar}{\subst}}}
+\and
+\Infer{s-cast}
+% XXX use macro type assignment judgement here
+{ \vdash e : \htau_2 \\ \tconsistent{\htau_1}{\htau_2}}
+{\stepsTo{\dcast{\dexp}{\htau_1}}{\dexp}}
+\\
+\Infer{s-add$_1$}
+{\stepsTo{\dexp_1}{\dexp_1'}}
+{\stepsTo{\dadd{\dexp_1}{\dexp_2}}{\dadd{\dexp_1'}{\dexp_2}}}
+\and
+\Infer{s-add$_2$}
+{\isFinal{\dexp_1} \\ \stepsTo{\dexp_2}{\dexp_2'}}
+{\stepsTo{\dadd{\dexp_1}{\dexp_2}}{\dadd{\dexp_1}{\dexp_2'}}}
+\and
+\Infer{s-add$_3$}
+{ n_1 + n_2 = n_3 }
+{\stepsTo{\dadd{\dnum{n_1}}{\dnum{n_2}}}{\dnum{n_3}}}
+%\and
+\\
+\Infer{s-app$_1$}
+{\stepsTo{\dexp_1}{\dexp_1'}}
+{\stepsTo{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1'}{\dexp_2}}}
+\and
+\Infer{s-app$_2$}
+{ \isFinal{\dexp_1} \\ \stepsTo{\dexp_2}{\dexp_2'}}
+{\stepsTo{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1}{\dexp_2'}}}
+\and
+\Infer{s-app$_\beta$}
+{ \isFinal{\dexp_2} }
+{\stepsTo{\dapP{\dlam{x}{\dexp_1}}{\dexp_2}}{ [\dexp_2/x]\dexp_1 }}
+%\and
+\\
+\Infer{s-case$_1$}
+{\stepsTo{\dexp}{\dexp'}}
+{\stepsTo{\dcase{\dexp}{x}{\dexp_x}{y}{\dexp_y}}{\dcase{\dexp'}{x}{\dexp_x}{y}{\dexp_y}}}
+\and
+\Infer{s-case$_2$}
+{ }
+{\stepsTo{\dcase{\dinj{1}{\dexp}}{x}{\dexp_x}{y}{\dexp_y}}{ [\dexp/x]\dexp_x }}
+\and
+\Infer{s-case$_3$}
+{ }
+{\stepsTo{\dcase{\dinj{2}{\dexp}}{x}{\dexp_x}{y}{\dexp_y}}{ [\dexp/y]\dexp_y }}
+\end{mathpar}
+>>>>>>> ec645cb14354727d178641867cdf5bd2764c2c74
 \caption{Structural Dynamics}
 \label{fig:isValue}
 \label{fig:isIndet}
