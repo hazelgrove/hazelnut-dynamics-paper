@@ -32,7 +32,7 @@ $\arraycolsep=4pt\begin{array}{lllllll}
   \hhole{\dhexp}\\
 
 \end{array}$
-\caption{Syntax of H-types and H-expressions.}
+\caption{Syntax of H-types and H-expressions}
 \label{fig:HTyp}
 \label{fig:HExp}
 \end{figure}
@@ -70,25 +70,64 @@ $\arraycolsep=4pt\begin{array}{lllllll}
   \arrmatch{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1}{\htau_2}}
 }
 \end{mathpar}
-\caption{Type consistency and matched types.}
+\caption{Type Consistency and Matched Types}
 \label{fig:tconsistent}
 \label{fig:arrmatch}
 \end{figure}
 
 \begin{figure}[h]
 \judgbox{\expandSyn{\hGamma}{\hexp}{\dhexp}{\htau}{\Delta}}{ }
-...
+\begin{mathpar}
+(var)
+
+(ap)
+
+(num)
+
+(plus)
+
+(empty hole)
+
+(non-empty hole)
+
+(asc)
+\end{mathpar}
 
 \judgbox{\expandAna{\hGamma}{\hexp}{\dhexp}{\htau}{\Delta}}{ }
-...
-\caption{Bidirectionally Typed Expansion}
+\begin{mathpar}
+(lam)
+
+(subsumption)
+\end{mathpar}
+\caption{Algorithmic Expansion}
 \label{fig:expandSyn}
 \label{fig:expandAna}
 \end{figure}
 
 \begin{figure}[h!]
 \judgbox{\hasType{\hGamma}{\dhexp}{\htau}{\Delta}}{$\dhexp$ has type $\htau$ with holes $\Delta$}
-...
+\begin{mathpar}
+\inferrule[decl-var]{
+	\tconsistent{\htau}{\htau'}
+}{
+	\hasType{\hGamma, x : \htau}{x}{\htau'}{\emptyset}
+}
+
+\inferrule[decl-abs]{
+	a
+}{
+	\hasType{\hGamma}{\hlam{x}{\dhexp}}{\htau}{\Delta}
+}
+(ap)
+
+(num)
+
+(plus)
+
+(empty hole)
+
+(non-empty hole)
+\end{mathpar}
 \caption{Declarative Statics}
 \label{fig:hasType}
 \end{figure}
