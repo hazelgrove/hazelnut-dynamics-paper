@@ -7,7 +7,7 @@
 \todo{exposition}
 
 \begin{figure}[h]
-$\arraycolsep=4pt\begin{array}{lllllll}
+$\arraycolsep=4pt\begin{array}{rllllll}
 \mathsf{HTyp} & \htau & ::= &
   \tarr{\htau}{\htau} ~\vert~
   \tprod{\htau}{\htau} ~\vert~
@@ -68,6 +68,20 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 }{
   \tconsistent{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}
 }
+
+\inferrule{
+  \tconsistent{\htau_1}{\htau_1'}\\
+  \tconsistent{\htau_2}{\htau_2'}
+}{
+  \tconsistent{\tprod{\htau_1}{\htau_2}}{\tprod{\htau_1'}{\htau_2'}}
+}
+
+\inferrule{
+  \tconsistent{\htau_1}{\htau_1'}\\
+  \tconsistent{\htau_2}{\htau_2'}
+}{
+  \tconsistent{\tsum{\htau_1}{\htau_2}}{\tsum{\htau_1'}{\htau_2'}}
+}
 \end{mathpar}
 
 \judgbox{\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}}{$\htau$ has matched arrow type $\tarr{\htau_1}{\htau_2}$}
@@ -78,6 +92,28 @@ $\arraycolsep=4pt\begin{array}{lllllll}
 
 \inferrule{ }{
   \arrmatch{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1}{\htau_2}}
+}
+\end{mathpar}
+
+\judgbox{\prodmatch{\htau}{\tprod{\htau_1}{\htau_2}}}{$\htau$ has matched product type $\tarr{\htau_1}{\htau_2}$}
+\begin{mathpar}
+\inferrule{ }{
+  \prodmatch{\tehole}{\tprod{\tehole}{\tehole}}
+}
+
+\inferrule{ }{
+  \prodmatch{\tprod{\htau_1}{\htau_2}}{\tprod{\htau_1}{\htau_2}}
+}
+\end{mathpar}
+
+\judgbox{\summatch{\htau}{\tsum{\htau_1}{\htau_2}}}{$\htau$ has matched sum type $\tsum{\htau_1}{\htau_2}$}
+\begin{mathpar}
+\inferrule{ }{
+  \summatch{\tehole}{\tsum{\tehole}{\tehole}}
+}
+
+\inferrule{ }{
+  \summatch{\tsum{\htau_1}{\htau_2}}{\tsum{\htau_1}{\htau_2}}
 }
 \end{mathpar}
 \caption{Type Consistency and Matched Types}
