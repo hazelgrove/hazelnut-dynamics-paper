@@ -9,40 +9,40 @@
 \begin{figure}[h]
 $\arraycolsep=4pt\begin{array}{rllllll}
 \mathsf{HTyp} & \htau & ::= &
+  b ~\vert~
   \tarr{\htau}{\htau} ~\vert~
-  \tprod{\htau}{\htau} ~\vert~
-  \tsum{\htau}{\htau} ~\vert~
-  \tnum ~\vert~
+  % \tprod{\htau}{\htau} ~\vert~
+  % \tsum{\htau}{\htau} ~\vert~
   \tehole\\
 \mathsf{HExp} & \hexp & ::= &
+  c ~\vert~ 
   x ~\vert~
   \halam{x}{\htau}{\hexp} ~\vert~
   \hap{\hexp}{\hexp} ~\vert~
-  \hpair{\hexp}{\hexp} ~\vert~
-  \hprj{i}{\hexp} ~\vert~
-  \hinj{i}{\hexp} ~\vert~
-  \hcase{\hexp}{x}{\hexp}{x}{\hexp} ~\vert~
-  \hnum{n} ~\vert~
-  \hadd{\hexp}{\hexp} ~\vert~
+  % \hpair{\hexp}{\hexp} ~\vert~
+  % \hprj{i}{\hexp} ~\vert~
+  % \hinj{i}{\hexp} ~\vert~
+  % \hcase{\hexp}{x}{\hexp}{x}{\hexp} ~\vert~
+  % \hadd{\hexp}{\hexp} ~\vert~
   \hehole{u} ~\vert~
   \hhole{\hexp}{u} ~\vert~
   {\hlam{x}{\hexp}} ~\vert~
   \hexp : \htau\\
  \mathsf{DHExp} & \dexp  & ::= &
+  c ~\vert~
   x ~\vert~
   {\halam{x}{\htau}{\dexp}} ~\vert~
   \hap{\dexp}{\dexp} ~\vert~
-  \hpair{\dexp}{\dexp} ~\vert~
-  \hprj{i}{\dexp} ~\vert~
-  \hinj{i}{\dexp} ~\vert~
-  \hcase{\dexp}{x}{\dexp}{x}{\dexp} ~\vert~
-  \hnum{n} ~\vert~
-  \hadd{\dexp}{\dexp} ~\vert~
+  % \hpair{\dexp}{\dexp} ~\vert~
+  % \hprj{i}{\dexp} ~\vert~
+  % \hinj{i}{\dexp} ~\vert~
+  % \hcase{\dexp}{x}{\dexp}{x}{\dexp} ~\vert~
+  % \hadd{\dexp}{\dexp} ~\vert~
   \dehole{\mvar}{\subst} ~\vert~
-  \dhole{\dexp}{\mvar}{\subst}\\
-
+  \dhole{\dexp}{\mvar}{\subst} ~\vert~
+  \dcast{\dexp}{\htau}\\
 \end{array}$
-\caption{Syntax of H-types, H-expressions and dynamic H-expressions. We write $x$ to range over variables, $n$ over numbers, $i$ over labels in $\{\lblL, \lblR\}$, $u$ over hole names and $\sigma$ over finite substitutions.}
+\caption{Syntax of H-types, H-expressions and dynamic H-expressions. We write $x$ to range over variables, $u$ over hole names and $\sigma$ over finite substitutions.}
 \label{fig:HTyp}
 \label{fig:HExp}
 \end{figure}
@@ -68,20 +68,20 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }{
   \tconsistent{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}
 }
-
-\inferrule{
-  \tconsistent{\htau_1}{\htau_1'}\\
-  \tconsistent{\htau_2}{\htau_2'}
-}{
-  \tconsistent{\tprod{\htau_1}{\htau_2}}{\tprod{\htau_1'}{\htau_2'}}
-}
-
-\inferrule{
-  \tconsistent{\htau_1}{\htau_1'}\\
-  \tconsistent{\htau_2}{\htau_2'}
-}{
-  \tconsistent{\tsum{\htau_1}{\htau_2}}{\tsum{\htau_1'}{\htau_2'}}
-}
+%
+% \inferrule{
+%   \tconsistent{\htau_1}{\htau_1'}\\
+%   \tconsistent{\htau_2}{\htau_2'}
+% }{
+%   \tconsistent{\tprod{\htau_1}{\htau_2}}{\tprod{\htau_1'}{\htau_2'}}
+% }
+%
+% \inferrule{
+%   \tconsistent{\htau_1}{\htau_1'}\\
+%   \tconsistent{\htau_2}{\htau_2'}
+% }{
+%   \tconsistent{\tsum{\htau_1}{\htau_2}}{\tsum{\htau_1'}{\htau_2'}}
+% }
 \end{mathpar}
 
 \judgbox{\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}}{$\htau$ has matched arrow type $\tarr{\htau_1}{\htau_2}$}
@@ -95,42 +95,90 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }
 \end{mathpar}
 
-\judgbox{\prodmatch{\htau}{\tprod{\htau_1}{\htau_2}}}{$\htau$ has matched product type $\tarr{\htau_1}{\htau_2}$}
-\begin{mathpar}
-\inferrule{ }{
-  \prodmatch{\tehole}{\tprod{\tehole}{\tehole}}
-}
+% \judgbox{\prodmatch{\htau}{\tprod{\htau_1}{\htau_2}}}{$\htau$ has matched product type $\tprod{\htau_1}{\htau_2}$}
+% \begin{mathpar}
+% \inferrule{ }{
+%   \prodmatch{\tehole}{\tprod{\tehole}{\tehole}}
+% }
 
-\inferrule{ }{
-  \prodmatch{\tprod{\htau_1}{\htau_2}}{\tprod{\htau_1}{\htau_2}}
-}
-\end{mathpar}
+% \inferrule{ }{
+%   \prodmatch{\tprod{\htau_1}{\htau_2}}{\tprod{\htau_1}{\htau_2}}
+% }
+% \end{mathpar}
 
-\judgbox{\summatch{\htau}{\tsum{\htau_1}{\htau_2}}}{$\htau$ has matched sum type $\tsum{\htau_1}{\htau_2}$}
-\begin{mathpar}
-\inferrule{ }{
-  \summatch{\tehole}{\tsum{\tehole}{\tehole}}
-}
+% \judgbox{\summatch{\htau}{\tsum{\htau_1}{\htau_2}}}{$\htau$ has matched sum type $\tsum{\htau_1}{\htau_2}$}
+% \begin{mathpar}
+% \inferrule{ }{
+%   \summatch{\tehole}{\tsum{\tehole}{\tehole}}
+% }
 
-\inferrule{ }{
-  \summatch{\tsum{\htau_1}{\htau_2}}{\tsum{\htau_1}{\htau_2}}
-}
-\end{mathpar}
+% \inferrule{ }{
+%   \summatch{\tsum{\htau_1}{\htau_2}}{\tsum{\htau_1}{\htau_2}}
+% }
+% \end{mathpar}
 \caption{Type Consistency and Matched Types}
 \label{fig:tconsistent}
 \label{fig:arrmatch}
 \end{figure}
 
 \begin{figure}[h]
-\judgbox{\expandSyn{\hGamma}{\hexp}{\dexp}{\htau}{\Delta}}{ }
+\judgbox{\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}{ }
 \begin{mathpar}
-(var)
+\inferrule[expand-constant]{ }{
+  \expandSyn{\hGamma}{c}{b}{c}{\emptyset}
+}
 
-(ap)
+\inferrule[expand-var]{ }{
+  \expandSyn{\hGamma, x : \htau}{x}{\htau}{x}{\emptyset}
+}
 
-(num)
+\inferrule[expand-alam]{
+  \expandSyn{\hGamma, x : \htau_1}{\hexp}{\htau_2}{\dexp}{\Delta}
+}{
+  \expandSyn{\hGamma}{\halam{x}{\htau_1}{\hexp}}{\tarr{\htau_1}{\htau_2}}{\halam{x}{\htau_1}{\dexp}}{\Delta}
+}
 
-(plus)
+\inferrule[expand-ap-1]{
+  \expandSyn{\hGamma}{\hexp_1}{\tehole}{\dexp_1}{\Delta_1}\\
+  \expandAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}
+}{
+  \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{(\dcast{\dexp_1}{\tarr{\htau_2}{\tehole}})}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+}
+
+\inferrule[expand-ap-2]{
+  \expandSyn{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\Delta_1}\\
+  \expandAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau'_2}{\Delta_2}\\
+  \htau_2 \neq \htau'_2
+}{
+  \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{\dexp_1}{\dcast{\dexp_2}{\htau_2}}}{\Dunion{\Delta_1}{\Delta_2}}
+}
+
+\inferrule[expand-ap-3]{
+  \expandSyn{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\Delta_1}\\
+  \expandAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau_2}{\Delta_2}
+}{
+  \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+}
+%
+% \inferrule[expand-pair]{
+%   \expandSyn{\hGamma}{\hexp_1}{\htau_1}{\dexp_1}{\Delta_1}\\
+%   \expandSyn{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\Delta_2}
+% }{
+%   \expandSyn{\hGamma}{\hpair{\hexp_1}{\hexp_2}}{\tprod{\htau_1}{\htau_2}}{\hpair{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+% }
+%
+% \inferrule[expand-prj]{
+%   a
+% }{
+%   b
+% }
+%
+% (inj)
+
+%
+% \inferrule[expand-plus]{ }{
+%   \expandSyn{\hGamma}{\hadd{\hexp_1}{\hexp_2}}{\tnum}{\hadd{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+% }
 
 (empty hole)
 
@@ -139,9 +187,13 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 (asc)
 \end{mathpar}
 
-\judgbox{\expandAna{\hGamma}{\hexp}{\dexp}{\htau}{\Delta}}{ }
+\judgbox{\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau}{\Delta}}{ }
 \begin{mathpar}
 (lam)
+
+(pair)
+
+(case)
 
 (subsumption)
 \end{mathpar}

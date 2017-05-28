@@ -136,7 +136,7 @@
 \newcommand{\subst}[0]{\sigma}
 \newcommand{\dexp}[0]{\ddot{e}}
 \newcommand{\dval}[0]{\ddot{v}}
-\newcommand{\dcast}[2]{\left(#1 \hookrightarrow #2\right)}
+\newcommand{\dcast}[2]{#1 ~?~ #2}
 \newcommand{\dlam}[2]{\lambda #1.#2}
 \newcommand{\dap}[2]{#1(#2)}
 \newcommand{\dapP}[2]{(#1)~(#2)} % Extra paren around function term
@@ -148,11 +148,13 @@
 \newcommand{\dinj}[2]{\texttt{inj}_{#1}({#2})}
 \newcommand{\dcase}[5]{\texttt{case}({#1},{#2}.{#3},{#4}.{#5})}
 
-\newcommand{\expandAna}[5]{#1 \vdash #2 \leadsto #3 \Leftarrow #4 \dashv #5}
-\newcommand{\expandSyn}[5]{#1 \vdash #2 \leadsto #3 \Rightarrow #4 \dashv #5}
+\newcommand{\expandAna}[6]{#1 \vdash #2 \Leftarrow #3 \leadsto #4 : #5 \dashv #6}
+\newcommand{\expandSyn}[5]{#1 \vdash #2 \Rightarrow #3 \leadsto #4 \dashv #5}
 \newcommand{\hasType}[4]{#1 \vdash #2 : #3 \dashv #4}
 \newcommand{\isValue}[1]{#1~\mathsf{val}}
 \newcommand{\isIndet}[1]{#1~\mathsf{indet}}
 \newcommand{\isFinal}[1]{#1~\mathsf{final}}
 \newcommand{\isErr}[1]{#1~\mathsf{err}}
 \newcommand{\stepsTo}[2]{#1 \mapsto #2}
+
+\newcommand{\Dunion}[2]{#1 \cup #2}
