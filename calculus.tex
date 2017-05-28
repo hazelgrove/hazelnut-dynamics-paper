@@ -139,10 +139,11 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }
 
 \inferrule[expand-ap-1]{
-  \expandSyn{\hGamma}{\hexp_1}{\tehole}{\dexp_1}{\Delta_1}\\
-  \expandAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}
+  \hsyn{\hGamma}{\hexp_1}{\tehole}\\
+  \expandAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}\\
+  \expandAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\tehole}}{\dexp_1}{\htau_1}{\Delta_1}
 }{
-  \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{(\dcast{\dexp_1}{\tarr{\htau_2}{\tehole}})}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+  \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\tehole}{\hap{(\dcast{\dexp_1}{\tarr{\htau_2}{\tehole}})}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
 }
 
 \inferrule[expand-ap-2]{
@@ -158,7 +159,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \expandAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau_2}{\Delta_2}
 }{
   \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
-}
+}\\
 %
 % \inferrule[expand-pair]{
 %   \expandSyn{\hGamma}{\hexp_1}{\htau_1}{\dexp_1}{\Delta_1}\\
@@ -179,23 +180,55 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 % \inferrule[expand-plus]{ }{
 %   \expandSyn{\hGamma}{\hadd{\hexp_1}{\hexp_2}}{\tnum}{\hadd{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
 % }
+%
+\inferrule[expand-syn-empty-hole]{ }{
+  \expandSyn{\hGamma}{\hehole{u}}{\tehole}{\dehole{u}{\idof{\hGamma}}}{\Dbinding{u}{\hGamma}{\tehole}}
+}
 
-(empty hole)
+\inferrule[expand-syn-non-empty-hole]{
+  \expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}
+}{
+  \expandSyn{\hGamma}{\hhole{\hexp}{u}}{\tehole}{\dhole{\dexp}{u}{\idof{\hGamma}}}{\Delta, \Dbinding{u}{\hGamma}{\tehole}}
+}\\
+%
+\inferrule[expand-asc-1]{
+  \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}\\
+  \htau \neq \htau'
+}{
+  \expandSyn{\hGamma}{\hexp : \htau}{\htau}{\dcast{\dexp}{\htau}}{\Delta}
+}
 
-(non-empty hole)
-
-(asc)
+\inferrule[expand-asc-2]{
+  \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau}{\Delta}
+}{
+  \expandSyn{\hGamma}{\hexp : \htau}{\htau}{\dexp}{\Delta}
+}
 \end{mathpar}
 
 \judgbox{\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau}{\Delta}}{ }
 \begin{mathpar}
-(lam)
+\inferrule[expand-lam]{
+  \expandAna{\hGamma, x : \htau_1}{\hexp}{\htau_2}{\dexp}{\htau'_2}{\Delta}
+}{
+  \expandAna{\hGamma}{\hlam{x}{\hexp}}{\tarr{\htau_1}{\htau_2}}{\halam{x}{\htau_1}{\dexp}}{\tarr{\htau_1}{\htau_2'}}{\Delta}
+}
 
-(pair)
+\inferrule[expand-subsume]{
+  \hexp \neq \hehole{u}\\
+  \hexp \neq \hhole{\hexp'}{u}\\\\
+  \expandSyn{\hGamma}{\hexp}{\htau'}{\dexp}{\Delta}\\
+  \tconsistent{\htau}{\htau'}
+}{
+  \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}
+}
 
-(case)
+\inferrule[expand-ana-empty-hole]{ }{
+  \expandAna{\hGamma}{\hehole{u}}{\htau}{\dehole{u}{\idof{\hGamma}}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
+}
 
-(subsumption)
+\inferrule[expand-ana-non-empty-hole]{ }{
+  \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
+}
 \end{mathpar}
 \caption{Algorithmic Expansion}
 \label{fig:expandSyn}
@@ -333,7 +366,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 {\isErr{\dcase{\dexp}{x}{\dexp_x}{y}{\dexp_y}}}
 \end{mathpar}
 
-\judgbox{\isValue{\dexp}}{$\dexp$ is a value}
+\judgbox{\isFinal{\dexp}}{$\dexp$ is final (it cannot be stepped)}
 \begin{mathpar}
 \Infer{f-val}
 {\isValue{\dexp}}{\isFinal{\dexp}}
