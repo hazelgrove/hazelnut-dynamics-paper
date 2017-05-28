@@ -10,7 +10,7 @@
 \newcommand{\hcomplete}[1]{#1~\mathsf{complete}}
 
 % HTyp
-\newcommand{\htau}{\dot{\tau}}
+\newcommand{\htau}{\tau}
 \newcommand{\tarr}[2]{#1 \rightarrow #2}
 \newcommand{\tprod}[2]{#1 \times #2}
 \newcommand{\tnum}{\texttt{num}}
@@ -42,7 +42,7 @@
 \newcommand{\hinj}[2]{\texttt{inj}_{#1}({#2})}
 \newcommand{\hcase}[5]{\texttt{case}({#1},{#2}.{#3},{#4}.{#5})}
 
-\newcommand{\hGamma}{\dot{\Gamma}}
+\newcommand{\hGamma}{\Gamma}
 \newcommand{\domof}[1]{\text{dom}(#1)}
 \newcommand{\hsyn}[3]{#1 \vdash #2 \Rightarrow #3}
 \newcommand{\hana}[3]{#1 \vdash #2 \Leftarrow #3}
@@ -150,7 +150,7 @@
 
 \newcommand{\expandAna}[6]{#1 \vdash #2 \Leftarrow #3 \leadsto #4 : #5 \dashv #6}
 \newcommand{\expandSyn}[5]{#1 \vdash #2 \Rightarrow #3 \leadsto #4 \dashv #5}
-\newcommand{\hasType}[4]{#1 \vdash #2 : #3 \dashv #4}
+\newcommand{\hasType}[4]{#1~#2 \vdash #3 : #4}
 \newcommand{\isValue}[1]{#1~\mathsf{val}}
 \newcommand{\isIndet}[1]{#1~\mathsf{indet}}
 \newcommand{\isFinal}[1]{#1~\mathsf{final}}

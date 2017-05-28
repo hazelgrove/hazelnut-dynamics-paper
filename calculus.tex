@@ -236,32 +236,57 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \end{figure}
 
 \begin{figure}[h!]
-\judgbox{\hasType{\hGamma}{\dexp}{\htau}{\Delta}}{$\dexp$ has type $\htau$ with holes $\Delta$}
+\judgbox{\hasType{\Delta}{\hGamma}{\dexp}{\htau}}{$\dexp$ is assigned type $\htau$}
 \begin{mathpar}
-\inferrule[decl-var]{
-	\tconsistent{\htau}{\htau'}
-}{
-	\hasType{\hGamma, x : \htau}{x}{\htau'}{\emptyset}
+\inferrule[ty-assign-const]{ }{
+  \hasType{\Delta}{\hGamma}{c}{b}
 }
 
-\inferrule[decl-abs]{
-	a
-}{
-	\hasType{\hGamma}{\hlam{x}{\dexp}}{\htau}{\Delta}
+\inferrule[ty-assign-var]{ }{
+	\hasType{\Delta}{\hGamma, x : \htau}{x}{\htau}
 }
-(ap)
 
-(num)
+\inferrule[ty-assign-lam]{
+  \hasType{\Delta}{\hGamma, x : \htau_1}{\dexp}{\htau_2}
+}{
+  \hasType{\Delta}{\hGamma}{\halam{x}{\htau_1}{\dexp}}{\tarr{\htau_1}{\htau_2}}
+}
 
-(plus)
+\inferrule[ty-assign-ap]{
+  \hasType{\Delta}{\hGamma}{\dexp_1}{\htau_1}\\
+  \arrmatch{\htau_1}{\tarr{\htau_2}{\htau}}\\\\
+  \hasType{\Delta}{\hGamma}{\dexp_2}{\htau_2}
+}{
+  \hasType{\Delta}{\hGamma}{\hap{\dexp_1}{\dexp_2}}{\htau}
+}
 
-(empty hole)
+\inferrule[ty-assign-empty-hole]{
+  \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
+}{
+  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dehole{u}{\sigma}}{\htau}
+}
 
-(non-empty hole)
+\inferrule[ty-assign-non-empty-hole]{
+  \hasType{\Delta}{\hGamma}{\dexp}{\htau'}\\
+  \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
+}{
+  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dhole{\dexp}{u}{\sigma}}{\htau}
+}
+
+\inferrule[ty-assign-cast]{
+  \hasType{\Delta}{\Gamma}{\dexp}{\htau'}\\
+  \tconsistent{\htau}{\htau'}
+}{
+  \hasType{\Delta}{\hGamma}{\dcast{\dexp}{\htau}}{\htau}
+}
 \end{mathpar}
-\caption{Declarative Statics}
+\caption{Type Assignment for Dynamic H-Expressions}
 \label{fig:hasType}
 \end{figure}
+
+\begin{definition}[Substitution Type Assignment]
+$\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff for each $\dexp/x \in \sigma$, we have $x : \htau \in \hGamma'$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
+\end{definition}
 
 \begin{figure}[h!]
 \judgbox{[\dexp_1 / x] \dexp_2 = \dexp_3}{Substitution}
