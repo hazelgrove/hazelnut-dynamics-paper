@@ -150,11 +150,11 @@
 
 \newcommand{\expandAna}[6]{#1 \vdash #2 \Leftarrow #3 \leadsto #4 : #5 \dashv #6}
 \newcommand{\expandSyn}[5]{#1 \vdash #2 \Rightarrow #3 \leadsto #4 \dashv #5}
-\newcommand{\hasType}[4]{#1~#2 \vdash #3 : #4}
+\newcommand{\hasType}[4]{#1; #2 \vdash #3 : #4}
 \newcommand{\isValue}[1]{#1~\mathsf{val}}
 \newcommand{\isIndet}[1]{#1~\mathsf{indet}}
 \newcommand{\isFinal}[1]{#1~\mathsf{final}}
-\newcommand{\isErr}[1]{#1~\mathsf{err}}
+\newcommand{\isErr}[2]{#2~\mathsf{err}_{#1}}
 \newcommand{\stepsTo}[2]{#1 \mapsto #2}
 
 \newcommand{\Dunion}[2]{#1 \cup #2}

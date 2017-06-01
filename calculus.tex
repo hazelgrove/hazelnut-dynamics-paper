@@ -416,29 +416,58 @@ y\\
 
 \inferrule[indet-app]
 {\isIndet{\dexp_1}\\
- \isFinal{\dexp_2}~\text{\todo{??}}}
+% \isFinal{\dexp_2}~\text{\todo{??}}}
+ \isFinal{\dexp_2}}
 {\isIndet{\dap{\dexp_1}{\dexp_2}}}
 
-\text{\todo{cast?}}
+\inferrule[indet-cast]
+{\isIndet{\dexp}}
+{\isIndet{\dcast{\dexp}{\htau}}}
+
 \end{mathpar}
 
-\judgbox{\isErr{\dexp}}{$\dexp$ is error}
+\judgbox{\isErr{\Delta}{\dexp}}{Under $\Delta$, $\dexp$ contains a cast error}
 \begin{mathpar}
-\inferrule[err-cast]
+\inferrule[err-nemp-hole~\todo{??}]
+{\subst \sim_? \Gamma_2
+\\ 
+\isErr{\Delta; \Gamma_1, \Gamma_2}{\dexp}}
+{\isErr{\Delta; \Gamma_1}{\dhole{\dexp}{\mvar}{\subst}}}
+
+\inferrule[err-cast-error~\todo{??}]
 % XXX use macro type assignment judgement here
-{\hasType{\Delta}{\emptyset}{e}{\htau_2}~\text{\todo{need $\Delta$ from somewhere}}\\
+{\hasType{\Delta}{\todo{\emptyset}}{e}{\htau_2}\\
  \tinconsistent{\htau_1}{\htau_2}}
-{\isErr{\dcast{\dexp}{\htau_1}}}
+{\isErr{\Delta}{\dcast{\dexp}{\htau_1}}}
+
+\inferrule[err-lam~\todo{??}]
+% XXX use macro type assignment judgement here
+{\isErr{\Delta; \Gamma, x:\htau_1}{\dexp}}
+{\isErr{\Delta; \Gamma}{\halam{x}{\htau}{\dexp}}}
+
+\\
 
 \inferrule[err-app-1]
-{\isErr{\dexp_1}\\
- \isFinal{\dexp_2}~\text{\todo{??}}}
-{\isErr{\dap{\dexp_1}{\dexp_2}}}
+{
+ \isErr{\Delta}{\dexp_1}
+ %\\\
+ %isFinal{\dexp_2}~\text{\todo{??}}
+}
+{\isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}}
 
-\inferrule[err-app-2 \todo{??}]
-{\isIndet{\dexp_1}\\
- \isErr{\dexp_2}}
-{\isErr{\dap{\dexp_1}{\dexp_2}}}
+\inferrule[err-app-2]
+{
+ %\isIndet{\dexp_1}
+ %\\
+ \isErr{\Delta}{\dexp_2}
+}
+{\isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}}
+
+\inferrule[err-cast]
+% XXX use macro type assignment judgement here
+{\isErr{\Delta}{\dexp}}
+{\isErr{\Delta}{\dcast{\dexp}{\htau_1}}}
+
 \end{mathpar}
 
 \judgbox{\isFinal{\dexp}}{$\dexp$ is final (it cannot be stepped)}
@@ -448,9 +477,10 @@ y\\
 \and
 \Infer{f-indet}
 {\isIndet{\dexp}}{\isFinal{\dexp}}
-\and
-\Infer{f-err}
-{\isErr{\dexp}}{\isFinal{\dexp}}
+%% No longer a rule: Errors are not indet anymore:
+%% \and
+%% \Infer{f-err}
+%% {\isErr{\dexp}}{\isFinal{\dexp}}
 \end{mathpar}
 
 \judgbox{\stepsTo{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
