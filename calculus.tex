@@ -511,3 +511,56 @@ y\\
 \label{fig:isIndet}
 \label{fig:stepsTo}
 \end{figure}
+
+
+\clearpage
+\subsection{Metatheory}
+
+...
+
+\begin{theorem}[Expandability \todo{??}] ~
+  \begin{enumerate}
+    \item If $\hsyn{\hGamma}{\hexp}{\htau}$ then $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ for some $\dexp$ and $\Delta$.
+    \item If $\hana{\hGamma}{\hexp}{\htau}$ then $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$ for some $\dexp$ and $\htau'$ and $\Delta$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Correspondence \todo{??}] ~
+  \begin{enumerate}
+    \item If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ then $\hsyn{\hGamma}{\hexp}{\htau}$.
+    \item If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$ then $\hana{\hGamma}{\hexp}{\htau}$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Typed Expansion] ~
+  \begin{enumerate}
+    \item If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ then $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
+    \item If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$ then $\tconsistent{\htau}{\htau'}$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Expansion Unicity] ~
+  \begin{enumerate}
+    \item If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ and $\expandSyn{\hGamma}{\hexp}{\htau'}{\dexp'}{\Delta'}$ then $\htau=\htau'$ and $\dexp=\dexp'$ and $\Delta=\Delta'$.
+    \item If $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}$ and $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp'}{\htau_2'}{\Delta'}$ then $\dexp=\dexp'$ and $\htau_2=\htau_2'$ and $\Delta=\Delta'$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Type Assignment Unicity]
+If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$ then $\htau=\htau'$.
+\end{theorem}
+
+\begin{theorem}[Progress]
+If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\isValue{\dexp}$ or $\isIndet{\dexp}$ or $\isErr{\Delta}{\dexp}$ or $\stepsTo{\dexp}{\dexp'}$.
+\end{theorem}
+
+\begin{theorem}[Preservation]
+  If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and $\stepsTo{\dexp}{\dexp'}$ then $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \todo{or maybe up to consistency?}
+\end{theorem}
+
+\todo{complete progress + preservation}
+
+\todo{canonical forms}
+
+\todo{indeterminate forms}
+
