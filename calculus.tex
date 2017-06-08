@@ -290,8 +290,11 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \expandAna{\hGamma}{\hehole{u}}{\htau}{\dehole{u}{\idof{\hGamma}}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
 }
 
-\inferrule[expand-ana-non-empty-hole]{ }{
-  \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
+\inferrule[expand-ana-non-empty-hole]{
+  \expandSyn{\hGamma}{\hexp}{\htau'}{\dexp}{\Delta}\\
+  \tconsistent{\htau}{\htau'}
+}{
+  \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
 }
 \end{mathpar}
 \caption{Algorithmic Expansion}
