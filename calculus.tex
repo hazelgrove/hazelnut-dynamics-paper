@@ -379,7 +379,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 
 \begin{figure}[!ht]
   \begin{definition}
-    $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff for each $\dexp/x \in \sigma$, we have $x : \htau \in \hGamma'$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
+    $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff $\domof{\sigma} = \domof{\Delta}$ and for each $\dexp/x \in \sigma$, we have $x : \htau \in \hGamma'$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
   \end{definition}
   \caption{substitution type assignment}
 \end{figure}
