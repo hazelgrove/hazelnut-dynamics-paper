@@ -6,7 +6,7 @@
 \label{sec:calculus}
 \todo{exposition}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 $\arraycolsep=4pt\begin{array}{rllllll}
 \mathsf{HTyp} & \htau & ::= &
   b ~\vert~
@@ -47,7 +47,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \label{fig:HExp}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \judgbox{\tconsistent{\htau_1}{\htau_2}}{$\htau_1$ is consistent with $\htau_2$}
 \begin{mathpar}
 \inferrule[TCHole1]{ }{
@@ -145,7 +145,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \label{fig:arrmatch}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \judgbox{\hsyn{\hGamma}{\hexp}{\htau}}{$\htau$ synthesizes type $\htau$}
 \begin{mathpar}
 \inferrule[SConst]{ }{
@@ -204,14 +204,12 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }
 \end{mathpar}
 \caption{Bidirectional Typing of H-Expressions}
-\label{fig:tconsistent}
-\label{fig:arrmatch}
 \end{figure}
 
 \todo{definition of complete types and terms? do we care about completeness
   of $\hexp$s or $\dexp$s?}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \judgbox{\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}{ }
 \begin{mathpar}
 \inferrule[ESConst]{ }{
