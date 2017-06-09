@@ -14,6 +14,7 @@
 \newcommand{\tarr}[2]{#1 \rightarrow #2}
 \newcommand{\tprod}[2]{#1 \times #2}
 \newcommand{\tnum}{\texttt{num}}
+\newcommand{\tb}{\texttt{b}}
 \newcommand{\tehole}{\llparenthesiscolor\rrparenthesiscolor}
 \newcommand{\tsum}[2]{{#1} + {#2}}
 
@@ -136,8 +137,8 @@
 \newcommand{\subst}[0]{\sigma}
 \newcommand{\dexp}[0]{\ddot{e}}
 \newcommand{\dval}[0]{\ddot{v}}
-\newcommand{\dcast}[2]{#1 ~?~ #2}
-\newcommand{\dlam}[2]{\lambda #1.#2}
+\newcommand{\dcast}[2]{\langle #1 \rangle ~ #2}
+\newcommand{\dlam}[3]{\lambda #1:#2.#3}
 \newcommand{\dap}[2]{#1(#2)}
 \newcommand{\dapP}[2]{(#1)(#2)} % Extra paren around function term
 \newcommand{\dnum}[1]{\underline{#1}}
