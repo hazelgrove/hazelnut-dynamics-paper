@@ -514,28 +514,28 @@ y\\
 
 \end{mathpar}
 
-\judgbox{\stepsTo{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
+\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{under $\Delta$, $\dexp_1$ steps to $\dexp_2$}
 \begin{mathpar}
 \Infer{STHole}
-{\stepsTo{\dexp_1}{\dexp_2} }
-{\stepsTo{\dhole{\dexp_1}{\mvar}{\subst}}{\dhole{\dexp_2}{\mvar}{\subst}}}
+{\stepsToD{\Delta}{\dexp_1}{\dexp_2} }
+{\stepsToD{\Delta}{\dhole{\dexp_1}{\mvar}{\subst}}{\dhole{\dexp_2}{\mvar}{\subst}}}
 \and
 \Infer{STCast}
 {\hasType{\Delta}{\emptyset}{\dexp}{\htau_2} \\
  \tconsistent{\tau_1}{\tau_2}}
-{\stepsTo{\dcast{\htau_1}{\dexp}}{\dexp}}
+{\stepsToD{\Delta}{\dcast{\htau_1}{\dexp}}{\dexp}}
 \\
 \Infer{STAp1}
-{\stepsTo{\dexp_1}{\dexp_1'}}
-{\stepsTo{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1'}{\dexp_2}}}
+{\stepsToD{\Delta}{\dexp_1}{\dexp_1'}}
+{\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1'}{\dexp_2}}}
 \and
 \Infer{STAp2}
-{ \isFinal{\dexp_1} \\ \stepsTo{\dexp_2}{\dexp_2'}}
-{\stepsTo{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1}{\dexp_2'}}}
+{ \isFinal{\dexp_1} \\ \stepsToD{\Delta}{\dexp_2}{\dexp_2'}}
+{\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1}{\dexp_2'}}}
 \and
 \Infer{STAp$\beta$}
 { \isFinal{\dexp_2} }
-{\stepsTo{\dapP{\dlam{x}{\htau}{\dexp_1}}{\dexp_2}}{ [\dexp_2/x]\dexp_1 }}
+{\stepsToD{\Delta}{\dapP{\dlam{x}{\htau}{\dexp_1}}{\dexp_2}}{ [\dexp_2/x]\dexp_1 }}
 \end{mathpar}
 \caption{Structural Dynamics}
 \label{fig:isValue}
@@ -582,11 +582,11 @@ If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$ and $\hasType{\Delta}{\hGamma}{\dex
 \end{theorem}
 
 \begin{theorem}[Progress]
-If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\isValue{\dexp}$ or $\isIndet{\dexp}$ or $\isErr{\Delta}{\dexp}$ or $\stepsTo{\dexp}{\dexp'}$.
+If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\isValue{\dexp}$ or $\isIndet{\dexp}$ or $\isErr{\Delta}{\dexp}$ or $\stepsToD{\Delta}{\dexp}{\dexp'}$.
 \end{theorem}
 
 \begin{theorem}[Preservation]
-  If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and $\stepsTo{\dexp}{\dexp'}$ then $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \todo{or maybe up to consistency?}
+  If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and $\stepsToD{\Delta}{\dexp}{\dexp'}$ then $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \todo{or maybe up to consistency?}
 \end{theorem}
 
 \todo{complete progress + preservation}
