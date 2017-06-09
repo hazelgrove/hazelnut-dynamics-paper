@@ -327,6 +327,14 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \end{figure}
 
 \begin{figure}[!ht]
+  \begin{definition}
+    $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff for each $\dexp/x \in \sigma$, we have $x : \htau \in \hGamma'$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
+  \end{definition}
+  \caption{substitution type assignment}
+  \label{fig:subassign}
+\end{figure}
+
+\begin{figure}[!ht]
 \judgbox{\hasType{\Delta}{\hGamma}{\dexp}{\htau}}{$\dexp$ is assigned type $\htau$}
 \begin{mathpar}
 \inferrule[TAConst]{ }{
@@ -373,13 +381,6 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \end{mathpar}
 \caption{Type Assignment for Dynamic H-Expressions}
 \label{fig:hasType}
-\end{figure}
-
-\begin{figure}[!ht]
-  \begin{definition}
-    $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff for each $\dexp/x \in \sigma$, we have $x : \htau \in \hGamma'$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
-  \end{definition}
-  \caption{substitution type assignment}
 \end{figure}
 
 \begin{figure}[!ht]
