@@ -470,6 +470,9 @@ y\\
 %% {\isErr{\dexp}}{\isFinal{\dexp}}
 \end{mathpar}
 
+\todo{the judgmental forms are not consistent in these
+rules; the contexts change. need to figure this out.}
+
 \judgbox{\isErr{\Delta}{\dexp}}{Under $\Delta$, $\dexp$ contains a cast error}
 \begin{mathpar}
 \inferrule[ERNEHole~\todo{??}]
@@ -514,7 +517,8 @@ y\\
 
 \end{mathpar}
 
-\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{under $\Delta$, $\dexp_1$ steps to $\dexp_2$}
+\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{under $\Delta$, $\dexp_1$
+steps to $\dexp_2$}
 \begin{mathpar}
 \Infer{STHole}
 {\stepsToD{\Delta}{\dexp_1}{\dexp_2} }
