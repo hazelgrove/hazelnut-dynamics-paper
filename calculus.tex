@@ -228,8 +228,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 
 \inferrule[ESAp1]{
   \hsyn{\hGamma}{\hexp_1}{\tehole}\\
-  \expandAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}\\
-  \expandAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\tehole}}{\dexp_1}{\htau_1}{\Delta_1}
+  \expandAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\tehole}}{\dexp_1}{\htau_1}{\Delta_1}\\
+  \expandAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}
 }{
   \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\tehole}{\hap{(\dcast{\tarr{\htau_2}{\tehole}}{\dexp_1})}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
 }
