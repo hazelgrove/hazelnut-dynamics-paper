@@ -316,7 +316,6 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 
 \inferrule[EANEHole]{
   \expandSyn{\hGamma}{\hexp}{\htau'}{\dexp}{\Delta}\\
-  \tconsistent{\htau}{\htau'}
 }{
   \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
 }
@@ -598,3 +597,7 @@ If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\isValue{\dexp}$ or 
 \todo{canonical forms}
 
 \todo{indeterminate forms}
+
+\todo{theorem that special casing the holes in EANEHole gives you ``the
+most descriptive hole types'' for some sense of what that means -- they'd
+all just be hole other wise}
