@@ -302,9 +302,9 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }
 
 \inferrule[EALamHole]{
-  \todo{??}
+  \expandAna{\hGamma, x : \tehole}{\hexp}{\tehole}{\dexp}{\htau}{\Delta}
 }{
-  \expandAna{\hGamma}{\hlam{x}{\hexp}}{\tehole}{\halam{x}{\tehole}{\dexp}}{\todo{??}}{\Delta}
+  \expandAna{\hGamma}{\hlam{x}{\hexp}}{\tehole}{\halam{x}{\tehole}{\dexp}}{\tarr{\tehole}{\htau}}{\Delta}
 }
 
 \inferrule[EASubsume]{
