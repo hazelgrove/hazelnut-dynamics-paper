@@ -133,6 +133,11 @@
 \newcommand{\sumhasmatched}[2]{#1 \mathrel{\textcolor{black}{\blacktriangleright_{+}}} #2}
 
 %%%% DYNAMICS %%%%
+%% marks for eval
+\newcommand{\unevaled}{\times}
+\newcommand{\evaled}{\checkmark}
+\newcommand{\markname}{m}
+
 \newcommand{\mvar}[0]{u}
 \newcommand{\subst}[0]{\sigma}
 \newcommand{\dexp}[0]{d}
@@ -143,8 +148,8 @@
 \newcommand{\dapP}[2]{(#1)(#2)} % Extra paren around function term
 \newcommand{\dnum}[1]{\underline{#1}}
 \newcommand{\dadd}[2]{#1 + #2}
-\newcommand{\dehole}[2]{\llparenthesiscolor\rrparenthesiscolor^{#1}_{#2}}
-\newcommand{\dhole}[3]{\llparenthesiscolor#1\rrparenthesiscolor^{#2}_{#3}}
+\newcommand{\dehole}[3]{\leftidx{^{#3}}{\llparenthesiscolor\rrparenthesiscolor}{^{#1}_{#2}}}
+\newcommand{\dhole}[4]{\leftidx{^{#4}}{\llparenthesiscolor#1\rrparenthesiscolor}{^{#2}_{#3}}}
 \newcommand{\dindet}[1]{\lceil#1\rceil}
 \newcommand{\dinj}[2]{\texttt{inj}_{#1}({#2})}
 \newcommand{\dcase}[5]{\texttt{case}({#1},{#2}.{#3},{#4}.{#5})}

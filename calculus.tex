@@ -28,6 +28,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \hhole{\hexp}{u} ~\vert~
   {\hlam{x}{\hexp}} ~\vert~
   \hexp : \htau\\
+\mathsf{Mark} & \markname{} & ::= &
+  \evaled{} ~\vert~  \unevaled{}\\
  \mathsf{DHExp} & \dexp  & ::= &
   c ~\vert~
   x ~\vert~
@@ -38,8 +40,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   % \hinj{i}{\dexp} ~\vert~
   % \hcase{\dexp}{x}{\dexp}{x}{\dexp} ~\vert~
   % \hadd{\dexp}{\dexp} ~\vert~
-  \dehole{\mvar}{\subst} ~\vert~
-  \dhole{\dexp}{\mvar}{\subst} ~\vert~
+  \dehole{\mvar}{\subst}{\markname} ~\vert~
+  \dhole{\dexp}{\mvar}{\subst}{\markname} ~\vert~
   \dcast{\htau}{\dexp}\\
 \end{array}$
 \caption{Syntax of H-types, H-expressions and dynamic H-expressions. We write $x$ to range over variables, $u$ over hole names and $\sigma$ over finite substitutions.}
@@ -270,13 +272,13 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 % }
 %
 \inferrule[ESEHole]{ }{
-  \expandSyn{\hGamma}{\hehole{u}}{\tehole}{\dehole{u}{\idof{\hGamma}}}{\Dbinding{u}{\hGamma}{\tehole}}
+  \expandSyn{\hGamma}{\hehole{u}}{\tehole}{\dehole{u}{\idof{\hGamma}}{\unevaled}}{\Dbinding{u}{\hGamma}{\tehole}}
 }
 
 \inferrule[ESNEHole]{
   \expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}
 }{
-  \expandSyn{\hGamma}{\hhole{\hexp}{u}}{\tehole}{\dhole{\dexp}{u}{\idof{\hGamma}}}{\Delta, \Dbinding{u}{\hGamma}{\tehole}}
+  \expandSyn{\hGamma}{\hhole{\hexp}{u}}{\tehole}{\dhole{\dexp}{u}{\idof{\hGamma}}{\unevaled}}{\Delta, \Dbinding{u}{\hGamma}{\tehole}}
 }\\
 %
 \inferrule[ESAsc1]{
@@ -317,13 +319,13 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }
 
 \inferrule[EAEHole]{ }{
-  \expandAna{\hGamma}{\hehole{u}}{\htau}{\dehole{u}{\idof{\hGamma}}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
+  \expandAna{\hGamma}{\hehole{u}}{\htau}{\dehole{u}{\idof{\hGamma}}{\unevaled}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
 }
 
 \inferrule[EANEHole]{
   \expandSyn{\hGamma}{\hexp}{\htau'}{\dexp}{\Delta}\\
 }{
-  \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
+  \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}{\unevaled}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
 }
 \end{mathpar}
 \caption{Algorithmic Expansion}
@@ -367,14 +369,14 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \inferrule[TAEHole]{
   \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
 }{
-  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dehole{u}{\sigma}}{\htau}
+  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dehole{u}{\sigma}{\markname}}{\htau}
 }
 
 \inferrule[TANEHole]{
   \hasType{\Delta}{\hGamma}{\dexp}{\htau'}\\
   \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
 }{
-  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dhole{\dexp}{u}{\sigma}}{\htau}
+  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dhole{\dexp}{u}{\sigma}{\markname}}{\htau}
 }
 
 \inferrule[TACast]{
@@ -417,13 +419,13 @@ y\\
 % &=&
 % {\dcase{[\dexp_1 / x]e}{x}{[\dexp_1 / x]e_x}{y}{[\dexp_1 / x]e_y}}
 % \\
-{[\dexp_1 / x]} \dehole{\mvar}{\subst}
+{[\dexp_1 / x]} \dehole{\mvar}{\subst}{\todo{??}}
 &=&
-\dehole{\mvar}{[\dexp_1 / x] \subst}
+\dehole{\mvar}{[\dexp_1 / x] \subst}{\todo{??}}
 \\
-{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}}
+{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}{\todo{??}}}
 &=&
-\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}
+\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}{\todo{??}}
 \end{array}
 \]
 \end{figure}
@@ -444,11 +446,11 @@ y\\
 \begin{mathpar}
 \inferrule[IEHole]
 { }
-{\isIndet{\dehole{\mvar}{\subst}}}
+{\isIndet{\dehole{\mvar}{\subst}{\todo{??}}}}
 
 \inferrule[INEHole]
 {\isFinal{\dexp}}
-{\isIndet{\dhole{\dexp}{\mvar}{\subst}}}
+{\isIndet{\dhole{\dexp}{\mvar}{\subst}{\todo{??}}}}
 
 \inferrule[IAp]
 {\isIndet{\dexp_1}\\
@@ -527,7 +529,7 @@ steps to $\dexp_2$}
 \begin{mathpar}
 \Infer{STHole}
 {\stepsToD{\Delta}{\dexp_1}{\dexp_2} }
-{\stepsToD{\Delta}{\dhole{\dexp_1}{\mvar}{\subst}}{\dhole{\dexp_2}{\mvar}{\subst}}}
+{\stepsToD{\Delta}{\dhole{\dexp_1}{\mvar}{\subst}{\todo{??}}}{\dhole{\dexp_2}{\mvar}{\subst}{\todo{??}}}}
 \and
 \Infer{STCast}
 {\hasType{\Delta}{\emptyset}{\dexp}{\htau_2} \\
