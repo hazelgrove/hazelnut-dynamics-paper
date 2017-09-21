@@ -6,7 +6,7 @@
 \label{sec:calculus}
 \todo{exposition}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 $\arraycolsep=4pt\begin{array}{rllllll}
 \mathsf{HTyp} & \htau & ::= &
   b ~\vert~
@@ -28,6 +28,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \hhole{\hexp}{u} ~\vert~
   {\hlam{x}{\hexp}} ~\vert~
   \hexp : \htau\\
+\mathsf{Mark} & \markname{} & ::= &
+  \evaled{} ~\vert~  \unevaled{}\\
  \mathsf{DHExp} & \dexp  & ::= &
   c ~\vert~
   x ~\vert~
@@ -38,8 +40,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   % \hinj{i}{\dexp} ~\vert~
   % \hcase{\dexp}{x}{\dexp}{x}{\dexp} ~\vert~
   % \hadd{\dexp}{\dexp} ~\vert~
-  \dehole{\mvar}{\subst} ~\vert~
-  \dhole{\dexp}{\mvar}{\subst} ~\vert~
+  \dehole{\mvar}{\subst}{\markname} ~\vert~
+  \dhole{\dexp}{\mvar}{\subst}{\markname} ~\vert~
   \dcast{\htau}{\dexp}\\
 \end{array}$
 \caption{Syntax of H-types, H-expressions and dynamic H-expressions. We write $x$ to range over variables, $u$ over hole names and $\sigma$ over finite substitutions.}
@@ -47,7 +49,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \label{fig:HExp}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \judgbox{\tconsistent{\htau_1}{\htau_2}}{$\htau_1$ is consistent with $\htau_2$}
 \begin{mathpar}
 \inferrule[TCHole1]{ }{
@@ -85,7 +87,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \end{mathpar}
 
 
-\judgbox{\tinconsistent{\htau}{\htau'}}{$\htau$ is inconsistent with $\htau'$}
+\judgbox{\tinconsistent{\htau_1}{\htau_2}}{$\htau_1$ is inconsistent with $\htau_2$}
 \begin{mathpar}
     \inferrule[ICBaseArr1]{ }{
       \tinconsistent{\tb}{\tarr{\htau_1}{\htau_2}}
@@ -145,7 +147,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \label{fig:arrmatch}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \judgbox{\hsyn{\hGamma}{\hexp}{\htau}}{$\htau$ synthesizes type $\htau$}
 \begin{mathpar}
 \inferrule[SConst]{ }{
@@ -204,14 +206,12 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }
 \end{mathpar}
 \caption{Bidirectional Typing of H-Expressions}
-\label{fig:tconsistent}
-\label{fig:arrmatch}
 \end{figure}
 
 \todo{definition of complete types and terms? do we care about completeness
   of $\hexp$s or $\dexp$s?}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \judgbox{\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}{ }
 \begin{mathpar}
 \inferrule[ESConst]{ }{
@@ -230,8 +230,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 
 \inferrule[ESAp1]{
   \hsyn{\hGamma}{\hexp_1}{\tehole}\\
-  \expandAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}\\
-  \expandAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\tehole}}{\dexp_1}{\htau_1}{\Delta_1}
+  \expandAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\tehole}}{\dexp_1}{\htau_1}{\Delta_1}\\
+  \expandAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}
 }{
   \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\tehole}{\hap{(\dcast{\tarr{\htau_2}{\tehole}}{\dexp_1})}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
 }
@@ -272,13 +272,13 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 % }
 %
 \inferrule[ESEHole]{ }{
-  \expandSyn{\hGamma}{\hehole{u}}{\tehole}{\dehole{u}{\idof{\hGamma}}}{\Dbinding{u}{\hGamma}{\tehole}}
+  \expandSyn{\hGamma}{\hehole{u}}{\tehole}{\dehole{u}{\idof{\hGamma}}{\unevaled}}{\Dbinding{u}{\hGamma}{\tehole}}
 }
 
 \inferrule[ESNEHole]{
   \expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}
 }{
-  \expandSyn{\hGamma}{\hhole{\hexp}{u}}{\tehole}{\dhole{\dexp}{u}{\idof{\hGamma}}}{\Delta, \Dbinding{u}{\hGamma}{\tehole}}
+  \expandSyn{\hGamma}{\hhole{\hexp}{u}}{\tehole}{\dhole{\dexp}{u}{\idof{\hGamma}}{\unevaled}}{\Delta, \Dbinding{u}{\hGamma}{\tehole}}
 }\\
 %
 \inferrule[ESAsc1]{
@@ -303,6 +303,12 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \expandAna{\hGamma}{\hlam{x}{\hexp}}{\tarr{\htau_1}{\htau_2}}{\halam{x}{\htau_1}{\dexp}}{\tarr{\htau_1}{\htau_2'}}{\Delta}
 }
 
+\inferrule[EALamHole]{
+  \expandAna{\hGamma, x : \tehole}{\hexp}{\tehole}{\dexp}{\htau}{\Delta}
+}{
+  \expandAna{\hGamma}{\hlam{x}{\hexp}}{\tehole}{\halam{x}{\tehole}{\dexp}}{\tarr{\tehole}{\htau}}{\Delta}
+}
+
 \inferrule[EASubsume]{
   \hexp \neq \hehole{u}\\
   \hexp \neq \hhole{\hexp'}{u}\\\\
@@ -313,19 +319,26 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }
 
 \inferrule[EAEHole]{ }{
-  \expandAna{\hGamma}{\hehole{u}}{\htau}{\dehole{u}{\idof{\hGamma}}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
+  \expandAna{\hGamma}{\hehole{u}}{\htau}{\dehole{u}{\idof{\hGamma}}{\unevaled}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
 }
 
 \inferrule[EANEHole]{
   \expandSyn{\hGamma}{\hexp}{\htau'}{\dexp}{\Delta}\\
-  \tconsistent{\htau}{\htau'}
 }{
-  \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
+  \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}{\unevaled}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
 }
 \end{mathpar}
 \caption{Algorithmic Expansion}
 \label{fig:expandSyn}
 \label{fig:expandAna}
+\end{figure}
+
+\begin{figure}[!ht]
+  \begin{definition}
+    $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff for each $\dexp/x \in \sigma$, we have $x : \htau \in \hGamma'$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
+  \end{definition}
+  \caption{substitution type assignment}
+  \label{fig:subassign}
 \end{figure}
 
 \begin{figure}[!ht]
@@ -356,14 +369,14 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \inferrule[TAEHole]{
   \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
 }{
-  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dehole{u}{\sigma}}{\htau}
+  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dehole{u}{\sigma}{\markname}}{\htau}
 }
 
 \inferrule[TANEHole]{
   \hasType{\Delta}{\hGamma}{\dexp}{\htau'}\\
   \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
 }{
-  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dhole{\dexp}{u}{\sigma}}{\htau}
+  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dhole{\dexp}{u}{\sigma}{\markname}}{\htau}
 }
 
 \inferrule[TACast]{
@@ -413,13 +426,13 @@ y\\
 % &=&
 % {\dcase{[\dexp_1 / x]e}{x}{[\dexp_1 / x]e_x}{y}{[\dexp_1 / x]e_y}}
 % \\
-{[\dexp_1 / x]} \dehole{\mvar}{\subst}
+{[\dexp_1 / x]} \dehole{\mvar}{\subst}{\todo{??}}
 &=&
-\dehole{\mvar}{[\dexp_1 / x] \subst}
+\dehole{\mvar}{[\dexp_1 / x] \subst}{\todo{??}}
 \\
-{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}}
+{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}{\todo{??}}}
 &=&
-\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}
+\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}{\todo{??}}
 \end{array}
 \]
 \end{figure}
@@ -440,11 +453,11 @@ y\\
 \begin{mathpar}
 \inferrule[IEHole]
 { }
-{\isIndet{\dehole{\mvar}{\subst}}}
+{\isIndet{\dehole{\mvar}{\subst}{\todo{??}}}}
 
 \inferrule[INEHole]
 {\isFinal{\dexp}}
-{\isIndet{\dhole{\dexp}{\mvar}{\subst}}}
+{\isIndet{\dhole{\dexp}{\mvar}{\subst}{\todo{??}}}}
 
 \inferrule[IAp]
 {\isIndet{\dexp_1}\\
@@ -470,6 +483,9 @@ y\\
 %% \Infer{f-err}
 %% {\isErr{\dexp}}{\isFinal{\dexp}}
 \end{mathpar}
+
+\todo{the judgmental forms are not consistent in these
+rules; the contexts change. need to figure this out.}
 
 \judgbox{\isErr{\Delta}{\dexp}}{Under $\Delta$, $\dexp$ contains a cast error}
 \begin{mathpar}
@@ -515,28 +531,29 @@ y\\
 
 \end{mathpar}
 
-\judgbox{\stepsTo{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
+\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{under $\Delta$, $\dexp_1$
+steps to $\dexp_2$}
 \begin{mathpar}
 \Infer{STHole}
-{\stepsTo{\dexp_1}{\dexp_2} }
-{\stepsTo{\dhole{\dexp_1}{\mvar}{\subst}}{\dhole{\dexp_2}{\mvar}{\subst}}}
+{\stepsToD{\Delta}{\dexp_1}{\dexp_2} }
+{\stepsToD{\Delta}{\dhole{\dexp_1}{\mvar}{\subst}{\todo{??}}}{\dhole{\dexp_2}{\mvar}{\subst}{\todo{??}}}}
 \and
 \Infer{STCast}
 {\hasType{\Delta}{\emptyset}{\dexp}{\htau_2} \\
  \tconsistent{\tau_1}{\tau_2}}
-{\stepsTo{\dcast{\htau_1}{\dexp}}{\dexp}}
+{\stepsToD{\Delta}{\dcast{\htau_1}{\dexp}}{\dexp}}
 \\
 \Infer{STAp1}
-{\stepsTo{\dexp_1}{\dexp_1'}}
-{\stepsTo{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1'}{\dexp_2}}}
+{\stepsToD{\Delta}{\dexp_1}{\dexp_1'}}
+{\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1'}{\dexp_2}}}
 \and
 \Infer{STAp2}
-{ \isFinal{\dexp_1} \\ \stepsTo{\dexp_2}{\dexp_2'}}
-{\stepsTo{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1}{\dexp_2'}}}
+{ \isFinal{\dexp_1} \\ \stepsToD{\Delta}{\dexp_2}{\dexp_2'}}
+{\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1}{\dexp_2'}}}
 \and
 \Infer{STAp$\beta$}
 { \isFinal{\dexp_2} }
-{\stepsTo{\dapP{\dlam{x}{\htau}{\dexp_1}}{\dexp_2}}{ [\dexp_2/x]\dexp_1 }}
+{\stepsToD{\Delta}{\dapP{\dlam{x}{\htau}{\dexp_1}}{\dexp_2}}{ [\dexp_2/x]\dexp_1 }}
 \end{mathpar}
 \caption{Structural Dynamics}
 \label{fig:isValue}
@@ -583,11 +600,11 @@ If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$ and $\hasType{\Delta}{\hGamma}{\dex
 \end{theorem}
 
 \begin{theorem}[Progress]
-If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\isValue{\dexp}$ or $\isIndet{\dexp}$ or $\isErr{\Delta}{\dexp}$ or $\stepsTo{\dexp}{\dexp'}$.
+If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\isValue{\dexp}$ or $\isIndet{\dexp}$ or $\isErr{\Delta}{\dexp}$ or $\stepsToD{\Delta}{\dexp}{\dexp'}$.
 \end{theorem}
 
 \begin{theorem}[Preservation]
-  If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and $\stepsTo{\dexp}{\dexp'}$ then $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \todo{or maybe up to consistency?}
+  If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and $\stepsToD{\Delta}{\dexp}{\dexp'}$ then $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \todo{or maybe up to consistency?}
 \end{theorem}
 
 \todo{complete progress + preservation}
@@ -595,3 +612,7 @@ If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\isValue{\dexp}$ or 
 \todo{canonical forms}
 
 \todo{indeterminate forms}
+
+\todo{theorem that special casing the holes in EANEHole gives you ``the
+most descriptive hole types'' for some sense of what that means -- they'd
+all just be hole other wise}
