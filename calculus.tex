@@ -454,11 +454,11 @@ y & (y \neq x)\\
 \begin{mathpar}
 \inferrule[IEHole]
 { }
-{\isIndet{\dehole{\mvar}{\subst}{\todo{??}}}}
+{\isIndet{\dehole{\mvar}{\subst}{m}}}
 
 \inferrule[INEHole]
 {\isFinal{\dexp}}
-{\isIndet{\dhole{\dexp}{\mvar}{\subst}{\todo{??}}}}
+{\isIndet{\dhole{\dexp}{\mvar}{\subst}{m}}}
 
 \inferrule[IAp]
 {\isIndet{\dexp_1}\\
@@ -474,65 +474,55 @@ y & (y \neq x)\\
 
 \judgbox{\isFinal{\dexp}}{$\dexp$ is final (it cannot be stepped)}
 \begin{mathpar}
-\Infer{FVal}
+\inferrule[FVal]
 {\isValue{\dexp}}{\isFinal{\dexp}}
 \and
-\Infer{FIndet}
+\inferrule[FIndet]
 {\isIndet{\dexp}}{\isFinal{\dexp}}
-%% No longer a rule: Errors are not indet anymore:
-%% \and
-%% \Infer{f-err}
-%% {\isErr{\dexp}}{\isFinal{\dexp}}
 \end{mathpar}
 
-\todo{the judgmental forms are not consistent in these
-rules; the contexts change. need to figure this out.}
-
-\judgbox{\isErr{\Delta}{\dexp}}{Under $\Delta$, $\dexp$ contains a cast error}
+\judgbox{\isErr{\Delta}{\dexp}}{$\dexp$ contains a cast error}
 \begin{mathpar}
-\inferrule[ERNEHole~\todo{??}]
-{\subst \sim_? \Gamma_2
-\\
-\isErr{\Delta; \Gamma_1, \Gamma_2}{\dexp}}
-{\isErr{\Delta; \Gamma_1}{\dhole{\dexp}{\mvar}{\subst}}}
-
-\inferrule[ERCastError~\todo{??}]
-% XXX use macro type assignment judgement here
-{\hasType{\Delta}{\todo{\emptyset}}{e}{\htau_2}\\
- \tinconsistent{\htau_1}{\htau_2}}
-{\isErr{\Delta}{\dcast{\htau_1}{\dexp}}}
-
-\inferrule[ERLam~\todo{??}]
-% XXX use macro type assignment judgement here
-{\isErr{\Delta; \Gamma, x:\htau_1}{\dexp}}
-{\isErr{\Delta; \Gamma}{\halam{x}{\htau}{\dexp}}}
-
-\\
-
-\inferrule[ERAp1]
-{
- \isErr{\Delta}{\dexp_1}
- %\\\
- %isFinal{\dexp_2}~\text{\todo{??}}
+\inferrule[ECastError]{
+  \hasType{\Delta}{\emptyset}{\dexp}{\htau_2}\\
+  \tinconsistent{\htau_1}{\htau_2}
+}{
+  \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
 }
-{\isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}}
 
-\inferrule[ERAp2]
-{
- %\isIndet{\dexp_1}
- %\\
- \isErr{\Delta}{\dexp_2}
+\inferrule[EAp1]{
+  \isErr{\Delta}{\dexp_1}
+}{
+  \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
 }
-{\isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}}
 
-\inferrule[ERCast]
-% XXX use macro type assignment judgement here
-{\isErr{\Delta}{\dexp}}
-{\isErr{\Delta}{\dcast{\htau_1}{\dexp}}}
+\inferrule[EAp2]{
+  \isErr{\Delta}{\dexp_2}
+}{
+  \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
+}
 
+\inferrule[ENEHole]{
+  \isErr{\Delta}{\dexp}
+}{
+  \isErr{\Delta}{\dhole{\dexp}{\mvar}{\subst}{m}}
+}
+
+\inferrule[ECastProp]{
+  \isErr{\Delta}{\dexp}
+}{
+  \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
+}
 \end{mathpar}
+\caption{Auxiliary Judgments for the Dynamics}
+\label{fig:isValue}
+\label{fig:isIndet}
+\label{fig:isFinal}
+\label{fig:isErr}
+\end{figure}
 
-\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{under $\Delta$, $\dexp_1$
+\begin{figure}
+\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$
 steps to $\dexp_2$}
 \begin{mathpar}
 \Infer{STHole}
