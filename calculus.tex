@@ -400,7 +400,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \begin{figure}[!ht]
 \judgbox{[\dexp_1 / x] \dexp_2 = \dexp_3}{Substitution}
 \[
-\begin{array}{lcl}
+\begin{array}{lcll}
 [\dexp_1 / x] c
 &=&
 c\\
@@ -409,14 +409,15 @@ c\\
 \dexp_1\\
 {[\dexp_1 / x] y}
 &=&
-y\\
+y & (y \neq x)\\
 {[\dexp_1 / x] \dlam{y}{\htau}{\dexp_2}}
 &=&
 {\dlam{y}{\htau}{[\dexp_1 / x] \dexp_2}}
+& (y \neq x)
 \\
-{[\dexp_1 / x] \dap{e_2}{e_3}}
+{[\dexp_1 / x] \dap{d_2}{d_3}}
 &=&
-{\dapP{[\dexp_1 / x] e_2}{[\dexp_1 / x] e_3}}
+{\dapP{[\dexp_1 / x] d_2}{[\dexp_1 / x] d_3}}
 \\
 % {[\dexp_1 / x] \dinj{i}{e_2}}
 % &=&
@@ -426,13 +427,13 @@ y\\
 % &=&
 % {\dcase{[\dexp_1 / x]e}{x}{[\dexp_1 / x]e_x}{y}{[\dexp_1 / x]e_y}}
 % \\
-{[\dexp_1 / x]} \dehole{\mvar}{\subst}{\todo{??}}
+{[\dexp_1 / x]} \dehole{\mvar}{\subst}{m}
 &=&
-\dehole{\mvar}{[\dexp_1 / x] \subst}{\todo{??}}
+\dehole{\mvar}{[\dexp_1 / x] \subst}{m}
 \\
-{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}{\todo{??}}}
+{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}{m}}
 &=&
-\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}{\todo{??}}
+\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}{m}
 \end{array}
 \]
 \end{figure}
