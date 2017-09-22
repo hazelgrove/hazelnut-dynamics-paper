@@ -544,11 +544,11 @@ steps to $\dexp_2$}
 \tconsistent{\tau_1}{\tau_2}}
 {\stepsToD{\Delta}{\dcast{\htau_1}{\dexp}}{\dexp}}
 
-\inferrule[STAp1]
+\inferrule[STApStep1]
 {\stepsToD{\Delta}{\dexp_1}{\dexp_1'}}
 {\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1'}{\dexp_2}}}
 
-\inferrule[STAp2]
+\inferrule[STApStep2]
 { \isFinal{\dexp_1} \\ \stepsToD{\Delta}{\dexp_2}{\dexp_2'}}
 {\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1}{\dexp_2'}}}
 
