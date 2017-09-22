@@ -218,8 +218,10 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \expandSyn{\hGamma}{c}{b}{c}{\emptyset}
 }
 
-\inferrule[ESVar]{ }{
-  \expandSyn{\hGamma, x : \htau}{x}{\htau}{x}{\emptyset}
+\inferrule[ESVar]{
+  x : \htau \in \hGamma
+}{
+  \expandSyn{\hGamma}{x}{\htau}{x}{\emptyset}
 }
 
 \inferrule[ESLam]{
@@ -348,8 +350,10 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \hasType{\Delta}{\hGamma}{c}{b}
 }
 
-\inferrule[TAVar]{ }{
-	\hasType{\Delta}{\hGamma, x : \htau}{x}{\htau}
+\inferrule[TAVar]{
+  x : \htau \in \hGamma
+}{
+	\hasType{\Delta}{\hGamma}{x}{\htau}
 }
 
 \inferrule[TALam]{
@@ -367,16 +371,18 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }
 
 \inferrule[TAEHole]{
+  \Dbinding{u}{\hGamma'}{\htau} \in \Delta\\
   \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
 }{
-  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dehole{u}{\sigma}{\markname}}{\htau}
+  \hasType{\Delta}{\hGamma}{\dehole{u}{\sigma}{\markname}}{\htau}
 }
 
 \inferrule[TANEHole]{
+  \Dbinding{u}{\hGamma'}{\htau} \in \Delta\\
   \hasType{\Delta}{\hGamma}{\dexp}{\htau'}\\
   \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
 }{
-  \hasType{\Delta, \Dbinding{u}{\hGamma'}{\htau}}{\hGamma}{\dhole{\dexp}{u}{\sigma}{\markname}}{\htau}
+  \hasType{\Delta}{\hGamma}{\dhole{\dexp}{u}{\sigma}{\markname}}{\htau}
 }
 
 \inferrule[TACast]{
@@ -557,9 +563,20 @@ steps to $\dexp_2$}
 {\stepsToD{\Delta}{\dapP{\dlam{x}{\htau}{\dexp_1}}{\dexp_2}}{ [\dexp_2/x]\dexp_1 }}
 \end{mathpar}
 \caption{Structural Dynamics}
-\label{fig:isValue}
-\label{fig:isIndet}
 \label{fig:stepsTo}
+\end{figure}
+
+
+\begin{figure}
+TODO: syntax of evaluation contexts
+
+TODO: reductions
+
+TODO: find holes
+
+TODO: transitions
+\caption{Contextual Dynamics}
+\label{fig:contextual-dynamics}
 \end{figure}
 
 
