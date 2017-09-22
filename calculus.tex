@@ -454,11 +454,11 @@ y & (y \neq x)\\
 \begin{mathpar}
 \inferrule[IEHole]
 { }
-{\isIndet{\dehole{\mvar}{\subst}{m}}}
+{\isIndet{\dehole{\mvar}{\subst}{\evaled}}}
 
 \inferrule[INEHole]
 {\isFinal{\dexp}}
-{\isIndet{\dhole{\dexp}{\mvar}{\subst}{m}}}
+{\isIndet{\dhole{\dexp}{\mvar}{\subst}{\evaled}}}
 
 \inferrule[IAp]
 {\isIndet{\dexp_1}\\
@@ -525,24 +525,34 @@ y & (y \neq x)\\
 \judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$
 steps to $\dexp_2$}
 \begin{mathpar}
-\Infer{STHole}
+\inferrule[STEHoleEvaled]
+{ }
+{\stepsToD{\Delta}{\dehole{\mvar}{\subst}{\unevaled}}{\dehole{\mvar}{\subst}{\evaled}}}
+
+\inferrule[STNEHoleStep]
 {\stepsToD{\Delta}{\dexp_1}{\dexp_2} }
-{\stepsToD{\Delta}{\dhole{\dexp_1}{\mvar}{\subst}{\todo{??}}}{\dhole{\dexp_2}{\mvar}{\subst}{\todo{??}}}}
-\and
-\Infer{STCast}
-{\hasType{\Delta}{\emptyset}{\dexp}{\htau_2} \\
- \tconsistent{\tau_1}{\tau_2}}
+{\stepsToD{\Delta}{\dhole{\dexp_1}{\mvar}{\subst}{\unevaled}}{\dhole{\dexp_2}{\mvar}{\subst}{\unevaled}}}
+
+\inferrule[STNEHoleEvaled]
+{\isFinal{\dexp}}
+{\stepsToD{\Delta}{\dhole{\dexp}{\mvar}{\subst}{\unevaled}}{\dhole{\dexp}{\mvar}{\subst}{\evaled}}}
+
+\inferrule[STCast]
+{
+\isValue{\dexp}\\
+\hasType{\Delta}{\emptyset}{\dexp}{\htau_2} \\
+\tconsistent{\tau_1}{\tau_2}}
 {\stepsToD{\Delta}{\dcast{\htau_1}{\dexp}}{\dexp}}
-\\
-\Infer{STAp1}
+
+\inferrule[STAp1]
 {\stepsToD{\Delta}{\dexp_1}{\dexp_1'}}
 {\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1'}{\dexp_2}}}
-\and
-\Infer{STAp2}
+
+\inferrule[STAp2]
 { \isFinal{\dexp_1} \\ \stepsToD{\Delta}{\dexp_2}{\dexp_2'}}
 {\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1}{\dexp_2'}}}
-\and
-\Infer{STAp$\beta$}
+
+\inferrule[STApBeta]
 { \isFinal{\dexp_2} }
 {\stepsToD{\Delta}{\dapP{\dlam{x}{\htau}{\dexp_1}}{\dexp_2}}{ [\dexp_2/x]\dexp_1 }}
 \end{mathpar}
