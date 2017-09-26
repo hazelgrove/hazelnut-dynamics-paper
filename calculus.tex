@@ -645,10 +645,25 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \selectEvalCtx{\hap{d_1}{d_2}}{\hap{d_1}{\evalctx}}{d_2'}
 }
 
+\inferrule[\todo{??}]{ }{
+  \selectEvalCtx{\dehole{\mvar}{\subst}{\evaled}}{\evalhole}{\dehole{\mvar}{\subst}{\evaled}}
+}
+
+\inferrule[\todo{??}]{ }{
+  \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\evaled}}{\evalhole}{\dhole{d}{\mvar}{\subst}{\evaled}}
+}
+
+
 \inferrule[\todo{??}]{
   \selectEvalCtx{d}{\evalctx}{d'}
 }{
-  \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\markname}}{\dhole{\evalctx}{\mvar}{\subst}{\markname}}{d'}
+  \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\unevaled}}{\dhole{\evalctx}{\mvar}{\subst}{\unevaled}}{d'}
+}
+
+\inferrule[\todo{??}]{
+  \isFinal{d}
+}{
+  \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\unevaled}}{\evalhole}{\dhole{d}{\mvar}{\subst}{\unevaled}}
 }
 
 \inferrule[\todo{??}]{
@@ -674,6 +689,16 @@ reduces to $\dexp_2$}
   \tconsistent{\tau_1}{\tau_2}
 }{
   \reducesE{\Delta}{\dcast{\htau_1}{d}}{d}
+}
+
+\inferrule[\todo{??}]{ }{
+  \reducesE{\Delta}{\dehole{\mvar}{\subst}{\unevaled}}{\dehole{\mvar}{\subst}{\evaled}}
+}
+
+\inferrule[\todo{??}]{
+  \isFinal{d}
+}{
+  \reducesE{\Delta}{\dhole{d}{\mvar}{\subst}{\unevaled}}{\dhole{d}{\mvar}{\subst}{\evaled}}
 }
 \end{mathpar}
 
