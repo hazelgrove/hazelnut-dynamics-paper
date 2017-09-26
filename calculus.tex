@@ -576,11 +576,12 @@ steps to $\dexp_2$}
 \end{figure}
 
 
+%%   \halam{x}{\htau}{\evalctx} ~\vert~
+
 \begin{figure}
 $\arraycolsep=4pt\begin{array}{rllllll}
 \mathsf{EvalCtx} & \evalctx & ::= &
   \evalhole ~\vert~
-  \halam{x}{\htau}{\evalctx} ~\vert~
   \hap{\evalctx}{\dexp} ~\vert~
   \hap{\dexp}{\evalctx} ~\vert~
   \dhole{\evalctx}{\mvar}{\subst}{\markname} ~\vert~
@@ -593,11 +594,11 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \isevalctx{\evalhole}
 }
 
-\inferrule[ECLam]{
-  \isevalctx{\evalctx}
-}{
-  \isevalctx{\halam{x}{\htau}{\evalctx}}
-}
+%% \inferrule[ECLam]{
+%%   \isevalctx{\evalctx}
+%% }{
+%%   \isevalctx{\halam{x}{\htau}{\evalctx}}
+%% }
 
 \inferrule[ECAp1]{
   \isFinal{\dexp}\\
@@ -628,59 +629,50 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \judgbox{\selectEvalCtx{d}{\evalctx}{d'}}{$d$ is the result of filling the
 hole in $\evalctx$ with $d'$}
 \begin{mathpar}
-\inferrule[FDot]{ }{
-  \selectEvalCtx{d}{\evalhole}{d}
+\inferrule[FHConst]{ }{
+  \selectEvalCtx{c}{\evalhole}{c}
 }
 
-%% \todo{d used to be c -- TODO IEV}
+%% \inferrule[FLam]{
+%%   \selectEvalCtx{d}{\evalctx}{d'}
+%% }{
+%%   \selectEvalCtx{\halam{x}{\htau}{d}}{\halam{x}{\htau}{\evalctx}}{d'}
+%% }
 
-\inferrule[FLam]{
-  \selectEvalCtx{d}{\evalctx}{d'}
-}{
-  \selectEvalCtx{\halam{x}{\htau}{d}}{\halam{x}{\htau}{\evalctx}}{d'}
-}
-
-\inferrule[FAp1]{
+\inferrule[FHAp1]{
   \isFinal{d_1}\\
   \selectEvalCtx{d_2}{\evalctx}{d_2'}
 }{
   \selectEvalCtx{\hap{d_1}{d_2}}{\hap{d_1}{\evalctx}}{d_2'}
 }
 
-\inferrule[FAp2]{
+\inferrule[FHAp2]{
   \selectEvalCtx{d_1}{\evalctx}{d_1'}
 }{
   \selectEvalCtx{\hap{d_1}{d_2}}{\hap{\evalctx}{d_2}}{d_1'}
 }
 
-%% I think these rules are not needed, if you make FDot work for any dhexp
-%% d. The only reason they might be needed is because they're specified to
-%% have check marks, not x marks, but i don't think that's important. i
-%% think the more general FDot makes sense. -- TODO IEV
-%%
-%%
-%% \inferrule[\todo{??}]{ }{
-%%   \selectEvalCtx{\dehole{\mvar}{\subst}{\evaled}}{\evalhole}{\dehole{\mvar}{\subst}{\evaled}}
-%% }
+\inferrule[FHEHole]{ }{
+  \selectEvalCtx{\dehole{\mvar}{\subst}{m}}{\evalhole}{\dehole{\mvar}{\subst}{m}}
+}
 
-%% \inferrule[\todo{??}]{ }{
-%%   \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\evaled}}{\evalhole}{\dhole{d}{\mvar}{\subst}{\evaled}}
-%% }
+\inferrule[FHNEHoleEvaled]{ }{
+  \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\evaled}}{\evalhole}{\dhole{d}{\mvar}{\subst}{\evaled}}
+}
 
-
-\inferrule[\todo{??}]{
+\inferrule[FHNEHoleInside]{
   \selectEvalCtx{d}{\evalctx}{d'}
 }{
   \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\unevaled}}{\dhole{\evalctx}{\mvar}{\subst}{\unevaled}}{d'}
 }
 
-\inferrule[\todo{??}]{
+\inferrule[FHNEHoleFinal]{
   \isFinal{d}
 }{
   \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\unevaled}}{\evalhole}{\dhole{d}{\mvar}{\subst}{\unevaled}}
 }
 
-\inferrule[FCast]{
+\inferrule[FHCast]{
   \selectEvalCtx{d}{\evalctx}{d'}
 }{
   \selectEvalCtx{\dcast{\htau}{d}}{\dcast{\htau}{\evalctx}}{d'}
