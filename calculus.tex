@@ -500,6 +500,11 @@ y & (y \neq x)\\
   \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
 }
 
+\inferrule[EConst]{
+}{
+  \isErr{\Delta}{\dcast{\tau}{\dconst}}
+}
+
 \inferrule[EAp1]{
   \isErr{\Delta}{\dexp_1}
 }{
@@ -573,7 +578,7 @@ steps to $\dexp_2$}
 
 \begin{figure}
 $\arraycolsep=4pt\begin{array}{rllllll}
-\mathsf{EvalCtx} & \evalctx & ::= & 
+\mathsf{EvalCtx} & \evalctx & ::= &
   \evalhole ~\vert~
   \halam{x}{\htau}{\evalctx} ~\vert~
   \hap{\evalctx}{\dexp} ~\vert~
@@ -584,74 +589,83 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 
 \judgbox{\isevalctx{\evalctx}}{$\evalctx$ is an evaluation context}
 \begin{mathpar}
-\inferrule[\todo{??}]{ }{
+\inferrule[ECDot]{ }{
   \isevalctx{\evalhole}
 }
 
-\inferrule[\todo{??}]{
+\inferrule[ECLam]{
   \isevalctx{\evalctx}
 }{
   \isevalctx{\halam{x}{\htau}{\evalctx}}
 }
 
-\inferrule[\todo{??}]{
-  \isevalctx{\evalctx}
-}{
-  \isevalctx{\hap{\evalctx}{\dexp}}
-}
-
-\inferrule[\todo{??}]{
+\inferrule[ECAp1]{
   \isFinal{\dexp}\\
   \isevalctx{\evalctx}
 }{
   \isevalctx{\hap{\dexp}{\evalctx}}
 }
 
-\inferrule[\todo{??}]{
+\inferrule[ECAp2]{
+  \isevalctx{\evalctx}
+}{
+  \isevalctx{\hap{\evalctx}{\dexp}}
+}
+
+\inferrule[ECNEHole]{
   \isevalctx{\evalctx}
 }{
   \isevalctx{\dhole{\evalctx}{\mvar}{\subst}{\markname}}
 }
 
-\inferrule[\todo{??}]{
+\inferrule[ECCast]{
   \isevalctx{\evalctx}
 }{
   \isevalctx{\dcast{\htau}{\evalctx}}
 }
 \end{mathpar}
 
-\judgbox{\selectEvalCtx{d}{\evalctx}{d'}}{$d$ should be evaluated as $\selectEvalCtxR{\evalctx}{d'}$}
+\judgbox{\selectEvalCtx{d}{\evalctx}{d'}}{$d$ is the result of filling the
+hole in $\evalctx$ with $d'$}
 \begin{mathpar}
-\inferrule[\todo{??}]{ }{
-  \selectEvalCtx{c}{\evalhole}{c}
+\inferrule[FDot]{ }{
+  \selectEvalCtx{d}{\evalhole}{d}
 }
 
-\inferrule[\todo{??}]{
+%% \todo{d used to be c -- TODO IEV}
+
+\inferrule[FLam]{
   \selectEvalCtx{d}{\evalctx}{d'}
 }{
   \selectEvalCtx{\halam{x}{\htau}{d}}{\halam{x}{\htau}{\evalctx}}{d'}
 }
 
-\inferrule[\todo{??}]{
-  \selectEvalCtx{d_1}{\evalctx}{d_1'}
-}{
-  \selectEvalCtx{\hap{d_1}{d_2}}{\hap{\evalctx}{d_2}}{d_1'}
-}
-
-\inferrule[\todo{??}]{
+\inferrule[FAp1]{
   \isFinal{d_1}\\
   \selectEvalCtx{d_2}{\evalctx}{d_2'}
 }{
   \selectEvalCtx{\hap{d_1}{d_2}}{\hap{d_1}{\evalctx}}{d_2'}
 }
 
-\inferrule[\todo{??}]{ }{
-  \selectEvalCtx{\dehole{\mvar}{\subst}{\evaled}}{\evalhole}{\dehole{\mvar}{\subst}{\evaled}}
+\inferrule[FAp2]{
+  \selectEvalCtx{d_1}{\evalctx}{d_1'}
+}{
+  \selectEvalCtx{\hap{d_1}{d_2}}{\hap{\evalctx}{d_2}}{d_1'}
 }
 
-\inferrule[\todo{??}]{ }{
-  \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\evaled}}{\evalhole}{\dhole{d}{\mvar}{\subst}{\evaled}}
-}
+%% I think these rules are not needed, if you make FDot work for any dhexp
+%% d. The only reason they might be needed is because they're specified to
+%% have check marks, not x marks, but i don't think that's important. i
+%% think the more general FDot makes sense. -- TODO IEV
+%%
+%%
+%% \inferrule[\todo{??}]{ }{
+%%   \selectEvalCtx{\dehole{\mvar}{\subst}{\evaled}}{\evalhole}{\dehole{\mvar}{\subst}{\evaled}}
+%% }
+
+%% \inferrule[\todo{??}]{ }{
+%%   \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\evaled}}{\evalhole}{\dhole{d}{\mvar}{\subst}{\evaled}}
+%% }
 
 
 \inferrule[\todo{??}]{
@@ -666,7 +680,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\unevaled}}{\evalhole}{\dhole{d}{\mvar}{\subst}{\unevaled}}
 }
 
-\inferrule[\todo{??}]{
+\inferrule[FCast]{
   \selectEvalCtx{d}{\evalctx}{d'}
 }{
   \selectEvalCtx{\dcast{\htau}{d}}{\dcast{\htau}{\evalctx}}{d'}
@@ -675,15 +689,15 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 
 
 \judgbox{\reducesE{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$
-reduces to $\dexp_2$}
+transitions to $\dexp_2$}
 \begin{mathpar}
-\inferrule[\todo{??}]{
+\inferrule[ITLam]{
   \isFinal{d_2}
 }{
   \reducesE{\Delta}{\hap{(\halam{x}{\htau}{d})}{d_2}}{[d_2/x]d}
 }
 
-\inferrule[\todo{??}]{
+\inferrule[ITCast]{
   \isFinal{d}\\
   \hasType{\Delta}{\emptyset}{d}{\tau_2}\\
   \tconsistent{\tau_1}{\tau_2}
@@ -691,11 +705,11 @@ reduces to $\dexp_2$}
   \reducesE{\Delta}{\dcast{\htau_1}{d}}{d}
 }
 
-\inferrule[\todo{??}]{ }{
+\inferrule[ITEHole]{ }{
   \reducesE{\Delta}{\dehole{\mvar}{\subst}{\unevaled}}{\dehole{\mvar}{\subst}{\evaled}}
 }
 
-\inferrule[\todo{??}]{
+\inferrule[ITNEHole]{
   \isFinal{d}
 }{
   \reducesE{\Delta}{\dhole{d}{\mvar}{\subst}{\unevaled}}{\dhole{d}{\mvar}{\subst}{\evaled}}
@@ -704,7 +718,7 @@ reduces to $\dexp_2$}
 
 \judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
 \begin{mathpar}
-\inferrule[\todo{??}]{
+\inferrule[Step]{
   \selectEvalCtx{d}{\evalctx}{d_0}\\
   \reducesE{\Delta}{d_0}{d_0'}\\
   \selectEvalCtx{d'}{\evalctx}{d_0'}
@@ -755,19 +769,67 @@ If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$ and $\hasType{\Delta}{\hGamma}{\dex
 \end{theorem}
 
 \begin{theorem}[Progress]
-If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\isValue{\dexp}$ or $\isIndet{\dexp}$ or $\isErr{\Delta}{\dexp}$ or $\stepsToD{\Delta}{\dexp}{\dexp'}$.
+If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either
+$\isValue{\dexp}$ or $\isIndet{\dexp}$ or $\isErr{\Delta}{\dexp}$ or
+$\stepsToD{\Delta}{\dexp}{\dexp'}$ for some $\dexp'$.
 \end{theorem}
 
 \begin{theorem}[Preservation]
-  If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and $\stepsToD{\Delta}{\dexp}{\dexp'}$ then $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \todo{or maybe up to consistency?}
+  If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and
+  $\stepsToD{\Delta}{\dexp}{\dexp'}$ then
+  $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \todo{or maybe up to
+  consistency?}
 \end{theorem}
 
-\todo{complete progress + preservation}
+\begin{theorem}[Complete Progress \todo{??}]
+If $\hcomplete{\hexp}$ and
+$\expandSyn{\emptyset}{\hexp}{\htau}{\dexp}{\Delta}$ then either
+$\isValue{\dexp}$ or $\stepsToD{\Delta}{\dexp}{\dexp'}$ for some $\dexp'$.
+
+\end{theorem}
+
+\begin{theorem}[Complete Preservation \todo{??}]
+If $\hcomplete{\hexp}$ and
+$\expandSyn{\emptyset}{\hexp}{\htau}{\dexp}{\Delta}$ and
+$\stepsToD{\Delta}{\dexp}{\dexp'}$ then
+$\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$
+\end{theorem}
+
+\begin{theorem}[Commutativity \todo{state this}]
+\end{theorem}
+
+
+\begin{theorem}[Maximum Informativity]
+If the expansion produces $t1$, and there exists another possible type choice
+$t2$, then $t1 \sim t2$ and $t1 JOIN t2 = t1$
+\end{theorem}\footnote{idea is that special casing the holes in EANEHole gives you ``the
+most descriptive hole types'' for some sense of what that means -- they'd
+all just be hole other wise. from Matt:
+\begin{quote}
+It sounds like we need a something akin to an abstract domain (a lattice),
+where hole has the least information, and a fully-defined type (without
+holes) has the most information.  You can imagine that this lattice really
+expands the existing definition we have of type consistency, which is
+merely the predicate that says whether two types are comparable
+(“join-able”) in this lattice.  lattice join is the operation that goes
+through the structure of two (consistent) types, and chooses the structure
+that is more defined (i.e., non-hole, if given the choice between hole and
+non-hole).
+
+The rule choosenonhole below is the expansion of this consistency rule that
+we already have (hole consistent with everything)
+\end{quote}}
+
+\begin{verbatim}
+t not hole
+-------------------- :: choose-non-hole
+hole JOIN t  = t
+\end{verbatim}
+\begin{verbatim}
+------------ :: hole-consistent-with-everything
+hole ~ t
+\end{verbatim}
 
 \todo{canonical forms}
 
 \todo{indeterminate forms}
-
-\todo{theorem that special casing the holes in EANEHole gives you ``the
-most descriptive hole types'' for some sense of what that means -- they'd
-all just be hole other wise}
