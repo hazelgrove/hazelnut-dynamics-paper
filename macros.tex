@@ -167,3 +167,11 @@
 \newcommand{\Dunion}[2]{#1 \cup #2}
 \newcommand{\idof}[1]{\mathsf{id}(#1)}
 \newcommand{\Dbinding}[3]{#1 :: [#2]#3}
+
+% Contextual dynamics
+\newcommand{\evalctx}{\mathcal{E}}
+\newcommand{\evalhole}{\circ}
+\newcommand{\isevalctx}[1]{#1~\mathsf{evalCtx}}
+\newcommand{\reducesE}[3]{#1 \vdash #2 \longrightarrow #3}
+\newcommand{\selectEvalCtxR}[2]{#1\{#2\}}
+\newcommand{\selectEvalCtx}[3]{#1=\selectEvalCtxR{#2}{#3}}

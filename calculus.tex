@@ -378,7 +378,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 }
 
 \inferrule[TANEHole]{
-  \Dbinding{u}{\hGamma'}{\htau} \in \Delta\\
+  \Dbinding{u}{\hGamma'}{\htau} \in \Delta\\\\
   \hasType{\Delta}{\hGamma}{\dexp}{\htau'}\\
   \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
 }{
@@ -568,13 +568,121 @@ steps to $\dexp_2$}
 
 
 \begin{figure}
-TODO: syntax of evaluation contexts
+$\arraycolsep=4pt\begin{array}{rllllll}
+\mathsf{EvalCtx} & \evalctx & ::= & 
+  \evalhole ~\vert~
+  \halam{x}{\htau}{\evalctx} ~\vert~
+  \hap{\evalctx}{\dexp} ~\vert~
+  \hap{\dexp}{\evalctx} ~\vert~
+  \dhole{\evalctx}{\mvar}{\subst}{\markname} ~\vert~
+  \dcast{\htau}{\evalctx}
+\end{array}$
 
-TODO: reductions
+\judgbox{\isevalctx{\evalctx}}{$\evalctx$ is an evaluation context}
+\begin{mathpar}
+\inferrule[\todo{??}]{ }{
+  \isevalctx{\evalhole}
+}
 
-TODO: find holes
+\inferrule[\todo{??}]{
+  \isevalctx{\evalctx}
+}{
+  \isevalctx{\halam{x}{\htau}{\evalctx}}
+}
 
-TODO: transitions
+\inferrule[\todo{??}]{
+  \isevalctx{\evalctx}
+}{
+  \isevalctx{\hap{\evalctx}{\dexp}}
+}
+
+\inferrule[\todo{??}]{
+  \isFinal{\dexp}\\
+  \isevalctx{\evalctx}
+}{
+  \isevalctx{\hap{\dexp}{\evalctx}}
+}
+
+\inferrule[\todo{??}]{
+  \isevalctx{\evalctx}
+}{
+  \isevalctx{\dhole{\evalctx}{\mvar}{\subst}{\markname}}
+}
+
+\inferrule[\todo{??}]{
+  \isevalctx{\evalctx}
+}{
+  \isevalctx{\dcast{\htau}{\evalctx}}
+}
+\end{mathpar}
+
+\judgbox{\selectEvalCtx{d}{\evalctx}{d'}}{$d$ should be evaluated as $\selectEvalCtxR{\evalctx}{d'}$}
+\begin{mathpar}
+\inferrule[\todo{??}]{ }{
+  \selectEvalCtx{c}{\evalhole}{c}
+}
+
+\inferrule[\todo{??}]{
+  \selectEvalCtx{d}{\evalctx}{d'}
+}{
+  \selectEvalCtx{\halam{x}{\htau}{d}}{\halam{x}{\htau}{\evalctx}}{d'}
+}
+
+\inferrule[\todo{??}]{
+  \selectEvalCtx{d_1}{\evalctx}{d_1'}
+}{
+  \selectEvalCtx{\hap{d_1}{d_2}}{\hap{\evalctx}{d_2}}{d_1'}
+}
+
+\inferrule[\todo{??}]{
+  \isFinal{d_1}\\
+  \selectEvalCtx{d_2}{\evalctx}{d_2'}
+}{
+  \selectEvalCtx{\hap{d_1}{d_2}}{\hap{d_1}{\evalctx}}{d_2'}
+}
+
+\inferrule[\todo{??}]{
+  \selectEvalCtx{d}{\evalctx}{d'}
+}{
+  \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\markname}}{\dhole{\evalctx}{\mvar}{\subst}{\markname}}{d'}
+}
+
+\inferrule[\todo{??}]{
+  \selectEvalCtx{d}{\evalctx}{d'}
+}{
+  \selectEvalCtx{\dcast{\htau}{d}}{\dcast{\htau}{\evalctx}}{d'}
+}
+\end{mathpar}
+
+
+\judgbox{\reducesE{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$
+reduces to $\dexp_2$}
+\begin{mathpar}
+\inferrule[\todo{??}]{
+  \isFinal{d_2}
+}{
+  \reducesE{\Delta}{\hap{(\halam{x}{\htau}{d})}{d_2}}{[d_2/x]d}
+}
+
+\inferrule[\todo{??}]{
+  \isFinal{d}\\
+  \hasType{\Delta}{\emptyset}{d}{\tau_2}\\
+  \tconsistent{\tau_1}{\tau_2}
+}{
+  \reducesE{\Delta}{\dcast{\htau_1}{d}}{d}
+}
+\end{mathpar}
+
+\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
+\begin{mathpar}
+\inferrule[\todo{??}]{
+  \selectEvalCtx{d}{\evalctx}{d_0}\\
+  \reducesE{\Delta}{d_0}{d_0'}\\
+  \selectEvalCtx{d'}{\evalctx}{d_0'}
+}{
+  \stepsToD{\Delta}{\dexp}{\dexp'}
+}
+\end{mathpar}
 \caption{Contextual Dynamics}
 \label{fig:contextual-dynamics}
 \end{figure}
