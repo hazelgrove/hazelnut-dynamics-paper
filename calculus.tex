@@ -677,6 +677,12 @@ hole in $\evalctx$ with $d'$}
 }{
   \selectEvalCtx{\dcast{\htau}{d}}{\dcast{\htau}{\evalctx}}{d'}
 }
+
+\inferrule[FHCastFinal]{
+  \isFinal{d}
+}{
+  \selectEvalCtx{\dcast{\htau}{d}}{\evalhole}{\dcast{\htau}{d}}
+}
 \end{mathpar}
 
 
