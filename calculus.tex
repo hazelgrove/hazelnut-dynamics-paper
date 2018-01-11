@@ -28,8 +28,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \hhole{\hexp}{u} ~\vert~
   {\hlam{x}{\hexp}} ~\vert~
   \hexp : \htau\\
-\mathsf{Mark} & \markname{} & ::= &
-  \evaled{} ~\vert~  \unevaled{}\\
+% \mathsf{Mark} & \markname{} & ::= &
+%   \evaled{} ~\vert~  \unevaled{}\\
  \mathsf{DHExp} & \dexp  & ::= &
   c ~\vert~
   x ~\vert~
@@ -40,8 +40,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   % \hinj{i}{\dexp} ~\vert~
   % \hcase{\dexp}{x}{\dexp}{x}{\dexp} ~\vert~
   % \hadd{\dexp}{\dexp} ~\vert~
-  \dehole{\mvar}{\subst}{\markname} ~\vert~
-  \dhole{\dexp}{\mvar}{\subst}{\markname} ~\vert~
+  \dehole{\mvar}{\subst}{} ~\vert~
+  \dhole{\dexp}{\mvar}{\subst}{} ~\vert~
   \dcast{\htau}{\dexp}\\
 \end{array}$
 \caption{Syntax of H-types, H-expressions and dynamic H-expressions. We write $x$ to range over variables, $u$ over hole names and $\sigma$ over finite substitutions.}
@@ -374,7 +374,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \Dbinding{u}{\hGamma'}{\htau} \in \Delta\\
   \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
 }{
-  \hasType{\Delta}{\hGamma}{\dehole{u}{\sigma}{\markname}}{\htau}
+  \hasType{\Delta}{\hGamma}{\dehole{u}{\sigma}{}}{\htau}
 }
 
 \inferrule[TANEHole]{
@@ -382,7 +382,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \hasType{\Delta}{\hGamma}{\dexp}{\htau'}\\
   \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
 }{
-  \hasType{\Delta}{\hGamma}{\dhole{\dexp}{u}{\sigma}{\markname}}{\htau}
+  \hasType{\Delta}{\hGamma}{\dhole{\dexp}{u}{\sigma}{}}{\htau}
 }
 
 \inferrule[TACast]{
@@ -433,13 +433,13 @@ y & (y \neq x)\\
 % &=&
 % {\dcase{[\dexp_1 / x]e}{x}{[\dexp_1 / x]e_x}{y}{[\dexp_1 / x]e_y}}
 % \\
-{[\dexp_1 / x]} \dehole{\mvar}{\subst}{m}
+{[\dexp_1 / x]} \dehole{\mvar}{\subst}{}
 &=&
-\dehole{\mvar}{[\dexp_1 / x] \subst}{m}
+\dehole{\mvar}{[\dexp_1 / x] \subst}{}
 \\
-{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}{m}}
+{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}{}}
 &=&
-\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}{m}
+\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}{}
 \\
 {[\dexp_1 / x] \dcast{\htau}{\dexp}}
 &=&
@@ -520,7 +520,7 @@ y & (y \neq x)\\
 \inferrule[ENEHole]{
   \isErr{\Delta}{\dexp}
 }{
-  \isErr{\Delta}{\dhole{\dexp}{\mvar}{\subst}{m}}
+  \isErr{\Delta}{\dhole{\dexp}{\mvar}{\subst}{}}
 }
 
 \inferrule[ECastProp]{
@@ -584,7 +584,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \evalhole ~\vert~
   \hap{\evalctx}{\dexp} ~\vert~
   \hap{\dexp}{\evalctx} ~\vert~
-  \dhole{\evalctx}{\mvar}{\subst}{\markname} ~\vert~
+  \dhole{\evalctx}{\mvar}{\subst}{} ~\vert~
   \dcast{\htau}{\evalctx}
 \end{array}$
 
@@ -616,7 +616,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \inferrule[ECNEHole]{
   \isevalctx{\evalctx}
 }{
-  \isevalctx{\dhole{\evalctx}{\mvar}{\subst}{\markname}}
+  \isevalctx{\dhole{\evalctx}{\mvar}{\subst}{}}
 }
 
 \inferrule[ECCast]{
@@ -653,7 +653,7 @@ hole in $\evalctx$ with $d'$}
 }
 
 \inferrule[FHEHole]{ }{
-  \selectEvalCtx{\dehole{\mvar}{\subst}{m}}{\evalhole}{\dehole{\mvar}{\subst}{m}}
+  \selectEvalCtx{\dehole{\mvar}{\subst}{}}{\evalhole}{\dehole{\mvar}{\subst}{}}
 }
 
 \inferrule[FHNEHoleEvaled]{ }{
@@ -767,9 +767,9 @@ If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$ and $\hasType{\Delta}{\hGamma}{\dex
 \end{theorem}
 
 \begin{theorem}[Progress]
-If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either
-$\isValue{\dexp}$ or $\isIndet{\dexp}$ or $\isErr{\Delta}{\dexp}$ or
-$\stepsToD{\Delta}{\dexp}{\dexp'}$ for some $\dexp'$.
+If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\stepsToD{\Delta}{\dexp}{\dexp'}$ or 
+$\isValue{\dexp}$ or $\isErr{\Delta}{\dexp}$ or $\isIndet{\dexp}$. 
+% for some $\dexp'$.
 \end{theorem}
 
 \begin{theorem}[Preservation]
