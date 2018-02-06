@@ -2,6 +2,38 @@
 \newcommand{\introSec}{Introduction}
 \section{\protect\introSec}
 \label{sec:intro}
-\todo{intro}
+\cy{intro from LIVE 2017 paper is below}
 
+Broadly speaking, live programming environments are those that granularly interleave editing and evaluation \cite{DBLP:conf/icse/Tanimoto13,DBLP:journals/vlc/Tanimoto90,McDirmid:2007:LUL:1297027.1297073,burckhardt2013s}. 
+In the words of \citet{burckhardt2013s}, live programming environments 
+``promise to narrow the temporal and perceptive gap 
+between program development and code execution''. Examples of live programming environments include {lab notebook environments},
+e.g. the popular IPython/Jupyter~\cite{PER-GRA:2007}, which allow the
+programmer to interactively edit and evaluate program fragments organized into a
+sequence of cells (an extension of the read-eval-print loop (REPL)); spreadsheets; {live graphics programming environments} like SuperGlue \cite{McDirmid:2007:LUL:1297027.1297073}, Sketch-n-Sketch \cite{DBLP:conf/pldi/ChughHSA16} and the tools demonstrated by Bret Victor in his lectures \cite{victor2012inventing}; the TouchDevelop live UI framework \cite{burckhardt2013s}; live mobile application development systems like Flutter \cite{flutter}; and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98}, to name a few prominent examples.
+
+
+The problem that has motivated much of our recent work is that most  
+programming environments, live programming environments included,  provide feedback via various editor services only once the program being edited is syntactically well-formed and, when relevant, well-typed. This leaves a ``temporal and perceptive gap'', because programmers sometimes leave a program malformed or ill-typed for extended periods of time, e.g. as they think about what to enter at the cursor, or as they work on a different part of the program.
+
+In view of this general problem, we recently developed a \emph{structure editor calculus} called Hazelnut where every edit state consists of a well-formed and statically meaningful, i.e. well-typed, incomplete expression, which we take to mean an expression with holes \cite{popl-paper}. This calculus addressed fundamental questions relevant to editor services that operate statically, but there was no solution in that paper to the problems faced by editor services that also require knowledge of the dynamic meaning of an incomplete program, as would be relevant to a live programming environment. For example, consider a \emph{stepper} (a.k.a. a \emph{stepwise debugger}), like that available to Haskell programmers in the GHCi system \cite{GHC-stepper} and other systems \cite{DBLP:conf/haskell/MarlowIPG07,kar13566}, to OCaml programmers with recent work on \texttt{ocamli} by \citet{ocaml-stepper} and to Standard ML programmers \cite{DBLP:journals/jfp/TolmachA95}. A stepper requires that the expression being stepped be assigned dynamic meaning according to a small-step operational semantics \cite{DBLP:journals/jlp/Plotkin04a,pfpl}, but no such semantics was defined for incomplete expressions that arise when using Hazelnut, or any of these other systems. Defining such a semantics was left as future work in the Hazelnut paper, and in a subsequent ``vision paper'' \cite{snapl17-paper}. The purpose of this paper is to sketch out our progress toward a theoretically well-grounded solution.
+
+\cy{intro from grant section is below}
+
+
+Live programming environments granularly interleave editing and evaluation,
+``promis[ing] to narrow the temporal and perceptive gap 
+between program development and code execution''~\cite{burckhardt2013s}.
+Examples of live programming environments include {lab notebook environments},
+like the popular IPython/Jupyter~\cite{PER-GRA:2007}, which allow the
+programmer to interactively edit and evaluate program fragments organized into a
+sequence of cells (an extension of the ubiquitous read-eval-print loop (REPL)); spreadsheets; {live graphics programming environments} like SuperGlue \cite{McDirmid:2007}, \sns{}~\cite{sns-pldi,sns-uist} and the tools demonstrated by Bret Victor in his lectures \cite{victor2012inventing}; the TouchDevelop live UI framework \cite{burckhardt2013s}; live mobile application development systems like Flutter \cite{flutter}; and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98}, to name a few prominent examples. \cy{find somewhere to cite these tanimoto papers \cite{DBLP:conf/icse/Tanimoto13,DBLP:journals/vlc/Tanimoto90}}
+
+
+Live programming environments typically cannot run incomplete programs, or they simply halt or raise an exception as soon as they encounter a hole during evaluation. This leaves a ``temporal and perceptive gap'' because the results of even those computations that do not depend critically on the hole are not available to the programmer. Our second track of research will address this gap by defining a dynamic semantics for incomplete programs that proceeds as far as possible around holes. 
+Every program assigned static meaning by the semantics of Track 1 will also be assigned dynamic meaning by the semantics of Track 2.
+
+For example, in \autoref{fig:intro-example} we saw that mapping the incomplete function \li{weighted_average} over the \li{grades} list produced an incomplete result. If holes simply raised exceptions, then the system would have aborted evaluation as soon as \li{weighted_average} was applied for the first time by \li{map}, and the programmer would not have been able to see that the result was a list of two elements, nor see the value of the sub-expression \li{10.0 *. g.hw1} for each element \li{g} of the \li{grades} list. Even programs with type inconsistencies can be evaluated under our proposed dynamics, because, as discussed in Track 1, non-empty holes operate as membranes around type inconsistencies. Taken together, the results from Tracks 1 and 2 may help to address a common complaint: that a static type discipline makes it difficult to do exploratory programming. 
+
+Our proposed dynamics goes beyond staged evaluation (\eg{}~\cite{Taha:1999}), partial evaluation (\eg{}~\cite{Jones:1993uq}) and symbolic evaluation (\eg{}~\cite{King:1976}) in that we track the dynamic environment (\ie{}~the substitutions performed) around each instance of an expression hole in the result. This allows the programmer to see, in the sidebar of \autoref{fig:intro-example}, the actual values that the variables in scope take on everywhere that the hole they are filling ends up during evaluation. This provides a hole-oriented specification of a standard feature of debuggers: inspection of the environment at designated points in the program. Finally, this environmental information is useful (though not required) for the edit action suggestion service of Track 3 and the direct manipulation programming service of Track 4. 
 

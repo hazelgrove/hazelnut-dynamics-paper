@@ -10,6 +10,8 @@
 %% SIGPLAN proceedings format should change 'acmlarge' to
 %% 'sigplan,10pt'.
 
+\bibliographystyle{ACM-Reference-Format}
+
 
 %% Some recommended packages.
 \usepackage{booktabs}   %% For formal tables:
@@ -27,7 +29,22 @@
 \usepackage{stmaryrd}
 \usepackage{mathtools}
 \usepackage{leftidx}
-\newcommand{\todo}[1]{{\color{red} #1}}
+\usepackage{todonotes}
+
+\usepackage{listings}%
+\lstloadlanguages{ML}
+\lstset{tabsize=2, 
+basicstyle=\footnotesize\ttfamily, 
+% keywordstyle=\sffamily,
+commentstyle=\itshape\ttfamily\color{gray}, 
+stringstyle=\ttfamily\color{purple},
+mathescape=false,escapechar=\#,
+numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily, language=ML, showspaces=false,showstringspaces=false,xleftmargin=15pt, 
+morekeywords={string, float, int},
+classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
+}
+\let\li\lstinline
+
 
 %% Joshua Dunfield macros
 \def\OPTIONConf{1}%
@@ -82,6 +99,7 @@
 %% issue of PACMPL.
 \citestyle{acmauthoryear}   %% For author/year citations
 
+\input{commands}
 \input{macros}
 
 
@@ -170,7 +188,33 @@
 %% Note: \begin{abstract}...\end{abstract} environment must come
 %% before \maketitle command
 \begin{abstract}
-\todo{abstract}
+\cy{blurb from intro of grant below}
+
+\noindent
+Program editors are increasingly incorporating \emph{live programming
+services}~\cite{DBLP:conf/icse/Tanimoto13,DBLP:journals/vlc/Tanimoto90,McDirmid:2007,burckhardt2013s}, which interleave editing with
+evaluation of the program.
+%
+However, live programming services typically cannot run incomplete
+programs, or they raise an exception as soon as a hole is encountered
+during evaluation.
+%
+%% When they % encounter an incomplete program, a common strategy is
+%to simply % disable the live programming service, or revert to the
+%last complete % edit state.
+%
+This deprives the programmer, and also other editor services, of
+potentially valuable feedback about the dynamic behavior of the
+visible program. Our second track of research will address this gap by defining a dynamic semantics for incomplete programs. We plan to focus the first year of research efforts largely on this track of research, as indicated in \autoref{fig:tracks}. 
+% Evaluation of incomplete programs will proceed as far as possible past the hole, and in the process, will track the environment around each hole instance.
+This semantics will support live programming services like that outlined in our example above, which provides the programmer with a result on every, or nearly every, edit and allows the programmer to choose a hole instance in the computed result of evaluation and inspect its environment (in the sidebar of \autoref{fig:intro-example}) while they determine how to best fill that hole. 
+Tracking each hole instance's environment will also enhance the editor services specified by the remaining two tracks of research, \ie{}~the action suggestion panel (\trackThree{}) and the direct manipulation programming service (\trackFour{}).
+% We will prove that in certain situations, hole filling commutes with evaluation.
+% This formal observation will lead to a decrease in the cost of providing continuous feedback to the programmer on every edit by avoiding redundant recomputation.
+Our preliminary work, described in a presentation at the \emph{LIVE 2017}
+workshop~\cite{HazelLIVE}, has discovered encouraging connections between our proposed dynamics and previous research on contextual modal type theory (the Curry-Howard interpretation of contextual modal logic) \cite{Nanevski2008} and gradual type theory \cite{Siek06a}.
+
+
 \end{abstract}
 
 
@@ -209,5 +253,7 @@
 
 \input{intro}
 \input{calculus}
+
+\bibliography{references,all.short,hazel_NSF}
 
 \end{document}

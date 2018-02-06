@@ -4,7 +4,7 @@
 \newcommand{\calculusSec}{Hazelnut Live, Formally}
 \section{\protect\calculusSec}
 \label{sec:calculus}
-\todo{exposition}
+\cy{exposition}
 
 \begin{figure}[!ht]
 $\arraycolsep=4pt\begin{array}{rllllll}
@@ -208,7 +208,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \caption{Bidirectional Typing of H-Expressions}
 \end{figure}
 
-\todo{definition of complete types and terms? do we care about completeness
+\cy{definition of complete types and terms? do we care about completeness
   of $\hexp$s or $\dexp$s?}
 
 \begin{figure}[!ht]
@@ -472,7 +472,7 @@ y & (y \neq x)\\
 
 \inferrule[IAp]
 {\isIndet{\dexp_1}\\
-% \isFinal{\dexp_2}~\text{\todo{??}}}
+% \isFinal{\dexp_2}~\text{\cy{??}}}
  \isFinal{\dexp_2}}
 {\isIndet{\dap{\dexp_1}{\dexp_2}}}
 
@@ -734,14 +734,14 @@ transitions to $\dexp_2$}
 
 (these theorems should be taken as fairly provisional)
 
-\begin{theorem}[Expandability \todo{??}] ~
+\begin{theorem}[Expandability \cy{??}] ~
   \begin{enumerate}
     \item If $\hsyn{\hGamma}{\hexp}{\htau}$ then $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ for some $\dexp$ and $\Delta$.
     \item If $\hana{\hGamma}{\hexp}{\htau}$ then $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$ for some $\dexp$ and $\htau'$ and $\Delta$.
   \end{enumerate}
 \end{theorem}
 
-\begin{theorem}[Correspondence \todo{??}] ~
+\begin{theorem}[Correspondence \cy{??}] ~
   \begin{enumerate}
     \item If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ then $\hsyn{\hGamma}{\hexp}{\htau}$.
     \item If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$ then $\hana{\hGamma}{\hexp}{\htau}$.
@@ -775,25 +775,25 @@ $\isValue{\dexp}$ or $\isErr{\Delta}{\dexp}$ or $\isIndet{\dexp}$.
 \begin{theorem}[Preservation]
   If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and
   $\stepsToD{\Delta}{\dexp}{\dexp'}$ then
-  $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \todo{or maybe up to
+  $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \cy{or maybe up to
   consistency?}
 \end{theorem}
 
-\begin{theorem}[Complete Progress \todo{??}]
+\begin{theorem}[Complete Progress \cy{??}]
 If $\hcomplete{\hexp}$ and
 $\expandSyn{\emptyset}{\hexp}{\htau}{\dexp}{\Delta}$ then either
 $\isValue{\dexp}$ or $\stepsToD{\Delta}{\dexp}{\dexp'}$ for some $\dexp'$.
 
 \end{theorem}
 
-\begin{theorem}[Complete Preservation \todo{??}]
+\begin{theorem}[Complete Preservation \cy{??}]
 If $\hcomplete{\hexp}$ and
 $\expandSyn{\emptyset}{\hexp}{\htau}{\dexp}{\Delta}$ and
 $\stepsToD{\Delta}{\dexp}{\dexp'}$ then
 $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$
 \end{theorem}
 
-\begin{theorem}[Commutativity \todo{state this}]
+\begin{theorem}[Commutativity \cy{state this}]
 \end{theorem}
 
 
@@ -828,6 +828,6 @@ hole JOIN t  = t
 hole ~ t
 \end{verbatim}
 
-\todo{canonical forms}
+\cy{canonical forms}
 
-\todo{indeterminate forms}
+\cy{indeterminate forms}
