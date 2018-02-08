@@ -34,15 +34,14 @@ traditionally would be deemed ``stuck'' .
 In live programming, we expect that programs will generally have holes
 in both terms and types (CITE?); however, to understand the mechanisms
 of \HazelnutLive, it is instructive to imagine situations where the
-only holes or in terms, or in types.
+only holes are in terms, or are in types.
 %
-  When we only use type holes (not common in live programming, AFAIK),
-  we recover gradual typing and do not need indeterminate forms
-  (except for cast errors, which we classify this way).  
-  % 
-  When we only use expression holes, we do not need type casts, or
-  the other dynamic mechanisms of gradual typing.
-
+When we only use expression holes and no type holes, we do not need
+type casts, or the other dynamic mechanisms of gradual typing.
+% 
+When we only use type holes, we recover gradual typing and do not need
+indeterminate forms (except for cast errors, which we classify this
+way).
 
 \cy{intro from grant section is below}
 
