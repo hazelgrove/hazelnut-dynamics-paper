@@ -18,8 +18,33 @@ programming environments, live programming environments included,  provide feedb
 
 In view of this general problem, we recently developed a \emph{structure editor calculus} called Hazelnut where every edit state consists of a well-formed and statically meaningful, i.e. well-typed, incomplete expression, which we take to mean an expression with holes \cite{popl-paper}. This calculus addressed fundamental questions relevant to editor services that operate statically, but there was no solution in that paper to the problems faced by editor services that also require knowledge of the dynamic meaning of an incomplete program, as would be relevant to a live programming environment. For example, consider a \emph{stepper} (a.k.a. a \emph{stepwise debugger}), like that available to Haskell programmers in the GHCi system \cite{GHC-stepper} and other systems \cite{DBLP:conf/haskell/MarlowIPG07,kar13566}, to OCaml programmers with recent work on \texttt{ocamli} by \citet{ocaml-stepper} and to Standard ML programmers \cite{DBLP:journals/jfp/TolmachA95}. A stepper requires that the expression being stepped be assigned dynamic meaning according to a small-step operational semantics \cite{DBLP:journals/jlp/Plotkin04a,pfpl}, but no such semantics was defined for incomplete expressions that arise when using Hazelnut, or any of these other systems. Defining such a semantics was left as future work in the Hazelnut paper, and in a subsequent ``vision paper'' \cite{snapl17-paper}. The purpose of this paper is to sketch out our progress toward a theoretically well-grounded solution.
 
-\cy{intro from grant section is below}
+\matt{below are misc points that may be worth mentioning in section 1
+  (somehow, somewhere), and weaving into the continuation of the story
+  above:}
 
+Type holes vs expression holes: 
+
+The dynamics of type holes is gradual typing, including run-time cast
+insertion and execution.
+%
+The dynamics of expression holes consists of defining
+\emph{indeterminate} expressions, as placeholders for subterms that
+traditionally would be deemed ``stuck'' .
+
+In live programming, we expect that programs will generally have holes
+in both terms and types (CITE?); however, to understand the mechanisms
+of \HazelnutLive, it is instructive to imagine situations where the
+only holes or in terms, or in types.
+%
+  When we only use type holes (not common in live programming, AFAIK),
+  we recover gradual typing and do not need indeterminate forms
+  (except for cast errors, which we classify this way).  
+  % 
+  When we only use expression holes, we do not need type casts, or
+  the other dynamic mechanisms of gradual typing.
+
+
+\cy{intro from grant section is below}
 
 Live programming environments granularly interleave editing and evaluation,
 ``promis[ing] to narrow the temporal and perceptive gap 
