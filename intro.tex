@@ -22,7 +22,7 @@ In view of this general problem, we recently developed a \emph{structure editor 
   (somehow, somewhere), and weaving into the continuation of the story
   above:}
 
-Type holes vs expression holes: 
+\textbf{Type holes vs expression holes:}
 
 The dynamics of type holes is gradual typing, including run-time cast
 insertion and execution.
@@ -42,11 +42,53 @@ type casts, or the other dynamic mechanisms of gradual typing.
 When we only use type holes, we recover gradual typing and do not use
 indeterminate forms until and unless cast errors arise.
 
-Cast errors as indeterminate forms:
+\textbf{Cast errors as indeterminate forms:}
 
 Instead of being ``stuck'', cast errors in \HazelnutLive are
 fully-reduced indeterminate terms.
 
+
+\textbf{Indeterminate forms as exceptions:}
+
+TODO --- transfer thoughts from 2016 grant writing
+
+
+\textbf{Holes as breakpoints:}
+
+\begin{enumerate}
+
+\item 
+  \texttt{map somefun list}
+
+Suppose the programmer wishes to map with \texttt{somefun} that they
+either did not author themselves, or they forgot how the function
+works:
+  
+\item 
+  \textt{map ($\lambda \texttt{x}. \hhole{\texttt{x}}{a}$) list}
+
+First, the programmer can intercept the function's inputs.  These
+hole~$a$ above functions like a ``breakpoint'', and shows the
+programmer me all of the inputs to \texttt{somefun}.
+
+TODO -- show the result of running above.
+
+\item
+  \textt{map ($\lambda \texttt{x}. \hhole{\texttt{somefun x}}{a}$) list}
+
+  Next, suppose the programmer wishes to see all of the the outputs of
+  \texttt{somefun}.  To do so, they put that (single static)
+  expression into a hole, as above.
+
+\item
+  \textt{map ($\lambda \texttt{x}. \hhole{(x, \texttt{somefun x})}{a}$) list}
+
+  Finally, the programmer can see input-output pairs without breaking
+  the typing derivation of their program globally, since holes are
+  permitted to go \emph{anywhere}.  (They may have also exploited this
+  fact to show the inputs, in the first step).
+  
+\end{enumerate}
 
 
 \cy{intro from grant section is below}
