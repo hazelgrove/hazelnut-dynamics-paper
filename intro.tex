@@ -39,9 +39,15 @@ only holes are in terms, or are in types.
 When we only use expression holes and no type holes, we do not need
 type casts, or the other dynamic mechanisms of gradual typing.
 % 
-When we only use type holes, we recover gradual typing and do not need
-indeterminate forms (except for cast errors, which we classify this
-way).
+When we only use type holes, we recover gradual typing and do not use
+indeterminate forms until and unless cast errors arise.
+
+Cast errors as indeterminate forms:
+
+Instead of being ``stuck'', cast errors in \HazelnutLive are
+fully-reduced indeterminate terms.
+
+
 
 \cy{intro from grant section is below}
 
