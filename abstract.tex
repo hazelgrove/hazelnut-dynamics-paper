@@ -1,0 +1,18 @@
+\begin{abstract}
+\emph{Live programming environments} aim to provide programmers (and, in some cases, audiences) with continuous feedback about a program's dynamic behavior throughout the editing process. 
+The problem that motivates this paper is that programming languages typically assign dynamic meaning only to programs that are syntactically well-formed and free of static type errors (collectively, \emph{complete programs}), whereas program editors frequently encounter incomplete edit states. 
+Recent work by \citet{popl-paper} has made progress on the problem of working directly with incomplete programs by developing a type system for lambda terms with \emph{holes} in both expression and type position, with empty holes standing for missing expressions or types, and non-empty holes operating as ``membranes'' around type inconsistencies. 
+This paper develops a corresponding dynamic semantics for this class of incomplete functional programs. 
+Rather than aborting with an exception when evaluation encounters a hole (as in  several existing systems), evaluation proceeds ``around'' expression holes, performing as much computation as is possible and tracking the dynamic environment around each hole as it flows through the program. 
+These accumulated hole environments can be reported directly to the programmer by the editor as they work to fill holes. 
+They also enable an ``edit-and-resume'' feature that avoids the need to restart evaluation after edits that amount to hole filling. 
+Formally, our semantics combines features from gradual type theory (to handle incomplete types) and contextual modal type theory (CMTT, which provides a logical foundation for hole environment tracking) with novel structure necessary to prove key metatheoretic properties, including 1) a type safety property that accounts for expression holes (i.e. free metavariables, from the perspective of CMTT), and 2) commutativity and confluence properties that guarantee that the ``edit-and-resume'' feature is sound. 
+The primary focus of this paper is on this formal development, which we have mechanized using the Agda proof assistant. 
+We additionally describe a simple reference implementation, called Hazelnut Live, that exposes a language of structured edit actions that insert holes as necessary to guarantee that every edit state has some (possibly incomplete) type, based on the edit action calculus in the prior work by \citet{popl-paper}. 
+Taken together, the result is a proof-of-concept live functional programming environment where dynamic feedback is truly continuous, i.e. it is available for every possible edit state. % i.e. \emph{every edit state is guaranteed to have non-trivial static and dynamic meaning}.
+
+%In our system, evaluation treats failed casts much like it treats expression holes (rather than immediately failing with a cast error, as in gradual type theory). Prior work on contextual modal type theory did not develop an operational semantics for programs with free metavariables, which correspond to programs with holes in our formulation. 
+
+
+% These incomplete edit states are sometimes transient, but at other times, they persist for extended periods of time, e.g. when the programmer is filling in the branches of a large case analysis one-by-one, or when an edit causes type errors to appear throughout a program. %This gap can cause live programming services to lag behind the programmer's edits, in many cases for an extended period of time.
+\end{abstract}
