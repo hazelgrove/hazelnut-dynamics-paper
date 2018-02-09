@@ -3,4 +3,256 @@
 \section{\protect\examplesSec} % don't like the all-caps thing that the template does, so protecting it from that
 \label{sec:examples}
 
-\todo{examples}
+We introduce \HazelnutLive{} in this section using several examples,
+demonstrating how running incomplete programs---with missing expressions and/or
+type-inconsistent expressions---can be useful.
+%
+We will also demonstrate how running even complete programs marked with holes is
+useful as a form of debugging.
+
+
+\parahead{Live Programming with Incomplete Expressions}
+
+\emph{Example 1: Computing Weighted Averages.}
+%
+type for grades.
+%
+all student data entered in a list of records.
+
+\begin{lstlisting}
+type student_rec =
+  { name: string,
+    hw1: float, hw2: float, hw3: float,
+    midterm: float, final: float };
+
+let grades : list(student_rec) =
+  [ { name: "Alice", hw1: 76.0, ... }
+  , { name: "Bob", hw1: 88.0, ... }
+  , ...
+  ];
+
+let weighted_average(g: student_rec) =
+  ??;
+
+let weighted_averages = List.map weighted_average grades;
+\end{lstlisting}
+
+end of the term, now time to assign grades.
+%
+weighted average of scores.
+%
+start by weighting hw1 to be 10\%. the rest of the expression is a hole, but can
+run the expression, and see that the weighted averages are too large
+%
+
+\begin{lstlisting}
+let weighted_average(g: student_rec) =
+  (10.0 *. g.hw1) + . ??;
+\end{lstlisting}
+
+oops, should be using numbers in the range 0 to 1 rather than 1 to 100 for
+percentage points.
+%
+by seeing the output as the expression is being written, this error is caught
+early and avoids the same mistake being made several times.
+
+finish the weights, and get the weighted averages.
+
+\emph{Example 2: Assigning Letter Grades.}
+%
+next, the teacher must map weighted averages to letter grades.
+%
+using the following cutoffs type.
+
+\begin{lstlisting}
+type grade_cutoffs =
+  { a: float, b: float, c: float, d: float, f: float };
+
+let cutoffs =
+  { a = ??, b = ??, c = ??, d = ??, f = ?? };
+\end{lstlisting}
+
+initially all holes, because it will be different year-to-year based on the
+data, differences in course difficulty, and to satisfy fairness criteria.
+%
+write some code that does the mapping.
+
+\begin{lstlisting}
+let letter_grade(n: weighted_average) =
+  if n >= cutoffs.a then "A" else
+  if n >= cutoffs.b then "B" else
+  if n >= cutoffs.c then "C" else
+  if n >= cutoffs.d then "D" else
+  if n >= cutoffs.f then "F" else
+  "Incomplete";
+
+let sorted_weighted_averages = List.sort weighted_averages;
+
+let letter_grades = List.map letter_grade sorted_weighted_averages;
+\end{lstlisting}
+
+since each constant in the multi-way if is a hole, none of the weighted averages
+resolve to a letter.
+%
+to start figuring out the constants, first sort the weighted averages.
+%
+by looking at the data, there is a natural gap between 92 and 89.
+%
+so, choose to to use 92 as the cutoff.
+%
+see XXX A's pop out in the lettergrades list.
+%
+before assigning other cutoffs, want to get a sense if whether this is even a
+good choice for A.
+%
+jump to writing a distribution function.
+
+\begin{lstlisting}
+let distribution(list: list(float)) =
+  let n = List.length letter_grades in
+  List.map
+    (\x -> (x, showPercentage (List.length (List.filter ((==) x) list) /. n)))
+    ["A","B","C","D","F","Incomplete"];
+\end{lstlisting}
+
+this shows that the percentage of As is XXX\%, which seems too small.
+%
+look back at the sorted data, and see a cluster around 89, and then another gap
+between 88 and 85.
+%
+so, tweak A to be 88.
+%
+the percentage is updated to XXX\%.
+
+now, continue down the list of sorted averages, picking the next cutoff.
+%
+this series of edits fills one hole, then another, then another.
+%
+so after each, the suspended computation from before can simply be resumed.
+%
+in cases where a previous cutoff is modified (which is no longer marked by any
+hole), our semantics provides no caching.
+%
+however, typical incremental computation can be incorporated to determine which
+situations such changes lead to partial reuse of previous computation.
+%
+we do not model this in our core calculus, since our focus is incremental
+computation for the specific new mechanism we study, namely, evaluating around
+expression holes.
+
+throughout this example, we described a workflow where the programmers goes back
+and forth between different parts of the program.
+%
+this is only possible to do smoothly because of our treatment of expression
+holes.
+%
+treating any one of them as an exception, as is the common ad-hoc approach to
+expression holes, prevents the rest of the useful computation from proceeding
+and being reused when that hole is filled.
+
+
+\parahead{Live Programming with Type Errors}
+
+Understanding and debugging static type errors is notoriously difficult,
+particularly for novices.
+%
+A variety of approaches have been
+proposed~\cite{Seminal,ChenErwig2014,Pavlinovic2015,sherrloc} to better localize
+and explain type errors.
+%
+One of these approaches~\cite{Seidel2016} proposes to generate a dynamic witness
+that demonstrates a run-time failure, and then displays a compressed execution
+trace to the user as a graph.
+%
+By running type-incorrect programs as far as possible (in particular, until they
+would go wrong), our semantics can provide a similar benefit operationally.
+%
+\rkc{they define a partial evaluation with a form of holes. compare.}
+
+\emph{Example 3: Sum List.}
+%
+Consider the following buggy program of numbers reported by \citet{XXX} that
+attempts to sum a list numbers.
+%
+The problem is that the base case produces a list rather than a number (in
+particular, 0).
+
+\begin{lstlisting}
+sumList : list(int) -> int
+sumList [] = ?[]?
+sumList (n:ns) = n + sumList ns
+\end{lstlisting}
+
+\noindent
+%
+Because the list expression on line 2 does not have time \li{int} as required,
+it is wrapped in a (non-empty) hole.
+%
+Rather than trying to debug the error based on the static error, the programmer
+may wish to run a call to the function, say \li{sumList(2)}, in which case
+\HazelnutLive{} runs and produces the indeterminate value \li{1 + 2 + ?[]?}
+(\cf{} the trace displayed by \citet{Seidel2016}).
+%
+By observing that the hole expression is being added to the number \li{2}, he
+realizes that it needs to be a number, specifically, \li{0}.
+
+
+%% TODO fold error from Erwig paper.
+%% %
+%% see that final call on stack does have the right answer, but
+%% it's wrapped in a singleton list when the expected type is not
+%% a list.
+%% %
+%% fix is to remove the list, the rest of the computation remains
+%% the same, but b/c they were all wrapped in holes, need to re-run.
+%% %
+%% (add some mechanism for type-consistent non-empty-holes...)
+
+\parasection{Example 4: Stutter}
+%
+As another example, consider the following function which attempts to produce a
+list where every element is repeated twice (borrowed from \citep{XXX}).
+%
+The combiner function to \li{List.foldr} needs to produce a \li{list(int)}, but
+it produces a \li{list(list(int)} instead.
+
+\begin{lstlisting}
+stutter : list(int) -> list(int)
+stutter xs = List.foldr (\x acc -> ?([x,x] : acc)?) [] xs
+\end{lstlisting}
+
+\noindent
+%
+The editor has a choice about which expression to ``blame'' for the error; the
+entire application that forms the body of the lambda is analyzed against the
+return type \li{list(int)}, so that is a reasonable choice for the editor to
+make; another would be to assume that the arguments \li{[x,x]} and \li{acc} are
+both as intended and that only the function \li{(:)} is type-consistent.
+%
+Although one could imagine a setting in which a user would perform this
+reasoning, let's assume the simplest approach for marking consistencies that
+wraps the entire application.
+%
+Running this on \li{stutter [1,2,3]} produces the indeterminate value
+\li{?  [1,1] : (? [2,2] : (? [3:3] : [] ?) ?) ?}, which shows the unfolding of
+\li{List.foldr}.
+%
+Inside the innermost hole, the value is shown to be \li{[[3,3]]}; the user
+realizes that there are too many levels of nesting.
+%
+He tries append in place of cons, which addresses the type inconsistency and
+produces the desired result.
+
+
+\parahead{Live Programming for Debugging}
+
+\rkc{not sure about the quicksort example yet}
+
+%% \begin{lstlisting}
+%% quicksort : list('a) -> list('a)
+%% quicksort [] = []
+%% quicksort (x:xs) =
+%%   let (left, right) = partition ((<) x) xs in
+%%   let (left', right') = (quicksort left, quicksort right) in
+%%   left' @ [x] @ right
+%% \end{lstlisting}
