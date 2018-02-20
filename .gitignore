@@ -159,5 +159,8 @@ pythontex-files-*/
 # Latexian
 TSWLatexianTemp*
 
+# vim
+*.swp
+
 hazelnut-popl17.pdf
 hazelnut-rules.pdf
