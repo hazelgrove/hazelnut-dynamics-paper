@@ -2357,9 +2357,7 @@ Computing Machinery]
   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {-3.5\p@}%
   {\@subsubsecfont\@adddotafter}}
-%% rkc
-%% \renewcommand\paragraph{\@startsection{paragraph}{4}{\parindent}%
-\renewcommand\paragraph{\@startsection{paragraph}{4}{0pt}%
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\parindent}%
   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {-3.5\p@}%
   {\@parfont\@adddotafter}}
