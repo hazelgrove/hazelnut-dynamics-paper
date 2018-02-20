@@ -44,8 +44,9 @@ More details about other minor syntactic differences are described in
 The process of writing new program fragments includes many states in which the
 program under construction is, by definition, incomplete.
 %
-Furthermore, it is natural to ``jump back and forth'' between different places
-in the program, iteratively and alternately developing the missing pieces.
+It is natural for a programmer to ``jump back and forth'' between different
+places in the program, iteratively and alternately developing the missing
+pieces.
 %
 The primary benefit of our approach is that such programs can be evaluated in
 order to provide useful feedback during this editing workflow.
@@ -64,7 +65,7 @@ In our simplified example, this includes the student's name, of type
 
 \overviewExample{1}{Computing Weighted Averages}
 %
-The teacher begins writing a function called \li{weighted_average} that will
+The teacher begins writing a \li{weighted_average} function that will
 compute a weighted average, of type \li{float}, for each \li{student_data}
 record.
 %
@@ -88,8 +89,8 @@ let weighted_averages = List.map weighted_average grades;
 hole expression inside \li{weighted_average}.
 %
 Notice that the hole on line \rkc{XXX} is assigned a unique static identifier
-(\ie{}~\li{a}) and values it produces are assigned corresponding unique dynamic
-identifiers (\ie{}~\li{a.1}, \li{a.2}, etc{}).
+(\ie{}~\li{a}) and that the indeterminate results it produces are assigned
+corresponding unique dynamic identifiers (\ie{}~\li{a.1}, \li{a.2}, etc.).
 %
 In contrast, the typical ad-hoc approach to simulating hole expressions, namely,
 using placeholder expressions like \li{raise "Not yet implemented."}, would halt
@@ -104,7 +105,8 @@ Now the teacher returns to \li{weighted_average} to work on the missing
 expression, with the goal of computing a weighted sum of each of a student's
 grades.
 %
-The teacher builds the summand weighting the \li{hw1} score to account for 10\%
+The teacher uses a \HazelnutLive{} edit action to create a sum expression,
+filling in the first summand by weighting the \li{hw1} score to account for 10\%
 of the weighted average; the rest of the computation is a new hole expression
 (\li{??_b}), yet to be filled in.
 
@@ -138,9 +140,9 @@ The teacher's next task is to map the weighted averages to the letter grades A
 through F (we will consider only ``whole'' letter grades, for simplicity).
 %
 The \li{grade_cutoffs} record type describes the minimum cutoff for each of
-these six possible.
+these six possible grades.
 %
-Initially, each of values in the \li{cutoffs} is a hole.
+Initially, each value in the \li{cutoffs} record is a hole.
 
 \begin{lstlisting}
 type grade_cutoffs =
@@ -159,8 +161,9 @@ Before starting to fill in the cutoffs, the teacher jumps ahead to write a
 function \li{letter_grade} that will make the connection between \li{cutoffs}
 and \li{weighted_averages}.
 %
-The teacher sorts the \li{weighted_averages} because she intends to look at the
-data to help select the cutoff values, and then maps them to \li{letter_grades}.
+Because she intends to look at the data to help select the cutoff values, the
+teacher sorts the \li{weighted_averages} and then maps them to
+\li{letter_grades}.
 
 \begin{lstlisting}
 let letter_grade(n: weighted_average) =
@@ -177,8 +180,9 @@ let letter_grades = List.map letter_grade sorted_weighted_averages;
 
 \noindent
 %
-When \HazelnutLive{} runs this program, the guard of the outermost conditional,
-\li{n >= cutoffs.a}, is indeterminate because \li{cutoffs.a} is.
+When \HazelnutLive{} runs this program, the guard of the outermost conditional
+(\li{n >= cutoffs.a} on line \rkc{XXX}), is indeterminate because \li{cutoffs.a}
+is.
 %
 Therefore, each of the indeterminate expressions in \li{letter_grades} is the
 entire expression body, albeit with different bindings for \li{n}.
@@ -191,7 +195,8 @@ expressions (\ie{}~anything other than ``small'' indeterminate value (a constant
 or hole) or list of small values) simply as \li{..} to save space.
 %
 Hovering over this abbreviation (as shown in \autoref{fig:XXX} displays the full
-indeterminate expression as a tooltip.
+indeterminate expression---as well as the evaluation environment that surrounds
+it---as a tooltip.
 %
 \autoref{sec:discussion} discusses this and other user interface concerns when
 trying to display useful live feedback without overwhelming the user.
@@ -232,7 +237,8 @@ let distribution = compute_distribution(letter_grades);
 \noindent
 %
 Running \li{compute_distribution} shows that the percentage of As is
-\rkc{XXX\%}, which is smaller than what the teacher would like.
+\rkc{XXX\%}, which is smaller than what the teacher would like;
+the remaining percentages are all indeterminate.
 %
 Returning to the value of \li{sorted_data}, she sees a cluster around \li{89.0}
 and then another gap between \li{88.2} and {85.5}.
@@ -264,10 +270,34 @@ can continue to evaluate the program, and receive meaningful feedback, while
 going back and forth between different pieces under development.
 
 
-\rkc{STOPPING HERE FOR NOW}
-
 %% \subsection{Live Programming with Type Errors}
 \subsection{Live Programming with Static Type Errors}
+
+In the previous section, we described example programs that were incomplete
+because of \emph{missing} expressions.
+%
+Next, we describe example programs that are incomplete because of
+\emph{type-inconsistent} expressions.
+%
+For example, consider the following two definitions.
+
+\begin{lstlisting}
+let bad_bool : bool = ?? 0 ??_bad_bool;
+
+let bad_int : int = 1 + ?? true ??_bad_int_second_argument;
+\end{lstlisting}
+
+\noindent
+%
+These two definitions are ill-typed under standard typing disciplines.
+%
+In contrast, \citet{popl-paper} present a bidirectional type system that assigns
+types to both, by wrapping type-inconsistent expressions (\li{0} on line
+\rkc{XXX} and \li{true} on line \rkc{XXX} above) in \emph{non-empty} holes.
+%
+Non-empty holes prevent local type inconsistencies from polluting the rest of
+the program surrounding it, which may or may not itself contain additional
+inconsistencies.
 
 Understanding and debugging static type errors is notoriously difficult,
 particularly for novices.
@@ -280,18 +310,20 @@ One of these approaches~\cite{Seidel2016} proposes to generate a dynamic witness
 that demonstrates a run-time failure, and then displays a compressed execution
 trace to the user as a graph.
 %
-By running type-incorrect programs as far as possible (in particular, until they
-would go wrong), our semantics can provide a similar benefit operationally.
+In \HazelnutLive{}, we can run programs with type errors (\ie{}, programs with
+non-empty holes) as far as possible, in particular, until they
+would go wrong.
 %
-\rkc{they define a partial evaluation with a form of holes. compare.}
+Thus, our operational semantics provides a similar benefit to the approach of
+\citet{Seidel2016}.
 
-\emph{Example 3: Sum List.}
+\overviewExample{3}{Sum List}
 %
-Consider the following buggy program of numbers reported by \citet{XXX} that
-attempts to sum a list numbers.
+Consider the following buggy program (observed during an undergraduate
+functional programming course~\cite{Seidel2016}) that attempts to sum a list
+integers.
 %
-The problem is that the base case produces a list rather than a number (in
-particular, 0).
+The error is that the base case produces a list rather than an integer.
 
 \begin{lstlisting}
 sumList : list(int) -> int
@@ -302,15 +334,20 @@ sumList (n:ns) = n + sumList ns
 \noindent
 %
 Because the list expression on line 2 does not have type \li{int} as required,
-it is wrapped in a (non-empty) hole.
+it is wrapped in a (non-empty) hole by the bidirectional type
+checker~\cite{popl-paper}.
 %
 Rather than trying to debug the error based on the static error, the programmer
-may wish to run a call to the function, say \li{sumList(2)}, in which case
-\HazelnutLive{} runs and produces the indeterminate value \li{1 + 2 + ?[]?}
-(\cf{} the trace displayed by \citet{Seidel2016}).
+may wish to trying running the function anyway by calling, say, \li{sumList(2)}.
 %
-By observing that the hole expression is being added to the number \li{2}, he
-realizes that it needs to be a number, specifically, \li{0}.
+\HazelnutLive{} runs and produces the indeterminate expression \li{3 + ?[]?}.
+%
+By observing that the hole expression is being added to the integer \li{3}, he
+realizes that it needs to be an integer, specifically, \li{0}.
+%
+Compared to the trace displayed by \citet{Seidel2016}, the indeterminate result
+produced by \HazelnutLive{} is ``flattened'' because the expression \li{1 + 2}
+successfully proceeded to evaluate despite the error elsewhere.
 
 
 %% TODO fold error from Erwig paper.
@@ -324,10 +361,10 @@ realizes that it needs to be a number, specifically, \li{0}.
 %% %
 %% (add some mechanism for type-consistent non-empty-holes...)
 
-\parasection{Example 4: Stutter}
+\overviewExample{4}{Stutter}
 %
-As another example, consider the following function which attempts to produce a
-list where every element is repeated twice (borrowed from \citep{XXX}).
+Consider the following function which attempts to produce a
+list where every element is repeated twice (borrowed from \citet{Osera2015}).
 %
 The combiner function to \li{List.foldr} needs to produce a \li{list(int)}, but
 it produces a \li{list(list(int)} instead.
@@ -339,30 +376,44 @@ stutter xs = List.foldr (\x acc -> ?[x,x]? : acc) [] xs
 
 \noindent
 %
-The editor has a choice about which expression to ``blame'' for the error; the
-entire application that forms the body of the lambda is analyzed against the
-return type \li{list(int)}, so that is a reasonable choice for the editor to
-make; another would be to assume that the arguments \li{[x,x]} and \li{acc} are
-both as intended and that only the function \li{(:)} is type-consistent.
+The bidirectional type checker of \citet{popl-paper} wraps the expression
+\li{[x,x]} inside a non-empty hole.
 %
-Although one could imagine a setting in which a user would perform this
-reasoning, let's assume the simplest approach for marking consistencies that
-wraps the entire application.
+%% The editor has a choice about which expression to ``blame'' for the error; the
+%% entire application that forms the body of the lambda is analyzed against the
+%% return type \li{list(int)}, so that is a reasonable choice for the editor to
+%% make; another would be to assume that the arguments \li{[x,x]} and \li{acc} are
+%% both as intended and that only the function \li{(:)} is type-consistent.
+%% %
+%% Although one could imagine a setting in which a user would perform this
+%% reasoning, let's assume the simplest approach for marking consistencies that
+%% wraps the entire application.
 %
-Running this on \li{stutter [1,2,3]} produces the indeterminate value
-\li{?  [1,1] : (? [2,2] : (? [3:3] : [] ?) ?) ?}, which shows the unfolding of
-\li{List.foldr}.
-%
-Inside the innermost hole, the value is shown to be \li{[[3,3]]}; the user
-realizes that there are too many levels of nesting.
-%
-He tries append in place of cons, which addresses the type inconsistency and
-produces the desired result.
+Running this on \li{stutter [1,2,3]} produces the indeterminate result
 
+\begin{lstlisting}
+?  [1,1] : (? [2,2] : (? [[3:3]] ?) ?) ?,
+\end{lstlisting}
+
+\noindent
+%
+which shows the unfolding of \li{List.foldr}.
+%
+We refer to nested indeterminate computations like this as \rkc{\emph{hole
+environment traces} or \emph{hole environment trees}}.
+%
+The result of the innermost indeterminate expression is \li{[[3,3]]}.
+%
+The user realizes that there are too many levels of nesting, so
+he replaces the \li{(:)} with \li{(@)}, which addresses the type inconsistency
+and, when reevaluated, produces the desired result.
+
+
+\rkc{STOPPING HERE FOR NOW}
 
 \subsection{Live Programming with Gradual Type Errors}
 
-\parasection{Example 5: \rkc{...}}
+\overviewExample{5}{\rkc{...}}
 
 \rkc{gradual typing error, cast error, run around}
 
@@ -388,7 +439,7 @@ could be incorporated into other gradual type systems
 
 \subsection{Live Programming for Debugging}
 
-\parasection{Example 6: \rkc{...}}
+\overviewExample{6}{\rkc{...}}
 
 \rkc{breakpoints, understanding input/output behavior}
 
@@ -438,3 +489,19 @@ result would be the correct list.
 finalize the hole and resume. everything but the nested appends can be reused.
 %
 \emph{hole environment traces} or \emph{hole environment traces}
+
+\paragraph{Recap}
+%
+In the above four subsections, respectively, we considered programs with:
+%
+(1) empty expression holes,
+%
+(2) non-empty expression holes for ill-typed expressions,
+%
+(3) type holes, and
+%
+(4) non-empty expression holes for well-typed expressions.
+%
+Next, we will formally describe the novel dynamic semantics of \HazelnutLive{}
+that allows programs with combinations of these kinds of incompleteness to be
+evaluated.
