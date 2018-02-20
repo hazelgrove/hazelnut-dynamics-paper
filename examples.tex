@@ -409,33 +409,61 @@ he replaces the \li{(:)} with \li{(@)}, which addresses the type inconsistency
 and, when reevaluated, produces the desired result.
 
 
-\rkc{STOPPING HERE FOR NOW}
-
 \subsection{Live Programming with Gradual Type Errors}
 
-\overviewExample{5}{\rkc{...}}
+An alternative to marking type-inconsistent expressions as sources of error
+(with non-empty holes) is to use \emph{gradual types}~(\eg{}~\cite{XXX,XXX,XXX})
+to sidestep the choice of a assigning single static type, instead deferring to
+dynamic casts.
+%
+\HazelnutLive{} inherits the notion of \emph{type holes} from
+\citet{popl-paper}, which serves a similar static purpose as the unknown type in
+gradual type systems.
 
-\rkc{gradual typing error, cast error, run around}
+\overviewExample{5}{Dynamically Typed Negation}
+
+Consider the \li{negate} function (adapted from \cite{ChughPOPL2012}), which
+does not have a conventional static type (without using expression holes),
+because the argument \li{x} is used at type \li{int} on line \rkc{XXX} and
+function type on line \rkc{XXX}.
+%
+Therefore, the declared type of \li{x} is the hole type \li{??}, which allows
+\li{x} to be used at conflicting types by expanding each use with \emph{casts}
+that ensure the safety of each dynamic use.
+%
+The return type also uses the hole type \li{??}.
 
 \begin{lstlisting}
-foo : bool -> ? -> int
-foo b =
-  if b then
-    x + 10
-  else
-    x 10
+negate : bool -> ?? -> ??
+negate b x =
+  if b
+    then 0 - x     // expanded to: (0 - (x<?? => int>))<int => ??>
+    else not x     // expanded to: (not (x<?? => bool>))<bool => ??>
 
-foo false 1 + 2 + 2
+(negate false 1) + 2 + 3 + (negate true 4)
 \end{lstlisting}
 
-this demonstrates how, when no expression holes, our system is like gradual
-typing, but with the ability to run around cast errors.
+\noindent
 %
-just as it may be useful to report multiple type errors, this allows ability to
-report multiple dynamic errors, as well additional dynamic behavior around them.
+As in prior gradually typed languages~\cite{XXX},
+evaluating the expression \li{negate true 1} on line \rkc{XXX} leads to
+\li{(not (1<int => ??><?? => bool>))<bool => ??>}, where the inner casts
+lead to the \emph{cast error} \li{1<?? =/=> bool>} because \li{1} cannot be
+safely treated as having type \li{bool}.
 %
-could be incorporated into other gradual type systems
+Unlike in prior gradually typed languages, however, \HazelnutLive{} evaluates
+around the cast error, making progress on the \li{2 + 3 + negate false 4}
+expression that surrounds the error; the final indeterminate result is
+\li{(not (1<?? =/=> bool>))<bool => ??> + 1}.
+%
+Just like it is useful for static type checkers to report multiple errors, our
+approach allows us to report multiple dynamic cast errors, and otherwise make
+progress on expressions that do not depend on failed casts.
+%
+This approach can be incorporated into existing gradually typed languages.
 
+
+\rkc{STOPPING HERE FOR NOW}
 
 \subsection{Live Programming for Debugging}
 
