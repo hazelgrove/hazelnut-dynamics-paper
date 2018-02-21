@@ -326,9 +326,9 @@ integers.
 The error is that the base case produces a list rather than an integer.
 
 \begin{lstlisting}
-sumList : list(int) -> int
-sumList [] = ?[]?
-sumList (n:ns) = n + sumList ns
+sum_list : list(int) -> int
+sum_list [] = ?[]?
+sum_list (n:ns) = n + sum_list ns
 \end{lstlisting}
 
 \noindent
@@ -338,7 +338,7 @@ it is wrapped in a (non-empty) hole by the bidirectional type
 checker~\cite{popl-paper}.
 %
 Rather than trying to debug the error based on the static error, the programmer
-may wish to trying running the function anyway by calling, say, \li{sumList(2)}.
+may wish to trying running the function anyway by calling, say, \li{sum_list(2)}.
 %
 \HazelnutLive{} runs and produces the indeterminate expression \li{3 + ?[]?}.
 %
@@ -411,27 +411,40 @@ and, when reevaluated, produces the desired result.
 
 \subsection{Live Programming with Gradual Type Errors}
 
-An alternative to marking type-inconsistent expressions as sources of error
-(with non-empty holes) is to use \emph{gradual types}~(\eg{}~\cite{XXX,XXX,XXX})
-to sidestep the choice of a assigning single static type, instead deferring to
-dynamic casts.
+\emph{Gradual type systems}~(\eg{}~\cite{XXX,XXX,XXX}) can statically accept
+programs that would otherwise be rejected by static type systems---either
+because type inference cannot reconstruct a valid type assignment, or because
+there may not be a unique valid type assignment at all.
 %
+In either case, gradual type systems allow types to contain \emph{unknown
+types}, and partially unknown types can be used in contexts that require
+different types, so long as they are \emph{consistent} (intuitively, equal
+modulo the unknown parts).
+%
+Dynamic casts are then inserted to ensure that these remaining static
+discrepancies are not violated at run-time.
+
 \HazelnutLive{} inherits the notion of \emph{type holes} from
 \citet{popl-paper}, which serves a similar static purpose as the unknown type in
 gradual type systems.
+%
+In contrast to prior gradually typed languages, however, \HazelnutLive{} can
+evaluate ``around'' cast errors in the same way as it does for expression holes.
 
 \overviewExample{5}{Dynamically Typed Negation}
 
 Consider the \li{negate} function (adapted from \cite{ChughPOPL2012}), which
-does not have a conventional static type (without using expression holes),
-because the argument \li{x} is used at type \li{int} on line \rkc{XXX} and
-function type on line \rkc{XXX}.
+cannot be assigned a static type in a conventional type system---either a
+bidirectional one, like in \HazelnutLive{}, or one with ML-style,
+unification-based inference---because the argument \li{x} is used at type
+\li{int} on line \rkc{XXX} and \li{bool} on line \rkc{XXX}.
 %
 Therefore, the declared type of \li{x} is the hole type \li{??}, which allows
-\li{x} to be used at conflicting types by expanding each use with \emph{casts}
-that ensure the safety of each dynamic use.
+\li{x} to be used at the conflicting types, with each use expanded into an
+expression wrapped in a \emph{cast} that will dynamically check for safety.
 %
-The return type also uses the hole type \li{??}.
+The return type also uses the hole type \li{??}, leading to additional casts in
+the expansion.
 
 \begin{lstlisting}
 negate : bool -> ?? -> ??
@@ -446,7 +459,7 @@ negate b x =
 \noindent
 %
 As in prior gradually typed languages~\cite{XXX},
-evaluating the expression \li{negate true 1} on line \rkc{XXX} leads to
+evaluating the expression \li{negate false 1} on line \rkc{XXX} leads to
 \li{(not (1<int => ??><?? => bool>))<bool => ??>}, where the inner casts
 lead to the \emph{cast error} \li{1<?? =/=> bool>} because \li{1} cannot be
 safely treated as having type \li{bool}.
@@ -463,35 +476,91 @@ progress on expressions that do not depend on failed casts.
 This approach can be incorporated into existing gradually typed languages.
 
 
-\rkc{STOPPING HERE FOR NOW}
-
 \subsection{Live Programming for Debugging}
 
-\overviewExample{6}{\rkc{...}}
+Previous examples highlighted how running different kinds of incomplete
+programs---ones with missing expressions, type-inconsistent expressions, or
+missing types---can be useful.
+%
+Our final example demonstrates how expression holes may be useful even for
+complete programs, in order to facilitate debugging and program understanding.
 
-\rkc{breakpoints, understanding input/output behavior}
+%% \overviewExample{6}{\rkc{...}}
+%%
+%% \rkc{breakpoints, understanding input/output behavior}
 
-\parasection{Example 6: Quicksort}
+\overviewExample{6}{Quicksort}
+
+Consider the following buggy implementation of quicksort, which contains several
+errors.
+%
+The student wants to debug the implementation and so inserts an expression
+around the return expression on line \rkc{XXX}, and runs
+\li{quicksort [X,X,X,X,X,X]}.
 
 \begin{lstlisting}
 quicksort : list('a) -> list('a)
 quicksort [] = []
 quicksort (x:xs) =
   let (left, right) = span ((>) x) xs in
-  ??
+  let (left', right') = (quicksort left, quicksort right) in
+  ? (left' @ [x] @ right) ?
 \end{lstlisting}
 
-programmer has some intended relationship between names and values they bind.
+\noindent
 %
-live results show that left has larger elements and right has smaller.
+Based on the live environment for the initial call, the student notices that the
+values in \li{left} are larger than the pivot \li{x}, but \li{left} was intended
+to bind smaller values.
 %
-right away, can see that need to change filter predicate. (alternatively, the
-names could have been swapped, but that order of names was the natural way
-to think about it.)
+This suggests that the student got the filtering predicate backwards, so he
+replaces it with \li{(<)} on line \rkc{XXX}.
 %
-but next, still see that right has some smaller elements.
+After re-running the program and viewing the live output again, \li{left} now
+contains smaller values than \li{x}, but not all of them; \li{right} has some
+values that are larger and some that are smaller.
 %
-should pick partition instead of span.
+The student uses type-based search to find other functions, besides \li{span},
+of type \li{('a -> bool) -> 'a list -> ('a list, 'a list)} and finds
+\li{partition}.
+%
+It may be easier for the student to simply try the function rather than studying
+the documentation, so he edits line \rkc{XXX} to call \li{partition} instead,
+re-runs, and observes that both \li{left} and \li{right} now seem to achieve the
+intended partitioning.
+
+Despite these two fixes, the result expression is not yet sorted.
+%
+In particular, the values greater than the pivot \li{x} are not completely
+sorted.
+%
+Viewing the values of bindings of \li{left'} and \li{right'}, the student sees
+that both seem to have correct prefixes of sorted lists, but that they are
+incorrect after the pivots.
+%
+This suggests that something may be wrong with the handling of \li{right'}.
+%
+Indeed, the student takes a look for uses of \li{right'} and sees that line
+\rkc{XXX} mistakenly uses \li{right} instead.
+%
+Making this change and re-running now produces the desired result, built up as a
+hole environment tree that shows how all of the recursive results will be
+combined by a series of nested appends.
+%
+Happy with the results of the program, the student removes the hole around the
+expression on line \rkc{XXX}, and evaluation can proceed to perform the nested
+appends, producing the final sorted result.
+%
+\autoref{sec:discussion} discusses how debugging tools may be designed to
+systematically insert hole expressions in particular places to achieve certain
+debugging and program understanding strategies.
+%
+%% When run on a larger input, this projection of the full evaluation trace shows a
+%% nesting structure---which could be rendered as visualization to help
+%% understanding, as described in \autoref{sec:discussion}---whose depth is clearly
+%% much smaller than the length of the input list; this suggests that the
+%% algorithm, indeed, achieves some sort of sublinear complexity, as intended.
+%
 
 \begin{lstlisting}
 quicksort : list('a) -> list('a)
@@ -499,24 +568,9 @@ quicksort [] = []
 quicksort (x:xs) =
   let (left, right) = partition ((<) x) xs in
   let (left', right') = (quicksort left, quicksort right) in
-  ? (left' @ [x] @ right) ?
+  ? (left' @ [x] @ right') ?
 \end{lstlisting}
 
-now, put the lists back together.
-%
-doesn't do what is expected.
-%
-live feedback shows right' is computed correctly, but ah, it's not being used
-in the return list.
-%
-fix, and re-run, keeping the final expression in a hole.
-%
-can visualize that the nested appends are being built up correctly, and that the
-result would be the correct list.
-%
-finalize the hole and resume. everything but the nested appends can be reused.
-%
-\emph{hole environment traces} or \emph{hole environment traces}
 
 \paragraph{Recap}
 %
