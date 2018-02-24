@@ -1,5 +1,7 @@
-\begin{figure}[!ht]
-\judgbox{\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}{ }
+\begin{figure}[t]
+\judgbox
+  {\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}
+  {$\hexp$ synthesizes (type $\htau$) and expands to $\dexp$}
 \begin{mathpar}
 \inferrule[ESConst]{ }{
   \expandSyn{\hGamma}{c}{b}{c}{\emptyset}
@@ -84,7 +86,12 @@
 }
 \end{mathpar}
 
-\judgbox{\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau}{\Delta}}{ }
+\vsepRule
+
+\judgbox
+  {\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}}
+  {$\hexp$ analyzes (against type $\htau_1$) and
+   expands to $\dexp$ (of type $\htau_2$)}
 \begin{mathpar}
 \inferrule[EALam]{
   \expandAna{\hGamma, x : \htau_1}{\hexp}{\htau_2}{\dexp}{\htau'_2}{\Delta}

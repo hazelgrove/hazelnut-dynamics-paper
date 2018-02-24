@@ -1,5 +1,5 @@
-\begin{figure}[!ht]
-\judgbox{\hsyn{\hGamma}{\hexp}{\htau}}{$\htau$ synthesizes type $\htau$}
+\begin{figure}[t]
+\judgbox{\hsyn{\hGamma}{\hexp}{\htau}}{$\hexp$ synthesizes type $\htau$}
 \begin{mathpar}
 \inferrule[SConst]{ }{
   \hsyn{\hGamma}{c}{b}
@@ -40,7 +40,9 @@
 }
 \end{mathpar}
 
-\judgbox{\hana{\hGamma}{\hexp}{\htau}}{$\htau$ analyzes against type $\htau$}
+\vsepRule
+
+\judgbox{\hana{\hGamma}{\hexp}{\htau}}{$\hexp$ analyzes against type $\htau$}
 \begin{mathpar}
 \inferrule[ALam]{
   \arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}\\

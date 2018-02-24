@@ -1,4 +1,4 @@
-\begin{figure}[!ht]
+\begin{figure}[t]
 \judgbox{\tconsistent{\htau_1}{\htau_2}}{$\htau_1$ is consistent with $\htau_2$}
 \begin{mathpar}
 \inferrule[TCHole1]{ }{
@@ -35,6 +35,7 @@
 % }
 \end{mathpar}
 
+\vsepRule
 
 \judgbox{\tinconsistent{\htau_1}{\htau_2}}{$\htau_1$ is inconsistent with $\htau_2$}
 \begin{mathpar}
@@ -58,6 +59,8 @@
       \tinconsistent{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_3}{\htau_4}}
     }
 \end{mathpar}
+
+\vsepRule
 
 \judgbox{\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}}{$\htau$ has matched arrow type $\tarr{\htau_1}{\htau_2}$}
 \begin{mathpar}

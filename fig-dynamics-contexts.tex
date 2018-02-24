@@ -1,4 +1,4 @@
-\begin{figure}
+\begin{figure}[t]
 $\arraycolsep=4pt\begin{array}{rllllll}
 \mathsf{EvalCtx} & \evalctx & ::= &
   \evalhole ~\vert~
@@ -7,6 +7,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \dhole{\evalctx}{\mvar}{\subst}{} ~\vert~
   \dcast{\htau}{\evalctx}
 \end{array}$
+
+\vsepRule
 
 \judgbox{\isevalctx{\evalctx}}{$\evalctx$ is an evaluation context}
 \begin{mathpar}
@@ -45,6 +47,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \isevalctx{\dcast{\htau}{\evalctx}}
 }
 \end{mathpar}
+
+\vsepRule
 
 \judgbox{\selectEvalCtx{d}{\evalctx}{d'}}{$d$ is the result of filling the
 hole in $\evalctx$ with $d'$}
@@ -106,6 +110,8 @@ hole in $\evalctx$ with $d'$}
 \end{mathpar}
 
 
+\vsepRule
+
 \judgbox{\reducesE{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$
 transitions to $\dexp_2$}
 \begin{mathpar}
@@ -133,6 +139,8 @@ transitions to $\dexp_2$}
   \reducesE{\Delta}{\dhole{d}{\mvar}{\subst}{\unevaled}}{\dhole{d}{\mvar}{\subst}{\evaled}}
 }
 \end{mathpar}
+
+\vsepRule
 
 \judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
 \begin{mathpar}
