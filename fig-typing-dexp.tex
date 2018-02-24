@@ -1,0 +1,52 @@
+\begin{figure}[!ht]
+\judgbox{\hasType{\Delta}{\hGamma}{\dexp}{\htau}}{$\dexp$ is assigned type $\htau$}
+\begin{mathpar}
+\inferrule[TAConst]{ }{
+  \hasType{\Delta}{\hGamma}{c}{b}
+}
+
+\inferrule[TAVar]{
+  x : \htau \in \hGamma
+}{
+	\hasType{\Delta}{\hGamma}{x}{\htau}
+}
+
+\inferrule[TALam]{
+  \hasType{\Delta}{\hGamma, x : \htau_1}{\dexp}{\htau_2}
+}{
+  \hasType{\Delta}{\hGamma}{\halam{x}{\htau_1}{\dexp}}{\tarr{\htau_1}{\htau_2}}
+}
+
+\inferrule[TAAp]{
+  \hasType{\Delta}{\hGamma}{\dexp_1}{\htau_1}\\
+  \arrmatch{\htau_1}{\tarr{\htau_2}{\htau}}\\\\
+  \hasType{\Delta}{\hGamma}{\dexp_2}{\htau_2}
+}{
+  \hasType{\Delta}{\hGamma}{\hap{\dexp_1}{\dexp_2}}{\htau}
+}
+
+\inferrule[TAEHole]{
+  \Dbinding{u}{\hGamma'}{\htau} \in \Delta\\
+  \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
+}{
+  \hasType{\Delta}{\hGamma}{\dehole{u}{\sigma}{}}{\htau}
+}
+
+\inferrule[TANEHole]{
+  \Dbinding{u}{\hGamma'}{\htau} \in \Delta\\\\
+  \hasType{\Delta}{\hGamma}{\dexp}{\htau'}\\
+  \hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}
+}{
+  \hasType{\Delta}{\hGamma}{\dhole{\dexp}{u}{\sigma}{}}{\htau}
+}
+
+\inferrule[TACast]{
+  \hasType{\Delta}{\Gamma}{\dexp}{\htau'}\\
+  \tconsistent{\htau}{\htau'}
+}{
+  \hasType{\Delta}{\hGamma}{\dcast{\htau}{\dexp}}{\htau}
+}
+\end{mathpar}
+\caption{Type Assignment for Dynamic H-Expressions}
+\label{fig:hasType}
+\end{figure}

@@ -1,0 +1,38 @@
+\begin{figure}
+\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$
+steps to $\dexp_2$}
+\begin{mathpar}
+\inferrule[STEHoleEvaled]
+{ }
+{\stepsToD{\Delta}{\dehole{\mvar}{\subst}{\unevaled}}{\dehole{\mvar}{\subst}{\evaled}}}
+
+\inferrule[STNEHoleStep]
+{\stepsToD{\Delta}{\dexp_1}{\dexp_2} }
+{\stepsToD{\Delta}{\dhole{\dexp_1}{\mvar}{\subst}{\unevaled}}{\dhole{\dexp_2}{\mvar}{\subst}{\unevaled}}}
+
+\inferrule[STNEHoleEvaled]
+{\isFinal{\dexp}}
+{\stepsToD{\Delta}{\dhole{\dexp}{\mvar}{\subst}{\unevaled}}{\dhole{\dexp}{\mvar}{\subst}{\evaled}}}
+
+\inferrule[STCast]
+{
+\isValue{\dexp}\\
+\hasType{\Delta}{\emptyset}{\dexp}{\htau_2} \\
+\tconsistent{\tau_1}{\tau_2}}
+{\stepsToD{\Delta}{\dcast{\htau_1}{\dexp}}{\dexp}}
+
+\inferrule[STApStep1]
+{\stepsToD{\Delta}{\dexp_1}{\dexp_1'}}
+{\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1'}{\dexp_2}}}
+
+\inferrule[STApStep2]
+{ \isFinal{\dexp_1} \\ \stepsToD{\Delta}{\dexp_2}{\dexp_2'}}
+{\stepsToD{\Delta}{\dap{\dexp_1}{\dexp_2}}{\dap{\dexp_1}{\dexp_2'}}}
+
+\inferrule[STApBeta]
+{ \isFinal{\dexp_2} }
+{\stepsToD{\Delta}{\dapP{\dlam{x}{\htau}{\dexp_1}}{\dexp_2}}{ [\dexp_2/x]\dexp_1 }}
+\end{mathpar}
+\caption{Structural Dynamics}
+\label{fig:stepsTo}
+\end{figure}

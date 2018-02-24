@@ -1,0 +1,45 @@
+\begin{figure}[!ht]
+$\arraycolsep=4pt\begin{array}{rllllll}
+\mathsf{HTyp} & \htau & ::= &
+  b ~\vert~
+  \tarr{\htau}{\htau} ~\vert~
+  % \tprod{\htau}{\htau} ~\vert~
+  % \tsum{\htau}{\htau} ~\vert~
+  \tehole\\
+\mathsf{HExp} & \hexp & ::= &
+  c ~\vert~
+  x ~\vert~
+  \halam{x}{\htau}{\hexp} ~\vert~
+  \hap{\hexp}{\hexp} ~\vert~
+  % \hpair{\hexp}{\hexp} ~\vert~
+  % \hprj{i}{\hexp} ~\vert~
+  % \hinj{i}{\hexp} ~\vert~
+  % \hcase{\hexp}{x}{\hexp}{x}{\hexp} ~\vert~
+  % \hadd{\hexp}{\hexp} ~\vert~
+  \hehole{u} ~\vert~
+  \hhole{\hexp}{u} ~\vert~
+  {\hlam{x}{\hexp}} ~\vert~
+  \hexp : \htau\\
+% \mathsf{Mark} & \markname{} & ::= &
+%   \evaled{} ~\vert~  \unevaled{}\\
+ \mathsf{DHExp} & \dexp  & ::= &
+  c ~\vert~
+  x ~\vert~
+  {\halam{x}{\htau}{\dexp}} ~\vert~
+  \hap{\dexp}{\dexp} ~\vert~
+  % \hpair{\dexp}{\dexp} ~\vert~
+  % \hprj{i}{\dexp} ~\vert~
+  % \hinj{i}{\dexp} ~\vert~
+  % \hcase{\dexp}{x}{\dexp}{x}{\dexp} ~\vert~
+  % \hadd{\dexp}{\dexp} ~\vert~
+  \dehole{\mvar}{\subst}{} ~\vert~
+  \dhole{\dexp}{\mvar}{\subst}{} ~\vert~
+  \dcast{\htau}{\dexp}\\
+\end{array}$
+\caption{Syntax of H-types, H-expressions and dynamic H-expressions.
+We write $x$ to range over variables,
+$u$ over hole names, and
+$\sigma$ over finite substitutions.}
+\label{fig:HTyp}
+\label{fig:HExp}
+\end{figure}

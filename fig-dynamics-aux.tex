@@ -1,0 +1,87 @@
+\begin{figure}[!ht]
+\judgbox{\isValue{\dexp}}{$\dexp$ is a value}
+\begin{mathpar}
+\inferrule[VConst]{ }{
+  \isValue{c}
+}
+
+\inferrule[VLam]{ }{
+  \isValue{\halam{x}{\htau}{\dexp}}
+}
+\end{mathpar}
+
+\judgbox{\isIndet{\dexp}}{$\dexp$ is indeterminate}
+\begin{mathpar}
+\inferrule[IEHole]
+{ }
+{\isIndet{\dehole{\mvar}{\subst}{\evaled}}}
+
+\inferrule[INEHole]
+{\isFinal{\dexp}}
+{\isIndet{\dhole{\dexp}{\mvar}{\subst}{\evaled}}}
+
+\inferrule[IAp]
+{\isIndet{\dexp_1}\\
+% \isFinal{\dexp_2}~\text{\cy{??}}}
+ \isFinal{\dexp_2}}
+{\isIndet{\dap{\dexp_1}{\dexp_2}}}
+
+%% \inferrule[ICast]
+%% {\isIndet{\dexp}}
+%% {\isIndet{\dcast{\htau}{\dexp}}}
+
+\end{mathpar}
+
+\judgbox{\isFinal{\dexp}}{$\dexp$ is final (it cannot be stepped)}
+\begin{mathpar}
+\inferrule[FVal]
+{\isValue{\dexp}}{\isFinal{\dexp}}
+\and
+\inferrule[FIndet]
+{\isIndet{\dexp}}{\isFinal{\dexp}}
+\end{mathpar}
+
+\judgbox{\isErr{\Delta}{\dexp}}{$\dexp$ contains a cast error}
+\begin{mathpar}
+\inferrule[ECastError]{
+  \hasType{\Delta}{\emptyset}{\dexp}{\htau_2}\\
+  \tinconsistent{\htau_1}{\htau_2}
+}{
+  \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
+}
+
+\inferrule[EConst]{
+}{
+  \isErr{\Delta}{\dcast{\tau}{\dconst}}
+}
+
+\inferrule[EAp1]{
+  \isErr{\Delta}{\dexp_1}
+}{
+  \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
+}
+
+\inferrule[EAp2]{
+  \isErr{\Delta}{\dexp_2}
+}{
+  \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
+}
+
+\inferrule[ENEHole]{
+  \isErr{\Delta}{\dexp}
+}{
+  \isErr{\Delta}{\dhole{\dexp}{\mvar}{\subst}{}}
+}
+
+\inferrule[ECastProp]{
+  \isErr{\Delta}{\dexp}
+}{
+  \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
+}
+\end{mathpar}
+\caption{Auxiliary Judgments for the Dynamics}
+\label{fig:isValue}
+\label{fig:isIndet}
+\label{fig:isFinal}
+\label{fig:isErr}
+\end{figure}
