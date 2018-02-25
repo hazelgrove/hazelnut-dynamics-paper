@@ -6,9 +6,11 @@
 % \newcommand{\llparenthesiscolor}{\textcolor{red}{\lfloor}}
 % \newcommand{\rrparenthesiscolor}{\textcolor{red}{\rfloor}}
 
-%% TODO if feeling really obsessive, use the following two in place of x and u
+%% TODO if feeling really obsessive, use the following in place of x,u,c,b
 \newcommand{\varVar}{x}
 \newcommand{\varHole}{u}
+\newcommand{\econst}{c}
+\newcommand{\tbase}{b}
 
 % HTyp and HExp
 \newcommand{\hcomplete}[1]{#1~\mathsf{complete}}
@@ -153,7 +155,7 @@
 %% TODO make the following two look better
 \newcommand{\dcasttwo}[3]{#1 \langle{#2}\Rightarrow{#3}\rangle}
 \newcommand{\dcastthree}[4]{#1 \langle{#2}\Rightarrow{#3}\Rightarrow{#4}\rangle}
-\newcommand{\dcastfail}[4]{#1 \langle{#2}\Rightarrow{#3}\not\Rightarrow{#4}\rangle}
+\newcommand{\dcastfail}[3]{#1 \langle{#2}\Rightarrow{\tehole}\not\Rightarrow{#3}\rangle}
 \newcommand{\dlam}[3]{\lambda #1:#2.#3}
 \newcommand{\dap}[2]{#1(#2)}
 \newcommand{\dapP}[2]{(#1)(#2)} % Extra paren around function term
@@ -169,6 +171,7 @@
 \newcommand{\expandSyn}[5]{#1 \vdash #2 \Rightarrow #3 \leadsto #4 \dashv #5}
 \newcommand{\hasType}[4]{#1; #2 \vdash #3 : #4}
 \newcommand{\isValue}[1]{#1~\mathsf{val}}
+\newcommand{\isGround}[1]{#1~\mathsf{ground}}
 \newcommand{\isIndet}[1]{#1~\mathsf{indet}}
 \newcommand{\isFinal}[1]{#1~\mathsf{final}}
 \newcommand{\isErr}[2]{#1 \vdash #2~\mathsf{err}}
