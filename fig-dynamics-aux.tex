@@ -12,21 +12,94 @@
 
 \vsepRule
 
+\judgbox{\isGround{\htau}}{$\htau$ is a ground type}
+\begin{mathpar}
+\inferrule[GBase\rkc{name?}]{ }{
+  \isGround{b}
+}
+
+\inferrule[GArrHole\rkc{name?}]{ }{
+  \isGround{\tarr{\tehole}{\tehole}}
+}
+\end{mathpar}
+
+\vsepRule
+
+\judgbox{\isBoxedValue{\dexp}}{$\dexp$ is a possibly-boxed value}
+\begin{mathpar}
+\inferrule[BVVal\rkc{name?}]{
+  \isValue{\dexp}
+}{
+  \isBoxedValue{\dexp}
+}
+
+\inferrule[BVCastArr\rkc{name?}]{
+  \tarr{\htau_1}{\htau_2} \neq \tarr{\htau_3}{\htau_4}\\
+  \isBoxedValue{\dexp}
+}{
+  \isBoxedValue{\dcasttwo{\dexp}{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_3}{\htau_4}}}
+}
+
+\inferrule[BVHoleCast\rkc{name?}]{
+  \isBoxedValue{\dexp}\\
+  \isGround{\htau}
+}{
+  \isBoxedValue{\dcasttwo{\dexp}{\htau}{\tehole}}
+}
+\end{mathpar}
+
+\vsepRule
+
 \judgbox{\isIndet{\dexp}}{$\dexp$ is indeterminate}
 \begin{mathpar}
 \inferrule[IEHole]
 { }
-{\isIndet{\dehole{\mvar}{\subst}{\evaled}}}
+{\isIndet{\dehole{\mvar}{\subst}{}}}
 
 \inferrule[INEHole]
 {\isFinal{\dexp}}
-{\isIndet{\dhole{\dexp}{\mvar}{\subst}{\evaled}}}
+{\isIndet{\dhole{\dexp}{\mvar}{\subst}{}}}
 
 \inferrule[IAp]
-{\isIndet{\dexp_1}\\
+{\dexp_1\neq
+   \dcasttwo{\dexp_1'}
+            {\tarr{\htau_1}{\htau_2}}
+            {\tarr{\htau_3}{\htau_4}}\\
+ \isIndet{\dexp_1}\\
 % \isFinal{\dexp_2}~\text{\cy{??}}}
  \isFinal{\dexp_2}}
 {\isIndet{\dap{\dexp_1}{\dexp_2}}}
+
+\inferrule[ICastGroundHole] {
+  \isIndet{\dexp}\\
+  \isGround{\htau}
+}{
+  \isIndet{\dcasttwo{\dexp}{\htau}{\tehole}}
+}
+
+\inferrule[ICastHoleGround] {
+  \dexp\neq\dcasttwo{\dexp'}{\htau'}{\tehole}\\
+  \isIndet{\dexp}\\
+  \isGround{\htau}
+}{
+  \isIndet{\dcasttwo{\dexp}{\tehole}{\htau}}
+}
+
+\inferrule[ICastArr]{
+  \tarr{\htau_1}{\htau_2} \neq \tarr{\htau_3}{\htau_4}\\
+  \isIndet{\dexp}
+}{
+  \isIndet{\dcasttwo{\dexp}{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_3}{\htau_4}}}
+}
+
+\inferrule[IFailedCast] {
+  \isFinal{\dexp}\\
+  \isGround{\htau_1}\\
+  \isGround{\htau_2}\\
+  \htau_1\neq\htau_2
+}{
+  \isIndet{\dcastfail{\dexp}{\htau_1}{\htau_2}}
+}
 
 %% \inferrule[ICast]
 %% {\isIndet{\dexp}}
@@ -38,53 +111,55 @@
 
 \judgbox{\isFinal{\dexp}}{$\dexp$ is final (it cannot be stepped)}
 \begin{mathpar}
-\inferrule[FVal]
-{\isValue{\dexp}}{\isFinal{\dexp}}
+%% \inferrule[FVal]
+%% {\isValue{\dexp}}{\isFinal{\dexp}}
+\inferrule[FBoxedVal]
+{\isBoxedValue{\dexp}}{\isFinal{\dexp}}
 \and
 \inferrule[FIndet]
 {\isIndet{\dexp}}{\isFinal{\dexp}}
 \end{mathpar}
 
-\vsepRule
-
-\judgbox{\isErr{\Delta}{\dexp}}{$\dexp$ contains a cast error}
-\begin{mathpar}
-\inferrule[ECastError]{
-  \hasType{\Delta}{\emptyset}{\dexp}{\htau_2}\\
-  \tinconsistent{\htau_1}{\htau_2}
-}{
-  \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
-}
-
-\inferrule[EConst]{
-}{
-  \isErr{\Delta}{\dcast{\tau}{\dconst}}
-}
-
-\inferrule[EAp1]{
-  \isErr{\Delta}{\dexp_1}
-}{
-  \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
-}
-
-\inferrule[EAp2]{
-  \isErr{\Delta}{\dexp_2}
-}{
-  \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
-}
-
-\inferrule[ENEHole]{
-  \isErr{\Delta}{\dexp}
-}{
-  \isErr{\Delta}{\dhole{\dexp}{\mvar}{\subst}{}}
-}
-
-\inferrule[ECastProp]{
-  \isErr{\Delta}{\dexp}
-}{
-  \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
-}
-\end{mathpar}
+%% \vsepRule
+%% 
+%% \judgbox{\isErr{\Delta}{\dexp}}{$\dexp$ contains a cast error}
+%% \begin{mathpar}
+%% \inferrule[ECastError]{
+%%   \hasType{\Delta}{\emptyset}{\dexp}{\htau_2}\\
+%%   \tinconsistent{\htau_1}{\htau_2}
+%% }{
+%%   \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
+%% }
+%% 
+%% \inferrule[EConst]{
+%% }{
+%%   \isErr{\Delta}{\dcast{\tau}{\dconst}}
+%% }
+%% 
+%% \inferrule[EAp1]{
+%%   \isErr{\Delta}{\dexp_1}
+%% }{
+%%   \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
+%% }
+%% 
+%% \inferrule[EAp2]{
+%%   \isErr{\Delta}{\dexp_2}
+%% }{
+%%   \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
+%% }
+%% 
+%% \inferrule[ENEHole]{
+%%   \isErr{\Delta}{\dexp}
+%% }{
+%%   \isErr{\Delta}{\dhole{\dexp}{\mvar}{\subst}{}}
+%% }
+%% 
+%% \inferrule[ECastProp]{
+%%   \isErr{\Delta}{\dexp}
+%% }{
+%%   \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
+%% }
+%% \end{mathpar}
 \caption{Auxiliary Judgments for the Dynamics}
 \label{fig:isValue}
 \label{fig:isIndet}
