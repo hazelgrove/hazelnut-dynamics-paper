@@ -143,7 +143,12 @@
 \newcommand{\dexp}[0]{d}
 \newcommand{\dconst}[0]{c}
 \newcommand{\dval}[0]{\ddot{v}}
+%% TODO remove this macro
 \newcommand{\dcast}[2]{\langle #1 \rangle ~ #2}
+%% TODO make the following two look better
+\newcommand{\dcasttwo}[3]{#1 \langle{#2}\Rightarrow{#3}\rangle}
+\newcommand{\dcastthree}[4]{#1 \langle{#2}\Rightarrow{#3}\Rightarrow{#4}\rangle}
+\newcommand{\dcastfail}[4]{#1 \langle{#2}\Rightarrow{#3}\not\Rightarrow{#4}\rangle}
 \newcommand{\dlam}[3]{\lambda #1:#2.#3}
 \newcommand{\dap}[2]{#1(#2)}
 \newcommand{\dapP}[2]{(#1)(#2)} % Extra paren around function term

@@ -34,7 +34,8 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   % \hadd{\dexp}{\dexp} ~\vert~
   \dehole{\mvar}{\subst}{} ~\vert~
   \dhole{\dexp}{\mvar}{\subst}{} ~\vert~
-  \dcast{\htau}{\dexp}\\
+  \dcasttwo{\dexp}{\htau}{\htau} ~\vert~
+  \dcastfail{\dexp}{\htau}{\tehole}{\htau}\\
 \end{array}$
 \caption{Syntax of H-types, H-expressions and dynamic H-expressions.
 We write $x$ to range over variables,
