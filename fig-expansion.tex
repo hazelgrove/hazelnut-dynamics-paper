@@ -19,28 +19,45 @@
   \expandSyn{\hGamma}{\halam{x}{\htau_1}{\hexp}}{\tarr{\htau_1}{\htau_2}}{\halam{x}{\htau_1}{\dexp}}{\Delta}
 }
 
-\inferrule[ESAp1]{
-  \hsyn{\hGamma}{\hexp_1}{\tehole}\\
-  \expandAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\tehole}}{\dexp_1}{\htau_1}{\Delta_1}\\
-  \expandAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}
+\inferrule[ESAp]{
+  \hsyn{\hGamma}{\hexp_1}{\htau_1}\\
+  \arrmatch{\htau_1}{\tarr{\htau_2}{\htau}}
+  \\\\
+  \expandAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\htau_1'}{\Delta_1}\\
+  \expandAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau_2'}{\Delta_2}
 }{
-  \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\tehole}{\hap{(\dcast{\tarr{\htau_2}{\tehole}}{\dexp_1})}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+  \expandSyn
+    {\hGamma}
+    {\hap{\hexp_1}{\hexp_2}}
+    {\htau}
+    {\hap{(\dcasttwo{\dexp_1}{\htau_1'}{\tarr{\htau_2}{\htau}})}
+         {\dcasttwo{\dexp_2}{\htau_2'}{\htau_2}}}
+    {\Dunion{\Delta_1}{\Delta_2}}
 }
-
-\inferrule[ESAp2]{
-  \expandSyn{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\Delta_1}\\
-  \expandAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau'_2}{\Delta_2}\\
-  \htau_2 \neq \htau'_2
-}{
-  \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{\dexp_1}{\dcast{\htau_2}{\dexp_2}}}{\Dunion{\Delta_1}{\Delta_2}}
-}
-
-\inferrule[ESAp3]{
-  \expandSyn{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\Delta_1}\\
-  \expandAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau_2}{\Delta_2}
-}{
-  \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
-}\\
+%
+%% \inferrule[ESAp1]{
+%%   \hsyn{\hGamma}{\hexp_1}{\tehole}\\
+%%   \expandAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\tehole}}{\dexp_1}{\htau_1}{\Delta_1}\\
+%%   \expandAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}
+%% }{
+%%   \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\tehole}{\hap{(\dcast{\tarr{\htau_2}{\tehole}}{\dexp_1})}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+%% }
+%% 
+%% \inferrule[ESAp2]{
+%%   \expandSyn{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\Delta_1}\\
+%%   \expandAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau'_2}{\Delta_2}\\
+%%   \htau_2 \neq \htau'_2
+%% }{
+%%   \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{\dexp_1}{\dcast{\htau_2}{\dexp_2}}}{\Dunion{\Delta_1}{\Delta_2}}
+%% }
+%% 
+%% \inferrule[ESAp3]{
+%%   \expandSyn{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\Delta_1}\\
+%%   \expandAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau_2}{\Delta_2}
+%% }{
+%%   \expandSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+%% }\\
+%
 %
 % \inferrule[expand-pair]{
 %   \expandSyn{\hGamma}{\hexp_1}{\htau_1}{\dexp_1}{\Delta_1}\\
@@ -56,34 +73,41 @@
 % }
 %
 % (inj)
-
+%
 %
 % \inferrule[expand-plus]{ }{
 %   \expandSyn{\hGamma}{\hadd{\hexp_1}{\hexp_2}}{\tnum}{\hadd{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
 % }
-%
+
 \inferrule[ESEHole]{ }{
-  \expandSyn{\hGamma}{\hehole{u}}{\tehole}{\dehole{u}{\idof{\hGamma}}{\unevaled}}{\Dbinding{u}{\hGamma}{\tehole}}
+  \expandSyn{\hGamma}{\hehole{u}}{\tehole}{\dehole{u}{\idof{\hGamma}}{}}{\Dbinding{u}{\hGamma}{\tehole}}
 }
 
 \inferrule[ESNEHole]{
   \expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}
 }{
-  \expandSyn{\hGamma}{\hhole{\hexp}{u}}{\tehole}{\dhole{\dexp}{u}{\idof{\hGamma}}{\unevaled}}{\Delta, \Dbinding{u}{\hGamma}{\tehole}}
+  \expandSyn{\hGamma}{\hhole{\hexp}{u}}{\tehole}{\dhole{\dexp}{u}{\idof{\hGamma}}{}}{\Delta, \Dbinding{u}{\hGamma}{\tehole}}
 }\\
 %
-\inferrule[ESAsc1]{
-  \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}\\
-  \htau \neq \htau'
+
+\inferrule[ESAsc]{
+  \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}
 }{
-  \expandSyn{\hGamma}{\hexp : \htau}{\htau}{\dcast{\htau}{\dexp}}{\Delta}
+  \expandSyn{\hGamma}{\hexp : \htau}{\htau}{\dcasttwo{\dexp}{\htau'}{\htau}}{\Delta}
 }
 
-\inferrule[ESAsc2]{
-  \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau}{\Delta}
-}{
-  \expandSyn{\hGamma}{\hexp : \htau}{\htau}{\dexp}{\Delta}
-}
+%% \inferrule[ESAsc1]{
+%%   \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}\\
+%%   \htau \neq \htau'
+%% }{
+%%   \expandSyn{\hGamma}{\hexp : \htau}{\htau}{\dcast{\htau}{\dexp}}{\Delta}
+%% }
+%% 
+%% \inferrule[ESAsc2]{
+%%   \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau}{\Delta}
+%% }{
+%%   \expandSyn{\hGamma}{\hexp : \htau}{\htau}{\dexp}{\Delta}
+%% }
 \end{mathpar}
 
 \vsepRule
@@ -94,17 +118,24 @@
    expands to $\dexp$ (of type $\htau_2$)}
 \begin{mathpar}
 \inferrule[EALam]{
+  \arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}\\
   \expandAna{\hGamma, x : \htau_1}{\hexp}{\htau_2}{\dexp}{\htau'_2}{\Delta}
 }{
-  \expandAna{\hGamma}{\hlam{x}{\hexp}}{\tarr{\htau_1}{\htau_2}}{\halam{x}{\htau_1}{\dexp}}{\tarr{\htau_1}{\htau_2'}}{\Delta}
+  \expandAna{\hGamma}{\hlam{x}{\hexp}}{\htau}{\halam{x}{\htau_1}{\dexp}}{\tarr{\htau_1}{\htau_2'}}{\Delta}
 }
 
-\inferrule[EALamHole]{
-  \expandAna{\hGamma, x : \tehole}{\hexp}{\tehole}{\dexp}{\htau}{\Delta}
-}{
-  \expandAna{\hGamma}{\hlam{x}{\hexp}}{\tehole}{\halam{x}{\tehole}{\dexp}}{\tarr{\tehole}{\htau}}{\Delta}
-}
-
+%% \inferrule[EALam]{
+%%   \expandAna{\hGamma, x : \htau_1}{\hexp}{\htau_2}{\dexp}{\htau'_2}{\Delta}
+%% }{
+%%   \expandAna{\hGamma}{\hlam{x}{\hexp}}{\tarr{\htau_1}{\htau_2}}{\halam{x}{\htau_1}{\dexp}}{\tarr{\htau_1}{\htau_2'}}{\Delta}
+%% }
+%% 
+%% \inferrule[EALamHole]{
+%%   \expandAna{\hGamma, x : \tehole}{\hexp}{\tehole}{\dexp}{\htau}{\Delta}
+%% }{
+%%   \expandAna{\hGamma}{\hlam{x}{\hexp}}{\tehole}{\halam{x}{\tehole}{\dexp}}{\tarr{\tehole}{\htau}}{\Delta}
+%% }
+%% 
 \inferrule[EASubsume]{
   \hexp \neq \hehole{u}\\
   \hexp \neq \hhole{\hexp'}{u}\\\\
@@ -115,13 +146,13 @@
 }
 
 \inferrule[EAEHole]{ }{
-  \expandAna{\hGamma}{\hehole{u}}{\htau}{\dehole{u}{\idof{\hGamma}}{\unevaled}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
+  \expandAna{\hGamma}{\hehole{u}}{\htau}{\dehole{u}{\idof{\hGamma}}{}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
 }
 
 \inferrule[EANEHole]{
   \expandSyn{\hGamma}{\hexp}{\htau'}{\dexp}{\Delta}\\
 }{
-  \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}{\unevaled}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
+  \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}{}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
 }
 \end{mathpar}
 \caption{Algorithmic Expansion}

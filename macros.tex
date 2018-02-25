@@ -6,6 +6,10 @@
 % \newcommand{\llparenthesiscolor}{\textcolor{red}{\lfloor}}
 % \newcommand{\rrparenthesiscolor}{\textcolor{red}{\rfloor}}
 
+%% TODO if feeling really obsessive, use the following two in place of x and u
+\newcommand{\varVar}{x}
+\newcommand{\varHole}{u}
+
 % HTyp and HExp
 \newcommand{\hcomplete}[1]{#1~\mathsf{complete}}
 
@@ -133,6 +137,7 @@
 \newcommand{\sumhasmatched}[2]{#1 \mathrel{\textcolor{black}{\blacktriangleright_{+}}} #2}
 
 %%%% DYNAMICS %%%%
+%% TODO remove these macros
 %% marks for eval
 \newcommand{\unevaled}{\times}
 \newcommand{\evaled}{\checkmark}
@@ -170,6 +175,8 @@
 %% \newcommand{\stepsTo}[2]{#1 \mapsto_{\Delta} #2}
 \newcommand{\stepsToD}[3]{#1 \vdash #2 \mapsto #3}
 
+%% TODO if feeling obsessive, replace direct uses of \Delta
+\newcommand{\hDelta}{\Delta}
 \newcommand{\Dunion}[2]{#1 \cup #2}
 \newcommand{\idof}[1]{\mathsf{id}(#1)}
 \newcommand{\Dbinding}[3]{#1 :: [#2]#3}
