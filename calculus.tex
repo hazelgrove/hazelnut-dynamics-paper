@@ -51,7 +51,7 @@ A hole context, $\hDelta$, is a list of bindings $\Dbinding{u}{\hGamma}{\htau}$.
 \subsubsection{Dynamics}
 
 \input{fig-dynamics-aux}
-\input{fig-dynamics-steps}
+%% \input{fig-dynamics-steps}
 \input{fig-dynamics-contexts}
 
 {\color{gray}\blindtext}
@@ -59,6 +59,13 @@ A hole context, $\hDelta$, is a list of bindings $\Dbinding{u}{\hGamma}{\htau}$.
 {\color{gray}\blindtext}
 {\color{gray}\blindtext}
 {\color{gray}\blindtext}
+
+\begin{lemma}[Matched Ground Type Invariant] ~
+  If $\groundmatch{\htau}{\htau'}$
+  then $\isGround{\htau'}$
+  and $\tconsistent{\htau}{\htau'}$
+  and $\htau\neq\htau'$.
+\end{lemma}
 
 \subsubsection{Examples}
 

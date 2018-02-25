@@ -125,6 +125,9 @@
 \newcommand{\herase}[1]{\left|#1\right|_\textsf{erase}}
 
 \newcommand{\arrmatch}[2]{#1 \blacktriangleright_{\rightarrow} #2}
+%% TODO maybe write underbracket
+%% \newcommand{\groundmatch}[2]{\underline{#1} = #2}
+\newcommand{\groundmatch}[2]{#1 \blacktriangleright_{\mathsf{ground}} #2}
 \newcommand{\prodmatch}[2]{#1 \blacktriangleright_{\times} #2}
 \newcommand{\summatch}[2]{#1 \blacktriangleright_{+} #2}
 
@@ -177,7 +180,9 @@
 \newcommand{\isFinal}[1]{#1~\mathsf{final}}
 \newcommand{\isErr}[2]{#1 \vdash #2~\mathsf{err}}
 %% \newcommand{\stepsTo}[2]{#1 \mapsto_{\Delta} #2}
-\newcommand{\stepsToD}[3]{#1 \vdash #2 \mapsto #3}
+%% TODO first arg should be empty
+%% \newcommand{\stepsToD}[3]{#1 \vdash #2 \mapsto #3}
+\newcommand{\stepsToD}[3]{#2 \mapsto #3}
 
 %% TODO if feeling obsessive, replace direct uses of \Delta
 \newcommand{\hDelta}{\Delta}
@@ -189,6 +194,9 @@
 \newcommand{\evalctx}{\mathcal{E}}
 \newcommand{\evalhole}{\circ}
 \newcommand{\isevalctx}[1]{#1~\mathsf{evalCtx}}
-\newcommand{\reducesE}[3]{#1 \vdash #2 \longrightarrow #3}
+%% TODO first arg should be empty
+%% \newcommand{\reducesE}[3]{#1 \vdash #2 \longrightarrow #3}
+\newcommand{\reducesE}[3]{#2 \longrightarrow #3}
 \newcommand{\selectEvalCtxR}[2]{#1\{#2\}}
 \newcommand{\selectEvalCtx}[3]{#1=\selectEvalCtxR{#2}{#3}}
+\newcommand{\maybePremise}[1]{{\textcolor{red}[}#1{\textcolor{red}]}}
