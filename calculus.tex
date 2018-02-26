@@ -231,22 +231,35 @@ A hole context, $\hDelta$, is a list of bindings $\Dbinding{u}{\hGamma}{\htau}$.
 
 \input{fig-complete}
 
-\autoref{fig:complete} defines complete types and expressions...
+\autoref{fig:complete} defines \emph{complete} H-types, H-expressions, and
+dynamic H-expressions to be those terms without type or expression holes.
 
-\begin{theorem}[Complete Progress \cy{??}]
-If $\hcomplete{\hexp}$ and
-$\expandSyn{\emptyset}{\hexp}{\htau}{\dexp}{\Delta}$ then either
-$\isValue{\dexp}$ or $\stepsToD{\Delta}{\dexp}{\dexp'}$ for some $\dexp'$.
-
+\begin{theorem}[Complete Progress]
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
+  and $\isComplete{\dexp}$
+  then either $\stepsToD{}{\dexp}{\dexp'}$
+  or $\isValue{\dexp}$.
 \end{theorem}
 
-\begin{theorem}[Complete Preservation \cy{??}]
-If $\hcomplete{\hexp}$ and
-$\expandSyn{\emptyset}{\hexp}{\htau}{\dexp}{\Delta}$ and
-$\stepsToD{\Delta}{\dexp}{\dexp'}$ then
-$\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$
+\begin{theorem}[Complete Preservation]
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
+  and $\isComplete{\dexp}$
+  and $\stepsToD{}{\dexp}{\dexp'}$
+  then $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau}$.
 \end{theorem}
 
+\begin{theorem}[Complete Expansion] ~
+  \begin{enumerate}
+    \item
+      If $\isComplete{\hexp}$
+      and $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+      then $\isComplete{\dexp}$.
+    \item
+      If $\isComplete{\hexp}$
+      and $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
+      then $\isComplete{\dexp}$.
+  \end{enumerate}
+\end{theorem}
 
 \subsection{Metatheory: Correctness of Edit-and-Resume}
 

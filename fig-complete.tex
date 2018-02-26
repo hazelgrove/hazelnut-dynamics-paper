@@ -1,5 +1,92 @@
 \begin{figure}[t]
-\rkc{TODO}
-\caption{Complete H-types, H-expressions, and dynamic H-expressions}
+\judgbox{\isComplete{\htau}}{$\htau$ is complete}
+\begin{mathpar}
+\inferrule[BComplete]{ }{
+  \isComplete{b}
+}
+
+\inferrule[ArrComplete]{
+  \isComplete{\htau_1}\\
+  \isComplete{\htau_2}
+}{
+  \isComplete{\tarr{\htau_1}{\htau_2}}
+}
+\end{mathpar}
+
+\vsepRule
+
+\judgbox{\isComplete{\dexp}}{$\dexp$ is complete}
+\begin{mathpar}
+\inferrule[DVarComplete]{ }{
+  \isComplete{x}
+}
+
+\inferrule[DConstComplete]{ }{
+  \isComplete{c}
+}
+
+\inferrule[DLamComplete]{
+  \isComplete{\htau}\\
+  \isComplete{\dexp}
+}{
+  \isComplete{\dlam{x}{\htau}{\dexp}}
+}
+
+\inferrule[DApComplete]{
+  \isComplete{\dexp_1}\\
+  \isComplete{\dexp_2}
+}{
+  \isComplete{\dap{\dexp_1}{\dexp_2}}
+}
+
+\inferrule[DCastComplete]{
+  \isComplete{\dexp}\\
+  \isComplete{\htau_1}\\
+  \isComplete{\htau_2}
+}{
+  \isComplete{\dcasttwo{\dexp}{\htau_1}{\htau_2}}
+}
+\end{mathpar}
+
+\vsepRule
+
+\judgbox{\isComplete{\hexp}}{$\hexp$ is complete}
+\begin{mathpar}
+\inferrule[EVarComplete]{ }{
+  \isComplete{x}
+}
+
+\inferrule[EConstComplete]{ }{
+  \isComplete{c}
+}
+
+\inferrule[ESynLamComplete]{
+  \isComplete{\htau}\\
+  \isComplete{\hexp}
+}{
+  \isComplete{\halam{x}{\htau}{\hexp}}
+}
+
+\inferrule[EAnaLamComplete]{
+  \isComplete{\hexp}
+}{
+  \isComplete{\hlam{x}{\hexp}}
+}
+
+\inferrule[EApComplete]{
+  \isComplete{\hexp_1}\\
+  \isComplete{\hexp_2}
+}{
+  \isComplete{\hap{\hexp_1}{\hexp_2}}
+}
+
+\inferrule[EAscComplete]{
+  \isComplete{\hexp}\\
+  \isComplete{\htau}
+}{
+  \isComplete{\hexp : \htau}
+}
+\end{mathpar}
+\caption{Complete H-types, H-expressions, and Dynamic H-expressions}
 \label{fig:complete}
 \end{figure}
