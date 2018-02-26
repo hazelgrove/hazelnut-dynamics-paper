@@ -60,6 +60,11 @@ A hole context, $\hDelta$, is a list of bindings $\Dbinding{u}{\hGamma}{\htau}$.
 {\color{gray}\blindtext}
 {\color{gray}\blindtext}
 
+\begin{lemma}[Focus Formation] ~
+  If $\selectEvalCtx{\dexp}{\evalctx}{\dexp'}$
+  then $\isevalctx{\evalctx}$.
+\end{lemma}
+
 \begin{lemma}[Matched Ground Type Invariant] ~
   If $\groundmatch{\htau}{\htau'}$
   then $\isGround{\htau'}$
@@ -101,56 +106,132 @@ A hole context, $\hDelta$, is a list of bindings $\Dbinding{u}{\hGamma}{\htau}$.
 
 
 \clearpage
-\subsection{Metatheory \rkc{TODO}}
+%% \subsection{Metatheory}
+\subsection{Metatheory: Type Soundness}
 
-\input{fig-substitution}
+{\color{gray}\blindtext}
 
-(these theorems should be taken as fairly provisional)
-
-\begin{theorem}[Expandability \cy{??}] ~
+\begin{theorem}[Expandability] ~
   \begin{enumerate}
-    \item If $\hsyn{\hGamma}{\hexp}{\htau}$ then $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ for some $\dexp$ and $\Delta$.
-    \item If $\hana{\hGamma}{\hexp}{\htau}$ then $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$ for some $\dexp$ and $\htau'$ and $\Delta$.
+    \item
+      If $\hsyn{\hGamma}{\hexp}{\htau}$
+      then $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+      for some $\dexp$ and $\Delta$.
+    \item
+      If $\hana{\hGamma}{\hexp}{\htau}$
+      then $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
+      for some $\dexp$ and $\htau'$ and $\Delta$.
   \end{enumerate}
 \end{theorem}
 
-\begin{theorem}[Correspondence \cy{??}] ~
+\begin{theorem}[Correspondence] ~
   \begin{enumerate}
-    \item If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ then $\hsyn{\hGamma}{\hexp}{\htau}$.
-    \item If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$ then $\hana{\hGamma}{\hexp}{\htau}$.
+    \item
+      If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+      then $\hsyn{\hGamma}{\hexp}{\htau}$.
+    \item
+      If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
+      then $\hana{\hGamma}{\hexp}{\htau}$.
   \end{enumerate}
 \end{theorem}
 
 \begin{theorem}[Typed Expansion] ~
   \begin{enumerate}
-    \item If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ then $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
-    \item If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$ then $\tconsistent{\htau}{\htau'}$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$.
+    \item
+      If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+      then $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
+    \item
+      If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
+      then $\tconsistent{\htau}{\htau'}$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$.
   \end{enumerate}
 \end{theorem}
 
 \begin{theorem}[Expansion Unicity] ~
   \begin{enumerate}
-    \item If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ and $\expandSyn{\hGamma}{\hexp}{\htau'}{\dexp'}{\Delta'}$ then $\htau=\htau'$ and $\dexp=\dexp'$ and $\Delta=\Delta'$.
-    \item If $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}$ and $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp'}{\htau_2'}{\Delta'}$ then $\dexp=\dexp'$ and $\htau_2=\htau_2'$ and $\Delta=\Delta'$.
+    \item
+      If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+      and $\expandSyn{\hGamma}{\hexp}{\htau'}{\dexp'}{\Delta'}$
+      then $\htau=\htau'$ and $\dexp=\dexp'$ and $\Delta=\Delta'$.
+    \item
+      If $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}$
+      and $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp'}{\htau_2'}{\Delta'}$
+      then $\dexp=\dexp'$ and $\htau_2=\htau_2'$ and $\Delta=\Delta'$.
   \end{enumerate}
 \end{theorem}
 
 \begin{theorem}[Type Assignment Unicity]
-If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$ then $\htau=\htau'$.
-\end{theorem}
-
-\begin{theorem}[Progress]
-If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either $\stepsToD{\Delta}{\dexp}{\dexp'}$ or 
-$\isValue{\dexp}$ or $\isErr{\Delta}{\dexp}$ or $\isIndet{\dexp}$. 
-% for some $\dexp'$.
+  If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$
+  and $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$
+  then $\htau=\htau'$.
 \end{theorem}
 
 \begin{theorem}[Preservation]
   If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and
   $\stepsToD{\Delta}{\dexp}{\dexp'}$ then
-  $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$. \cy{or maybe up to
-  consistency?}
+  $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$.
 \end{theorem}
+
+\begin{theorem}[Progress]
+  If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either
+  (i) $\stepsToD{}{\dexp}{\dexp'}$ or
+  (ii) $\isIndet{\dexp}$ or
+  (iii) $\isBoxedValue{\dexp}$.
+\end{theorem}
+
+\begin{theorem}[Canonical Value Forms]
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$ and $\isValue{\dexp}$
+  then $\htau\neq\tehole$ and
+  \begin{enumerate}[label=(\alph*)]
+    \item If $\htau=b$ then $\dexp=c$.
+    \item If $\htau=\tarr{\htau_1}{\htau_2}$
+          then $\dexp=\halam{x}{\htau_1}{\dexp'}$
+          where $\hasType{\hDelta}{x : \htau_1}{\dexp'}{\htau_2}$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Canonical Boxed Forms]
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$ and $\isBoxedValue{\dexp}$
+  then
+  \begin{enumerate}[label=(\alph*)]
+    \item If $\htau=b$ then $\dexp=c$.
+    \item If $\htau=\tarr{\htau_1}{\htau_2}$ then either
+      \begin{enumerate}
+        \item[i.]
+          $\dexp=\halam{x}{\htau_1}{\dexp'}$
+          where $\hasType{\hDelta}{x : \htau_1}{\dexp'}{\htau_2}$, or
+        \item[ii.]
+          $\dexp=\dcasttwo{\dexp'}{\tarr{\htau_1'}{\htau_2'}}{\tarr{\htau_1}{\htau_2}}$
+          where $\tarr{\htau_1'}{\htau_2'}\neq\tarr{\htau_1}{\htau_2}$
+          and $\hasType{\hDelta}{\emptyset}{\dexp'}{\tarr{\htau_1'}{\htau_2'}}$.
+      \end{enumerate}
+    \item If $\htau=\tehole$
+          then $\dexp=\dcasttwo{\dexp'}{\htau'}{\tehole}$
+          where $\isGround{\htau'}$
+          and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Canonical Indeterminate Forms]
+  \rkc{TODO}
+
+  \rkc{TODO}
+
+  \rkc{TODO}
+
+  \rkc{TODO}
+
+  \rkc{TODO}
+
+  \rkc{TODO}
+
+  \rkc{TODO}
+
+  \rkc{TODO}
+\end{theorem}
+
+\input{fig-complete}
+
+\autoref{fig:complete} defines complete types and expressions...
 
 \begin{theorem}[Complete Progress \cy{??}]
 If $\hcomplete{\hexp}$ and
@@ -165,6 +246,13 @@ $\expandSyn{\emptyset}{\hexp}{\htau}{\dexp}{\Delta}$ and
 $\stepsToD{\Delta}{\dexp}{\dexp'}$ then
 $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$
 \end{theorem}
+
+
+\subsection{Metatheory: Correctness of Edit-and-Resume}
+
+\input{fig-substitution}
+
+{\color{gray}\blindtext}
 
 \begin{theorem}[Commutativity \cy{state this}]
 \end{theorem}
