@@ -264,12 +264,67 @@ dynamic H-expressions to be those terms without type or expression holes.
 \subsection{Metatheory: Correctness of Edit-and-Resume}
 
 \input{fig-substitution}
+\input{fig-multi-step}
 
 {\color{gray}\blindtext}
 
-\begin{theorem}[Commutativity \cy{state this}]
+\rkc{some of these statements may need additional typing premises}
+
+\begin{theorem}[Instantiation]
+  If $\hasType{\hDelta}{\hGamma}{\dexp}{\tau}$
+  and $\Dbinding{u}{\hGamma'}{\htau'}\in\hDelta$
+  and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$
+  then $\hasType{\hDelta}{\hGamma}{\instantiate{\dexp'}{u}{\dexp}}{\tau}$.
 \end{theorem}
 
+\autoref{fig:multi-step} defines the multi-step relation as the reflexive,
+transitive closure of the single-step relation.
+
+\begin{lemma}[Finality]
+  If $\isFinal{\dexp}$ and $\multiStepsTo{\dexp}{\dexp'}$
+  then $\dexp=\dexp'$.
+\end{lemma}
+
+\begin{theorem}[Commutativity]
+  If $\multiStepsTo{\dexp_0}{\dexp_1}$
+  then $\multiStepsTo{\instantiate{\dexp}{u}{\dexp_0}}
+                     {\instantiate{\dexp}{u}{\dexp_1}}$.
+\end{theorem}
+
+\begin{theorem}[Confluence]
+  If $\multiStepsTo{\dexp}{\dexp_1}$
+  and $\multiStepsTo{\dexp}{\dexp_2}$
+  then there exists $\dexp'$ such that
+  $\multiStepsTo{\dexp_1}{\dexp'}$ and
+  $\multiStepsTo{\dexp_2}{\dexp'}$.
+\end{theorem}
+
+\begin{corollary}[Final Confluence]
+  If $\multiStepsTo{\dexp}{\dexp_1}$
+  and $\isFinal{\dexp_1}$
+  and $\multiStepsTo{\dexp}{\dexp_2}$
+  then $\multiStepsTo{\dexp_2}{\dexp_1}$.
+  \begin{proof}
+    By Confluence and Finality.
+  \end{proof}
+\end{corollary}
+
+\begin{theorem}[Resumption]
+  If $\multiStepsTo{\dexp_1}{\dexp_2}$
+  and $\isFinal{\dexp_2}$
+  and $\multiStepsTo{\instantiate{\dexp_3}{u}{\dexp_1}}{\dexp_4}$
+  and $\isFinal{\dexp_4}$
+  then $\multiStepsTo{\instantiate{\dexp_3}{u}{\dexp_2}}{\dexp_4}$.
+  \begin{proof}
+    By Commutativity,
+    $\multiStepsTo{\instantiate{\dexp_3}{u}{\dexp_1}}
+                  {\instantiate{\dexp_3}{u}{\dexp_2}}$.
+    By Final Confluence, we can conclude.
+  \end{proof}
+\end{theorem}
+
+
+\begin{comment}
 
 \begin{theorem}[Maximum Informativity]
 If the expansion produces $t1$, and there exists another possible type choice
@@ -302,6 +357,4 @@ hole JOIN t  = t
 hole ~ t
 \end{verbatim}
 
-\cy{canonical forms}
-
-\cy{indeterminate forms}
+\end{comment}

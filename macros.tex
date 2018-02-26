@@ -165,7 +165,9 @@
 \newcommand{\dapP}[2]{(#1)(#2)} % Extra paren around function term
 \newcommand{\dnum}[1]{\underline{#1}}
 \newcommand{\dadd}[2]{#1 + #2}
+%% TODO third arg should be empty
 \newcommand{\dehole}[3]{\leftidx{^{#3}}{\llparenthesiscolor\rrparenthesiscolor}{^{#1}_{#2}}}
+%% TODO fourth arg should be empty
 \newcommand{\dhole}[4]{\leftidx{^{#4}}{\llparenthesiscolor#1\rrparenthesiscolor}{^{#2}_{#3}}}
 \newcommand{\dindet}[1]{\lceil#1\rceil}
 \newcommand{\dinj}[2]{\texttt{inj}_{#1}({#2})}
@@ -184,12 +186,15 @@
 %% TODO first arg should be empty
 %% \newcommand{\stepsToD}[3]{#1 \vdash #2 \mapsto #3}
 \newcommand{\stepsToD}[3]{#2 \mapsto #3}
+\newcommand{\multiStepsTo}[2]{#1 \mapsto^* #2}
 
 %% TODO if feeling obsessive, replace direct uses of \Delta
 \newcommand{\hDelta}{\Delta}
 \newcommand{\Dunion}[2]{#1 \cup #2}
 \newcommand{\idof}[1]{\mathsf{id}(#1)}
 \newcommand{\Dbinding}[3]{#1 :: [#2]#3}
+%% TODO once this macro is used in fig-substitution, try double brackets
+\newcommand{\instantiate}[3]{[#1 / #2] #3}
 
 % Contextual dynamics
 \newcommand{\evalctx}{\mathcal{E}}

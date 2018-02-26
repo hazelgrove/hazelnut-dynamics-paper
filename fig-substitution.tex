@@ -1,26 +1,26 @@
 \begin{figure}[t]
+%% TODO use instantiate macro
 \judgbox
-  {[\dexp_1 / x] \dexp_2 = \dexp_3}
-  {$\dexp_3$ is the result of substituting $\dexp_1$ for $x$ in $\dexp_2$}
+  {[\dexp / u] \dexp' = \dexp''}
+  {$\dexp''$ is the result of instantiating hole $u$ with $\dexp$ in $\dexp'$}
+  %% {$\dexp''$ is the result of substituting $\dexp$ for $u$ in $\dexp'$}
 \[
 \begin{array}{lcll}
-[\dexp_1 / x] c
+[\dexp / u] c
 &=&
 c\\
-{[\dexp_1 / x] x}
+{[\dexp / u] x}
 &=&
-\dexp_1\\
-{[\dexp_1 / x] y}
+\dexp\\
+%% {[\dexp_1 / x] y}
+%% &=&
+%% y & (y \neq x)\\
+{[\dexp / u] \halam{x}{\htau}{\dexp'}}
 &=&
-y & (y \neq x)\\
-{[\dexp_1 / x] \halam{y}{\htau}{\dexp_2}}
+{\halam{x}{\htau}{[\dexp / x] \dexp'}}\\
+{[\dexp / u] \dap{d_1}{d_2}}
 &=&
-{\halam{y}{\htau}{[\dexp_1 / x] \dexp_2}}
-& (y \neq x)
-\\
-{[\dexp_1 / x] \dap{d_2}{d_3}}
-&=&
-{\dapP{[\dexp_1 / x] d_2}{[\dexp_1 / x] d_3}}
+{\dapP{[\dexp / u] d_1}{[\dexp / u] d_2}}
 \\
 % {[\dexp_1 / x] \dinj{i}{e_2}}
 % &=&
@@ -30,18 +30,25 @@ y & (y \neq x)\\
 % &=&
 % {\dcase{[\dexp_1 / x]e}{x}{[\dexp_1 / x]e_x}{y}{[\dexp_1 / x]e_y}}
 % \\
-{[\dexp_1 / x]} \dehole{\mvar}{\subst}{}
+{[\dexp / u]} \dehole{u}{\subst}{}
 &=&
-\dehole{\mvar}{[\dexp_1 / x] \subst}{}
+[\subst]\dexp
 \\
-{[\dexp_1 / x] \dhole{\dexp_2}{\mvar}{\subst}{}}
+{[\dexp / u] \dhole{\dexp'}{u}{\subst}{}}
 &=&
-\dhole{ [ \dexp_1 / x ] \dexp_2 }{\mvar}{[\dexp_1 / x] \subst}{}
+[\subst]\dexp
 \\
-{[\dexp_1 / x] \dcast{\htau}{\dexp}}
+{[\dexp / u] \dcasttwo{\dexp'}{\htau}{\htau'}}
 &=&
-\dcast{\htau}{[\dexp_1 / x] \dexp}
+\dcasttwo{([\dexp / u] \dexp')}{\htau}{\htau'}
+\\
+{[\dexp / u] \dcastfail{\dexp'}{\htau_1}{\htau_2}}
+&=&
+\dcastfail{([\dexp / u] \dexp')}{\htau_1}{\htau_2}
+%% {[\dexp_1 / x] \dcast{\htau}{\dexp}}
+%% &=&
+%% \dcast{\htau}{[\dexp_1 / x] \dexp}
 \end{array}
 \]
-\caption{Substitution}
+\caption{Hole Instantiation}
 \end{figure}

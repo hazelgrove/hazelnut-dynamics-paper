@@ -1,0 +1,19 @@
+\begin{figure}[t]
+\judgbox{\multiStepsTo{\dexp}{\dexp'}}{$\dexp$ multi-steps to $\dexp'$}
+\begin{mathpar}
+\inferrule[MultiStepRefl]{
+  \stepsToD{}{\dexp}{\dexp}
+}{
+  \multiStepsTo{\dexp}{\dexp}
+}
+
+\inferrule[MultiStepSteps]{
+  \stepsToD{}{\dexp}{\dexp'}\\
+  \multiStepsTo{\dexp'}{\dexp''}
+}{
+  \multiStepsTo{\dexp}{\dexp''}
+}
+\end{mathpar}
+\caption{Multi-Step Dynamics}
+\label{fig:multi-step}
+\end{figure}
