@@ -157,7 +157,9 @@
 \newcommand{\dcast}[2]{\langle #1 \rangle ~ #2}
 %% TODO make the following two look better
 \newcommand{\dcasttwo}[3]{#1 \langle{#2}\Rightarrow{#3}\rangle}
-\newcommand{\dcastthree}[4]{#1 \langle{#2}\Rightarrow{#3}\Rightarrow{#4}\rangle}
+\newcommand{\dcastthree}[4]
+  {#1 \langle{#2}\Rightarrow{#3}\Rightarrow{#4}\rangle} %% sugared version
+  %% {\dcasttwo{\dcasttwo{#1}{#2}{#3}}{#3}{#4}} %% unsugared version
 \newcommand{\dcastfail}[3]{#1 \langle{#2}\Rightarrow{\tehole}\not\Rightarrow{#3}\rangle}
 %% \newcommand{\dlam}[3]{\lambda #1:#2.#3}
 \newcommand{\dlam}[3]{\halam{#1}{#2}{#3}}

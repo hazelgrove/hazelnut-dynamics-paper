@@ -21,6 +21,11 @@ $$
   \dcasttwo{\dcasttwo{\dexp}{\htau_1}{\htau_2}}{\htau_2}{\htau_3}
 $$
 
+\rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
+ITGround, and ITExpand. that's not many, and those rules don't look much more
+cluttered without the sugar, so consider eliminating it. if so, just toggle the
+definition of the dcastthree macro to the unsugared option.}
+
 Explain that $c$ is a placeholder constant (i.e., unit), $b$ is a placeholder
 type (i.e., unit).
 
