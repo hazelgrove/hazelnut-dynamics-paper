@@ -217,21 +217,74 @@ A hole context, $\hDelta$, is a list of bindings $\Dbinding{u}{\hGamma}{\htau}$.
 \end{theorem}
 
 \begin{theorem}[Canonical Indeterminate Forms]
-  \rkc{TODO}
-
-  \rkc{TODO}
-
-  \rkc{TODO}
-
-  \rkc{TODO}
-
-  \rkc{TODO}
-
-  \rkc{TODO}
-
-  \rkc{TODO}
-
-  \rkc{TODO}
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
+  and $\isIndet{\dexp}$
+  then either
+  \begin{enumerate}[label=(\alph*)]
+    \item
+      $\dexp=\dehole{u}{\subst}{}$
+      and $\Dbinding{u}{\Gamma'}{\htau}\in\hDelta$, or
+    \item
+      $\dexp=\dhole{\dexp'}{u}{\subst}{}$
+      and $\isFinal{\dexp'}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$
+      and $\Dbinding{u}{\Gamma'}{\htau}\in\hDelta$, or
+    \item
+      $\dexp=\dap{\dexp_1}{\dexp_2}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp_1}{\tarr{\htau_2}{\htau}}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp_2}{\htau_2}$
+      and $\isIndet{\dexp_1}$
+      and $\isFinal{\dexp_2}$
+      and $\dexp_1\neq\dcasttwo{\dexp_1}{\tarr{\htau_3}{\htau_4}}
+                                        {\tarr{\htau_3'}{\htau_4'}}$, or
+    %% \item
+    %%   \begin{enumerate}
+    %%     \item blah
+    %%     \item blah
+    %%     \item blah
+    %%   \end{enumerate}
+    \item
+      $\htau=b$
+      and $\dexp=\dcasttwo{\dexp'}{\tehole}{b}$
+      and $\isIndet{\dexp'}$
+      and $\dexp'\neq\dcasttwo{\dexp''}{\htau'}{\tehole}$, or
+    \item
+      $\htau=b$
+      and $\dexp=\dcastfail{\dexp'}{\htau'}{b}$
+      and $\isGround{\htau'}$
+      and $\htau'\neq{b}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$, or
+    \item
+      $\htau=\tarr{\htau_{11}}{\htau_{12}}$
+      and $\dexp=\dcasttwo{\dexp'}{\tarr{\htau_1}{\htau_2}}
+                                  {\tarr{\htau_{11}}{\htau_{12}}}$
+      and $\isIndet{\dexp'}$
+      and $\tarr{\htau_1}{\htau_2}\neq\tarr{\htau_{11}}{\htau_{12}}$, or
+    \item
+      $\htau=\tarr{\tehole}{\tehole}$
+      %% $\htau=\tarr{\htau_{11}}{\htau_{12}}$
+      %% and $\htau_{11}=\tehole$
+      %% and $\htau_{12}=\tehole$
+      and $\dexp=\dcastthree{\dexp'}{\tehole}{\tehole}{\tehole}$
+      and $\isIndet{\dexp'}$
+      and $\dexp'\neq\dcasttwo{\dexp''}{\htau'}{\tehole}$, or
+    \item
+      $\htau=\tarr{\tehole}{\tehole}$
+      %% $\htau=\tarr{\htau_{11}}{\htau_{12}}$
+      %% and $\htau_{11}=\tehole$
+      %% and $\htau_{12}=\tehole$
+      and $\dexp=\dcastfail{\dexp'}{\htau'}{\tarr{\tehole}{\tehole}}$
+      %% and $\dexp=\dcastfail{\dexp'}{\htau'}{\tarr{\htau_{11}}{\htau_{12}}}$
+      and $\htau'\neq\htau$
+      and $\isGround{\htau'}$
+      and $\isIndet{\dexp'}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$, or
+    \item
+      $\htau=\tehole$
+      and $\dexp=\dcasttwo{\dexp'}{\htau'}{\tehole}$
+      and $\isGround{\htau'}$
+      and $\isIndet{\dexp'}$.
+  \end{enumerate}
 \end{theorem}
 
 \input{fig-complete}
