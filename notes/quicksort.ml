@@ -76,10 +76,11 @@ module WithHoles = struct
          ) (print_term tm)
       
     | Num n -> string_of_int n
-    | List _ -> "List TODO"
+    | List _ -> "[..]"
        
   let _ =
     let res = qs "root" [4;1;3;2;5;0] in
     print_string ( print_value res );
+    print_string "\n";
     ()
 end
