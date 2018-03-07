@@ -66,21 +66,34 @@ module WithHoles = struct
          (print_value v1)
          (print_value v2)
          (print_value v3)
-       
   and print_value v = match v with
     | Hole (nm, env, tm) ->
        Printf.sprintf "%s:{%s; %s}" nm (
            List.fold_left (fun rest (x,v) ->
                Printf.sprintf "%s=%s %s" x (print_value v) rest
              ) "" env         
-         ) (print_term tm)
-      
+         ) (print_term tm)      
     | Num n -> string_of_int n
     | List _ -> "[..]"
-       
+
+  let rec print_term_short t = match t with
+    | QsAppendStep(v1, v2, v3) ->
+       Printf.sprintf "%s ++ [%s] ++ %s"
+         (print_value_short v1)
+         (print_value_short v2)
+         (print_value_short v3)
+  and print_value_short v = match v with
+    | Hole (nm, env, tm) ->
+       Printf.sprintf "%s:{...; %s}" nm (print_term_short tm)
+    | Num n -> string_of_int n
+    | List _ -> "[..]"
+
   let _ =
     let res = qs "root" [4;1;3;2;5;0] in
+    print_string "\n\nThe Hole-Env DAG, printed out (as a tree):\n";
     print_string ( print_value res );
+    print_string "\n\nShort version: Just hole tree (no envs):\n";
+    print_string ( print_value_short res );
     print_string "\n";
     ()
 end
