@@ -14,12 +14,11 @@
 \newcommand{\mattTodo}[1]{\todo[linecolor=green,backgroundcolor=green!2,bordercolor=green]{\tiny\textit{#1}}}
 \newcommand{\mattOmit}[1]{\colorbox{yellow}{(Matt omitted stuff here)}}
 
-%% SPACING HACKS
-\def\parahead#1{\vspace{-8pt}\paragraph{{\textbf{#1}.}}}
-\def\paraheadNoDot#1{\vspace{-8pt}\paragraph{{\textbf{#1}}}}
-\def\subparahead#1{\vspace{-13pt}\paragraph{}\textit{#1.}}
-\def\paraheadindent#1{\vspace{-13pt}\paragraph{}\textit{#1.}}
-\def\paraheadindentnodot#1{\vspace{-13pt}\paragraph{}\textit{#1}}
+\def\parahead#1{\paragraph{\textbf{#1.}}}
+%% \def\paraheadNoDot#1{\paragraph{{\textbf{#1}}}}
+\def\subparahead#1{\paragraph{\textit{#1.}}}
+%% \def\paraheadindent#1{\paragraph{}\textit{#1.}}
+%% \def\paraheadindentnodot#1{\paragraph{}\textit{#1}}
 
 % \newcommand{\ie}{{\emph{i.e.}}}
 % \newcommand{\eg}{{\emph{e.g.}}}

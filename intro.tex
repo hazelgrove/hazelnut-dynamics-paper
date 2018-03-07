@@ -2,110 +2,259 @@
 \newcommand{\introSec}{Introduction}
 \section{\protect\introSec} % don't like the all-caps thing that the template does, so protecting it from that
 \label{sec:intro}
-\cy{intro from LIVE 2017 paper is below}
 
-Broadly speaking, live programming environments are those that granularly interleave editing and evaluation \cite{DBLP:conf/icse/Tanimoto13,DBLP:journals/vlc/Tanimoto90,McDirmid:2007:LUL:1297027.1297073,burckhardt2013s}. 
-In the words of \citet{burckhardt2013s}, live programming environments 
-``promise to narrow the temporal and perceptive gap 
-between program development and code execution''. Examples of live programming environments include {lab notebook environments},
-e.g. the popular IPython/Jupyter~\cite{PER-GRA:2007}, which allow the
-programmer to interactively edit and evaluate program fragments organized into a
-sequence of cells (an extension of the read-eval-print loop (REPL)); spreadsheets; {live graphics programming environments} like SuperGlue \cite{McDirmid:2007:LUL:1297027.1297073}, Sketch-n-Sketch \cite{DBLP:conf/pldi/ChughHSA16} and the tools demonstrated by Bret Victor in his lectures \cite{victor2012inventing}; the TouchDevelop live UI framework \cite{burckhardt2013s}; live mobile application development systems like Flutter \cite{flutter}; and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98}, to name a few prominent examples.
-
-
-The problem that has motivated much of our recent work is that most  
-programming environments, live programming environments included,  provide feedback via various editor services only once the program being edited is syntactically well-formed and, when relevant, well-typed. This leaves a ``temporal and perceptive gap'', because programmers sometimes leave a program malformed or ill-typed for extended periods of time, e.g. as they think about what to enter at the cursor, or as they work on a different part of the program.
-
-In view of this general problem, we recently developed a \emph{structure editor calculus} called Hazelnut where every edit state consists of a well-formed and statically meaningful, i.e. well-typed, incomplete expression, which we take to mean an expression with holes \cite{popl-paper}. This calculus addressed fundamental questions relevant to editor services that operate statically, but there was no solution in that paper to the problems faced by editor services that also require knowledge of the dynamic meaning of an incomplete program, as would be relevant to a live programming environment. For example, consider a \emph{stepper} (a.k.a. a \emph{stepwise debugger}), like that available to Haskell programmers in the GHCi system \cite{GHC-stepper} and other systems \cite{DBLP:conf/haskell/MarlowIPG07,kar13566}, to OCaml programmers with recent work on \texttt{ocamli} by \citet{ocaml-stepper} and to Standard ML programmers \cite{DBLP:journals/jfp/TolmachA95}. A stepper requires that the expression being stepped be assigned dynamic meaning according to a small-step operational semantics \cite{DBLP:journals/jlp/Plotkin04a,pfpl}, but no such semantics was defined for incomplete expressions that arise when using Hazelnut, or any of these other systems. Defining such a semantics was left as future work in the Hazelnut paper, and in a subsequent ``vision paper'' \cite{snapl17-paper}. The purpose of this paper is to sketch out our progress toward a theoretically well-grounded solution.
-
-\matt{below are misc points that may be worth mentioning in section 1
-  (somehow, somewhere), and weaving into the continuation of the story
-  above:}
-
-\textbf{Type holes vs expression holes:}
-
-The dynamics of type holes is gradual typing, including run-time cast
-insertion and execution.
+In a traditional programming environment, the user iteratively edits the program
+text, compiles and runs the program, and views the output.
 %
-The dynamics of expression holes consists of defining
-\emph{indeterminate} expressions, as placeholders for subterms that
-traditionally would be deemed ``stuck'' .
+To make this workflow more usable and efficient, \emph{live programming
+environments} ``promise to narrow the temporal and perceptive gap between
+program development and code execution''~\cite{burckhardt2013s} with
+fine-grained interleaving of editing and evaluation to varying
+degrees~\cite{DBLP:journals/vlc/Tanimoto90,DBLP:conf/icse/Tanimoto13}.
 
-In live programming, we expect that programs will generally have holes
-in both terms and types (CITE?); however, to understand the mechanisms
-of \HazelnutLive, it is instructive to imagine situations where the
-only holes are in terms, or are in types.
+There have been several promising advances in building live programming
+environments in many settings, such as:
 %
-When we only use expression holes and no type holes, we do not need
-type casts, or the other dynamic mechanisms of gradual typing.
-% 
-When we only use type holes, we recover gradual typing and do not use
-indeterminate forms until and unless cast errors arise.
+{lab notebook environments}, like the popular
+IPython/Jupyter~\cite{PER-GRA:2007}, which allow the programmer to interactively
+edit and evaluate program fragments organized into a sequence of cells (an
+extension of the ubiquitous read-eval-print loop (REPL));
+%
+spreadsheets, which provide a reactive dataflow programming model;
+%
+live direct manipulation programming environments like SuperGlue
+\cite{McDirmid:2007}, \sns{}~\cite{sns-pldi,sns-uist}, and the tools
+demonstrated by Bret Victor in his lectures \cite{victor2012inventing};
+%
+the TouchDevelop live UI framework \cite{burckhardt2013s};
+%
+live mobile application development systems like Flutter \cite{flutter};
+%
+live visual image processing languages~\cite{DBLP:journals/vlc/Tanimoto90};
+%
+and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98},
+to name several prominent examples.
 
-\textbf{Cast errors as indeterminate forms:}
+Despite these advances, however, there is a fundamental limitation which hinders
+the full realization of live programming: traditional programming languages
+cannot evaluate \emph{incomplete programs}, \ie{}, programs that are either
+syntactically ill-formed or ill-typed.
+%
+Without a well-defined semantics to dictate the treatment of incomplete
+programs, various editor services may be provided in ad-hoc, restricted
+forms---if available, at all---during the periods of time between complete
+program states.
+%
+%% ``flickering in and out''
+%
+%% In other words, the ``Edit-Compile-Run'' cycle routinely fails (either in the
+%% first or second steps) during the program editing process.
+%
+The resulting editor experience includes services ``flickering in and out,''
+thus introducing ``temporal and perceptive gaps'' because programmers often
+leave a program malformed or ill-typed for extended periods of time, \eg{}~as
+they think about what to enter at the cursor, or as they work on a different
+part of the program.
+%
+These times are, arguably, when rich, live editor services would be most helpful
+to the user.
 
-Instead of being ``stuck'', cast errors in \HazelnutLive are
-fully-reduced indeterminate terms.
+In view of this general problem---the lack of semantics for \emph{incomplete
+programs}---\citet{popl-paper} recently developed a \emph{structure editor
+calculus} called Hazelnut where every edit state consists of a well-formed and
+statically meaningful (\ie{}~well-typed) incomplete expression, in particular,
+one with \emph{expression holes} or \emph{type holes}.
+%
+That work provides a static semantics for incomplete programs but not a
+\emph{dynamic} semantics, without which certain editor services---such as
+\emph{stepwise debuggers} (\eg{}~\cite{XXX}) and advanced \emph{code completion
+suggestions} (\eg{}~\cite{XXX})---cannot be built.
+%
+The topic of this paper is to develop such a dynamic semantics for functional
+programs with holes.
+
+%% \parahead{Prior Approaches: Exceptions as Expression Holes}
+\parahead{Prior Approaches}
+
+Given the existing lack of dynamic semantic foundations for incomplete programs,
+what alternative mechanisms do programmers have at their disposal to run and
+debug incomplete programs?
+
+\paragraph{Exceptions as Expression Holes}
+%
+One common approach for emulating expression holes is to use exceptions (such as
+\verb+Debug.crash "not yet implemented"+ or \verb+raise NotYetImplementedException+).
+%
+Some languages even provide syntax for holes
+%
+(written \verb+_+ in GHC Haskell~\cite{XXX},
+\verb+?+ in Agda~\cite{XXX}, and
+\verb+{x}+ in Idris~\cite{XXX})
+%
+which, semantically, behave similarly to exceptions.
+%
+A placeholder exception serves to appease the static type checker---because an
+error expression is allowed to have any type required by the surrounding
+context---allowing the program to run, while preserving dynamic type safety by
+simply halting execution as soon as the expression appears in evaluation
+position.
+
+Although useful, this ad-hoc approach has limitations.
+%
+Because the program must halt as soon as a placeholder expression is reached (in
+order to ensure type safety), the programmer cannot benefit from seeing how
+other parts of the program, which do not depend on the missing expression,
+continue to evaluate.
+%
+Another limitation is that exceptions typically carry nothing more than the
+stack trace that led to the error.
+%
+But there are other forms of information that could be useful as the programmer
+works to fill the hole---\eg{}, the dynamic environment around the failed
+expression, and the subsequent computations that depend on the missing value
+(which could only be deduced if evaluation continued).
+%
+Thus, the dynamic semantics of exceptions do not adequately address the
+particular needs for expression holes.
+
+\rkc{(mention something about manually commenting out partial expressions,
+rather than something nicer like marking them inside non-empty holes?)}
+
+\paragraph{Gradual Typing}
+%
+A well-developed approach for programming with ``type holes'' is \emph{gradual
+typing}~\cite{XXX,XXX,XXX,XXX}, where the \verb+Any+ type can be assigned to
+expressions either when
+%
+(a)~a valid type assignment is unknown and cannot be inferred, or
+%
+(b)~there is no single valid type assignment.
+%
+To ensure type safety of expressions that have been statically assigned the
+\verb+Any+ type, dynamic casts are attached to monitor how the expression is
+used at operations that require specific types.
+%
+A failed dynamic cast halts execution immediately, much like other kinds of
+run-time exceptions.
+%
+As with ad-hoc expression holes, the dynamics of existing gradually typed
+languages~\cite{XXX,XXX,XXX,XXX} do not allow other portions of the program,
+which do not depend on failed casts, to proceed. 
+
+\parahead{Our Approach: Evaluating ``Around'' Indeterminate Expressions}
+
+In contrast to using run-time exceptions, as above, our approach is to treat
+expression and type holes with distinct semantic characteristics.
+%
+In particular, we distinguish a new set of \emph{indeterminate expressions},
+which are neither fully-reduced to values, nor stuck, nor erroneous.
+%
+Instead, indeterminate expressions are ``paused'' during evaluation, at which
+point the programmer can
+%
+(a) inspect the dynamic environment at the point at which evaluation left off,
+%
+(b) inspect how the indeterminate expression is used (abstractly) in subsequent
+calculations, and
+%
+(c) observe the evaluation of other parts of the program that do not depend on
+the value of the indeterminate expression.
+%
+Then, if the programmer makes an edit---to fill in an empty expression hole, to
+replace a non-empty hole with a type-correct expression, or to replace a failed
+cast with a type-correct expressions---the paused evaluation can resume.
+%
+Together, these semantic properties can enable a class of live programming
+services---such as a debugging inspector and a suggestion system for filling
+holes based on dynamic environments---that are not possible with run-time
+exceptions.
+
+\parahead{Contributions and Paper Outline}
+
+\newcommand{\contribution}[2]{\paragraph{#1. #2}}
+
+This paper makes the following contributions:
+
+%% \begin{itemize}
+
+%% \item
+%
+\contribution{1}{Dynamic semantics with indeterminate expressions}
+%
+We define a dynamic semantics for functional programs with holes, by
+distinguishing \emph{indeterminate expressions} from those which are fully
+reduced to values and those which are stuck.
+%
+The semantics proceeds by evaluating around indeterminate expressions, allowing
+programs to continue to produce meaningful results despite dynamic cast errors
+(from type holes) or missing expressions (expression holes).
+%
+Formally, our semantics combines features from gradual type theory~\cite{XXX}
+(to handle incomplete types) and contextual modal type theory~\cite{XXX} (CMTT,
+which provides a logical foundation for hole environment tracking).
+%
+With a formal development in Agda, we prove that our calculus enjoys standard
+type safety properties, extended to account for indeterminate expressions.
+%
+(\autoref{sec:calculus})
+
+%% \item
+%
+\contribution{2}{Resumption of suspended evaluation}
+%
+We describe how our semantics allows the evaluation of a program with
+indeterminate expressions to \emph{resume} evaluation, as long as the only edits
+to the program involve filling expression holes.
+%
+This ``edit-and-resume'' feature may be a useful optimization for large,
+long-running programs in a development workflow that makes ``forward progress''
+through filling holes.
+%
+We provide a proof sketch of commutativity and confluence properties that ensure
+the correctness of this feature.
+%
+Our Adga formalization codifies this proof sketch, which assumes several
+unproven lemmas that we expect to be similar to those used to prove confluence
+in standard lambda-calculi~\cite{XXX}.
+%
+(\autoref{sec:resumption})
+
+%% \item
+%
+\contribution{3}{Prototype implementation}
+%
+We extend the Hazelnut system of \citet{popl-paper}, which defined an edit
+action calculus and static semantics for incomplete programs, with our new
+dynamic semantics.
+%
+The resulting tool, \HazelnutLive{}, demonstrates a proof-of-concept where every
+edit results in a program state that can be statically and dynamically analyzed
+in order to provide meaningful feedback to the programmer.
+%
+\HazelnutLive{} can be used to and run the examples in this paper, modulo
+several standard syntactic conveniences that our current implementation does not
+provide.
+%
+(\autoref{sec:implementation})
+
+%% \end{itemize}
+
+\vspace{5pt}
+
+Thus, our work provides an additional step towards the ultimate goal for live
+programming environments to reduce the temporal and perceptive gap between
+program development and code execution.
+%
+Our implementation, examples, and some videos are available in \suppMaterials{}.
+%
+Next, in \autoref{sec:examples}, we describe an overview example to introduce
+the main features in \HazelnutLive{}, before describing each of the above
+contributions in detail.
+%
+We wrap up in \autoref{sec:relatedWork} and \autoref{sec:discussion} with
+discussions of related and future work.
 
 
-\textbf{Indeterminate forms as exceptions:}
-
-TODO --- transfer thoughts from 2016 grant writing
-
-
-\textbf{Holes as breakpoints:}
-
-\begin{enumerate}
-
-\item 
-  \texttt{map somefun list}
-
-Suppose the programmer wishes to map with \texttt{somefun} that they
-either did not author themselves, or they forgot how the function
-works:
-  
-\item 
-  \textt{map ($\lambda \texttt{x}. \hhole{\texttt{x}}{a}$) list}
-
-First, the programmer can intercept the function's inputs.  These
-hole~$a$ above functions like a ``breakpoint'', and shows the
-programmer me all of the inputs to \texttt{somefun}.
-
-TODO -- show the result of running above.
-
-\item
-  \textt{map ($\lambda \texttt{x}. \hhole{\texttt{somefun x}}{a}$) list}
-
-  Next, suppose the programmer wishes to see all of the the outputs of
-  \texttt{somefun}.  To do so, they put that (single static)
-  expression into a hole, as above.
-
-\item
-  \textt{map ($\lambda \texttt{x}. \hhole{(x, \texttt{somefun x})}{a}$) list}
-
-  Finally, the programmer can see input-output pairs without breaking
-  the typing derivation of their program globally, since holes are
-  permitted to go \emph{anywhere}.  (They may have also exploited this
-  fact to show the inputs, in the first step).
-  
-\end{enumerate}
-
-
-\cy{intro from grant section is below}
-
-Live programming environments granularly interleave editing and evaluation,
-``promis[ing] to narrow the temporal and perceptive gap 
-between program development and code execution''~\cite{burckhardt2013s}.
-Examples of live programming environments include {lab notebook environments},
-like the popular IPython/Jupyter~\cite{PER-GRA:2007}, which allow the
-programmer to interactively edit and evaluate program fragments organized into a
-sequence of cells (an extension of the ubiquitous read-eval-print loop (REPL)); spreadsheets; {live graphics programming environments} like SuperGlue \cite{McDirmid:2007}, \sns{}~\cite{sns-pldi,sns-uist} and the tools demonstrated by Bret Victor in his lectures \cite{victor2012inventing}; the TouchDevelop live UI framework \cite{burckhardt2013s}; live mobile application development systems like Flutter \cite{flutter}; and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98}, to name a few prominent examples. \cy{find somewhere to cite these tanimoto papers \cite{DBLP:conf/icse/Tanimoto13,DBLP:journals/vlc/Tanimoto90}}
-
-
-Live programming environments typically cannot run incomplete programs, or they simply halt or raise an exception as soon as they encounter a hole during evaluation. This leaves a ``temporal and perceptive gap'' because the results of even those computations that do not depend critically on the hole are not available to the programmer. Our second track of research will address this gap by defining a dynamic semantics for incomplete programs that proceeds as far as possible around holes. 
-Every program assigned static meaning by the semantics of Track 1 will also be assigned dynamic meaning by the semantics of Track 2.
-
-For example, in \autoref{fig:intro-example} we saw that mapping the incomplete function \li{weighted_average} over the \li{grades} list produced an incomplete result. If holes simply raised exceptions, then the system would have aborted evaluation as soon as \li{weighted_average} was applied for the first time by \li{map}, and the programmer would not have been able to see that the result was a list of two elements, nor see the value of the sub-expression \li{10.0 *. g.hw1} for each element \li{g} of the \li{grades} list. Even programs with type inconsistencies can be evaluated under our proposed dynamics, because, as discussed in Track 1, non-empty holes operate as membranes around type inconsistencies. Taken together, the results from Tracks 1 and 2 may help to address a common complaint: that a static type discipline makes it difficult to do exploratory programming. 
-
-Our proposed dynamics goes beyond staged evaluation (\eg{}~\cite{Taha:1999}), partial evaluation (\eg{}~\cite{Jones:1993uq}) and symbolic evaluation (\eg{}~\cite{King:1976}) in that we track the dynamic environment (\ie{}~the substitutions performed) around each instance of an expression hole in the result. This allows the programmer to see, in the sidebar of \autoref{fig:intro-example}, the actual values that the variables in scope take on everywhere that the hole they are filling ends up during evaluation. This provides a hole-oriented specification of a standard feature of debuggers: inspection of the environment at designated points in the program. Finally, this environmental information is useful (though not required) for the edit action suggestion service of Track 3 and the direct manipulation programming service of Track 4. 
-
+\rkc{Cyrus/Matt: I moved all the ``raw'' material that was here into the
+Appendix. Please take a look there if there's anything else that you'd like to
+include in the Intro.}
