@@ -27,7 +27,6 @@ module WithHoles = struct
   type env = (string * value) list
   and hole = (string * env * hole_tm)
   and hole_tm =
-    | QsEmptyBaseCase
     | QsAppendStep of value * value * value
                     
   (* value term in an environment *)
@@ -60,8 +59,27 @@ module WithHoles = struct
        let tm : hole_tm = QsAppendStep(ls, Num h, rs) in
        let v : value = Hole (nm, env, tm) in
        v
+
+  let rec print_term t = match t with
+    | QsAppendStep(v1, v2, v3) ->
+       Printf.sprintf "%s ++ [%s] ++ %s"
+         (print_value v1)
+         (print_value v2)
+         (print_value v3)
+       
+  and print_value v = match v with
+    | Hole (nm, env, tm) ->
+       Printf.sprintf "%s:{%s; %s}" nm (
+           List.fold_left (fun rest (x,v) ->
+               Printf.sprintf "%s=%s %s" x (print_value v) rest
+             ) "" env         
+         ) (print_term tm)
+      
+    | Num n -> string_of_int n
+    | List _ -> "List TODO"
        
   let _ =
-    let _ = qs "root" [4;1;3;2;5] in
+    let res = qs "root" [4;1;3;2;5;0] in
+    print_string ( print_value res );
     ()
 end
