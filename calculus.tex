@@ -96,7 +96,7 @@ A hole context, $\hDelta$, is a list of bindings $\Dbinding{u}{\hGamma}{\htau}$.
 
 
 %% \begin{figure}[!ht]
-  \begin{definition}
+  \begin{definition}[Substitution Typing]
     $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff $\domof{\sigma} = \domof{\Gamma'}$ and for each $\dexp/x \in \sigma$, we have $x : \htau \in \hGamma'$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
   \end{definition}
 %%   \caption{substitution type assignment}
