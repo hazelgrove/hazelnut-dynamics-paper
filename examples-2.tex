@@ -1,0 +1,137 @@
+%% \subsection{Live Programming with Type Errors}
+\subsection{Live Programming with Static Type Errors}
+
+In the previous section, we described example programs that were incomplete
+because of \emph{missing} expressions.
+%
+Next, we describe example programs that are incomplete because of
+\emph{type-inconsistent} expressions.
+%
+For example, consider the following two definitions.
+
+\begin{lstlisting}
+let bad_bool : bool = ?? 0 ??_bad_bool;
+
+let bad_int : int = 1 + ?? true ??_bad_int_second_argument;
+\end{lstlisting}
+
+\noindent
+%
+These two definitions are ill-typed under standard typing disciplines.
+%
+In contrast, \citet{popl-paper} present a bidirectional type system that assigns
+types to both, by wrapping type-inconsistent expressions (\li{0} on line
+\rkc{XXX} and \li{true} on line \rkc{XXX} above) in \emph{non-empty} holes.
+%
+Non-empty holes prevent local type inconsistencies from polluting the rest of
+the program surrounding it, which may or may not itself contain additional
+inconsistencies.
+
+Understanding and debugging static type errors is notoriously difficult,
+particularly for novices.
+%
+A variety of approaches have been
+proposed~\cite{Seminal,ChenErwig2014,Pavlinovic2015,sherrloc} to better localize
+and explain type errors.
+%
+One of these approaches~\cite{Seidel2016} proposes to generate a dynamic witness
+that demonstrates a run-time failure, and then displays a compressed execution
+trace to the user as a graph.
+%
+In \HazelnutLive{}, we can run programs with type errors (\ie{}, programs with
+non-empty holes) as far as possible, in particular, until they
+would go wrong.
+%
+Thus, our operational semantics provides a similar benefit to the approach of
+\citet{Seidel2016}.
+
+\overviewExample{3}{Sum List}
+%
+Consider the following buggy program (observed during an undergraduate
+functional programming course~\cite{Seidel2016}) that attempts to sum a list
+integers.
+%
+The error is that the base case produces a list rather than an integer.
+
+\begin{lstlisting}
+sum_list : list(int) -> int
+sum_list [] = ?[]?
+sum_list (n:ns) = n + sum_list ns
+\end{lstlisting}
+
+\noindent
+%
+Because the list expression on line 2 does not have type \li{int} as required,
+it is wrapped in a (non-empty) hole by the bidirectional type
+checker~\cite{popl-paper}.
+%
+Rather than trying to debug the error based on the static error, the programmer
+may wish to trying running the function anyway by calling, say, \li{sum_list(2)}.
+%
+\HazelnutLive{} runs and produces the indeterminate expression \li{3 + ?[]?}.
+%
+By observing that the hole expression is being added to the integer \li{3}, he
+realizes that it needs to be an integer, specifically, \li{0}.
+%
+Compared to the trace displayed by \citet{Seidel2016}, the indeterminate result
+produced by \HazelnutLive{} is ``flattened'' because the expression \li{1 + 2}
+successfully proceeded to evaluate despite the error elsewhere.
+
+
+%% TODO fold error from Erwig paper.
+%% %
+%% see that final call on stack does have the right answer, but
+%% it's wrapped in a singleton list when the expected type is not
+%% a list.
+%% %
+%% fix is to remove the list, the rest of the computation remains
+%% the same, but b/c they were all wrapped in holes, need to re-run.
+%% %
+%% (add some mechanism for type-consistent non-empty-holes...)
+
+\overviewExample{4}{Stutter}
+%
+Consider the following function which attempts to produce a
+list where every element is repeated twice (borrowed from \citet{Osera2015}).
+%
+The combiner function to \li{List.foldr} needs to produce a \li{list(int)}, but
+it produces a \li{list(list(int)} instead.
+
+\begin{lstlisting}
+stutter : list(int) -> list(int)
+stutter xs = List.foldr (\x acc -> ?[x,x]? : acc) [] xs
+\end{lstlisting}
+
+\noindent
+%
+The bidirectional type checker of \citet{popl-paper} wraps the expression
+\li{[x,x]} inside a non-empty hole.
+%
+%% The editor has a choice about which expression to ``blame'' for the error; the
+%% entire application that forms the body of the lambda is analyzed against the
+%% return type \li{list(int)}, so that is a reasonable choice for the editor to
+%% make; another would be to assume that the arguments \li{[x,x]} and \li{acc} are
+%% both as intended and that only the function \li{(:)} is type-consistent.
+%% %
+%% Although one could imagine a setting in which a user would perform this
+%% reasoning, let's assume the simplest approach for marking consistencies that
+%% wraps the entire application.
+%
+Running this on \li{stutter [1,2,3]} produces the indeterminate result
+
+\begin{lstlisting}
+?  [1,1] : (? [2,2] : (? [[3:3]] ?) ?) ?,
+\end{lstlisting}
+
+\noindent
+%
+which shows the unfolding of \li{List.foldr}.
+%
+We refer to nested indeterminate computations like this as \rkc{\emph{hole
+environment traces} or \emph{hole environment trees}}.
+%
+The result of the innermost indeterminate expression is \li{[[3,3]]}.
+%
+The user realizes that there are too many levels of nesting, so
+he replaces the \li{(:)} with \li{(@)}, which addresses the type inconsistency
+and, when reevaluated, produces the desired result.
