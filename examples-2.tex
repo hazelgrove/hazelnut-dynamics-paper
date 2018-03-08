@@ -45,7 +45,7 @@ would go wrong.
 Thus, our operational semantics provides a similar benefit to the approach of
 \citet{Seidel2016}.
 
-\overviewExample{3}{Sum List}
+\overviewExample{2}{Sum List}
 %
 Consider the following buggy program (observed during an undergraduate
 functional programming course~\cite{Seidel2016}) that attempts to sum a list
@@ -88,6 +88,8 @@ successfully proceeded to evaluate despite the error elsewhere.
 %% the same, but b/c they were all wrapped in holes, need to re-run.
 %% %
 %% (add some mechanism for type-consistent non-empty-holes...)
+
+\begin{comment}
 
 \overviewExample{4}{Stutter}
 %
@@ -135,3 +137,5 @@ The result of the innermost indeterminate expression is \li{[[3,3]]}.
 The user realizes that there are too many levels of nesting, so
 he replaces the \li{(:)} with \li{(@)}, which addresses the type inconsistency
 and, when reevaluated, produces the desired result.
+
+\end{comment}
