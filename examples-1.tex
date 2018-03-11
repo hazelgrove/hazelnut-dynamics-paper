@@ -12,44 +12,40 @@ order to provide useful feedback during this editing workflow.
 
 \input{fig-grades-example}
 
-Consider a teacher who is in the midst of developing a \HazelnutLive{} notebook
-(depicted in \autoref{fig:grades-example}) to compute final student grades at
-the end of a term.
+\overviewExample{1a}{Computing Weighted Averages}
 %
-In the first cell in \autoref{fig:grades-example}, the teacher defines a record
-type, \li{student_data}, for each student's course data.
+Consider a teacher who is in the midst of developing a \Hazel{} notebook
+(depicted at the top of \autoref{fig:grades-example}) to compute final student
+grades at the end of a term.
+%
+At the top of the program, the teacher defines a
+record type, \li{student_data}, for each student's course data.
 %
 In our simplified example, this includes the student's name, of type
 \li{string}, and five grades, each of type \li{float}.
 
-\overviewExample{1a}{Computing Weighted Averages}
-%
 The teacher begins writing a \li{weighted_average} function that will
 compute a weighted average, of type \li{float}, for each \li{student_data}
 record.
 %
 The body of \li{weighted_average} is not yet written---marked with the
-\emph{empty hole} on line \rkc{XXX}--- but the teacher jumps ahead to map the
-function over the \li{grades} list.
-
-\begin{lstlisting}
-let weighted_average(g: student_data) =
-  ??;
-
-let weighted_averages = List.map weighted_average grades;
-\end{lstlisting}
-
-\noindent
+\emph{empty hole} on line \rkc{XXX}---but the teacher jumps ahead to map the
+function over the \li{grades} list on line \rkc{XXX}.
 %
-\HazelnutLive{} evaluates this incomplete program, showing its
-\emph{indeterminate} result in the sidebar on the right half of
-\autoref{fig:grades-example}; this value is a list whose length is the same as
+\Hazel{} evaluates this incomplete program, showing its
+\emph{indeterminate} result in \emph{results panel} just below the
+program in the center of the window (\autoref{fig:grades-example});
+this value is a list whose length is the same as
 \li{grades}, where each element is the (indeterminate) result of evaluating the
 hole expression inside \li{weighted_average}.
 %
-Notice that the hole on line \rkc{XXX} is assigned a unique static identifier
-(\ie{}~\li{a}) and that the indeterminate results it produces are assigned
-corresponding unique dynamic identifiers (\ie{}~\li{a.1}, \li{a.2}, etc.).
+\rkc{The editor shows the first three elements of a result list, by default; the
+... can be clicked and expanded to see additional elements.}
+
+Notice that the hole expression on line \rkc{XXX} is assigned a unique static
+identifier (\ie{}~\li{a}) and that the indeterminate results it produces are
+assigned corresponding unique dynamic identifiers (\ie{}~\li{a.1}, \li{a.2},
+etc.).
 %
 In contrast, the typical ad-hoc approach to simulating hole expressions, namely,
 using placeholder expressions like \li{raise "Not yet implemented."}, would halt
@@ -64,20 +60,34 @@ Now the teacher returns to \li{weighted_average} to work on the missing
 expression, with the goal of computing a weighted sum of each of a student's
 grades.
 %
-The teacher uses a \HazelnutLive{} edit action to create a sum expression,
-filling in the first summand by weighting the \li{hw1} score to account for 10\%
-of the weighted average; the rest of the computation is a new hole expression
-(\li{??_b}), yet to be filled in.
-
-\begin{lstlisting}
-let weighted_average(g: student_data) =
-  (10.0 *. g.hw1) +. ??_b;
-\end{lstlisting}
-
-\noindent
+The teacher performs several \Hazel{} edit actions (each of which is a single
+keystroke, a shortcut to selecting one of the edit tools from the left panel,
+followed by a tool-specific argument terminated with the Enter key):
 %
-\HazelnutLive{} immediately runs this incomplete program, displaying the updated
-list of indeterminate expressions \li{[760.0 + ??_b.1, 880.0 + ??_b.2, ...]}.
+navigating the cursor to hole \li{a} and typing \li{+}, which creates a
+sum expression \li{??_b + ??_c} with the cursor placed, by default, under
+left operand (the hole labeled \li{b});
+%
+typing \li{*} to create a multiplication expression \li{??_d * ??_e + ??_c},
+with the cursor place under hole \li{d};
+%
+typing \li{\#10} to enter a numeric scaling factor, which then moves
+the cursor to the second operand, hole \li{e}; and
+%
+typing \li{vg.hw1} to use the \li{hw1} field of the function argument
+as the right operand of the multiplication.
+%
+The resulting partial expression, \li{(10.0 *. g.hw1) +. ??_b}---shown
+in the screenshot in the bottom half of \autoref{fig:grades-example}---marks the
+first of five weighted summands in the eventual finished \li{weighted_average}
+calculation.
+
+Each \Hazel{} edit action transforms an incomplete but well-formed and
+well-typed program into another such program, and, thus, \Hazel{} immediately
+runs the program after each edit.
+%
+After the above edit sequence, \Hazel{} display the updated list of
+indeterminate expressions \li{[760.0 + ??_b.1, 880.0 + ??_b.2, ...]}.
 %
 Right away, the teacher recognizes that the values are too large; they should be
 at most \li{100.0}.
@@ -93,53 +103,32 @@ complete (there are no longer any expression holes), and the result of
 immediately running the finished program shows that each of values in the final
 result list is in the range \li{0.0} to \li{100.0}.
 
+\input{fig-grades-example-2}
+
 \overviewExample{1b}{Assigning Letter Grades}
 %
 The teacher's next task is to map the weighted averages to the letter grades A
-through F (we will consider only ``whole'' letter grades, for simplicity).
+through F (we consider only ``whole'' letter grades, for simplicity).
 %
-The \li{grade_cutoffs} record type describes the minimum cutoff for each of
+The \li{grade_cutoffs} record type, shown at the top of
+\autoref{fig:grades-example-b}, describes the minimum cutoff for each of
 these six possible grades.
 %
 Initially, each value in the \li{cutoffs} record is a hole.
 
-\begin{lstlisting}
-type grade_cutoffs =
-  { a: float, b: float, c: float, d: float, f: float };
-
-let cutoffs =
-  { a = ??_a, b = ??_b, c = ??_c, d = ??_d, f = ??_f };
-\end{lstlisting}
-
-\noindent
 %
 %% initially all holes, because it will be different year-to-year based on the %
 %data, differences in course difficulty, and to satisfy fairness criteria.
 %
-Before starting to fill in the cutoffs, the teacher jumps ahead to write a
+Before starting to fill in the cutoff values, the teacher jumps ahead to write a
 function \li{letter_grade} that will make the connection between \li{cutoffs}
 and \li{weighted_averages}.
 %
 Because she intends to look at the data to help select the cutoff values, the
-teacher sorts the \li{weighted_averages} and then maps them to
-\li{letter_grades}.
+teacher sorts the \li{weighted_averages} (on line \rkc{XXX}) and then maps
+them to \li{letter_grades} (on line \rkc{XXX}).
 
-\begin{lstlisting}
-let letter_grade(n: weighted_average) =
-  if n >= cutoffs.a then "A" else
-  if n >= cutoffs.b then "B" else
-  if n >= cutoffs.c then "C" else
-  if n >= cutoffs.d then "D" else
-  if n >= cutoffs.f then "F" else "Incomplete";
-
-let sorted_weighted_averages = List.sort weighted_averages;
-
-let letter_grades = List.map letter_grade sorted_weighted_averages;
-\end{lstlisting}
-
-\noindent
-%
-When \HazelnutLive{} runs this program, the guard of the outermost conditional
+When \Hazel{} runs this program, the guard of the outermost conditional
 (\li{n >= cutoffs.a} on line \rkc{XXX}), is indeterminate because \li{cutoffs.a}
 is.
 %
@@ -149,11 +138,11 @@ entire expression body, albeit with different bindings for \li{n}.
 Displaying such ``large'' indeterminate expressions can quickly consume all
 available screen space, overwhelming the user with too much information.
 %
-\autoref{fig:XXX} shows how \HazelnutLive{} renders large indeterminate
+\autoref{fig:XXX} shows how \Hazel{} renders large indeterminate
 expressions (\ie{}~anything other than ``small'' indeterminate value (a constant
 or hole) or list of small values) simply as \li{..} to save space.
 %
-Hovering over this abbreviation (as shown in \autoref{fig:XXX} displays the full
+Hovering over this abbreviation (\rkc{???}) displays the full
 indeterminate expression---as well as the evaluation environment that surrounds
 it---as a tooltip.
 %
@@ -163,37 +152,28 @@ trying to display useful live feedback without overwhelming the user.
 These usability factors are beyond the scope of our work, which is to define
 semantic foundations on which such user interfaces can be built.
 
-To start deciding \li{cutoffs}, the teacher looks at the \li{weighted_averages}
-sorted in descending order.
+To start deciding \li{cutoffs}, the teacher clicks the \li{weighted_averages}
+expression, and views the results panel to see the data sorted in descending
+order.
 %
-The data shows a natural gap between \li{92.2} and \li{89.5}.
+The result shows a natural gap between \li{92.2} and \li{89.5}.
 %
-So, she chooses to use \li{92.0} as the cutoff for A.
+So, she chooses to use \li{92.0} as the cutoff for A, replacing hole \li{XXX} on
+line \rkc{XXX} with that numeric value.
 %
-Resuming the computation from before, \HazelnutLive{} resolves the conditional
+Resuming the computation from before, \Hazel{} resolves the conditional
 expressions for the first \rkc{XXX} indeterminate expressions, because each of
 those \li{n} values was greater than \li{cutoffs.a}.
 %
 The remaining \rkc{XXX} expressions also proceeded to evaluate the first guard,
 and are now indeterminate at the guard for the second conditional.
 
-Before assigning other cutoff values, the teacher would like to get a sense of
-whether this first choice is a good one.
+Before assigning subsequent cutoff values, the teacher would like to get a sense
+of whether this first choice is a good one.
 %
-She jumps ahead to to write a function that computes the distribution of letter
-grades.
-
-\begin{lstlisting}
-let compute_distribution(list: list(float)) =
-  let n = List.length letter_grades in
-  List.map
-    (\x -> (x, showPercentage (List.length (List.filter ((==) x) list)) /. n))
-    ["A","B","C","D","F","Incomplete"];
-
-let distribution = compute_distribution(letter_grades);
-\end{lstlisting}
-
-\noindent
+She jumps ahead to to write a function (\li{compute_distribution} on lines
+rkc{XXX}-\rkc{XXX}) that computes the distribution of letter grades based
+on \verb+cutoffs+..
 %
 Running \li{compute_distribution} shows that the percentage of As is
 \rkc{XXX\%}, which is smaller than what the teacher would like;
@@ -204,7 +184,7 @@ and then another gap between \li{88.2} and {85.5}.
 %
 So, the teacher adjusts \li{cutoffs.a} to be \li{88.0}.
 %
-Because this edit is outside of a hole expression, \HazelnutLive{} discards the
+Because this edit is not just filling a hole expression, \Hazel{} discards the
 previous execution state and reevaluates the entire program.
 %
 Existing techniques for incremental computation~\cite{XXX,XXX}, however, could

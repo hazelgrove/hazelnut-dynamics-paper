@@ -14,29 +14,40 @@ type-inconsistent expressions---can be useful.
 We will also demonstrate how running even complete programs with subexpressions
 marked as holes may be useful in debugging.
 
-\HazelnutLive{} programs are written in OCaml \cite{leroy03:_ocaml}, using the
+The screenshot at the top of \autoref{fig:grades-example} shows a mockup of
+\Hazel{}, a work-in-progress programming environment that we are building on top
+of our dynamic semantics.
+%
+\Hazel{} programs are written in OCaml \cite{leroy03:_ocaml}, using the
 alternative Reason syntax \cite{reason-what} extended to support holes.
 %
-As shown in \autoref{fig:grades-example}, a \HazelnutLive{} notebook is a
-literate program \cite{knuth1984literate}: rich text comments appear at the top
-level and code appears within cells embedded into these comments.
+On the left side of the window is the \emph{edit action panel}, which
+provides a user interface for performing structured edits to the program
+displayed in the center of the window.
 %
-The reader is encouraged to work through these examples in our prototype
+On the right side of the window is the \emph{environment panel}, which provides
+static and dynamic information about the expression in the program currently in
+focus (\ie{}~under the cursor).
+
+Our current implementation, a reference implementation of the \HazelnutLive{}
+calculus, provides the edit action, code, and environment panels as shown in
+\autoref{fig:grades-example}, but does not yet provide support for many of the
+programming constructs and syntactic sugar described in the examples in this
+section.
+%
+\autoref{sec:implementation} describes the status of \HazelnutLive{} in more
+detail.
+%
+%
+%% As shown in \autoref{fig:grades-example}, a \HazelnutLive{} notebook is a
+%% literate program \cite{knuth1984literate}: rich text comments appear at the top
+%% level and code appears within cells embedded into these comments.
+%
+The reader is encouraged \rkc{(maybe not)}
+to work through the following examples in our prototype
 implementation or watch video demonstrations, both available in
-\suppMaterials{}.\footnote{
-%
-The programs in this section are written using minor syntactic conveniences that
-are not currently supported in our implementation.
-%
-For example, the implementation of recursive types in our current implementation
-requires explicit \texttt{fold} and \texttt{unfold} expressions; these can be
-inferred in standard ways (by pairing them with constructors and deconstructors
-for algebraic datatypes) in future work.
-%
-More details about other minor syntactic differences are described in
 \suppMaterials{}.
-%
-}
+
 
 \input{examples-1}
 \input{examples-2}
