@@ -3,48 +3,85 @@
 \section{\protect\relatedWorkSection} % don't like the all-caps thing that the template does, so protecting it from that
 \label{sec:relatedWork}
 
+blah
+
+blah
+
+\parahead{Hole-Driven Development}
+
 \begin{itemize}
-	\item Hazelnut paper
-	\item simply typed underdeterminism paper
-	\item work on partial evaluation and staging (incl. connections to modal logic -- ``modal analysis of staged computation'')
-	\item symbolic evaluation
-	\item full beta reduction
 	\item Agda
 	\item Idris
 	\item GHC holes
-	\item CMTT
-	\item gradual typing (and dynamic typing)
-		\begin{itemize}
-			\item siek and taha paper
-			\item snapl15 paper
-			\item gradualizer paper
-			\item maybe other things, e.g. several papers by ron garcia
-		\end{itemize}
-	\item DuctileJ stuff -- \url{https://homes.cs.washington.edu/~mernst/pubs/ductile-icse2011.pdf}
-	\item OLEG from McBride's thesis
 	\item Visual Studio (and others) support for edit-and-resume
 	\item Scratch lets you just skip over statement holes
+	\item papers that show up in a search for ``typed holes'' -- \url{https://scholar.google.com/scholar?hl=en&as_sdt=0%2C39&q=%22typed+holes%22&btnG=}
+\end{itemize}
+
+\parahead{Structure Editor Calculus}
+
+\begin{itemize}
+	\item Hazelnut paper
+\end{itemize}
+
+\parahead{Gradual Typing}
+
+\begin{itemize}
+	\item gradual typing (and dynamic typing)
+  \item siek and taha paper
+  \item snapl15 paper
+  \item gradualizer paper
+  \item maybe other things, e.g. several papers by ron garcia
+\end{itemize}
+
+\parahead{Contextual Modal Type Theory}
+
+\begin{itemize}
+	\item CMTT
+\end{itemize}
+
+\parahead{Evaluation Order}
+
+\begin{itemize}
+	\item full beta reduction
 	\item prior work on confluence for the lambda calculus
+	\item ``Call-by-value is dual to call-by-name'' might be relevant? \url{http://homepages.inf.ed.ac.uk/wadler/papers/dual/dual.pdf}
+	\item mention how unspecified evaluation order is something that people do when talking about parallelism?
+\end{itemize}
+
+\parahead{Partial Evaluation and Symbolic Execution}
+
+\begin{itemize}
+	\item work on partial evaluation and staging (incl. connections to modal logic -- ``modal analysis of staged computation'')
+	\item symbolic evaluation
+	\item maybe also search for ``partial programs'' 
+\end{itemize}
+
+\parahead{Stepwise Debugging}
+
+\begin{itemize}
 	\item work on debuggers that allow you to inspect environments
-		\begin{itemize}
-		\item might be something relevant in the paper ``A Debugger for Standard ML'' 
-		\item "Visualizing the evaluation of functional programs for debugging" by Whitington and Ridge
-		\item "A lightweight interactive debugger for Haskell'' and ``Multiple-View Tracing for Haskell: a New Hat'' might be relevant
-		\item ocamli -- \url{https://github.com/johnwhitington/ocamli}
-		\item Better supporting debugging aids learning a novel programming language. -- Scaffidi at VLHCC 2017
-		\item quote from Wadler in ``Why no one uses functional languages'':
-			\begin{quote}
-			“...there are few debuggers or
+  \item might be something relevant in the paper ``A Debugger for Standard ML'' 
+  \item "Visualizing the evaluation of functional programs for debugging" by Whitington and Ridge
+  \item "A lightweight interactive debugger for Haskell'' and ``Multiple-View Tracing for Haskell: a New Hat'' might be relevant
+  \item ocamli -- \url{https://github.com/johnwhitington/ocamli}
+  \item Better supporting debugging aids learning a novel programming language. -- Scaffidi at VLHCC 2017
+  \item quote from Wadler in ``Why no one uses functional languages'':
+    \begin{quote}
+    “...there are few debuggers or
 profilers for strict [functional] languages, perhaps because constructing them is not considered
 research. This is a shame, since such tools are sorely needed, and there remains much of
 interest to learn about their construction and use.
-\end{quote}
-		\end{itemize}
-	\item papers that show up in a search for ``typed holes'' -- \url{https://scholar.google.com/scholar?hl=en&as_sdt=0%2C39&q=%22typed+holes%22&btnG=}
-	\item maybe also search for ``partial programs'' 
+    \end{quote}
+\end{itemize}
+
+\parahead{Others?}
+
+\begin{itemize}
+	\item simply typed underdeterminism paper
+	\item DuctileJ stuff -- \url{https://homes.cs.washington.edu/~mernst/pubs/ductile-icse2011.pdf}
+	\item OLEG from McBride's thesis
 	\item roly pererra work on program slicing
 	\item should say something about how holes show up in program synthesis under various names (what?) 
 	\item ``Achieving flexibility in direct-manipulation programming environments by relaxing the edit-time grammar'' -- \url{http://ieeexplore.ieee.org/document/1509511/}
-	\item ``Call-by-value is dual to call-by-name'' might be relevant? \url{http://homepages.inf.ed.ac.uk/wadler/papers/dual/dual.pdf}
-	\item mention how unspecified evaluation order is something that people do when talking about parallelism?
 \end{itemize}

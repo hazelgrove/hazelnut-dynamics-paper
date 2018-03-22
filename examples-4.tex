@@ -1,0 +1,94 @@
+\subsection{Live Programming for Debugging}
+
+Previous examples highlighted how running different kinds of incomplete
+programs---ones with missing expressions, type-inconsistent expressions, or
+missing types---can be useful.
+%
+Our final example demonstrates how expression holes may be useful even for
+complete programs, in order to facilitate debugging and program understanding.
+
+%% \overviewExample{6}{\rkc{...}}
+%%
+%% \rkc{breakpoints, understanding input/output behavior}
+
+\overviewExample{4}{Quicksort}
+
+Consider the following buggy implementation of quicksort, which contains several
+errors.
+%
+The student wants to debug the implementation and so inserts an expression
+around the return expression on line \rkc{XXX}, and runs
+\li{quicksort [X,X,X,X,X,X]}.
+
+\begin{lstlisting}
+quicksort : list('a) -> list('a)
+quicksort [] = []
+quicksort (x:xs) =
+  let (left, right) = span ((>) x) xs in
+  let (left', right') = (quicksort left, quicksort right) in
+  ? (left' @ [x] @ right) ?
+\end{lstlisting}
+
+\noindent
+%
+Based on the live environment for the initial call, the student notices that the
+values in \li{left} are larger than the pivot \li{x}, but \li{left} was intended
+to bind smaller values.
+%
+This suggests that the student got the filtering predicate backwards, so he
+replaces it with \li{(<)} on line \rkc{XXX}.
+%
+After re-running the program and viewing the live output again, \li{left} now
+contains smaller values than \li{x}, but not all of them; \li{right} has some
+values that are larger and some that are smaller.
+%
+The student uses type-based search to find other functions, besides \li{span},
+of type \li{('a -> bool) -> 'a list -> ('a list, 'a list)} and finds
+\li{partition}.
+%
+It may be easier for the student to simply try the function rather than studying
+the documentation, so he edits line \rkc{XXX} to call \li{partition} instead,
+re-runs, and observes that both \li{left} and \li{right} now seem to achieve the
+intended partitioning.
+
+Despite these two fixes, the result expression is not yet sorted.
+%
+In particular, the values greater than the pivot \li{x} are not completely
+sorted.
+%
+Viewing the values of bindings of \li{left'} and \li{right'}, the student sees
+that both seem to have correct prefixes of sorted lists, but that they are
+incorrect after the pivots.
+%
+This suggests that something may be wrong with the handling of \li{right'}.
+%
+Indeed, the student takes a look for uses of \li{right'} and sees that line
+\rkc{XXX} mistakenly uses \li{right} instead.
+%
+Making this change and re-running now produces the desired result, built up as a
+hole environment tree that shows how all of the recursive results will be
+combined by a series of nested appends.
+%
+Happy with the results of the program, the student removes the hole around the
+expression on line \rkc{XXX}, and evaluation can proceed to perform the nested
+appends, producing the final sorted result.
+%
+\autoref{sec:discussion} discusses how debugging tools may be designed to
+systematically insert hole expressions in particular places to achieve certain
+debugging and program understanding strategies.
+%
+%% When run on a larger input, this projection of the full evaluation trace shows a
+%% nesting structure---which could be rendered as visualization to help
+%% understanding, as described in \autoref{sec:discussion}---whose depth is clearly
+%% much smaller than the length of the input list; this suggests that the
+%% algorithm, indeed, achieves some sort of sublinear complexity, as intended.
+%
+
+\begin{lstlisting}
+quicksort : list('a) -> list('a)
+quicksort [] = []
+quicksort (x:xs) =
+  let (left, right) = partition ((<) x) xs in
+  let (left', right') = (quicksort left, quicksort right) in
+  ? (left' @ [x] @ right') ?
+\end{lstlisting}
