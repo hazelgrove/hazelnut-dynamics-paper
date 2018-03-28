@@ -1,4 +1,5 @@
-\begin{figure}[t]
+% !TEX root = hazelnut-dynamics.tex
+\begin{figure}[h]
 \judgbox{\isComplete{\htau}}{$\htau$ is complete}
 \begin{mathpar}
 \inferrule[BComplete]{ }{
@@ -10,41 +11,6 @@
   \isComplete{\htau_2}
 }{
   \isComplete{\tarr{\htau_1}{\htau_2}}
-}
-\end{mathpar}
-
-\vsepRule
-
-\judgbox{\isComplete{\dexp}}{$\dexp$ is complete}
-\begin{mathpar}
-\inferrule[DVarComplete]{ }{
-  \isComplete{x}
-}
-
-\inferrule[DConstComplete]{ }{
-  \isComplete{c}
-}
-
-\inferrule[DLamComplete]{
-  \isComplete{\htau}\\
-  \isComplete{\dexp}
-}{
-  \isComplete{\dlam{x}{\htau}{\dexp}}
-}
-
-\inferrule[DApComplete]{
-  \isComplete{\dexp_1}\\
-  \isComplete{\dexp_2}
-}{
-  \isComplete{\dap{\dexp_1}{\dexp_2}}
-}
-
-\inferrule[DCastComplete]{
-  \isComplete{\dexp}\\
-  \isComplete{\htau_1}\\
-  \isComplete{\htau_2}
-}{
-  \isComplete{\dcasttwo{\dexp}{\htau_1}{\htau_2}}
 }
 \end{mathpar}
 
@@ -87,6 +53,43 @@
   \isComplete{\hexp : \htau}
 }
 \end{mathpar}
-\caption{Complete H-types, H-expressions, and Dynamic H-expressions}
+
+\vsepRule
+
+
+\judgbox{\isComplete{\dexp}}{$\dexp$ is complete}
+\begin{mathpar}
+\inferrule[DVarComplete]{ }{
+  \isComplete{x}
+}
+
+\inferrule[DConstComplete]{ }{
+  \isComplete{c}
+}
+
+\inferrule[DLamComplete]{
+  \isComplete{\htau}\\
+  \isComplete{\dexp}
+}{
+  \isComplete{\dlam{x}{\htau}{\dexp}}
+}
+
+\inferrule[DApComplete]{
+  \isComplete{\dexp_1}\\
+  \isComplete{\dexp_2}
+}{
+  \isComplete{\dap{\dexp_1}{\dexp_2}}
+}
+
+\inferrule[DCastComplete]{
+  \isComplete{\dexp}\\
+  \isComplete{\htau_1}\\
+  \isComplete{\htau_2}
+}{
+  \isComplete{\dcasttwo{\dexp}{\htau_1}{\htau_2}}
+}
+\end{mathpar}
+
+\caption{Complete H-types, external H-expressions, and internal H-expressions}
 \label{fig:complete}
 \end{figure}

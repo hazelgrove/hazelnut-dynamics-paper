@@ -1,3 +1,5 @@
+% !TEX root = hazelnut-dynamics.tex
+
 \begin{figure}[t]
 \judgbox{\tconsistent{\htau_1}{\htau_2}}{$\htau_1$ is consistent with $\htau_2$}
 \begin{mathpar}
@@ -35,30 +37,30 @@
 % }
 \end{mathpar}
 
-\vsepRule
+% \vsepRule
 
-\judgbox{\tinconsistent{\htau_1}{\htau_2}}{$\htau_1$ is inconsistent with $\htau_2$}
-\begin{mathpar}
-    \inferrule[ICBaseArr1]{ }{
-      \tinconsistent{\tb}{\tarr{\htau_1}{\htau_2}}
-    }
+% \judgbox{\tinconsistent{\htau_1}{\htau_2}}{$\htau_1$ is inconsistent with $\htau_2$}
+% \begin{mathpar}
+%     \inferrule[ICBaseArr1]{ }{
+%       \tinconsistent{\tb}{\tarr{\htau_1}{\htau_2}}
+%     }
 
-    \inferrule[ICBaseArr2]{ }{
-      \tinconsistent{\tarr{\htau_1}{\htau_2}}{\tb}
-    }
+%     \inferrule[ICBaseArr2]{ }{
+%       \tinconsistent{\tarr{\htau_1}{\htau_2}}{\tb}
+%     }
 
-    \inferrule[ICArr1]{
-      \tinconsistent{\htau_1}{\htau_3}
-    }{
-      \tinconsistent{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_3}{\htau_4}}
-    }
+%     \inferrule[ICArr1]{
+%       \tinconsistent{\htau_1}{\htau_3}
+%     }{
+%       \tinconsistent{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_3}{\htau_4}}
+%     }
 
-    \inferrule[ICArr2]{
-      \tinconsistent{\htau_2}{\htau_4}
-    }{
-      \tinconsistent{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_3}{\htau_4}}
-    }
-\end{mathpar}
+%     \inferrule[ICArr2]{
+%       \tinconsistent{\htau_2}{\htau_4}
+%     }{
+%       \tinconsistent{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_3}{\htau_4}}
+%     }
+% \end{mathpar}
 
 \vsepRule
 
@@ -94,7 +96,7 @@
 %   \summatch{\tsum{\htau_1}{\htau_2}}{\tsum{\htau_1}{\htau_2}}
 % }
 % \end{mathpar}
-\caption{Type Consistency, Inconsistency, and Matching}
+\caption{Type Consistency and Matching}
 \label{fig:tconsistent}
 \label{fig:arrmatch}
 \end{figure}

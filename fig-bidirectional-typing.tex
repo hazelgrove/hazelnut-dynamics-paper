@@ -1,3 +1,5 @@
+% !TEX root = hazelnut-dynamics.tex
+
 \begin{figure}[t]
 \judgbox{\hsyn{\hGamma}{\hexp}{\htau}}{$\hexp$ synthesizes type $\htau$}
 \begin{mathpar}
@@ -5,8 +7,10 @@
   \hsyn{\hGamma}{c}{b}
 }
 
-\inferrule[SVar]{ }{
-  \hsyn{\hGamma, x : \htau}{x}{\htau}
+\inferrule[SVar]{
+  x : \htau \in \hGamma
+}{
+  \hsyn{\hGamma}{x}{\htau}
 }
 
 \inferrule[SLam]{
@@ -58,5 +62,7 @@
   \hana{\hGamma}{\hexp}{\htau'}
 }
 \end{mathpar}
+\vspace{-5px}
 \caption{Bidirectional Typing of H-Expressions}
+\label{fig:bidirectional-typing}
 \end{figure}

@@ -1,55 +1,56 @@
+% !TEX root = hazelnut-dynamics.tex
+
 \begin{abstract}
 
-\emph{Live programming environments} aim to provide programmers (and, in some
-cases, audiences) with continuous feedback about a program's dynamic behavior
-throughout the editing process.
+\emph{Live programming environments} aim to provide programmers (and sometimes audiences) 
+with continuous feedback about a program's dynamic behavior as it is being edited. 
 %
-Unfortunately, because programming languages typically assign dynamic meaning
-only to programs that are \emph{complete}---syntactically well-formed and free
-of static type errors---live programming features are often severely restricted,
-if available at all, when programs are incomplete.
+The problem is that programming languages typically assign dynamic meaning only 
+ to programs that are \emph{complete}, i.e. syntactically well-formed and free
+of static type errors, whereas 
 %
-Incomplete edit states are frequently encountered when writing programs, so they
-are, arguably, when live programming services would be most valuable.
+during much of the editing process, the program is not yet complete. As a result,  
+live programming services flicker in and out, 
+in many cases going out for substantial lengths of time.
 %
-Defining a semantics for incomplete functional programs would help bridge the
-gap between well-formed states and allow live programming environments to
-provide continuous, uninterrupted, and meaningful feedback.
-
-Recent work by \citet{popl-paper} makes progress toward this goal by developing
-a type system for lambda terms with \emph{holes} in both expression and type
-position, with empty holes standing for missing expressions or types, and
-non-empty holes operating as ``membranes'' around type inconsistencies.
+% Defining a semantics for incomplete functional programs would help bridge the
+% gap between well-formed states and allow live programming environments to
+% provide continuous, uninterrupted, and meaningful feedback.
+This paper confronts this problem from type-theoretic first principles by developing a 
+\emph{dynamic semantics for incomplete functional programs}, 
+based in part on the static semantics for incomplete functional programs
+developed in recent work by \citet{popl-paper}. 
 %
-The contribution of this paper is a corresponding \emph{dynamic semantics for
-functional programs with holes}.
+Incomplete functional programs are modeled as expressions with \emph{holes}, 
+with empty holes standing for missing expressions or types, and  non-empty holes 
+operating as ``membranes'' around static and dynamic type inconsistencies. 
 %
-Rather than aborting with an exception when evaluation encounters a hole (as in
-several existing systems), evaluation proceeds ``around'' expression holes,
-performing as much computation as is possible and tracking the dynamic
-environment around each hole as it flows through the program.  These accumulated
-hole environments can be reported directly to the programmer by the editor as
-they work to fill holes.  They also enable an ``edit-and-resume'' feature that
-avoids the need to restart evaluation after edits that amount to hole filling.
-
-Formally, our semantics combines features from gradual type theory (to handle
-incomplete types) and contextual modal type theory (CMTT, which provides a
-logical foundation for hole environment tracking) with novel structure necessary
-to prove key metatheoretic properties, including (1) a type safety property that
-accounts for expression holes (i.e. free metavariables, from the perspective of
-CMTT), and (2) commutativity and confluence properties that guarantee that the
-``edit-and-resume'' feature is sound.
+Rather than aborting with an exception when evaluation encounters any of these holes (as in
+several existing systems), evaluation proceeds ``around'' the holes,
+performing as much of the remaining computation as is possible and tracking the 
+closure around each hole instance as it flows through the program.  These hole closures
+ can be reported both directly and indirectly, via various editor services, to help the programmer decide how to fill a hole. 
+They also enable an ``edit-and-resume'' feature that 
+avoids the need to restart evaluation after edits that amount to hole filling. 
+Formally, the semantics combines features from gradual type theory (to handle
+type holes) and contextual modal type theory (which provides a
+logical foundation for hole closures) with novel formal structure necessary
+to continue evaluation past holes and to prove key metatheoretic properties. 
+% , including 
+% (1) a type safety property that accounts for expression holes (i.e. free metavariables, 
+% from the perspective of CMTT) and cast failure holes (which provide a novel), and (2) a commutativity property that establishes that the
+% ``edit-and-resume'' feature is sound.
 %
-We have mechanized our formal development using the Agda proof assistant.
+We have mechanized the core formal development using the Agda proof assistant.
 %
 We additionally describe a simple reference implementation, called \HazelnutLive{},
-that exposes a language of structured edit actions that insert holes as
-necessary to guarantee that every edit state has some (possibly incomplete)
-type, based on the edit action calculus in the prior work by \citet{popl-paper}.
+that inserts holes as
+necessary during the editing process to guarantee that every edit state has some (possibly incomplete)
+type, based in part on the edit action calculus in prior work by \citet{popl-paper}.
 %
-Taken together, the result is a proof-of-concept live functional programming
-environment where dynamic feedback is truly continuous, i.e. it is available for
-every possible edit state.
+Taken together with the type safety property that this paper establishes, the result is 
+a proof-of-concept live typed functional programming environment where dynamic feedback 
+is truly continuous, i.e. it is available for every possible edit state.
 % i.e. \emph{every edit state is guaranteed to have
 % non-trivial static and dynamic meaning}.
 

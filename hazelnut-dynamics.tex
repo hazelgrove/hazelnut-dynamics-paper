@@ -1,6 +1,6 @@
 \PassOptionsToPackage{svgnames,dvipsnames,svgnames}{xcolor}
 %% For double-blind review submission
-\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
+\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=false,printccs=false,printacmref=false}
 %% For single-blind review submission
 %\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
 %% For final camera-ready submission
@@ -58,6 +58,7 @@ classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 
 % A macro for the name of the system being described by ``this paper''
 \newcommand{\HazelnutLive}{\textsf{Hazelnut Live}\xspace}
+\newcommand{\Hazelnut}{\textsf{Hazelnut}\xspace}
 % The mockup, work-in-progress system.
 \newcommand{\Hazel}{\textsf{Hazel}\xspace}
 
@@ -244,8 +245,7 @@ classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 
 \clearpage
 \appendix
-\cy{for the submission, appendix should be separated into a separate supplemental PDF}
-
+\input{appendix-defns}
 \input{extensions}
 \input{misc}
 
