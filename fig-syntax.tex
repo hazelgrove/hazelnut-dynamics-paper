@@ -23,7 +23,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \hexp : \htau\\
 % \mathsf{Mark} & \markname{} & ::= &
 %   \evaled{} ~\vert~  \unevaled{}\\
- \mathsf{DHExp} & \dexp  & ::= &
+ \mathsf{IHExp} & \dexp  & ::= &
   c ~\vert~
   x ~\vert~
   {\halam{x}{\htau}{\dexp}} ~\vert~
@@ -43,7 +43,7 @@ $$
   \dcasttwo{\dcasttwo{\dexp}{\htau_1}{\htau_2}}{\htau_2}{\htau_3}
 $$
 \vspace{-18px}
-\caption{Syntax of H-types, $\htau$, external H-expressions, $\hexp$, and dynamic H-expressions, $\dexp$.
+\caption{Syntax of H-types, $\htau$, external H-expressions, $\hexp$, and internal H-expressions, $\dexp$.
 We write $x$ to range over variables,
 $u$ over hole names, and
 $\sigma$ over finite substitutions (i.e., environments) which map variables to dynamic H-expressions, written $[d_1/x_1, ~\cdots, d_n/x_n]$ for $n \geq 0$.}
