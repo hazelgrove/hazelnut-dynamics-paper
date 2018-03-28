@@ -1,0 +1,47 @@
+\PassOptionsToPackage{svgnames,dvipsnames,svgnames}{xcolor}
+%% For double-blind review submission
+\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=false,printccs=false,printacmref=false}
+
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+
+%% Cyrus packages
+\usepackage{microtype}
+\usepackage{mdframed}
+\usepackage{colortab}
+\usepackage{mathpartir}
+\usepackage{enumitem}
+\usepackage{bbm}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage{leftidx}
+\usepackage{todonotes}
+\usepackage{xspace}
+
+%% Joshua Dunfield macros
+\def\OPTIONConf{1}%
+\usepackage{joshuadunfield}
+
+\input{commands}
+\input{macros}
+
+\begin{document}
+\title{Live Functional Programming with Typed Holes:
+  \\
+  (Condensed Definitions, for Reference)
+}
+
+\input{fig-syntax}
+\input{fig-bidirectional-typing}
+\input{fig-type-consistency}
+\input{fig-expansion}
+\input{fig-typing-dexp}
+\input{fig-dynamics-aux}
+%% \input{fig-dynamics-steps}
+\input{fig-dynamics-contexts}
+\input{fig-substitution}
+\input{fig-multi-step}
+
+\end{document}
