@@ -1,7 +1,9 @@
-\begin{figure}[t]
+% !TEX root = hazelnut-dynamics.tex
+
+\begin{figure}[p]
 \judgbox
   {\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}
-  {$\hexp$ synthesizes (type $\htau$) and expands to $\dexp$}
+  {$\hexp$ synthesizes type $\htau$ and expands to $\dexp$}
 \begin{mathpar}
 \inferrule[ESConst]{ }{
   \expandSyn{\hGamma}{c}{b}{c}{\emptyset}
@@ -114,8 +116,8 @@
 
 \judgbox
   {\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}}
-  {$\hexp$ analyzes (against type $\htau_1$) and
-   expands to $\dexp$ (of type $\htau_2$)}
+  {$\hexp$ analyzes against type $\htau_1$ and
+   expands to $\dexp$ of type $\htau_2$}
 \begin{mathpar}
 \inferrule[EALam]{
   \arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}\\
@@ -155,7 +157,9 @@
   \expandAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}{}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
 }
 \end{mathpar}
-\caption{Algorithmic Expansion}
+\vspace{-10px}
+\caption{Expansion}
+\label{fig:expansion}
 \label{fig:expandSyn}
 \label{fig:expandAna}
 \end{figure}

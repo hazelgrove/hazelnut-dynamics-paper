@@ -1,4 +1,6 @@
-\begin{figure}[t]
+% !TEX root = hazelnut-dynamics.tex
+
+\begin{figure}[p]
 \judgbox{\hasType{\Delta}{\hGamma}{\dexp}{\htau}}{$\dexp$ is assigned type $\htau$}
 \begin{mathpar}
 \inferrule[TAConst]{ }{
@@ -55,6 +57,8 @@
   \hasType{\Delta}{\hGamma}{\dcastfail{\dexp}{\htau_1}{\htau_2}}{\htau_2}
 }
 \end{mathpar}
+\vspace{-5px}
 \caption{Type Assignment for Dynamic H-Expressions}
 \label{fig:hasType}
+\vspace{-5px}
 \end{figure}
