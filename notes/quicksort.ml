@@ -74,6 +74,8 @@ module WithHoles = struct
              ) "" env         
          ) (print_term tm)      
     | Num n -> string_of_int n
+    | List [] -> "Nil"
+    | List [x] -> Printf.sprintf "[%d]" x
     | List _ -> "[..]"
 
   let rec print_term_short t = match t with
@@ -86,6 +88,22 @@ module WithHoles = struct
     | Hole (nm, env, tm) ->
        Printf.sprintf "%s:{...; %s}" nm (print_term_short tm)
     | Num n -> string_of_int n
+    | List [] -> "Nil"
+    | List [x] -> Printf.sprintf "[%d]" x
+    | List _ -> "[..]"
+              
+  let rec print_term_shortx t = match t with
+    | QsAppendStep(v1, v2, v3) ->
+       Printf.sprintf "%s ++ [%s] ++ %s"
+         (print_value_shortx v1)
+         (print_value_shortx v2)
+         (print_value_shortx v3)
+  and print_value_shortx v = match v with
+    | Hole (nm, env, tm) ->
+       Printf.sprintf "%s" nm (print_term_shortx tm)
+    | Num n -> string_of_int n
+    | List [] -> "Nil"
+    | List [x] -> Printf.sprintf "[%d]" x
     | List _ -> "[..]"
 
   let _ =
@@ -94,6 +112,8 @@ module WithHoles = struct
     print_string ( print_value res );
     print_string "\n\nShort version: Just hole tree (no envs):\n";
     print_string ( print_value_short res );
+    print_string "\n\nShort version: Just hole tree (no envs):\n";
+    print_string ( print_value_shortx res );
     print_string "\n";
     ()
 end
