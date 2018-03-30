@@ -69,6 +69,30 @@ classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 % \newtheorem{assumption}[theorem]{Assumption}
 % \newtheorem{condition}[theorem]{Condition}
 
+\newtheoremstyle{slplain}% name
+  {.16\baselineskip\@plus.1\baselineskip\@minus.1\baselineskip}% Space above
+  {.16\baselineskip\@plus.1\baselineskip\@minus.1\baselineskip}% Space below
+  {\slshape}% Body font
+  {\parindent}%Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}%  Thm head font
+  {.}%       Punctuation after thm head
+  { }%      Space after thm head: " " = normal interword space;
+        %       \newline = linebreak
+  {}%       Thm head spec
+\theoremstyle{slplain}
+\newtheorem{thm}{Theorem}  % Numbered with the equation counter
+\numberwithin{thm}{section}
+\newtheorem{defn}[thm]{Definition}
+% \newtheorem{cor}[section]{Corollary}     
+% \newtheorem{lem}[section]{Lemma}         
+% \newtheorem{prop}[section]{Proposition}  
+
+% \setlength{\abovedisplayskip}{0pt}
+% \setlength{\belowdisplayskip}{0pt}
+% \setlength{\abovedisplayshortskip}{0pt}
+% \setlength{\belowdisplayshortskip}{0pt}
+
+
 
 %% Listings
 \makeatletter\if@ACM@journal\makeatother
@@ -112,6 +136,9 @@ classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 
 \input{commands}
 \input{macros}
+
+\setlength{\abovecaptionskip}{4pt plus 3pt minus 2pt} % Chosen fairly arbitrarily
+\setlength{\belowcaptionskip}{-4pt plus 3pt minus 2pt} % Chosen fairly arbitrarily
 
 
 \begin{document}
