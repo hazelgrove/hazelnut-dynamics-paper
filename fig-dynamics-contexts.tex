@@ -1,14 +1,8 @@
+% !TEX root = hazelnut-dynamics.tex
+\begin{comment}
 \begin{figure}[t]
-$\arraycolsep=4pt\begin{array}{rllllll}
-\mathsf{EvalCtx} & \evalctx & ::= &
-  \evalhole ~\vert~
-  \hap{\evalctx}{\dexp} ~\vert~
-  \hap{\dexp}{\evalctx} ~\vert~
-  \dhole{\evalctx}{\mvar}{\subst}{} ~\vert~
-  \dcasttwo{\evalctx}{\htau}{\htau} ~\vert~
-  \dcastfail{\evalctx}{\htau}{\htau}
-\end{array}$
 
+\begin{comment}
 \vsepRule
 
 \judgbox{\isevalctx{\evalctx}}{$\evalctx$ is an evaluation context}
@@ -54,6 +48,27 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \isevalctx{\dcastfail{\evalctx}{\htau_1}{\htau_2}}
 }
 \end{mathpar}
+% \end{comment}
+\vsepRule
+
+
+\caption{Evaluation Contexts}
+\label{fig:eval-contexts}
+\end{figure}
+\end{comment}
+
+%% \vsepRule
+
+\begin{figure}
+$\arraycolsep=4pt\begin{array}{rllllll}
+\mathsf{EvalCtx} & \evalctx & ::= &
+  \evalhole ~\vert~
+  \hap{\evalctx}{\dexp} ~\vert~
+  \hap{\dexp}{\evalctx} ~\vert~
+  \dhole{\evalctx}{\mvar}{\subst}{} ~\vert~
+  \dcasttwo{\evalctx}{\htau}{\htau} ~\vert~
+  \dcastfail{\evalctx}{\htau}{\htau}
+\end{array}$
 
 \vsepRule
 
@@ -125,13 +140,9 @@ hole (i.e. focus) in $\evalctx$ with $\dexp'$}
 %%   \selectEvalCtx{\dcast{\htau}{d}}{\evalhole}{\dcast{\htau}{d}}
 %% }
 \end{mathpar}
-\caption{Evaluation Contexts}
-\label{fig:eval-contexts}
-\end{figure}
 
-%% \vsepRule
+\vsepRule
 
-\begin{figure}
 \judgbox{\stepsToD{}{\dexp}{\dexp'}}{$\dexp$ steps to $\dexp'$}
 \begin{mathpar}
 \inferrule[Step]{
@@ -221,17 +232,6 @@ hole (i.e. focus) in $\evalctx$ with $\dexp'$}
 %% }{
 %%   \reducesE{\Delta}{\dhole{d}{\mvar}{\subst}{\unevaled}}{\dhole{d}{\mvar}{\subst}{\evaled}}
 %% }
-\end{mathpar}
-
-\vsepRule
-
-\judgbox{\groundmatch{\htau}{\htau'}}{$\htau$ has matched ground type $\htau'$}
-\begin{mathpar}
-\inferrule[MGArr]{
-  \tarr{\htau_1}{\htau_2}\neq\tarr{\tehole}{\tehole}
-}{
-  \groundmatch{\tarr{\htau_1}{\htau_2}}{\tarr{\tehole}{\tehole}}
-}
 \end{mathpar}
 \CaptionLabel{Contextual Dynamics}{fig:contextual-dynamics}
 \end{figure}

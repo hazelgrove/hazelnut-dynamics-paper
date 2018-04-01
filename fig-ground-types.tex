@@ -1,0 +1,29 @@
+% !TEX root = hazelnut-dynamics.tex
+
+\begin{figure}[t]
+\begin{subfigure}[t]{0.5\textwidth}
+\judgbox{\isGround{\htau}}{$\htau$ is a ground type}
+\begin{mathpar}
+\inferrule[GBase\rkc{name?}]{ }{
+  \isGround{b}
+}
+
+\inferrule[GArrHole\rkc{name?}]{ }{
+  \isGround{\tarr{\tehole}{\tehole}}
+}
+\end{mathpar}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.46\textwidth}
+\judgbox{\groundmatch{\htau}{\htau'}}{$\htau$ has matched ground type $\htau'$}
+\begin{mathpar}
+\inferrule[MGArr]{
+  \tarr{\htau_1}{\htau_2}\neq\tarr{\tehole}{\tehole}
+}{
+  \groundmatch{\tarr{\htau_1}{\htau_2}}{\tarr{\tehole}{\tehole}}
+}
+\end{mathpar}
+\end{subfigure}
+\CaptionLabel{Ground Types}{fig:isGround}
+\label{fig:groundmatch}
+\end{figure}

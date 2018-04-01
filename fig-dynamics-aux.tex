@@ -1,3 +1,4 @@
+% !TEX root = hazelnut-dynamics.tex
 \begin{figure}[t]
 \judgbox{\isValue{\dexp}}{$\dexp$ is a value}
 \begin{mathpar}
@@ -7,19 +8,6 @@
 
 \inferrule[VLam]{ }{
   \isValue{\halam{x}{\htau}{\dexp}}
-}
-\end{mathpar}
-
-\vsepRule
-
-\judgbox{\isGround{\htau}}{$\htau$ is a ground type}
-\begin{mathpar}
-\inferrule[GBase\rkc{name?}]{ }{
-  \isGround{b}
-}
-
-\inferrule[GArrHole\rkc{name?}]{ }{
-  \isGround{\tarr{\tehole}{\tehole}}
 }
 \end{mathpar}
 
