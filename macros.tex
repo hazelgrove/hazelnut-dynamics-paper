@@ -4,6 +4,8 @@
 %   {\small\textcolor{cyan}{(\texttt{#1})}}\vspace{20px}%
 % }
 
+\newcommand{\cmttclo}[2]{\mathsf{clo}(#1, #2)}
+
 \newcommand{\CaptionLabel}[2]{
   \caption{#1 {\small\textcolor{cyan}{(#2)}}}
   \label{#2}}
@@ -202,7 +204,7 @@
 \newcommand{\hDelta}{\Delta}
 \newcommand{\Dunion}[2]{#1 \cup #2}
 \newcommand{\idof}[1]{\mathsf{id}(#1)}
-\newcommand{\Dbinding}[3]{#1 :: [#2]#3}
+\newcommand{\Dbinding}[3]{#1 :: #3[#2]}
 \newcommand{\instantiate}[3]{\llbracket#1 / #2\rrbracket #3}
 
 % Contextual dynamics
