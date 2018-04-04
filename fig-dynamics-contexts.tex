@@ -59,6 +59,88 @@
 
 %% \vsepRule
 
+\begin{figure}[t]
+\judgbox{\reducesE{}{\dexp}{\dexp'}}{$\dexp$ takes an instruction transition to $\dexp'$}
+\begin{mathpar}
+\inferrule[ITBeta]{
+  \maybePremise{\isFinal{\dexp_2}}
+}{
+  \reducesE{}{\hap{(\halam{x}{\htau}{\dexp_1})}{\dexp_2}}{[\dexp_2/x]\dexp_1}
+}
+
+\inferrule[ITApCast]{
+  \maybePremise{\isFinal{\dexp_1}}\\
+  \maybePremise{\isFinal{\dexp_2}}\\
+  \tarr{\htau_1}{\htau_2} \neq \tarr{\htau_1'}{\htau_2'}
+}{
+  \reducesE{}
+    {\hap{\dcasttwo{\dexp_1}{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}}{\dexp_2}}
+    {\dcasttwo{(\hap{\dexp_1}{\dcasttwo{\dexp_2}{\htau_1'}{\htau_1}})}{\htau_2}{\htau_2'}}
+}
+
+\inferrule[ITCastId]{
+  \maybePremise{\isFinal{\dexp}}
+}{
+  \reducesE{}{\dcasttwo{\dexp}{\htau}{\htau}}{\dexp}
+}
+
+\inferrule[ITCastSucceed]{
+  \maybePremise{\isFinal{\dexp}}\\
+  \isGround{\htau}
+}{
+  \reducesE{}{\dcastthree{\dexp}{\htau}{\tehole}{\htau}}{\dexp}
+}
+
+\inferrule[ITCastFail]{
+  \maybePremise{\isFinal{\dexp}}\\
+  \htau_1\neq\htau_2\\\\
+  \isGround{\htau_1}\\
+  \isGround{\htau_2}
+}{
+  \reducesE{}
+    {\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}}
+    {\dcastfail{\dexp}{\htau_1}{\htau_2}}
+}
+
+\inferrule[ITGround]{
+  \maybePremise{\isFinal{\dexp}}\\
+  \groundmatch{\htau}{\htau'}
+}{
+  \reducesE{}
+    {\dcasttwo{\dexp}{\htau}{\tehole}}
+    {\dcastthree{\dexp}{\htau}{\htau'}{\tehole}}
+}
+
+\inferrule[ITExpand]{
+  \maybePremise{\isFinal{\dexp}}\\
+  \groundmatch{\htau}{\htau'}
+}{
+  \reducesE{}
+    {\dcasttwo{\dexp}{\tehole}{\htau}}
+    {\dcastthree{\dexp}{\tehole}{\htau'}{\htau}}
+}
+
+%% \inferrule[ITCast]{
+%%   \isFinal{d}\\
+%%   \hasType{\Delta}{\emptyset}{d}{\tau_2}\\
+%%   \tconsistent{\tau_1}{\tau_2}
+%% }{
+%%   \reducesE{\Delta}{\dcast{\htau_1}{d}}{d}
+%% }
+%% 
+%% \inferrule[ITEHole]{ }{
+%%   \reducesE{\Delta}{\dehole{\mvar}{\subst}{\unevaled}}{\dehole{\mvar}{\subst}{\evaled}}
+%% }
+%% 
+%% \inferrule[ITNEHole]{
+%%   \isFinal{d}
+%% }{
+%%   \reducesE{\Delta}{\dhole{d}{\mvar}{\subst}{\unevaled}}{\dhole{d}{\mvar}{\subst}{\evaled}}
+%% }
+\end{mathpar}
+\CaptionLabel{Instruction Transitions}{fig:instruction-transitions}
+\end{figure}
+
 \begin{figure}
 $\arraycolsep=4pt\begin{array}{rllllll}
 \mathsf{EvalCtx} & \evalctx & ::= &
@@ -72,8 +154,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 
 \vsepRule
 
-\judgbox{\selectEvalCtx{\dexp}{\evalctx}{\dexp'}}{$\dexp$ is the result of filling the
-hole (i.e. focus) in $\evalctx$ with $\dexp'$}
+\judgbox{\selectEvalCtx{\dexp}{\evalctx}{\dexp'}}{$\dexp$ is obtained by placing $\dexp'$ at the mark in $\evalctx$}
 \begin{mathpar}
 \inferrule[FHOuter]{ }{
   \selectEvalCtx{\dexp}{\evalhole}{\dexp}
@@ -144,6 +225,7 @@ hole (i.e. focus) in $\evalctx$ with $\dexp'$}
 \vsepRule
 
 \judgbox{\stepsToD{}{\dexp}{\dexp'}}{$\dexp$ steps to $\dexp'$}
+\vspace{-10px}
 \begin{mathpar}
 \inferrule[Step]{
   \selectEvalCtx{d}{\evalctx}{\dexp_0}\\
@@ -153,85 +235,5 @@ hole (i.e. focus) in $\evalctx$ with $\dexp'$}
   \stepsToD{}{\dexp}{\dexp'}
 }
 \end{mathpar}
-
-\vsepRule
-
-\judgbox{\reducesE{}{\dexp}{\dexp'}}{$\dexp$ takes an instruction transition to $\dexp'$}
-\begin{mathpar}
-\inferrule[ITBeta]{
-  \maybePremise{\isFinal{\dexp_2}}
-}{
-  \reducesE{}{\hap{(\halam{x}{\htau}{\dexp_1})}{\dexp_2}}{[\dexp_2/x]\dexp_1}
-}
-
-\inferrule[ITApCast]{
-  \maybePremise{\isFinal{\dexp_1}}\\
-  \maybePremise{\isFinal{\dexp_2}}
-}{
-  \reducesE{}
-    {\hap{\dcasttwo{\dexp_1}{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_1'}{\htau_2'}}}{\dexp_2}}
-    {\dcasttwo{(\hap{\dexp_1}{\dcasttwo{\dexp_2}{\htau_1'}{\htau_1}})}{\htau_2}{\htau_2'}}
-}
-
-\inferrule[ITCastId]{
-  \maybePremise{\isFinal{\dexp}}
-}{
-  \reducesE{}{\dcasttwo{\dexp}{\htau}{\htau}}{\dexp}
-}
-
-\inferrule[ITCastSucceed]{
-  \maybePremise{\isFinal{\dexp}}\\
-  \isGround{\htau}
-}{
-  \reducesE{}{\dcastthree{\dexp}{\htau}{\tehole}{\htau}}{\dexp}
-}
-
-\inferrule[ITCastFail]{
-  \maybePremise{\isFinal{\dexp}}\\
-  \htau_1\neq\htau_2\\\\
-  \isGround{\htau_1}\\
-  \isGround{\htau_2}
-}{
-  \reducesE{}
-    {\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}}
-    {\dcastfail{\dexp}{\htau_1}{\htau_2}}
-}
-
-\inferrule[ITGround]{
-  \maybePremise{\isFinal{\dexp}}\\
-  \groundmatch{\htau}{\htau'}
-}{
-  \reducesE{}
-    {\dcasttwo{\dexp}{\htau}{\tehole}}
-    {\dcastthree{\dexp}{\htau}{\htau'}{\tehole}}
-}
-
-\inferrule[ITExpand]{
-  \maybePremise{\isFinal{\dexp}}\\
-  \groundmatch{\htau}{\htau'}
-}{
-  \reducesE{}
-    {\dcasttwo{\dexp}{\tehole}{\htau}}
-    {\dcastthree{\dexp}{\tehole}{\htau'}{\htau}}
-}
-
-%% \inferrule[ITCast]{
-%%   \isFinal{d}\\
-%%   \hasType{\Delta}{\emptyset}{d}{\tau_2}\\
-%%   \tconsistent{\tau_1}{\tau_2}
-%% }{
-%%   \reducesE{\Delta}{\dcast{\htau_1}{d}}{d}
-%% }
-%% 
-%% \inferrule[ITEHole]{ }{
-%%   \reducesE{\Delta}{\dehole{\mvar}{\subst}{\unevaled}}{\dehole{\mvar}{\subst}{\evaled}}
-%% }
-%% 
-%% \inferrule[ITNEHole]{
-%%   \isFinal{d}
-%% }{
-%%   \reducesE{\Delta}{\dhole{d}{\mvar}{\subst}{\unevaled}}{\dhole{d}{\mvar}{\subst}{\evaled}}
-%% }
-\end{mathpar}
-\CaptionLabel{Contextual Dynamics}{fig:contextual-dynamics}
+\CaptionLabel{Evaluation Contexts and Steps}{fig:step}
 \end{figure}

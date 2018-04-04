@@ -13,7 +13,7 @@
 
 \vsepRule
 
-\judgbox{\isBoxedValue{\dexp}}{$\dexp$ is a possibly-boxed value}
+\judgbox{\isBoxedValue{\dexp}}{$\dexp$ is a boxed value}
 \begin{mathpar}
 \inferrule[BVVal\rkc{name?}]{
   \isValue{\dexp}
@@ -97,7 +97,7 @@
 
 \vsepRule
 
-\judgbox{\isFinal{\dexp}}{$\dexp$ is final (it cannot be stepped)}
+\judgbox{\isFinal{\dexp}}{$\dexp$ is final}
 \begin{mathpar}
 %% \inferrule[FVal]
 %% {\isValue{\dexp}}{\isFinal{\dexp}}
@@ -148,7 +148,7 @@
 %%   \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
 %% }
 %% \end{mathpar}
-\CaptionLabel{Auxiliary Judgments for the Dynamics}{fig:isFinal}
+\CaptionLabel{Final Forms}{fig:isFinal}
 \label{fig:isValue}
 \label{fig:isIndet}
 \end{figure}
