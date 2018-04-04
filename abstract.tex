@@ -2,6 +2,11 @@
 
 \begin{abstract}
 
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PAR 1: Live programming environments --- Problem statement
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
 \emph{Live programming environments} aim to provide programmers (and sometimes audiences) 
 with continuous feedback about a program's dynamic behavior as it is being edited. 
 %
@@ -16,6 +21,11 @@ in many cases going out for substantial lengths of time.
 % Defining a semantics for incomplete functional programs would help bridge the
 % gap between well-formed states and allow live programming environments to
 % provide continuous, uninterrupted, and meaningful feedback.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PAR 2: This paper's approach: New (dynamic) semantics for incomplete programs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 This paper confronts this problem from type-theoretic first principles by developing a 
 \emph{dynamic semantics for incomplete functional programs}, 
 based in part on the static semantics for incomplete functional programs
@@ -36,6 +46,11 @@ Formally, the semantics combines features from gradual type theory (to handle
 type holes) and contextual modal type theory (which provides a
 logical foundation for hole closures) with novel formal structure necessary
 to continue evaluation past holes and to prove key metatheoretic properties. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PAR 3: We have an implementation, and have proofs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % , including 
 % (1) a type safety property that accounts for expression holes (i.e. free metavariables, 
 % from the perspective of CMTT) and cast failure holes (which provide a novel), and (2) a commutativity property that establishes that the
