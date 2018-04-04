@@ -9,8 +9,8 @@ text, compiles and runs the program, and views the output.
 To make this workflow more usable and efficient, \emph{live programming
 environments} ``promise to narrow the temporal and perceptive gap between
 program development and code execution''~\cite{burckhardt2013s} with
-fine-grained interleaving of editing and evaluation to varying
-degrees~\cite{DBLP:journals/vlc/Tanimoto90,DBLP:conf/icse/Tanimoto13}.
+fine-grained interleaving of editing and evaluation~\cite{DBLP:journals/vlc/Tanimoto90,DBLP:conf/icse/Tanimoto13}.
+
 
 There have been several promising advances in building live programming
 environments in many settings, such as:
@@ -38,11 +38,11 @@ to name several prominent examples.
 Despite these advances, however, there is a fundamental limitation which hinders
 the full realization of live programming: traditional programming languages
 cannot evaluate \emph{incomplete programs}, \ie{}, programs that are either
-syntactically ill-formed or ill-typed.
+syntactically ill-formed, or ill-typed.
 %
 Without a well-defined semantics to dictate the treatment of incomplete
 programs, various editor services may be provided in ad-hoc, restricted
-forms---if available, at all---during the periods of time between complete
+forms---if available at all---during the periods of time between complete
 program states.
 %
 %% ``flickering in and out''
@@ -82,31 +82,35 @@ debug incomplete programs?
 
 \paragraph{Exceptions as Expression Holes}
 %
-One common approach for emulating expression holes is to use exceptions (such as
-\verb+Debug.crash "not yet implemented"+ or \verb+raise NotYetImplementedException+).
+In lieu of proper language and tool support for expression holes,
+today's programmers commonly emulate them with placeholder exceptions, such as
+\verb+Debug.crash "not yet implemented"+ or
+\verb+raise NotYetImplementedException+.
 %
-Some languages even provide syntax for holes
+Some languages even provide syntax for these kind of ``holes''
 %
 (written \verb+_+ in GHC Haskell~\cite{XXX},
 \verb+?+ in Agda~\cite{XXX}, and
 \verb+{x}+ in Idris~\cite{XXX})
 %
 which, semantically, behave similarly to exceptions.
-%
-A placeholder exception serves to appease the static type checker---because an
+
+Such exceptions serve to appease the static type checker---because an
 error expression is allowed to have any type required by the surrounding
-context---allowing the program to run, while preserving dynamic type safety by
+context.
+%
+Thus, this mechanism permits the program to run, while preserving dynamic type safety, and
 simply halting execution as soon as the expression appears in evaluation
 position.
 
-Although useful, this ad-hoc approach has limitations.
+Although useful, an exception-based mechanism for ``program hole'' has limitations.
 %
-Because the program must halt as soon as a placeholder expression is reached (in
-order to ensure type safety), the programmer cannot benefit from seeing how
-other parts of the program, which do not depend on the missing expression,
+First,
+the program must halt as soon as this expression is reached (ensuring type safety), and consequently, the programmer cannot benefit from seeing how
+\emph{other parts} of the program, which may not depend on the missing expression,
 continue to evaluate.
-%
-Another limitation is that exceptions typically carry nothing more than the
+
+Second, exceptions typically carry nothing more than the
 stack trace that led to the error.
 %
 But there are other forms of information that could be useful as the programmer
@@ -119,6 +123,26 @@ particular needs for expression holes.
 
 \rkc{(mention something about manually commenting out partial expressions,
 rather than something nicer like marking them inside non-empty holes?)}
+
+%%%%%%%%%
+%% Matt says: I added the remarks below; My intention is to tie the
+%% last bit into the ``edit and resume'' feature, without making a
+%% huge deal about it.
+
+Finally, exceptions are often thrown with the intent that some calling
+context will possibly ``handle'' them, and will thus resume ordinary
+(non-exception-based) program control flow.
+%
+Meanwhile, it never really makes sense to handle a ``not yet
+implemented'' exception, save for \emph{editing the program to further
+  complete it}, which is beyond the scope and control of ordinary
+exception handlers, and (ordinary) programs' execution behavior.
+%
+Indeed, this is one (of many) ``perceptual gaps'' for live programming
+environments to close.
+%
+In this work, we refer to the programmer-user interaction pattern that
+follows such exceptions as ``edit and resume''.
 
 \paragraph{Gradual Typing}
 %
