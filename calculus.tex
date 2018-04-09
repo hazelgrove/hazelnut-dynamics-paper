@@ -96,10 +96,13 @@ assumptions of the form $x : \htau$ in the usual
 manner \cite{pfpl,tapl}.
 %
 The type analysis judgement~$\hana{\hGamma}{\hexp}{\htau}$ checks
-expression~$\hexp$ against a given type~$\htau$. Algorithmically, this
-type is an output of type synthesis but an input of type analysis.
-
-% The ``top level'' begins as synthesis.   <--- Why say this? --Matt
+expression~$\hexp$ against a given type~$\htau$.
+%
+Algorithmically, analysis accepts a type as input, and synthesis gives
+a type as output.
+%
+We use synthesis for each of the programmer's ``top level'' external
+exressions~$e$, giving the corresponding type as feedback.
 
 % Algorithmically, the type is an output of type synthesis but an input of type analysis.
 
