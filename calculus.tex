@@ -19,12 +19,116 @@ The syntax of the core calculus, specified in Fig.~\ref{fig:hazelnut-live-syntax
 \subsection{Static Semantics of the External Language}
 \label{sec:external-statics}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Matt's high-level Writing comments for Cyrus (for Section 3 mostly):
+
+% Please, please please: Use line breaks.  Git does't work well without them.
+% Change your editor or editor settings please.
+
+% Cyrus, your writing is generally very good, but is often harder for
+% me to digest than it should be, as a reader.  I think it'd be easier
+% to read on a first pass if we followed my preferences below, which I
+% humbly offer as gentle suggestions:
+
+% I think that some these suggestions are especially important for reading
+% really wide columns of text, as in this new PACMPL format. :)
+
+% My nits boil down to these preferences:
+
+% 0. NO PASSIVE VOICE --- EVER.  Use ``We'' in lots of places below instead of passive voice.
+
+% 1. Shorter sentences.
+
+% 2. Fewer parenthenticals: just use more sentences instead.
+
+% 3. Shorter paragraphs, with more defined 'paragraph structure'. (E.g., topic sentence)
+
+% 4. Shorter sentence subjects (with subject closer to verb).
+
+% 5. Use macros for fig and section references.
+
+% 6. If a sentence introduces a figure, that sentence should be the
+% first sentence of a paragraph, and the figure reference should be
+% the first word of that sentence, ideally.  As a reader, then I look
+% at figures first, and find the paragraphs for them easily by
+% scanning the text.
+
+% 7. For each greek letter, prefix with an english word 'classifier',
+% e.g., 'external expression~$e$', not just '$e$'.  Use way, way fewer
+% commas please.
+
+% 8. Use singlar over plural sentence subjects, whenever possible;
+% e.g., an ``empty hole is written..'' not ``empty holes are
+% written''; or ``an empty hole synthesizes'' not ``empty holes
+% synthesize''
+
+% 9. Fewer commas. Each 'extra' comma is a burden to the reader (it's
+% asking the reader to allocate a stack frame in their brain!)
+
+% *** I'm transforming the next paragraph below as a demonstration,
+% creating smaller, more cohesive paragraphs with shorter sentences.
+% See what you think.
+%
+% I'm not doing all of Section 3, tho, since
+%
+% (1) you may hate what I've done, and
+%
+% (2) I don't want to do a lot of work that will just be
+% reverted/resented :)
+
+% BTW: My version is _shorter_, not longer than the original :)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \input{fig-bidirectional-typing}
+
+We give an overview of the static semantics of the \HazelnutLive
+external language.
+
+\Figref{fig:bidirectional-typing} defines \emph{bidirectional} typing,
+where each type~$\htau$ classifies an external expression~$e$.
+%
+This bidirectional style uses two mutually defined judgements: The type synthesis
+judgement~$\hsyn{\hGamma}{\hexp}{\htau}$ synthesizes a type $\htau$
+for $\hexp$ under typing context $\hGamma$, which tracks typing
+assumptions of the form $x : \htau$ in the usual
+manner \cite{pfpl,tapl}.
+%
+The type analysis judgement~$\hana{\hGamma}{\hexp}{\htau}$ checks
+expression~$\hexp$ against a given type~$\htau$. Algorithmically, this
+type is an output of type synthesis but an input of type analysis. At
+the top level, we start with synthesis.
+
+% Algorithmically, the type is an output of type synthesis but an input of type analysis.
+
+The benefit of specifying the \HazelnutLive external language
+bidirectionally is that the programmer does not need to annotate each
+hole with a type
+%
+\cite{Pierce:2000ve,bidi-tutorial,DBLP:conf/icfp/DunfieldK13,Chlipala:2005da}.
+%
+These typing rules closely follow the \Hazelnut type
+system \cite{popl-paper}; we discuss minor differences below.
+
+We supplement each expression hole from \Hazelnut with such a
+hole \emph{name}, which are new to \HazelnutLive; an empty hole is
+written $\hehole{u}$, where $u$ is a hole name assumed unique.
+%
+Rule {SEHole}\todo{rule name macros}{} specifies that an empty hole synthesizes hole type, written $\tehole$.
+%
+If an empty hole appears where an expression of some other type is
+expected, e.g. under an explicit ascription (governed by Rule {SAsc})
+or in the argument position of a function application (governed by
+Rule {SAp}, discussed below), we apply the \emph{subsumption rule},
+Rule {ASubsume}, which specifies that if an expression $e$ synthesizes
+type $\htau$, then it can be checked against any \emph{consistent}
+type, $\htau'$.
+
 \input{fig-type-consistency}
 
-Let us start with an overview of the static semantics of the \HazelnutLive external language. Types, $\htau$, classify external expressions, $e$, according to the type system in Fig. \ref{fig:bidirectional-typing}, which closely follows the \Hazelnut type system \cite{popl-paper} (the minor differences are discussed as they come up below). The type system is specified in the \emph{bidirectional} style \cite{Pierce:2000ve,bidi-tutorial,DBLP:conf/icfp/DunfieldK13,Chlipala:2005da} around two mutually defined judgements. The type synthesis judgement, $\hsyn{\hGamma}{\hexp}{\htau}$, synthesizes a type $\htau$ for $\hexp$ under typing context $\hGamma$, which tracks typing assumptions of the form $x : \htau$ in the usual manner \cite{pfpl,tapl}. The type analysis judgement, $\hana{\hGamma}{\hexp}{\htau}$, instead checks $\hexp$ against a given $\htau$. Algorithmically, the type is an output of type synthesis but an input of type analysis. At the top level, we start with synthesis. % Algorithmically, the type is an output of type synthesis but an input of type analysis.
+%%%%%%%%%%%%%%%%%%%% MATT stopped editing Cyrus's text here.
 
-The benefit of specifying the \HazelnutLive external language bidirectionally is that the programmer does not need to annotate each hole with a type. Empty holes are written $\hehole{u}$, where $u$ is a hole name assumed unique (hole notation is taken from \Hazelnut; hole names are new to \HazelnutLive). Rule {SEHole}\todo{rule name macros}{} specifies that empty holes synthesize hole type, written $\tehole$. If an empty hole appears where an expression of some other type is expected, e.g. under an explicit ascription (governed by Rule {SAsc}) or in the argument position of a function application (governed by Rule {SAp}, discussed below), we apply the \emph{subsumption rule}, Rule {ASubsume}, which specifies that if an expression $e$ synthesizes type $\htau$, then it can be checked against any \emph{consistent} type, $\htau'$. Fig.~\ref{fig:tconsistent} specifies the type consistency relation, written $\tconsistent{\htau}{\htau'}$, which specifies that two types are consistent if they differ only up to type holes in corresponding positions. The hole type is consistent with every type, and so, by the subsumption rule, expression holes can appear where an expression of any type is expected. The type consistency relation here coincides with the type consistency relation from gradual type theory by identifying the hole type with the unknown type~\cite{Siek06a}. Note that type consistency is reflexive and symmetric but it is not transitive (unlike subtyping, which is anti-symmetric and transitive; subtyping can be integrated into a gradual type system following \citet{Siek:2007qy}). 
+Fig.~\ref{fig:tconsistent} specifies the type consistency relation, written $\tconsistent{\htau}{\htau'}$, which specifies that two types are consistent if they differ only up to type holes in corresponding positions. The hole type is consistent with every type, and so, by the subsumption rule, expression holes can appear where an expression of any type is expected. The type consistency relation here coincides with the type consistency relation from gradual type theory by identifying the hole type with the unknown type~\cite{Siek06a}. Note that type consistency is reflexive and symmetric but it is not transitive (unlike subtyping, which is anti-symmetric and transitive; subtyping can be integrated into a gradual type system following \citet{Siek:2007qy}). 
 
 Non-empty expression holes, written $\hhole{\hexp}{u}$, behave similarly. Rule {SNEHole} specifies that non-empty expression holes also synthesize hole type as long as the expression inside the hole, $\hexp$, synthesizes some (arbitrary) type. Non-empty expression holes therefore internalize the ``red squiggles'' that many editors display under or around type inconsistencies in a program.\todo{example?}\todo{briefly say something about binding inconsistencies?}
 
