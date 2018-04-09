@@ -94,7 +94,8 @@ Some languages even provide syntax for these kind of ``holes''
 \verb+{x}+ in Idris~\cite{XXX})
 %
 which, semantically, behave similarly to exceptions.
-
+%
+%
 Such exceptions serve to appease the static type checker---because an
 error expression is allowed to have any type required by the surrounding
 context.
@@ -104,7 +105,7 @@ simply halting execution as soon as the expression appears in evaluation
 position.
 
 Although useful, an exception-based mechanism for ``program hole'' has limitations.
-%
+
 First,
 the program must halt as soon as this expression is reached (ensuring type safety), and consequently, the programmer cannot benefit from seeing how
 \emph{other parts} of the program, which may not depend on the missing expression,
