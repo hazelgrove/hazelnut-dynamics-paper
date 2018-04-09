@@ -77,6 +77,8 @@ The syntax of the core calculus, specified in Fig.~\ref{fig:hazelnut-live-syntax
 % reverted/resented :)
 
 % BTW: My version is _shorter_, not longer than the original :)
+%
+% Also, In my humble opinion, it is way, way easier to read. ;)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -85,10 +87,9 @@ The syntax of the core calculus, specified in Fig.~\ref{fig:hazelnut-live-syntax
 We give an overview of the static semantics of the \HazelnutLive
 external language.
 
-\Figref{fig:bidirectional-typing} defines \emph{bidirectional} typing,
-where each type~$\htau$ classifies an external expression~$e$.
+\Figref{fig:bidirectional-typing} defines \emph{bidirectional} typing
 %
-This bidirectional style uses two mutually defined judgements: The type synthesis
+as two mutually defined judgements: The type synthesis
 judgement~$\hsyn{\hGamma}{\hexp}{\htau}$ synthesizes a type $\htau$
 for $\hexp$ under typing context $\hGamma$, which tracks typing
 assumptions of the form $x : \htau$ in the usual
