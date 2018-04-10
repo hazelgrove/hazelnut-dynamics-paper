@@ -20,9 +20,13 @@
 }
 
 \inferrule[SAp]{
-  \hsyn{\hGamma}{\hexp_1}{\htau_1}\\
-  \arrmatch{\htau_1}{\tarr{\htau_2}{\htau}}\\\\
-  \hana{\hGamma}{\hexp_2}{\htau_2}
+  \arrayenvbr{
+    \hsyn{\hGamma}{\hexp_1}{\htau_1}    
+    \\
+    \hana{\hGamma}{\hexp_2}{\htau_2}
+  }
+  \\
+    \arrmatch{\htau_1}{\tarr{\htau_2}{\htau}}
 }{
   \hsyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}
 }

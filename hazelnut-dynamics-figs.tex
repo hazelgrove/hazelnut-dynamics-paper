@@ -19,6 +19,11 @@
 \usepackage{leftidx}
 \usepackage{todonotes}
 \usepackage{xspace}
+\usepackage{listings}
+\usepackage{verbatim}
+
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
 
 %% Joshua Dunfield macros
 \def\OPTIONConf{1}%
@@ -27,6 +32,8 @@
 \input{commands}
 \input{macros}
 
+%\lstset{language=Agda}
+
 \begin{document}
 \title{Live Functional Programming with Typed Holes:
   \\
@@ -34,14 +41,37 @@
 }
 
 \input{fig-syntax}
+
+\verbatiminput{generated/fig-syntax.agda}
+
 \input{fig-bidirectional-typing}
+
+\verbatiminput{generated/fig-bidirectional-typing.agda}
+
 \input{fig-type-consistency}
+
+\verbatiminput{generated/fig-tconsistent.agda}
+\verbatiminput{generated/fig-tinconsistent-XXX.agda}
+
 \input{fig-expansion}
+
+\verbatiminput{generated/fig-expandAna.agda}
+\verbatiminput{generated/fig-expandSyn.agda}
+
 \input{fig-typing-dexp}
+
 \input{fig-dynamics-aux}
+
+\verbatiminput{generated/fig-isIndent}
+\verbatiminput{generated/fig-isValue}
+\verbatiminput{generated/fig-evalCtx}
+\verbatiminput{generated/fig-evalCtxFill}
+
 %% \input{fig-dynamics-steps}
 \input{fig-dynamics-contexts}
 \input{fig-substitution}
 \input{fig-multi-step}
+
+\verbatiminput{generated/fig-contextual-dynamics}
 
 \end{document}
