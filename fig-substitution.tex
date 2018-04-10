@@ -1,8 +1,10 @@
+% !TEX root = hazelnut-dynamics.tex
+
 \begin{figure}[t]
 %% TODO use instantiate macro
 \judgbox
   {\instantiate{\dexp}{u}{\dexp'} = \dexp''}
-  {$\dexp''$ is the result of instantiating hole $u$ with $\dexp$ in $\dexp'$}
+  {$\dexp''$ is obtained by filling hole $u$ with $\dexp$ in $\dexp'$}
   %% {$\dexp''$ is the result of substituting $\dexp$ for $u$ in $\dexp'$}
 \[
 \begin{array}{lcll}
@@ -11,7 +13,7 @@
 c\\
 {\instantiate{\dexp}{u}{x}}
 &=&
-\dexp\\
+x\\
 %% {[\dexp_1 / x] y}
 %% &=&
 %% y & (y \neq x)\\
@@ -32,11 +34,21 @@ c\\
 % \\
 \instantiate{\dexp}{u}{\dehole{u}{\subst}{}}
 &=&
-[\subst]\dexp
+[\instantiate{\dexp}{u}{\subst}]\dexp
+\\
+\instantiate{\dexp}{u}{\dehole{v}{\subst}{}}
+&=&
+\dehole{v}{\instantiate{\dexp}{u}{\subst}}{}
+& \text{when $u \neq v$}
 \\
 \instantiate{\dexp}{u}{\dhole{\dexp'}{u}{\subst}{}}
 &=&
-[\subst]\dexp
+[\instantiate{\dexp}{u}{\subst}]\dexp
+\\
+\instantiate{\dexp}{u}{\dhole{\dexp'}{v}{\subst}{}}
+&=&
+\dhole{\instantiate{\dexp}{u}{\dexp'}}{v}{\instantiate{\dexp}{u}{\subst}}{}
+& \text{when $u \neq v$}
 \\
 \instantiate{\dexp}{u}{\dcasttwo{\dexp'}{\htau}{\htau'}}
 &=&
@@ -50,5 +62,5 @@ c\\
 %% \dcast{\htau}{[\dexp_1 / x] \dexp}
 \end{array}
 \]
-\CaptionLabel{Hole Instantiation}{fig:substitution}
+\CaptionLabel{Hole Filling}{fig:substitution}
 \end{figure}

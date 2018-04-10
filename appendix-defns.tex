@@ -4,8 +4,260 @@
 \section{\protect\additionalDefnsSec} % don't like the all-caps thing that the template does, so protecting it from that
 \label{sec:additional-defns}
 
+\subsection{Substitution}
+\label{sec:substitution}
+\judgbox
+  {[\dexp/x]\dexp' = \dexp''}
+  {$\dexp''$ is obtained by substituting $\dexp$ for $x$ in $\dexp'$}
+  %% {$\dexp''$ is the result of substituting $\dexp$ for $u$ in $\dexp'$}
+
+\vspace{5pt}
+\judgbox
+  {[\dexp/x]\sigma = \sigma'}
+  {$\sigma'$ is obtained by substituting $\dexp$ for $x$ in $\sigma$}
+  %% {$\dexp''$ is the result of substituting $\dexp$ for $u$ in $\dexp'$}
+\[
+\begin{array}{lcll}
+\substitute{\dexp}{x}{c}
+&=&
+c\\
+\substitute{\dexp}{x}{x}
+&=&
+\dexp
+\\%
+\substitute{\dexp}{x}{y}
+&=&
+y
+& \text{when $x \neq y$}
+\\
+\substitute{\dexp}{x}{\halam{y}{\htau}{\dexp'}}
+&=&
+\halam{y}{\htau}{\substitute{\dexp}{x}{\dexp'}}
+& \text{when $x \neq y$ and $y \notin \fvof{d}$}
+\\
+\substitute{\dexp}{x}{\dap{\dexp_1}{\dexp_2}}
+&=&
+\dap{(\substitute{\dexp}{x}{\dexp_1})}{\substitute{\dexp}{x}{\dexp_2}}
+\\
+\substitute{\dexp}{x}{\dehole{u}{\subst}{}}
+&=&
+\dehole{u}{\substitute{\dexp}{x}{\subst}}{}
+\\
+\substitute{\dexp}{x}{\dhole{\dexp'}{u}{\subst}{}}
+&=&
+\dhole{\substitute{\dexp}{x}{\dexp'}}{u}{\substitute{\dexp}{x}{\subst}}{}
+\\
+\substitute{\dexp}{x}{\dcasttwo{\dexp'}{\htau_1}{\htau_2}}
+&=&
+\dcasttwo{(\substitute{\dexp}{x}{\dexp'})}{\htau_1}{\htau_2}
+\\
+\substitute{\dexp}{x}{\dcastfail{\dexp'}{\htau_1}{\htau_2}}
+&=&
+\dcastfail{(\substitute{\dexp}{x}{\dexp'})}{\htau_1}{\htau_2}
+\\
+\substitute{\dexp}{x}{\cdot}
+&=&
+\cdot\\
+\substitute{\dexp}{x}{\sigma, d/y}
+&=&
+\substitute{\dexp}{x}{\sigma}, \substitute{\dexp}{x}{d}/y
+%% {[\dexp_1 / x] \dcast{\htau}{\dexp}}
+%% &=&
+%% \dcast{\htau}{[\dexp_1 / x] \dexp}
+\end{array}
+\]
+
+\vspace{5pt}
+\begin{lem}[Substitution] \label{thm:substitution}~
+\begin{enumerate}[nolistsep]
+\item If $\hasType{\hDelta}{\hGamma, x : \htau'}{d}{\htau}$ and $\hasType{\hDelta}{\hGamma}{d'}{\htau'}$ then $\hasType{\hDelta}{\hGamma}{[d'/x]d}{\htau}$.
+\item If $\hasType{\hDelta}{\hGamma, x : \htau'}{\sigma}{\hGamma'}$ and $\hasType{\hDelta}{\hGamma}{d'}{\htau'}$ then $\hasType{\hDelta}{\hGamma}{[d'/x]\sigma}{\hGamma'}$.
+\end{enumerate}
+\end{lem}
+
+\subsection{Canonical Forms} 
+\begin{lem}[Canonical Value Forms]\label{thm:canonincal-value-forms}
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$ and $\isValue{\dexp}$
+  then $\htau\neq\tehole$ and
+  \begin{enumerate}[nolistsep]
+    \item If $\htau=b$ then $\dexp=c$.
+    \item If $\htau=\tarr{\htau_1}{\htau_2}$
+          then $\dexp=\halam{x}{\htau_1}{\dexp'}$
+          where $\hasType{\hDelta}{x : \htau_1}{\dexp'}{\htau_2}$.
+  \end{enumerate}
+\end{lem}
+
+\begin{lem}[Canonical Boxed Forms]\label{thm:canonical-boxed-forms}
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$ and $\isBoxedValue{\dexp}$
+  then
+  \begin{enumerate}[nolistsep]
+    \item If $\htau=b$ then $\dexp=c$.
+    \item If $\htau=\tarr{\htau_1}{\htau_2}$ then either
+      \begin{enumerate}
+        \item[i.]
+          $\dexp=\halam{x}{\htau_1}{\dexp'}$
+          where $\hasType{\hDelta}{x : \htau_1}{\dexp'}{\htau_2}$, or
+        \item[ii.]
+          $\dexp=\dcasttwo{\dexp'}{\tarr{\htau_1'}{\htau_2'}}{\tarr{\htau_1}{\htau_2}}$
+          where $\tarr{\htau_1'}{\htau_2'}\neq\tarr{\htau_1}{\htau_2}$
+          and $\hasType{\hDelta}{\emptyset}{\dexp'}{\tarr{\htau_1'}{\htau_2'}}$.
+      \end{enumerate}
+    \item If $\htau=\tehole$
+          then $\dexp=\dcasttwo{\dexp'}{\htau'}{\tehole}$
+          where $\isGround{\htau'}$
+          and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$.
+  \end{enumerate}
+\end{lem}
+
+\begin{lem}[Canonical Indeterminate Forms]
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
+  and $\isIndet{\dexp}$
+  then either\todo{expand this to have one case per type}
+  \begin{enumerate}[nolistsep]
+    \item
+      $\dexp=\dehole{u}{\subst}{}$
+      and $\Dbinding{u}{\Gamma'}{\htau}\in\hDelta$, or
+    \item
+      $\dexp=\dhole{\dexp'}{u}{\subst}{}$
+      and $\isFinal{\dexp'}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$
+      and $\Dbinding{u}{\Gamma'}{\htau}\in\hDelta$, or
+    \item
+      $\dexp=\dap{\dexp_1}{\dexp_2}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp_1}{\tarr{\htau_2}{\htau}}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp_2}{\htau_2}$
+      and $\isIndet{\dexp_1}$
+      and $\isFinal{\dexp_2}$
+      and $\dexp_1\neq\dcasttwo{\dexp_1}{\tarr{\htau_3}{\htau_4}}
+                                        {\tarr{\htau_3'}{\htau_4'}}$, or
+    %% \item
+    %%   \begin{enumerate}
+    %%     \item blah
+    %%     \item blah
+    %%     \item blah
+    %%   \end{enumerate}
+    \item
+      $\htau=b$
+      and $\dexp=\dcasttwo{\dexp'}{\tehole}{b}$
+      and $\isIndet{\dexp'}$
+      and $\dexp'\neq\dcasttwo{\dexp''}{\htau'}{\tehole}$, or
+    \item
+      $\htau=b$
+      and $\dexp=\dcastfail{\dexp'}{\htau'}{b}$
+      and $\isGround{\htau'}$
+      and $\htau'\neq{b}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$, or
+    \item
+      $\htau=\tarr{\htau_{11}}{\htau_{12}}$
+      and $\dexp=\dcasttwo{\dexp'}{\tarr{\htau_1}{\htau_2}}
+                                  {\tarr{\htau_{11}}{\htau_{12}}}$
+      and $\isIndet{\dexp'}$
+      and $\tarr{\htau_1}{\htau_2}\neq\tarr{\htau_{11}}{\htau_{12}}$, or
+    \item
+      $\htau=\tarr{\tehole}{\tehole}$
+      %% $\htau=\tarr{\htau_{11}}{\htau_{12}}$
+      %% and $\htau_{11}=\tehole$
+      %% and $\htau_{12}=\tehole$
+      and $\dexp=\dcastthree{\dexp'}{\tehole}{\tehole}{\tehole}$
+      and $\isIndet{\dexp'}$
+      and $\dexp'\neq\dcasttwo{\dexp''}{\htau'}{\tehole}$, or
+    \item
+      $\htau=\tarr{\tehole}{\tehole}$
+      %% $\htau=\tarr{\htau_{11}}{\htau_{12}}$
+      %% and $\htau_{11}=\tehole$
+      %% and $\htau_{12}=\tehole$
+      and $\dexp=\dcastfail{\dexp'}{\htau'}{\tarr{\tehole}{\tehole}}$
+      %% and $\dexp=\dcastfail{\dexp'}{\htau'}{\tarr{\htau_{11}}{\htau_{12}}}$
+      and $\htau'\neq\htau$
+      and $\isGround{\htau'}$
+      and $\isIndet{\dexp'}$
+      and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$, or
+    \item
+      $\htau=\tehole$
+      and $\dexp=\dcasttwo{\dexp'}{\htau'}{\tehole}$
+      and $\isGround{\htau'}$
+      and $\isIndet{\dexp'}$.
+  \end{enumerate}
+\end{lem}
+
 % No weakening for Gammas in Delta: 
 % If $\hasType{\Delta, \Dbinding{u}{\hGamma}{\tau}}{\hGamma'}{d}{\tau'}$ then $\hasType{\Delta, \Dbinding{u}{\hGamma, x : \tau''}{\tau}}{\hGamma'}{d}{\tau'}$.
 
+\clearpage
+\subsection{Complete Programs}
 
 \input{fig-complete}
+
+\clearpage
+\subsection{Hole Filling}\label{sec:hole-filling}
+\input{fig-multi-step}
+\input{fig-evalctx-instantiation}
+\begin{lem}[Filling] ~
+  \begin{enumerate}[nolistsep]
+  \item If $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\hGamma}{\dexp}{\tau}$
+  and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$
+  then $\hasType{\hDelta}{\hGamma}{\instantiate{\dexp'}{u}{\dexp}}{\tau}$.
+  \item If $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\hGamma}{\sigma}{\hGamma''}$
+  and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$
+  then $\hasType{\hDelta}{\hGamma}{\instantiate{\dexp'}{u}{\sigma}}{\hGamma''}$.
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+In each case, we proceed by rule induction on the first assumption, appealing to the Substitution Lemma as necessary.
+\end{proof}
+
+\begin{lem}[Substitution Commutativity]
+  If 
+  \begin{enumerate}[nolistsep]
+  	\item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{x : \htau_2}{\dexp_1}{\tau}$ and 
+  	\item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_2}{\htau_2}$ and 
+  	\item $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$
+  \end{enumerate}
+
+  then  $\instantiate{d'}{u}{\substitute{d_2}{x}{d_1}} = \substitute{\instantiate{d'}{u}{d_2}}{x}{\instantiate{d'}{u}{d_1}}$.
+\end{lem}
+
+\begin{lem}[Instruction Commutativity]
+  If 
+  \begin{enumerate}[nolistsep]
+  	\item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_1}{\tau}$ and 
+  	\item $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ and 
+  	\item $\reducesE{}{\dexp_1}{\dexp_2}$
+  \end{enumerate}
+
+  then $\reducesE{}{\instantiate{\dexp'}{u}{\dexp_1}}
+                     {\instantiate{\dexp'}{u}{\dexp_2}}$.
+\end{lem}
+
+\begin{lem}[Filling Totality]
+Either $\inhole{u}{\evalctx}$ or $\instantiate{d}{u}{\evalctx}=\evalctx'$ for some $\evalctx'$.
+\end{lem}
+
+\begin{lem}[Discarding] If 
+	\begin{enumerate}[nolistsep]
+	\item $\selectEvalCtx{d_1}{\evalctx}{\dexp_1'}$ and 
+	\item $\selectEvalCtx{d_2}{\evalctx}{\dexp_2'}$ and 
+	\item $\inhole{u}{\evalctx}$
+	\end{enumerate}
+
+	then $\instantiate{d}{u}{d_1} = \instantiate{d}{u}{d_2}$.
+\end{lem}
+
+\begin{lem}[Filling Distribution] If 
+	$\selectEvalCtx{d_1}{\evalctx}{d_1'}$ and $\instantiate{d}{u}{\evalctx}=\evalctx'$ then $\selectEvalCtx{\instantiate{d}{u}{d_1}}{\evalctx'}{\instantiate{d}{u}{d_1'}}$.
+\end{lem}
+
+\begin{thm}[Commutativity]
+  If 
+  \begin{enumerate}[nolistsep]
+  \item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_1}{\tau}$ and 
+  \item $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ and 
+  \item $\multiStepsTo{\dexp_1}{\dexp_2}$
+\end{enumerate}
+
+  then $\multiStepsTo{\instantiate{\dexp'}{u}{\dexp_1}}
+                     {\instantiate{\dexp'}{u}{\dexp_2}}$.
+\end{thm}
+\begin{proof}
+By rule induction on (3). The reflexive case is immediate. In the inductive case, we proceed by rule induction on the stepping premise. There is one rule, Rule~{Step}. By Filling Totality, either $\inhole{u}{\evalctx}$ or $\instantiate{d}{u}{\evalctx} = \evalctx'$. In the former case, by Discarding, we can conclude by MultiStepRefl. In the latter case, by Instruction Commutativity and Filling Distribution we can take a step, and we can conclude via MultiStepSteps by applying Preservation and then the IH.
+\end{proof}

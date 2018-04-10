@@ -161,6 +161,7 @@
 \newcommand{\mvar}[0]{u}
 \newcommand{\subst}[0]{\sigma}
 \newcommand{\substitute}[3]{[#1/#2]#3}
+\newcommand{\fvof}[1]{\mathsf{FV}(#1)}
 \newcommand{\dexp}[0]{d}
 \newcommand{\dconst}[0]{c}
 \newcommand{\dval}[0]{\ddot{v}}
@@ -218,3 +219,5 @@
 \newcommand{\selectEvalCtxR}[2]{#1\{#2\}}
 \newcommand{\selectEvalCtx}[3]{#1=\selectEvalCtxR{#2}{#3}}
 \newcommand{\maybePremise}[1]{{\textcolor{red}[}#1{\textcolor{red}]}}
+
+\newcommand{\inhole}[2]{\mathsf{inhole}(#1; #2)}

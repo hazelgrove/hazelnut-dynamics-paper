@@ -45,6 +45,8 @@ morekeywords={string, float, int},
 classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 }
 \let\li\lstinline
+\newcommand{\lismall}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
+
 
 
 %% Joshua Dunfield macros
@@ -84,6 +86,7 @@ classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 \numberwithin{thm}{section}
 \newtheorem{defn}[thm]{Definition}
 \newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
 % \newtheorem{cor}[section]{Corollary}     
 % \newtheorem{lem}[section]{Lemma}         
 % \newtheorem{prop}[section]{Proposition}  
@@ -265,10 +268,11 @@ classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
 \input{intro}
 \input{examples}
 \input{calculus}
-\input{implementation}
+% \input{implementation}
 \input{related-work}
 \input{discussion}
 
+\clearpage
 \bibliography{references,all.short,hazel_NSF}
 
 \clearpage

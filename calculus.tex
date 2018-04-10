@@ -192,7 +192,7 @@ The ITBeta rule is not the only rule we need to handle function application, bec
 
 The expression in function position might be a cast between arrow types, in which case we apply the arrow cast conversion rule, Rule {ITApCast}, to rewrite the application form, obtaining an equivalent application where the expression under the function cast, $d_1$, is exposed. We know from inverting the typing rules that $d_1$ is of type $\tarr{\htau_1}{\htau_2}$ and that $d_2$ is of type $\htau_1'$ where $\tconsistent{\htau_1}{\htau_1'}$, so to maintain type safety, we must place a cast on $d_2$ from  $\htau_1'$ to $\htau_1$. The result of this application will be of type $\htau_2$, but the original cast promised that the result would be of consistent type $\htau_2'$, so we also need a cast on the result from $\htau_2$ to $\htau_2'$.
 
-The last possibility is that the expression in function position is indeterminate and arrow cast conversion is not applicable, e.g. $\hap{(\dehole{u}{\sigma}{})}{c}$. In this case, no further progress can be made, so the function application as a whole is also deemed indeterminate by Rule {IAp} in Fig.~\ref{fig:isFinal}. Note that we are careful to maintain the following property, which establishes that expressions that step are not final, and that final expressions do not step.\todo{prove this as stated from Ian's disjointness proofs}\todo{do we need a typing premise?}
+The other possibility is that the expression in function position is indeterminate and arrow cast conversion is not applicable, e.g. $\hap{(\dehole{u}{\sigma}{})}{c}$. In this case, no further progress can be made, so the function application as a whole is also deemed indeterminate by Rule {IAp} in Fig.~\ref{fig:isFinal}. Note that we are careful to maintain the following property, which establishes that expressions that step are not final, and that final expressions do not step.\todo{prove this as stated from Ian's disjointness proofs}\todo{do we need a typing premise?}
 \begin{thm}[Finality] There does not exist $d$ such that both $\isFinal{d}$ and $\stepsToD{}{d}{d'}$ for some $d'$.
 \end{thm}
 
@@ -207,145 +207,33 @@ The two rules just described operate at ground type. The two remaining instructi
   and $\htau\neq\htau'$.
 \end{lem}
 
-\subsubsection{Type Safety} afdasfdas dfasdfs
+In all other cases, casts are either boxed values or indeterminate according to the remaining rules in Fig.~\ref{fig:isFinal}. Note in particular Rule {ICastHoleGround}, which handles casts from hole to ground type that are not of the form $\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}$. In the cast calculus, there are no such irreducible terms because the only canonical form of type $\tehole$ is $\dcasttwo{\dexp}{\htau_1}{\tehole}$.
+
+\subsubsection{Type Safety} The purpose of establishing type safety is to ensure that the static and dynamic semantics of a language cohere. We follow the approach developed by \citet{wright94:_type_soundness}, now standard \cite{pfpl}, which distinguishes two type safety properties, preservation and progress. In order to allow for the evaluation of incomplete programs, we establish these properties for terms typed under arbitrary hole context $\Delta$. We can assume $\hGamma$ is empty (in order to run programs with free variables, the system can treat them as empty holes with a corresponding name).
+
+The preservation theorem establishes that type assignment is preserved by transitions, i.e. that the type of an expression accurately predicts the type of the result of evaluating that expression.
+
 \begin{thm}[Preservation]
   If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and
   $\stepsToD{\Delta}{\dexp}{\dexp'}$ then
   $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$.
 \end{thm}
+\noindent
+The proof relies on an analagous preservation lemma for instruction transitions and a standard substitution lemma. Hole closures can disappear during evaluation, so we rely on weakening of $\Delta$.
 
+The progress theorem establishes that the dynamic semantics accounts for every well-typed term, i.e. that we have not forgotten some necessary rules or premises.
 \begin{thm}[Progress]
   If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either
-  (i) $\stepsToD{}{\dexp}{\dexp'}$ or
-  (ii) $\isIndet{\dexp}$ or
-  (iii) $\isBoxedValue{\dexp}$.
+  (a) $\stepsToD{}{\dexp}{\dexp'}$ or
+  (b) $\isBoxedValue{\dexp}$ or 
+  (c) $\isIndet{\dexp}$.
 \end{thm}
+\noindent
+Explicitly accounting for indeterminate forms, which are rooted at either a hole closure or a failed cast, is the key to being able to establish the progress theorem under a non-empty hole context. The proof relies on canonical forms lemmas stated in Appendix~\ref{sec:additional-defns}.
 
-\begin{thm}[Canonical Boxed Forms]
-  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$ and $\isBoxedValue{\dexp}$
-  then
-  \begin{enumerate}[label=(\alph*)]
-    \item If $\htau=b$ then $\dexp=c$.
-    \item If $\htau=\tarr{\htau_1}{\htau_2}$ then either
-      \begin{enumerate}
-        \item[i.]
-          $\dexp=\halam{x}{\htau_1}{\dexp'}$
-          where $\hasType{\hDelta}{x : \htau_1}{\dexp'}{\htau_2}$, or
-        \item[ii.]
-          $\dexp=\dcasttwo{\dexp'}{\tarr{\htau_1'}{\htau_2'}}{\tarr{\htau_1}{\htau_2}}$
-          where $\tarr{\htau_1'}{\htau_2'}\neq\tarr{\htau_1}{\htau_2}$
-          and $\hasType{\hDelta}{\emptyset}{\dexp'}{\tarr{\htau_1'}{\htau_2'}}$.
-      \end{enumerate}
-    \item If $\htau=\tehole$
-          then $\dexp=\dcasttwo{\dexp'}{\htau'}{\tehole}$
-          where $\isGround{\htau'}$
-          and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$.
-  \end{enumerate}
-\end{thm}
-
-\begin{thm}[Canonical Indeterminate Forms]
-  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
-  and $\isIndet{\dexp}$
-  then either
-  \begin{enumerate}[label=(\alph*)]
-    \item
-      $\dexp=\dehole{u}{\subst}{}$
-      and $\Dbinding{u}{\Gamma'}{\htau}\in\hDelta$, or
-    \item
-      $\dexp=\dhole{\dexp'}{u}{\subst}{}$
-      and $\isFinal{\dexp'}$
-      and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$
-      and $\Dbinding{u}{\Gamma'}{\htau}\in\hDelta$, or
-    \item
-      $\dexp=\dap{\dexp_1}{\dexp_2}$
-      and $\hasType{\hDelta}{\emptyset}{\dexp_1}{\tarr{\htau_2}{\htau}}$
-      and $\hasType{\hDelta}{\emptyset}{\dexp_2}{\htau_2}$
-      and $\isIndet{\dexp_1}$
-      and $\isFinal{\dexp_2}$
-      and $\dexp_1\neq\dcasttwo{\dexp_1}{\tarr{\htau_3}{\htau_4}}
-                                        {\tarr{\htau_3'}{\htau_4'}}$, or
-    %% \item
-    %%   \begin{enumerate}
-    %%     \item blah
-    %%     \item blah
-    %%     \item blah
-    %%   \end{enumerate}
-    \item
-      $\htau=b$
-      and $\dexp=\dcasttwo{\dexp'}{\tehole}{b}$
-      and $\isIndet{\dexp'}$
-      and $\dexp'\neq\dcasttwo{\dexp''}{\htau'}{\tehole}$, or
-    \item
-      $\htau=b$
-      and $\dexp=\dcastfail{\dexp'}{\htau'}{b}$
-      and $\isGround{\htau'}$
-      and $\htau'\neq{b}$
-      and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$, or
-    \item
-      $\htau=\tarr{\htau_{11}}{\htau_{12}}$
-      and $\dexp=\dcasttwo{\dexp'}{\tarr{\htau_1}{\htau_2}}
-                                  {\tarr{\htau_{11}}{\htau_{12}}}$
-      and $\isIndet{\dexp'}$
-      and $\tarr{\htau_1}{\htau_2}\neq\tarr{\htau_{11}}{\htau_{12}}$, or
-    \item
-      $\htau=\tarr{\tehole}{\tehole}$
-      %% $\htau=\tarr{\htau_{11}}{\htau_{12}}$
-      %% and $\htau_{11}=\tehole$
-      %% and $\htau_{12}=\tehole$
-      and $\dexp=\dcastthree{\dexp'}{\tehole}{\tehole}{\tehole}$
-      and $\isIndet{\dexp'}$
-      and $\dexp'\neq\dcasttwo{\dexp''}{\htau'}{\tehole}$, or
-    \item
-      $\htau=\tarr{\tehole}{\tehole}$
-      %% $\htau=\tarr{\htau_{11}}{\htau_{12}}$
-      %% and $\htau_{11}=\tehole$
-      %% and $\htau_{12}=\tehole$
-      and $\dexp=\dcastfail{\dexp'}{\htau'}{\tarr{\tehole}{\tehole}}$
-      %% and $\dexp=\dcastfail{\dexp'}{\htau'}{\tarr{\htau_{11}}{\htau_{12}}}$
-      and $\htau'\neq\htau$
-      and $\isGround{\htau'}$
-      and $\isIndet{\dexp'}$
-      and $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau'}$, or
-    \item
-      $\htau=\tehole$
-      and $\dexp=\dcasttwo{\dexp'}{\htau'}{\tehole}$
-      and $\isGround{\htau'}$
-      and $\isIndet{\dexp'}$.
-  \end{enumerate}
-\end{thm}
-
-\subsubsection{Complete Terms}\label{sec:complete-terms}
-
-\autoref{fig:complete} defines \emph{complete} types, expressions, and
-dynamic expressions to be those terms without type or expression holes.
-\begin{theorem}[Canonical Value Forms]
-  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$ and $\isValue{\dexp}$
-  then $\htau\neq\tehole$ and
-  \begin{enumerate}[label=(\alph*)]
-    \item If $\htau=b$ then $\dexp=c$.
-    \item If $\htau=\tarr{\htau_1}{\htau_2}$
-          then $\dexp=\halam{x}{\htau_1}{\dexp'}$
-          where $\hasType{\hDelta}{x : \htau_1}{\dexp'}{\htau_2}$.
-  \end{enumerate}
-\end{theorem}
-
-\begin{theorem}[Complete Progress]
-  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
-  and $\isComplete{\dexp}$
-  then either $\stepsToD{}{\dexp}{\dexp'}$
-  or $\isValue{\dexp}$.
-\end{theorem}
-
-\begin{theorem}[Complete Preservation]
-  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
-  and $\isComplete{\dexp}$
-  and $\stepsToD{}{\dexp}{\dexp'}$
-  then $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau}$
-  and $\isComplete{\dexp'}$.
-\end{theorem}
-
-\begin{theorem}[Complete Expansion] ~
-  \begin{enumerate}
+\subsubsection{Complete Programs} Although our focus in this paper is on running incomplete programs, this machinery does not interfere with reasoning about the behavior of complete programs, i.e. those with no holes. Appendix~\ref{sec:additional-defns} defines complete programs with the judgements $\isComplete{e}$ and $\isComplete{d}$. Failed casts cannot appear in complete internal expressions. The following theorem establishes that expansion preserves program completeness.
+\begin{thm}[Complete Expansion] ~
+  \begin{enumerate}[nolistsep]
     \item
       If $\isComplete{\hexp}$
       and $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
@@ -355,14 +243,24 @@ dynamic expressions to be those terms without type or expression holes.
       and $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
       then $\isComplete{\dexp}$.
   \end{enumerate}
-\end{theorem}
+\end{thm}
 
+The following preservation theorem establishes that stepping preserves program completeness.\todo{can we do complete preservation without the typing assumption?}
+\begin{thm}[Complete Preservation]
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
+  and $\isComplete{\dexp}$
+  and $\stepsToD{}{\dexp}{\dexp'}$
+  then $\hasType{\hDelta}{\emptyset}{\dexp'}{\htau}$
+  and $\isComplete{\dexp'}$.
+\end{thm}
 
-
-
-\cy{definition of complete types and terms? do we care about completeness
-  of $\hexp$s or $\dexp$s?}
-
+The following progress theorem establishes that only classic values result from evaluating a complete program. There are no boxed values or indeterminate forms. 
+\begin{thm}[Complete Progress]
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
+  and $\isComplete{\dexp}$
+  then either $\stepsToD{}{\dexp}{\dexp'}$
+  or $\isValue{\dexp}$.
+\end{thm}
 
 %% \begin{figure}[!ht]
 %%   \begin{definition}
@@ -381,79 +279,92 @@ dynamic expressions to be those terms without type or expression holes.
 \subsection{Agda Mechanization}
 \label{sec:agda-mechanization}
 
+The supplemental material includes our mechanization of the semantics and metatheory of \HazelnutLive, 
+including proofs of all of the theorems stated above and any necessary lemmas\todo{make this so ian!}{}. 
+We chose the Agda proof assistant \cite{norell2009dependently,norell:thesis},  in part because it was also used in the mechanization of \Hazelnut \cite{popl-paper}. 
+No proof automation is used because our intention is to communicate the proof
+structure itself. The basic approach is standard: we model judgements as 
+dependent inductive datatypes. 
+We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and encode typing 
+contexts, hole contexts and hole environments using metafunctions.\todo{say something about axioms?}{}
 
+\subsection{Implementation}\label{sec:implementation}
+
+The supplemental material also includes a browser-based implementation of \HazelnutLive. The implementation is a functional reactive program \cite{DBLP:conf/pldi/CzaplickiC13} written using the Reason toolchain for OCaml \cite{reason-what,leroy03:_ocaml} together with the OCaml \lismall{React} library \cite{OcamlReact} and the \lismall{js_of_ocaml} compiler and its associated libraries \cite{vouillon2014bytecode}. A screenshot of the user interface, which implements all of the live programming features described in Sec.~\ref{sec:examples}, but for the more austere language of this section, is shown in Appendix~\ref{sec:ref-impl-screenshots}\todo{do this}{}.
+
+The editor component of the implementation is derived from \Hazelnut. It exposes a language of edit actions that insert holes  
+automatically to guarantee that every edit state has some (possibly incomplete) type. Formally,
+this corresponds to the Sensibility theorem from the prior work \cite{popl-paper}. 
+By composing this theorem with the Expandability, Typed Expansion and Progress theorems from this paper, we establish a uniquely powerful 
+invariant: that every edit state is both statically and dynamically meaningful. In other words, live feedback does not ``flicker in and out'' or reflect past edit states. The primary purpose of the included implementation is to serve as a proof-of-concept of this invariant, and to be of use to researchers studying the calculus as presented.% Consistent with this goal, it closely follows the theoretical account in this section, rather than including advanced language features.
+
+We are also integrating the mechanisms developed in this paper into the \Hazel programming environment, which is being developed by \citet{HazelnutSNAPL} with the goal of providing a full-scale hole-driven development experience rooted in the type theoretic foundations established by \Hazelnut. Ongoing development is focused on extending the language of \Hazelnut following, in large part, the design of the popular Elm language \cite{Elm,czaplicki2012elm}, and on adding various syntactic and edit-time conveniences that are orthogonal to the topics of this paper. We plan to keep our interpreter for \Hazel, which is an extension of the interpreter in the included implementation, up-to-date as the \Hazel language evolves. The included implementation provides a link to this evolving effort. For the sake of exposition, the examples in Sec.~\ref{sec:examples} assumed certain syntactic conveniences that are not yet implemented in \Hazel, but that are available in Elm and standard in ML-like languages.
+
+Sec.~\ref{sec:discussion} discusses integration of the ideas from \HazelnutLive into other programming systems.\todo{do this}
 
 %%   \halam{x}{\htau}{\evalctx} ~\vert~
 
-{\color{gray}\blindtext}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Metatheory: Correctness of Edit-and-Resume}
+\newcommand{\commutativitySec}{A Contextual Modal Interpretation of Fill-and-Resume}
+\section{\protect\commutativitySec}
 \label{sec:resumption}
 
+
+The result of evaluation is a final internal expression with hole closures, each with an associated hole environment, $\sigma$. These hole environments can be reported directly to the programmer, e.g. via the sidebar shown in Fig.~X\todo{fig}, to help them as they think about how to fill in the corresponding hole in the external expression. Hole environments might also be useful indirectly, e.g. by informing an edit action synthesis and suggestion system. In any case, once the programmer does perform one or more edit actions to fill in a hole, a new result must be computed. Na\"ively, the system would need to compute the result ``from scratch'' on each such edit. A more efficient approach supported by the structure of \HazelnutLive is to resume evaluation from where it left off after an edit that amounts to hole filling. We call this feature \emph{fill-and-resume}, by analogy to the ``edit-and-resume'' features available in some systems, e.g. Visual Studio (see below for a comparison)\todo{cite and compare}{}.
+
+\todo{fix definition of instantiation in the agda}The key is to interpret the hole environment as a delayed substitution, and indeed this is exactly the interpretation suggested for closures in contextual modal type theory by \citet{Nanevski2008}. We can derive the hole filling operation, $\instantiate{d}{u}{d'}$, defined in Fig.~\ref{fig:substitution}, from the contextual substitution operation of CMTT. Notice that unlike standard substitution, which is capture-avoiding, hole filling imposes no condition on the binder when passing into the body of a lambda expression---the expression that fills a hole can, of course, refer to variables in scope where the hole appears. When hole filling encounters an empty closure for the hole being instantiated, $\instantiate{d}{u}{\dehole{u}{\sigma}{}}$, the result is $[\instantiate{d}{u}{\sigma}]d$, i.e. the delayed substitution is applied to the fill expression, $d$, after first recursively filling any instances of hole $u$ that may appear in $\sigma$. Hole filling for non-empty closures is analagous (the enveloped expression can be discarded). Note that this is the reason why we cannot interpret a non-empty hole as an empty hole of arrow type applied to the enveloped expression---the hole filling operation would not operate as expected under this interpretation.
+
 \input{fig-substitution}
-\input{fig-multi-step}
 
-{\color{gray}\blindtext}
-
-\rkc{some of these statements may need additional typing premises}
-
-\begin{theorem}[Instantiation]
-  If $\hasType{\hDelta}{\hGamma}{\dexp}{\tau}$
-  and $\Dbinding{u}{\hGamma'}{\htau'}\in\hDelta$
+The following theorem characterizes the static behavior of hole filling.
+\begin{thm}[Filling]
+  If $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\hGamma}{\dexp}{\tau}$
   and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$
   then $\hasType{\hDelta}{\hGamma}{\instantiate{\dexp'}{u}{\dexp}}{\tau}$.
-\end{theorem}
+\end{thm}
+\begin{proof}
+We prove a stronger version of the theorem which accounts for both terms and finite substitutions (see \cite{Nanevski2008}). In each case, we proceed by rule induction on the first assumption, appealing to the finite substitution lemma in the corresponding cases.
+\end{proof}
 
-\autoref{fig:multi-step} defines the multi-step relation as the reflexive,
-transitive closure of the single-step relation.
-
-\begin{lemma}[Finality]
-  If $\isFinal{\dexp}$ and $\multiStepsTo{\dexp}{\dexp'}$
-  then $\dexp=\dexp'$.
-\end{lemma}
-
-\begin{theorem}[Commutativity]
-  If $\multiStepsTo{\dexp_0}{\dexp_1}$
-  then $\multiStepsTo{\instantiate{\dexp}{u}{\dexp_0}}
-                     {\instantiate{\dexp}{u}{\dexp_1}}$.
-\end{theorem}
-
-\begin{theorem}[Confluence]
-  If $\multiStepsTo{\dexp}{\dexp_1}$
-  and $\multiStepsTo{\dexp}{\dexp_2}$
-  then there exists $\dexp'$ such that
-  $\multiStepsTo{\dexp_1}{\dexp'}$ and
-  $\multiStepsTo{\dexp_2}{\dexp'}$.
-\end{theorem}
-
-\begin{corollary}[Final Confluence]
-  If $\multiStepsTo{\dexp}{\dexp_1}$
-  and $\isFinal{\dexp_1}$
+For the fill-and-resume feature to be reasonable, we need the following commutativity property, where we write $\multiStepsTo{\dexp_1}{\dexp_2}$ for the reflexive, transitive closure of  stepping (see Fig.~\ref{fig:multi-step} in Appendix~\ref{sec:additional-defns}). In words, if there is some sequence of steps that go from $d_1$ to $d_2$, then you can fill the hole either at the beginning or at the end of that step sequence because if you do the former, you can take some sequence of steps to the latter. 
+\begin{thm}[Commutativity]
+  If $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_1}{\tau}$
+  and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ and $\multiStepsTo{\dexp_1}{\dexp_2}$
+  then $\multiStepsTo{\instantiate{\dexp'}{u}{\dexp_1}}
+                     {\instantiate{\dexp'}{u}{\dexp_2}}$.
+\end{thm}
+Note that this property follows because the specification in Sec.~\ref{sec:calculus} left evaluation order unspecified (i.e. formally, we omitted the bracketed premises). It is not the case in general that resuming from $\instantiate{\dexp'}{u}{d_2}$ will cause sub-expressions to be evaluated in the same order as they would have been if we had restarted from $\instantiate{\dexp'}{u}{d_1}$ and selected sub-expressions in, for example, an eager, left-to-right manner, because the hole that is being filled may have been ``skipped past''. In other words, this simple fill-and-resume protocol only works for languages where evaluation order ``does not matter''. There are various ways to encode this intuition. One way to do so is by establishing a confluence property (which is closely related to the Church-Rosser property \cite{church1936some}). The most general confluence property does not hold for the dynamic semantics in Sec.~\ref{sec:calculus} for the usual reason: we do not reduce under binders (\citet{DBLP:conf/birthday/BlancLM05} discuss the standard counterexample). We could recover confluence by specifying reduction under binders, either generally or in a more restricted form where only closed sub-expressions are reduced \cite{DBLP:journals/tcs/CagmanH98,DBLP:conf/birthday/BlancLM05,levy1999explicit}, but reduction under binders is at odds with the standard approaches used in implementing programming languages \cite{DBLP:conf/birthday/BlancLM05}. A more satisfying approach is to consider confluence modulo equality \cite{Huet:1980ng}. The simplest approach is to restrict our interest to top-level expressions of base type that result in values, in which case the following special case of confluence does hold (trivially when the only base type has a single value, but also more generally for other base types).
+\begin{lem}[Base Confluence]
+  If $\hasType{\Delta}{\emptyset}{\dexp}{b}$ and 
+  $\multiStepsTo{\dexp}{\dexp_1}$
+  and $\isValue{\dexp_1}$
   and $\multiStepsTo{\dexp}{\dexp_2}$
   then $\multiStepsTo{\dexp_2}{\dexp_1}$.
-  \begin{proof}
-    By Confluence and Finality.
-  \end{proof}
-\end{corollary}
-
-\begin{theorem}[Resumption]
-  If $\multiStepsTo{\dexp_1}{\dexp_2}$
-  and $\isFinal{\dexp_2}$
-  and $\multiStepsTo{\instantiate{\dexp_3}{u}{\dexp_1}}{\dexp_4}$
-  and $\isFinal{\dexp_4}$
-  then $\multiStepsTo{\instantiate{\dexp_3}{u}{\dexp_2}}{\dexp_4}$.
+\end{lem}
+We can then prove the following property, which establishes that fill-and-resume is sound.
+\begin{thm}[Resumption]
+  If $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp}{b}$
+  and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ 
+  and $\multiStepsTo{\dexp}{\dexp_1}$
+  and $\multiStepsTo{\instantiate{\dexp'}{u}{\dexp}}{\dexp_2}$
+  and $\isValue{\dexp_2}$
+  then $\multiStepsTo{\instantiate{\dexp'}{u}{\dexp_1}}{\dexp_2}$.
   \begin{proof}
     By Commutativity,
-    $\multiStepsTo{\instantiate{\dexp_3}{u}{\dexp_1}}
-                  {\instantiate{\dexp_3}{u}{\dexp_2}}$.
-    By Final Confluence, we can conclude.
+    $\multiStepsTo{\instantiate{\dexp'}{u}{\dexp}}
+                  {\instantiate{\dexp'}{u}{\dexp_1}}$.
+    By Base Confluence, we can conclude.
   \end{proof}
-\end{theorem}
+\end{thm}
 
-Talk about weak vs strong conversion vs sharing -- see \url{http://gallium.inria.fr/~maranget/papers/jwk60.pdf} and cited work in the intro. See also \url{https://www.lri.fr/~blsk/Docs/Balabonski-FullLaziness-POPL12.pdf}?? Original Church-Rosser paper -- \url{http://www.ams.org/journals/tran/1936-039-03/S0002-9947-1936-1501858-0/S0002-9947-1936-1501858-0.pdf}.
+The proofs are outlined in Appendix~\ref{sec:hole-filling}, along with a number of other necessary lemmas and definitions. In particular, we need additional machinery to properly handle the situation where we have filled a non-empty hole where a step had taken place in the original evaluation. These proofs and definitions are not included in the mechanization for two reasons. First, fill-and-resume is an optimization, and as just discussed, these properties, unlike those in Sec.~\ref{sec:calculus}, would not be conserved by some reasonable extensions of the core calculus. Second, it would require a significantly more complex representation of hole environments to encode the hole filling operation. Under the simple representation that suffices for the developments in Sec.~\ref{sec:calculus}, Agda cannot be convinced that the definition is well-founded (\citet{Nanevski2008} establish that it is in fact well-founded).
 
+Hole filling in the external language is understood in terms of hole filling in its expansion. Note that in practice, it may be useful to cache results from several previous expansions. For example, consider two edits, the first filling a hole $u$ with the number $2$, and the next applying the $+$ operator, resulting in $2 + \dehole{v}{\sigma}{}$. This second edit is not a hole filling edit with respect to the immediately preceding edit state, but it can be understood as filling hole $u$ with $2 + \dehole{v}{\sigma}{}$. Another related case arises in lab notebook interfaces like that of Jupyter/IPython \cite{PER-GRA:2007}. In this case, each cell can be understood as a series of \li{let} bindings ending in a hole, which is filled by the next cell. The result from each cell can be cached to avoid recomputing the environment from preceding cells. This contextual modal interpretation of lab notebook cells (and read-eval-print loops as a restricted case where edits to previous cells are impossible) is novel.
+
+So far, we have understood hole filling as an extralinguistic operation. However, a key feature CMTT that we have not yet touched on is the \emph{internalization} of metavariable binding and contextual substitution via the contextual modal types, $[\hGamma]\htau$, which are introduced by the operation $\mathsf{box}(\hGamma.d)$ and eliminated by the operation $\mathsf{letbox}(d_1, u.d_2)$. A hole filling can be interpreted as an expression of contextual modal type, and the act of hole filling followed by evaluation to the next possibly-indeterminate edit state as evaluation under the binder of a suitable $\mathsf{letbox}$ construct, which is enabled by the dynamic semantics in Sec.~\ref{sec:calculus}. This interpretation allows us to \emph{compute} hole fillings, rather than simply stating them, by specifying non-trivial expressions of modal type. This could serve as the basis for a \emph{live} computational hole refinement system, extending the capabilities of purely static hole refinement systems like those available in some proof assistants, e.g. the elaborator reflection system of Idris \cite{brady2013idris,DBLP:conf/icfp/ChristiansenB16} and the tactic system\todo{right? read a bit more}{} of Beluga \cite{DBLP:conf/flops/Pientka10,pientka2015inductive}. Each applied hole filling serves as a boundary between dynamic \emph{edit stages}. This contextual modal interpretation of live staged hole refinement nicely mirrors the modal interpretation of staged argument evaluation \cite{Davies:2001op}. We leave further development of this interpretation of hole refinement to future work.
 
 \begin{comment}
 
