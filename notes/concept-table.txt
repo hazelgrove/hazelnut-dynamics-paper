@@ -1,0 +1,19 @@
+Hazelnut Live				GTLC			CMTT    			Hazelnut
+
+type hole					unknown type	-				 	type hole
+expression hole				-				-					expression hole
+expansion					cast insertion	-					-
+cast						cast			-					-
+cast failure step			cast failure	-					-
+step around failed cast		-				-					-
+hole name					-				metavar 			-
+hole context				-				metavar context		-
+hole closure				-				metavar closure		-
+evaluation step				evaluation step	- (no dynamics) 	- (no dynamics)
+	incomplete types		yes				-					-
+	incomplete expression	-				- (free metavar)	-
+indeterminate forms			-				-					-
+hole instantiation			-				metavar instant.	construct actions
+-							blame (see txt) -					-
+-							-				modal types			-
+

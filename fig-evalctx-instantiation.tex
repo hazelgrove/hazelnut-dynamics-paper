@@ -1,0 +1,79 @@
+% !TEX root = hazelnut-dynamics.tex
+
+\begin{figure}[t]
+\judgbox{\inhole{u}{\evalctx}}{The mark in $\evalctx$ is inside non-empty hole closure $u$}
+\begin{mathpar}
+\inferrule[InHoleNEHole]{~}{
+  \inhole{u}{\dhole{\evalctx}{u}{\subst}{}}
+}
+
+\inferrule[InHoleAp1]{
+  \inhole{u}{\evalctx}
+}{
+  \inhole{u}{\hap{\evalctx}{\dexp}}
+}
+
+\inferrule[InHoleAp2]{
+  \inhole{u}{\evalctx}
+}{
+  \inhole{u}{\hap{\evalctx}{\dexp}}
+}
+\\
+\inferrule[InHoleCast]{
+  \inhole{u}{\evalctx}
+}{
+  \inhole{u}{\dcasttwo{\evalctx}{\htau_1}{\htau_2}}
+}
+
+\inferrule[InHoleFailedCast]{
+  \inhole{u}{\evalctx}
+}{
+  \inhole{u}{\dcastfail{\evalctx}{\htau_1}{\htau_2}}
+}
+\end{mathpar}
+
+\vsepRule
+
+\judgbox{\instantiate{d}{u}{\evalctx} = \evalctx'}{$\evalctx'$ is obtained by filling hole $u$ in $\evalctx$ with $d$}
+\begin{mathpar}
+\inferrule[EFillMark]{~}{
+  \instantiate{d}{u}{\evalhole} = \evalhole
+}
+
+\inferrule[EFillAp1]{
+  \instantiate{d}{u}{\evalctx} = \evalctx'
+}{
+  \instantiate{d}{u}{\hap{\evalctx}{d_2}} = \hap{\evalctx'}{
+  	\instantiate{d}{u}{d_2}}
+}
+
+\inferrule[EFillAp2]{
+  \instantiate{d}{u}{\evalctx} = \evalctx'
+}{
+  \instantiate{d}{u}{\hap{d_1}{\evalctx}} = \hap{(
+  	\instantiate{d}{u}{d_1})}{\evalctx'}
+}
+
+\inferrule[EFillNEHole]{
+  u \neq v\\
+  \instantiate{d}{u}{\evalctx}={\evalctx'}
+}{
+  \instantiate{d}{u}{\dhole{\evalctx}{v}{\sigma}{}} = \dhole{\evalctx'}{v}{\instantiate{d}{u}{\sigma}{}}{}
+}
+
+\inferrule[EFillCast]{
+	\instantiate{d}{u}{\evalctx} = \evalctx'
+}{
+	\instantiate{d}{u}{\dcasttwo{\evalctx}{\htau_1}{\htau_2}} = 
+	\dcasttwo{\evalctx'}{\htau_1}{\htau_2}
+}
+
+\inferrule[EFillFailedCast]{
+	\instantiate{d}{u}{\evalctx} = \evalctx'
+}{
+	\instantiate{d}{u}{\dcastfail{\evalctx}{\htau_1}{\htau_2}} = 
+	\dcastfail{\evalctx'}{\htau_1}{\htau_2}
+}
+\end{mathpar}
+\CaptionLabel{Evaluation Context Filling}{fig:evalctx-filling}
+\end{figure}
