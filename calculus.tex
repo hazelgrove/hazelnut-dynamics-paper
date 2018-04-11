@@ -130,21 +130,18 @@ Each well-typed external expression~$e$ expands to a well-typed internal express
 \Secref{sec:evaluation} discusses internal expression evaluation.
 
 As with the type system for the external language (above), 
-we specify expansion in the bidirectional style, via two mutually defined judgements.
+we specify expansion bidirectionally \cite{DBLP:conf/ppdp/FerreiraP14}.
 %
 The synthetic expansion judgement~$\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ synthesizes a type~$\htau$ from~$\hexp$.
 %
 Synthetic expansion produces an internal expression~$d$ and a hole context~$\hDelta$.
 %
 %We say more about hole contexts, which are used in the type assignment judgement, $\hasType{\Delta}{\hGamma}{d}{\htau}$, below.
-We discuss hole contexts further below, including their role in the type assignment judgement~$\hasType{\Delta}{\hGamma}{d}{\htau}$.
-
+We describe hole contexts, which serve as ``inputs'' to the type assignment judgement~$\hasType{\Delta}{\hGamma}{d}{\htau}$, further below. 
+%
 The analytic expansion judgement~$\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$, checks~$\hexp$ against~$\htau$ and produces an expansion~$d$ of type~$\htau'$, and a hole context~$\hDelta$.
 %
-The governing theorem below establishes that expansions are well-typed and in the analytic case that the type $\htau'$ is necessarily consistent with $\htau$.
-%
-% \rkc{minor, but the syntax of type assignment isn't mentioned before use. it's not
-% entirely standard, because of the hole context, so perhaps worth mentioning.}
+The governing theorem below establishes that expansions are well-typed and in the analytic case that the type $\htau'$ is consistent with $\htau$.
 %
 \begin{thm}[Typed Expansion]\label{thm:typed-expansion} ~
   \begin{enumerate}[nolistsep]
@@ -542,7 +539,7 @@ Appendix~\ref{sec:ref-impl-screenshots}\todo{do this}{} provides a screenshot of
 The editor component of the implementation is derived from \Hazelnut. 
 It exposes a language of structured edit actions (summarized in the sidebar on the left of Fig.~\ref{fig:screenshot}) that insert holes automatically to guarantee that every edit state has some (possibly incomplete) type. 
 Formally,
-this corresponds to the Sensibility property from the prior work \cite{popl-paper}. 
+this corresponds to the Sensibility property from the prior work \cite{popl-paper}.\todo{put statement in the appendix}{} 
 By composing this property with the Expandability, Typed Expansion and Progress properties from this paper, we establish a uniquely powerful 
 invariant: that every edit state is both statically and dynamically meaningful. 
 In other words, live feedback does not ``flicker in and out'' or reflect past edit states. 
