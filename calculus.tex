@@ -4,23 +4,21 @@
 \newcommand{\calculusSec}{Hazelnut Live, Formally}
 \section{\protect\calculusSec}
 \label{sec:calculus}
+\input{fig-syntax}
+\input{fig-bidirectional-typing}
 
 We will now make the intuitions developed in the previous section formally precise by specifying the \HazelnutLive core calculus and  its accompanying metatheory. 
-We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently} 
-(see Sec.~\ref{sec:agda-mechanization} for some additional details, and the supplemental material for the full mechanization).
 
 The syntax of the core calculus, specified in Fig.~\ref{fig:hazelnut-live-syntax}, consists of types and expressions with holes. 
 We distinguish between \emph{external} expressions, $e$, and \emph{internal} expressions, $d$. 
 External expressions correspond to programs as entered by the programmer 
-(see Sec.~\ref{sec:implementation}\todo{or maybe Sec. 2?}{} for discussion of manual, semi-automated and fully automated hole entry methods). 
+(see Sec.~\ref{sec:intro}\todo{or maybe Sec. 2?}{} for discussion of manual, semi-automated and fully automated hole entry methods). 
 Each well-typed external expression (as specified in Sec.~\ref{sec:external-statics} below) expands to a well-typed internal expression (see Sec.~\ref{sec:expansion}) before it is evaluated (see Sec.~\ref{sec:evaluation}). 
-We distinguish the external and internal languages because 
-(1) the external language supports type inference and explicit type ascriptions, $\hexp : \htau$, but it is  formally simpler to eliminate ascriptions and specify a type assignment system when defining the dynamic semantics\todo{cite frank's notes}; and 
+We take this approach, notably also taken in the specification of Standard ML by \citet{Harper00atype-theoretic}, because (1) the external language supports type inference and explicit type ascriptions, $\hexp : \htau$, but it is formally simpler to eliminate ascriptions and specify a type assignment system when defining the dynamic semantics; and 
 (2) we need additional syntactic machinery during evaluation for tracking hole closures and dynamic type casts. 
 This machinery is inserted by the expansion step, rather than entered explicitly by the programmer. 
-In this regard, the internal language is analagous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects.
-
-\input{fig-syntax}
+In this regard, the internal language is analagous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects. We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently} 
+(see Sec.~\ref{sec:agda-mechanization}). We have also implemented \HazelnutLive in a manner that maintains a novel end-to-end well-definedness invariant (see Sec.~\ref{sec:implementation}).
 
 % \rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
 % ITGround, and ITExpand. that's not many, and those rules don't look much more
@@ -30,7 +28,6 @@ In this regard, the internal language is analagous to the cast calculus in the g
 \subsection{Static Semantics of the External Language}
 \label{sec:external-statics}
 
-\input{fig-bidirectional-typing}
 
 We start with the type system of the \HazelnutLive
 external language, which closely follows the \Hazelnut type
