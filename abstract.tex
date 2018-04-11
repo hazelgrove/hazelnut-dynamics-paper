@@ -12,11 +12,11 @@ with continuous feedback about a program's dynamic behavior as it is being edite
 %
 The problem is that programming languages typically assign dynamic meaning only 
  to programs that are \emph{complete}, i.e. syntactically well-formed and free
-of static type errors, whereas 
+of type errors, whereas 
 %
 during much of the editing process, the program is not yet complete. As a result,  
-live programming services flicker in and out, 
-in many cases going out for substantial lengths of time.
+live feedback flickers in and out or goes stale, 
+in many cases for substantial lengths of time.
 %
 % Defining a semantics for incomplete functional programs would help bridge the
 % gap between well-formed states and allow live programming environments to
@@ -40,12 +40,12 @@ several existing systems), evaluation proceeds ``around'' the holes,
 performing as much of the remaining computation as is possible and tracking the 
 closure around each hole instance as it flows through the program.  These hole closures
  can be reported both directly and indirectly, via various editor services, to help the programmer decide how to fill a hole. 
-They also enable an ``edit-and-resume'' feature that 
+They also enable a ``fill-and-resume'' feature that 
 avoids the need to restart evaluation after edits that amount to hole filling. 
-Formally, the semantics combines features from gradual type theory (to handle
+Formally, the semantics draws from both gradual type theory (to handle
 type holes) and contextual modal type theory (which provides a
-logical foundation for hole closures) with novel formal structure necessary
-to continue evaluation past holes and to prove key metatheoretic properties. 
+logical foundation for hole closures), and develops additional technical machinery necessary 
+to continue evaluation past the various hole forms and to prove important metatheoretic properties. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% PAR 3: We have an implementation, and have proofs
@@ -58,10 +58,10 @@ to continue evaluation past holes and to prove key metatheoretic properties.
 %
 We have mechanized the core formal development using the Agda proof assistant.
 %
-We additionally describe a simple reference implementation, called \HazelnutLive{},
+We also describe a simple implementation, called \HazelnutLive{},
 that inserts holes as
 necessary during the editing process to guarantee that every edit state has some (possibly incomplete)
-type, based in part on the edit action calculus in prior work by \citet{popl-paper}.
+type, based in part on the \Hazelnut edit action calculus in prior work by \citet{popl-paper}.
 %
 Taken together with the type safety property that this paper establishes, the result is 
 a proof-of-concept live typed functional programming environment where dynamic feedback 
