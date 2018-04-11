@@ -30,77 +30,6 @@ In this regard, the internal language is analagous to the cast calculus in the g
 \subsection{Static Semantics of the External Language}
 \label{sec:external-statics}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Matt's high-level Writing comments for Cyrus (for Section 3 mostly):
-
-% Please, please please: Use line breaks.  Git does't work well without them.
-% Change your editor or editor settings please.
-
-% Cyrus, your writing is generally very good, but is often harder for
-% me to digest than it should be, as a reader.  I think it'd be easier
-% to read on a first pass if we followed my preferences below, which I
-% humbly offer as gentle suggestions:
-
-% I think that some these suggestions are especially important for reading
-% really wide columns of text, as in this new PACMPL format. :)
-
-% My nits boil down to these preferences:
-
-% 0. NO PASSIVE VOICE --- EVER.  Instead, use ``We'' as the subject,
-% and choose a more interesting verb than 'is' for the sentence.
-% (Emacs says that there are 100 occurences of the word 'is' in the
-% text below.  That's way, way too much passive voice.)
-
-% 1. Shorter sentences.
-
-% 2. Fewer parenthenticals: just use more sentences instead.
-
-% 3. Shorter paragraphs, with more defined 'paragraph structure'. (E.g., topic sentence)
-
-% 4. Shorter sentence subjects (with subject closer to verb).
-
-% 5. Use macros for fig and section references.
-
-% 6. If a sentence introduces a figure, that sentence should be the
-% first sentence of a paragraph, and the figure reference should be
-% the first word of that sentence, ideally.  As a reader, then I look
-% at figures first, and find the paragraphs for them easily by
-% scanning the text.
-
-% 7. For each greek letter, prefix with an english word 'classifier',
-% e.g., 'external expression~$e$', not just '$e$'.  Use way, way fewer
-% commas please.
-
-% 8. Use singlar over plural sentence subjects, whenever possible;
-% e.g., an ``empty hole is written..'' not ``empty holes are
-% written''; or ``an empty hole synthesizes'' not ``empty holes
-% synthesize''
-
-% 9. Fewer commas. Each 'extra' comma is a burden to the reader (it's
-% asking the reader to allocate a stack frame in their brain!)
-
-% 10. Citations in this Names+Year form break sentence and paragraph
-% flow for the reader, sometimes quite severly.  Put long citation
-% chains at the ends of sentences (or better yet, in their own little
-% paragraph, as I did below).
-
-% *** I'm transforming the next paragraph below as a demonstration,
-% creating smaller, more cohesive paragraphs with shorter sentences.
-% See what you think.
-%
-% I'm not doing all of Section 3, tho, since
-%
-% (1) you may hate what I've done, and
-%
-% (2) I don't want to do a lot of work that will just be
-% reverted/resented :)
-
-% BTW: My version is _shorter_, not longer than the original :)
-%
-% Also, In my humble opinion, it is way, way easier to read. ;)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \input{fig-bidirectional-typing}
 
 We start with the type system of the \HazelnutLive
@@ -140,22 +69,48 @@ expected, e.g. under an explicit ascription (governed by Rule {SAsc})
 or in the argument position of a function application (governed by
 Rule {SAp}, discussed below), we apply the \emph{subsumption rule},
 Rule {ASubsume}, which specifies that if an expression $e$ synthesizes
-type $\htau$, then it can be checked against any \emph{consistent}
+type $\htau$, then it may be checked against any \emph{consistent}
 type, $\htau'$.
 
 \input{fig-type-consistency}
 
-%%%%%%%%%%%%%%%%%%%% MATT stopped editing Cyrus's text here.
+Fig.~\ref{fig:tconsistent} specifies the type consistency relation, written $\tconsistent{\htau}{\htau'}$, which specifies that two types are consistent if they differ only up to type holes in corresponding positions.
+%
+The hole type is consistent with every type, and so, by the subsumption rule, expression holes may appear where an expression of any type is expected. The type consistency relation here coincides with the type consistency relation from gradual type theory by identifying the hole type with the unknown type~\cite{Siek06a}.
+%
+Type consistency is reflexive and symmetric, but it is \emph{not} transitive.
+%
+This relation stands in contrast to subtyping, which is anti-symmetric and transitive; subtyping may be integrated into a gradual type system following \citet{Siek:2007qy}).
 
-Fig.~\ref{fig:tconsistent} specifies the type consistency relation, written $\tconsistent{\htau}{\htau'}$, which specifies that two types are consistent if they differ only up to type holes in corresponding positions. The hole type is consistent with every type, and so, by the subsumption rule, expression holes can appear where an expression of any type is expected. The type consistency relation here coincides with the type consistency relation from gradual type theory by identifying the hole type with the unknown type~\cite{Siek06a}. Note that type consistency is reflexive and symmetric but it is not transitive (unlike subtyping, which is anti-symmetric and transitive; subtyping can be integrated into a gradual type system following \citet{Siek:2007qy}). 
+Non-empty expression holes, written $\hhole{\hexp}{u}$, behave similarly to empty holes.
+%
+Rule {SNEHole} specifies that a non-empty expression hole also synthesizes hole type as long as the expression inside the hole, $\hexp$, synthesizes some (arbitrary) type.
+%
+Non-empty expression holes therefore internalize the ``red squiggles'' that many editors display under or around type inconsistencies in a program.\todo{example?}\todo{briefly say something about binding inconsistencies?}
 
-Non-empty expression holes, written $\hhole{\hexp}{u}$, behave similarly. Rule {SNEHole} specifies that non-empty expression holes also synthesize hole type as long as the expression inside the hole, $\hexp$, synthesizes some (arbitrary) type. Non-empty expression holes therefore internalize the ``red squiggles'' that many editors display under or around type inconsistencies in a program.\todo{example?}\todo{briefly say something about binding inconsistencies?}
-
-For the familiar forms of the lambda calculus, the rules again follow prior work. For simplicity, the core calculus includes only a single base type, $b$, with a single constant, $c$, governed by Rule {SConst} (i.e. $b$ is the unit type). \Hazelnut instead defined a number type with a single operation, which we include in Appendix~\ref{sec:extensions} alongside various other standard extensions to the core calculus\todo{do this, say more?}. 
+For the familiar forms of the lambda calculus, the rules again follow prior work.
+%
+For simplicity, the core calculus includes only a single base type~$b$ with a single constant~$c$, governed by Rule {SConst} (i.e. $b$ is the unit type).
+%
+By contrast, \Hazelnut instead defines a number type with a single operation, which we include in Appendix~\ref{sec:extensions} alongside various other standard extensions to the core calculus\todo{do this, say more?}. 
 %
 Rule {SVar} specifies that variables synthesize the corresponding type from $\hGamma$. 
 
-For the sake of exposition, \HazelnutLive includes ``half-annotated'' lambdas, $\halam{x}{\htau}{\hexp}$, in addition to the unannotated lambdas, $\hlam{x}{\hexp}$, from \Hazelnut.  Half-annotated lambdas can appear in synthetic position  according to Rule {SLam}, which is standard \cite{Chlipala:2005da}. Unannotated lambdas can only appear where the expected type is known to be either an arrow type or the hole type, which is treated as if it were $\tarr{\tehole}{\tehole}$. To avoid the need for two separate rules, Rule {ALam} uses the auxiliary relation $\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$ in Fig.~\ref{fig:arrmatch}, which produces the matched arrow type $\tarr{\tehole}{\tehole}$ given the hole type, and operates as the identity on arrow types \cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/popl/GarciaC15}. Note that a system supporting ML-style type reconstruction \cite{damas1982principal} might include a synthetic rule for unannotated lambdas, e.g. as outlined by \citet{DBLP:conf/icfp/DunfieldK13}. 
+For the sake of exposition, \HazelnutLive includes ``half-annotated'' lambdas, $\halam{x}{\htau}{\hexp}$, in addition to the unannotated lambdas, $\hlam{x}{\hexp}$, from \Hazelnut.
+%
+Half-annotated lambdas may appear in synthetic position according to Rule {SLam}, which is standard \cite{Chlipala:2005da}.
+%
+Unannotated lambdas may only appear where the expected type is known to be either an arrow type or the hole type, which is treated as if it were $\tarr{\tehole}{\tehole}$.
+%
+To avoid the need for two separate rules, Rule {ALam} uses the auxiliary relation $\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$ in \Figref{fig:arrmatch}, which produces the matched arrow type $\tarr{\tehole}{\tehole}$ given the hole type, and operates as the identity on arrow types \cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/popl/GarciaC15}.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% To Cyrus from Matt:
+%
+% Why say the following here? --- It's discussing a different design that we didn't pursue here.  We should move such discussion to related work.
+%
+%Note that a system supporting ML-style type reconstruction \cite{damas1982principal} might include a synthetic rule for unannotated lambdas, e.g. as outlined by \citet{DBLP:conf/icfp/DunfieldK13}.
+%%
 
 The rule governing function application, Rule {SAp}, similarly treats an expression of hole type in function position as if it were of type $\tarr{\tehole}{\tehole}$ using the same matched arrow type judgement.
 
@@ -167,14 +122,24 @@ The rule governing function application, Rule {SAp}, similarly treats an express
 \input{fig-expansion}
 \input{fig-typing-dexp}
 
-Well-typed external expressions expand to well-typed internal expressions, $d$, for evaluation. 
-The rules governing expansion are given in Fig.~\ref{fig:expansion} and the rules governing type assignment for internal expressions are given in Fig.~\ref{fig:hasType}. 
-Evaluation of internal expressions will be discussed in Sec.~\ref{sec:evaluation}.
+Each well-typed external expression~$e$ expands to a well-typed internal expression~$d$, for evaluation.
+%
+\Figref{fig:expansion} gives the rules governing expansion, and \Figref{fig:hasType} gives the rules governing type assignment for internal expressions.
+%
+\Figref{sec:evaluation} discusses internal expression evaluation.
 
-Expansion is specified, much like the type system for the external language, in the bidirectional style by two mutually defined judgements. 
-The synthetic expansion judgement, $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$, synthesizes a type, $\htau$, from $\hexp$, and produces an expansion, $d$, and a hole context, $\hDelta$. 
-We say more about hole contexts, which are used in the type assignment judgement, $\hasType{\Delta}{\hGamma}{d}{\htau}$, below. 
-The analytic expansion judgement, $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$, checks $\hexp$ against $\htau$ and produces an expansion, $d$, of type $\htau'$, and a hole context, $\hDelta$. 
+As with the type system for the external language (above), 
+we specify expansion in the bidirectional style, via two mutually defined judgements.
+%
+The synthetic expansion judgement~$\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ synthesizes a type~$\htau$ from~$\hexp$.
+%
+Synthetic expansion produces an internal expression~$d$ and a hole context~$\hDelta$.
+%
+%We say more about hole contexts, which are used in the type assignment judgement, $\hasType{\Delta}{\hGamma}{d}{\htau}$, below.
+We discuss hole contexts further below, including their role in the type assignment judgement~$\hasType{\Delta}{\hGamma}{d}{\htau}$.
+
+The analytic expansion judgement~$\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$, checks~$\hexp$ against~$\htau$ and produces an expansion~$d$ of type~$\htau'$, and a hole context~$\hDelta$.
+%
 The governing theorem below establishes that expansions are well-typed and in the analytic case that the type $\htau'$ is necessarily consistent with $\htau$.
 %
 % \rkc{minor, but the syntax of type assignment isn't mentioned before use. it's not
@@ -191,14 +156,30 @@ The governing theorem below establishes that expansions are well-typed and in th
   \end{enumerate}
 \end{thm}
 \noindent
-The reason analytic expansion produces an expansion of consistent type is because the subsumption rule, as previously discussed, allows us to check an external expression against any type consistent with the type the expression actually synthesizes, whereas every internal expression can be assigned at most one type, i.e. the following standard unicity property holds of the type assignment system.
+
+%The reason analytic expansion produces an expansion of consistent
+%type is because the subsumption rule, as previously discussed, allows
+%us to check an external expression against any type consistent with
+%the type the expression actually synthesizes, whereas every internal
+%expression can be assigned at most one type, i.e. the following
+%standard unicity property holds of the type assignment system.
+%
+Analytic expansion produces an expansion of consistent type:
+%
+Inuitively, the subsumption rule, as previously discussed, allows us
+to check an external expression against any type consistent with the
+type the expression actually synthesizes.
+
+
 \begin{thm}[Type Assignment Unicity]
   If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$
   and $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$
   then $\htau=\htau'$.
 \end{thm}
 \noindent
-Consequently, analytic expansion reports the type actually assigned to the expansion it produces. For example, we can derive that $\expandAna{\hGamma}{c}{\tehole}{c}{b}{\emptyset}$.% where $\emptyset$ is the empty hole context.
+Consequently, analytic expansion reports the type actually assigned to the expansion it produces.
+%
+For example, we can derive that $\expandAna{\hGamma}{c}{\tehole}{c}{b}{\emptyset}$.% where $\emptyset$ is the empty hole context.
 
 Before describing the rules in detail, let us state a few other useful theorems. 
 The following theorem establishes that an expansion exists for every well-typed external expression.
@@ -240,6 +221,8 @@ The following theorem establishes that expansion generalizes external typing.\to
       then $\hana{\hGamma}{\hexp}{\htau}$.
   \end{enumerate}
 \end{thm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% <<<<<<<<<<<<< Matt is here (latest pass over everything above is done -- 2018.04.11)
 
 The rules governing expansion of constants, variables and lambda expressions --- Rules {ESConst}, {ESVar}, {ESLam} and {EALam} --- and the corresponding type assignment rules --- Rules {TAConst}, {TAVar} and {TALam} --- mirror the typing rules from Fig.~\ref{fig:bidirectional-typing} 
 (so the corresponding cases of Theorem~\ref{thm:typed-expansion}, Theorem~\ref{thm:expandability} and Theorem~\ref{thm:expansion-generality} are straightforward). 
