@@ -104,6 +104,10 @@ Unannotated lambdas may only appear where the expected type is known to be eithe
 %
 To avoid the need for two separate rules, Rule {ALam} uses the auxiliary relation $\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$ in \Figref{fig:arrmatch}, which produces the matched arrow type $\tarr{\tehole}{\tehole}$ given the hole type, and operates as the identity on arrow types \cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/popl/GarciaC15}.
 %
+\Secref{sec:related} dicusses how \HazelnutLive might be enriched with
+with ML-style type reconstruction~\cite{damas1982principal}, perhaps via
+the approach outlined by~\citet{DBLP:conf/icfp/DunfieldK13}.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % To Cyrus from Matt:
 %
