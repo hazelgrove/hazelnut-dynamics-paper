@@ -220,48 +220,78 @@ The following theorem establishes that expansion generalizes external typing.\to
   \end{enumerate}
 \end{thm}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% <<<<<<<<<<<<< Matt is here (latest pass over everything above is done -- 2018.04.11)
-
-The rules governing expansion of constants, variables and lambda expressions --- Rules {ESConst}, {ESVar}, {ESLam} and {EALam} --- and the corresponding type assignment rules --- Rules {TAConst}, {TAVar} and {TALam} --- mirror the typing rules from Fig.~\ref{fig:bidirectional-typing} 
-(so the corresponding cases of Theorem~\ref{thm:typed-expansion}, Theorem~\ref{thm:expandability} and Theorem~\ref{thm:expansion-generality} are straightforward). 
-Note that in the internal language, all lambdas are half-annotated, again to support type assignment---Rule {EALam} inserts the annotation when expanding an unannotated external lambda based on the given type. 
-The rules governing holes and the rules governing function applications and ascriptions, which both perform \emph{cast insertion}, are more interesting, so let us consider both cases in turn.
+The rules governing expansion of constants, variables and lambda expressions
+--- Rules {ESConst}, {ESVar}, {ESLam} and {EALam}
+--- and the corresponding type assignment rules
+--- Rules {TAConst}, {TAVar} and {TALam}
+--- mirror the typing rules from Fig.~\ref{fig:bidirectional-typing}.
+%
+Consequently, the corresponding cases of
+Theorem~\ref{thm:typed-expansion}, Theorem~\ref{thm:expandability} and
+Theorem~\ref{thm:expansion-generality} are straightforward.
+%
+To support type assignment, all lambdas in the internal language are
+half-annotated---Rule {EALam} inserts the annotation when expanding an
+unannotated external lambda based on the given type.
+%
+Some rules perform \emph{cast insertion}, making them more interesting
+than the others; these rules include those for holes, and the those for
+function applications and ascriptions.  We consider each below.
 
 \subsubsection{Hole Expansion}\label{sec:hole-expansion} 
-Rules {ESEHole}, {ESNEHole}, {EAEHole} and {EANEHole} govern the expansion of empty and non-empty expression holes to empty and non-empty \emph{hole closures}, $\dehole{u}{\sigma}{}$ and $\dhole{\dexp}{u}{\sigma}{}$. 
+Rules {ESEHole}, {ESNEHole}, {EAEHole} and {EANEHole} govern the expansion of empty and non-empty expression holes to empty and non-empty \emph{hole closures}, $\dehole{u}{\sigma}{}$ and $\dhole{\dexp}{u}{\sigma}{}$, respectively. 
 %
+The hole name~$u$ on a hole closure identifies the external hole to which the hole closure corresponds.
+%
+%Note that
+While we assume each hole name to be unique in the external language, due to substitution, evaluated (internal) terms may consist of multiple hole closures with the same name.
+%
+For example, the result from Fig.~\ref{fig:grades-example} shows four closures for the hole named 1\todo{update with actual number (four?) and hole name later}.
+%
+There, we number each hole closure for a given hole sequentially, \li{1:1}, \li{1:2} and so on, but this is strictly for the sake of presentation, so we omit hole closure numbers from the core calculus.
 
-The hole name, $u$, on a hole closure identifies the external hole that the hole closure corresponds to. 
-Note that while we assume each hole name to be unique in the external language, there can be multiple hole closures with the same name during evaluation due to substitution. 
-For example, the result from Fig.~\ref{fig:grades-example} showed four closures for the hole named 1\todo{update with actual number (four?) and hole name later}. 
-There, we numbered each hole closure for a given hole sequentially, \li{1:1}, \li{1:2} and so on, but this is strictly for the sake of presentation so we omit hole closure numbers from the core calculus.
+The hole expansion rules introduce hypotheses of the form~$\Dbinding{u}{\hGamma}{\htau}$ into the hole context~$\Delta$.
+%
+For each hole name~$u$, the hole context records a type~$\tau$, and a typing context~$\Gamma$.\footnote{
+We use a hole context, rather than recording the typing context and type directly on each hole closure, to ensure that all closures for a hole name have the same typing context and type.}
+%
+We borrow this hole context notation from contextual modal type theory (CMTT) \cite{Nanevski2008}, identifying hole names with metavariables and hole contexts with modal contexts (we say more about the connection with CMTT below).
+%
+Each hole expansion rule records the ``current'' typing context under which the hole is expanded.
+%
+In the synthetic hole expansion rules~{ESEHole} and~{ESNEHole}, the generated hole context assigns the hole type~$\tehole$ to hole name~$u$, as in the typing rules.
+%
+However, the first two premises of the expansion subsumption rule~{EASubsume} disallow the use of subsumption for holes in analytic position.
+%
+Instead, we employ separate analytic rules~{EAEHole} and~{EANEHole}, which each record the checked type~$\tau$ in the hole context.
+%
+Consequently, we can use type assignment for the internal language --- the type assignment rules TAEHole and TANEHole in Fig.~\ref{fig:hasType} assign a hole closure for hole name~$u$ the corresponding type from the hole context.
 
-The hole expansion rules are the only rules that introduce hypotheses, of the form $\Dbinding{u}{\hGamma}{\htau}$, into the hole context, $\Delta$. 
-The purpose of the hole context is to record a type, $\tau$, and a typing context, $\Gamma$, for each hole name, $u$.\footnote{
-We use a hole context, rather than recording the typing context and type directly on each hole closure, to ensure that all closures for a hole name have the same typing context and type.} 
-This notation for hole contexts is taken from contextual modal type theory (CMTT) \cite{Nanevski2008}, identifying hole names with metavariables and hole contexts with modal contexts (we say more about the connection with CMTT below). 
-In all four hole expansion rules, the typing context recorded in the hole context is simply the current typing context when the hole is expanded. 
-In the synthetic hole expansion rules, {ESEHole} and {ESNEHole}, the generated hole context assigns the hole type, $\tehole$, to $u$, as in the typing rules. 
-However, the first two premises of the expansion subsumption rule, Rule EASubsume, disallow the use of subsumption for holes in analytic position. 
-Instead, we have separate analytic rules, {EAEHole} and {EANEHole}, which record the type that the hole is being checked against into the hole context. 
-This is again so that we can use type assignment for the internal language --- the type assignment rules TAEHole and TANEHole in Fig.~\ref{fig:hasType} assign a hole closure for $u$ the corresponding type from the hole context.
-
-Each hole closure also has an associated environment, $\sigma$, which is a finite substitution of the form $[d_1/x_1, ~\cdots, d_n/x_n]$ for $n \geq 0$. 
-The purpose of the closure environment is to keep a record of the substitutions that occur around the hole as evaluation occurs. 
-Initially, no evaluation has occurred, so the initial environment generated by the hole expansion rules is the identity substitution for the typing context associated with $u$ in $\Delta$, which we notate $\idof{\hGamma}$ and define as follows.
+Each hole closure also has an associated environment~$\sigma$ which consists of a finite substitution of the form $[d_1/x_1, ~\cdots, d_n/x_n]$ for $n \geq 0$.
+%
+The closure environment keeps a record of the substitutions that occur around the hole as evaluation occurs.
+%
+Initially, when no evaluation has yet occurred, the hole expansion rules generate an initial environment that consists of the identity substitution for the typing context associated with hole name~$u$ in hole context~$\Delta$, which we notate $\idof{\hGamma}$, and define as follows.
+%
 \begin{defn}[Identity Substitution] $\idof{x_1 : \tau_1, ~\cdots, x_n : \tau_n} = [x_1/x_1, ~\cdots, x_n/x_n]$
 \end{defn}
 \noindent
-The type assignment rules for hole closures, Rules TAEHole and TANEHole, require that we be able to check the environment of each hole closure against the corresponding typing context, written $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ and defined as follows:\todo{check that the definition in the Agda corresponds}
+The type assignment rules for hole closures~{TAEHole} and {TANEHole} each require that the hole closure environment~$\sigma$ be consistent with the corresponding typing context, written as $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$.
+%
+Formally, we define this relation as follows:\todo{check that the definition in the Agda corresponds}
 \begin{defn}[Substitution Typing]
 $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff $\domof{\sigma} = \domof{\hGamma'}$ and for each $x : \htau \in \hGamma'$ we have that $d/x \in \sigma$ and $\hasType{\Delta}{\hGamma}{d}{\tau}$.
 \end{defn}
 \noindent
 It is easy to verify that the identity substitution satisfies this requirement, i.e. that $\hasType{\Delta}{\hGamma}{\idof{\hGamma}}{\hGamma}$. 
 
-Empty hole closures, $\dehole{u}{\sigma}{}$,  correspond to the metavariable closures (a.k.a. deferred substitutions) from CMTT, $\cmttclo{u}{\sigma}$.\todo{change notation from CMTT}{} 
-We will see how closure environments evolve during evaluation in Sec.~\ref{sec:evaluation}. 
-Non-empty hole closures, $\dhole{d}{u}{\sigma}{}$, do not directly correspond to a notion from CMTT (see Sec.~\ref{sec:resumption}).
+Empty hole closures, $\dehole{u}{\sigma}{}$,  correspond to the metavariable closures (a.k.a. deferred substitutions) from CMTT, $\cmttclo{u}{\sigma}$.\todo{change notation from CMTT}{}
+%
+\Secref{sec:evaluation} defines how these closure environments evolve during evaluation.
+%
+Non-empty hole closures~$\dhole{d}{u}{\sigma}{}$ have no direct correspondance with a notion from CMTT (see Sec.~\ref{sec:resumption}).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Matt is here (2018.04.12, ~8am MT)
 
 \subsubsection{Cast Insertion}\label{sec:cast-insertion} 
 %
