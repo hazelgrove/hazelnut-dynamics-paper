@@ -529,14 +529,12 @@ the evaluation context by the \emph{mark}~$\evalhole$, to obtain $d'$.%
         }
 %
 
-\matt{Next paragraph can be dropped entirely for space}
-%
-This approach was originally developed in the reduction semantics of \citet{DBLP:journals/tcs/FelleisenH92} and is the predominant style of operational semantics in the literature on gradual typing. 
-Because we distinguish final forms judgementally, rather than syntactically, we use a judgemental formulation of this approach called a \emph{contextual dynamics} by \citet{pfpl}. 
-It would be straightforward to derive an equivalent structural operational semantics \cite{DBLP:journals/jlp/Plotkin04a} by using search rules instead of evaluation contexts (\citet{pfpl} relates the two approaches).
-\todo{Put the search rules in the appendix?}{}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MATT is here (2018.04.14 -- ~7am MT)
+%% \matt{Next paragraph can be dropped entirely for space}
+%% %
+%% This approach was originally developed in the reduction semantics of \citet{DBLP:journals/tcs/FelleisenH92} and is the predominant style of operational semantics in the literature on gradual typing. 
+%% Because we distinguish final forms judgementally, rather than syntactically, we use a judgemental formulation of this approach called a \emph{contextual dynamics} by \citet{pfpl}. 
+%% It would be straightforward to derive an equivalent structural operational semantics \cite{DBLP:journals/jlp/Plotkin04a} by using search rules instead of evaluation contexts (\citet{pfpl} relates the two approaches).
+%% \todo{Put the search rules in the appendix?}{}
 
 %% \input{fig-dynamics-steps}
 
@@ -586,8 +584,8 @@ Two other situations may also arise.
 First, the expression in function position might be a cast between
 arrow types, in which case we apply the arrow cast conversion rule,
 Rule {ITApCast}, to rewrite the application form, obtaining an
-equivalent application where the expression under the function
-cast~$d_1$ is exposed.
+equivalent application where the expression~$d_1$ under the function
+cast is exposed.
 %
 We know from inverting the typing rules that~$d_1$ has type
 $\tarr{\htau_1}{\htau_2}$, and that~$d_2$ has type~$\htau_1'$, where
@@ -727,17 +725,17 @@ i.e. those rooted at either a hole closure or a failed cast.
 The proof relies on canonical forms lemmas stated in
 Appendix~\ref{sec:additional-defns}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MATT is here (2018.04.14 -- ~noon MT)
-
 \subsubsection{Complete Programs} 
 %
-Although this paper focuses running incomplete programs, it helps
+Although this paper focuses running \emph{incomplete} programs, it helps
 to know that its machinery does not interfere
-with reasoning about the behavior of complete programs, i.e. those
+with reasoning about the behavior of \emph{complete} programs, i.e. those
 with no holes.
 %
-Appendix~\ref{sec:additional-defns} defines complete programs with the judgements $\isComplete{e}$ and $\isComplete{d}$. 
+Appendix~\ref{sec:additional-defns} defines complete programs via judgements~$\isComplete{e}$ and~$\isComplete{d}$. 
+%
 Failed casts cannot appear in complete internal expressions. 
+%
 The following theorem establishes that expansion preserves program completeness.
 \begin{thm}[Complete Expansion] ~
   \begin{enumerate}[nolistsep]
@@ -761,7 +759,10 @@ The following preservation theorem establishes that stepping preserves program c
   and $\isComplete{\dexp'}$.
 \end{thm}
 
-The following progress theorem establishes that only classic values result from evaluating a complete program. There are no boxed values or indeterminate forms. 
+The following progress theorem establishes that evaluating a complete
+program always results in classic values, not boxed values nor
+indeterminate forms.
+%
 \begin{thm}[Complete Progress]
   If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
   and $\isComplete{\dexp}$
@@ -788,45 +789,84 @@ The following progress theorem establishes that only classic values result from 
 \vspace{-3px}
 
 The supplemental material includes our mechanization of the semantics and metatheory of \HazelnutLive, 
-including proofs of all of the theorems stated above and all necessary lemmas\todo{make this so ian!}{}. We chose the Agda proof assistant \cite{norell2009dependently,norell:thesis} 
+including proofs of all of the theorems stated above and all necessary lemmas\todo{make this so ian!}{}. 
+%
+We chose the Agda proof assistant \cite{norell2009dependently,norell:thesis} 
 (as did the mechanization of \Hazelnut by \citet{popl-paper}, though only a few definitions are common). 
-Agda is a good choice because it is designed to explicitly communicate a proof's structure, as is our goal, rather than relying on proof automation. Agda itself was also an inspiration for this work because it supports holes, albeit in a more limited form than described here (cf. Sec.~\ref{sec:intro}). 
+%
+Agda is a good choice because it is designed to explicitly communicate a proof's structure, as is our goal, rather than relying on proof automation. 
+%
+Agda itself was also an inspiration for this work because it supports holes, albeit in a more limited form than described here (cf. Sec.~\ref{sec:intro}). 
+%
 The basic approach is standard: we model judgements as 
 inductive datatypes, and rules as dependently typed constructors of these judgements\todo{cite somtehing?}{}. 
+%
 We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and encode typing 
 contexts, hole contexts and hole environments using metafunctions.\todo{say something about axioms?}{}
 
 \subsection{Implementation}\label{sec:implementation}
 
-The supplemental material also includes a browser-based implementation of \HazelnutLive. 
-The implementation is a functional reactive program \cite{DBLP:conf/pldi/CzaplickiC13} 
-written using the Reason toolchain for OCaml \cite{reason-what,leroy03:_ocaml} 
+The supplemental material includes a browser-based implementation
+of \HazelnutLive, which consists of a functional reactive program
+%
+% Functional Reactive Animation (Hudak 1997) is the canonical FRP cite, not Elm, if you want one; we don't need one, I think. --Matt
+%
+%\cite{DBLP:conf/pldi/CzaplickiC13} 
+%
+written with the Reason toolchain for OCaml \cite{reason-what,leroy03:_ocaml} 
 together with the OCaml \lismall{React} library \cite{OcamlReact} 
 and the \lismall{js_of_ocaml} compiler and its associated libraries \cite{vouillon2014bytecode}. 
-Appendix~\ref{sec:ref-impl-screenshots}\todo{do this}{} provides a screenshot of the user interface, which implements all of the live programming features described in Sec.~\ref{sec:examples}, but for the more austere language of this section.
+%
+Appendix~\ref{sec:ref-impl-screenshots}\todo{do this}{} provides a screenshot of the user interface, 
+which implements the core calculus of this section, 
+along with the corresponding live programming features from \Secref{sec:examples}.
 
-The editor component of the implementation is derived from \Hazelnut. 
-It exposes a language of structured edit actions (summarized in the sidebar on the left of Fig.~\ref{fig:screenshot}) that insert holes automatically to guarantee that every edit state has some (possibly incomplete) type. 
-Formally,
-this corresponds to the Sensibility property from the prior work \cite{popl-paper}.\todo{put statement in the appendix}{} 
-By composing this property with the Expandability, Typed Expansion and Progress properties from this paper, we establish a uniquely powerful 
-invariant: that every edit state is both statically and dynamically meaningful. 
-In other words, live feedback does not ``flicker in and out'' or reflect past edit states. 
-The primary purpose of the included implementation is to serve as a proof-of-concept of this invariant, and to be of use to researchers studying the calculus as presented in this section.
+To facilitate interactively editing terms, the implementation employs
+the editor semantics of~\Hazelnut, exposing a language of structured
+edit actions (summarized in the sidebar on the left of
+Fig.~\ref{fig:screenshot})
+%
+As with prior work, this editor semantics enjoys
+the \Property{Sensibility} property by automatically inserting holes
+to guarantee that every edit state has some (possibly incomplete) type
+.\todo{put statement in the appendix}{}
+
+By composing this meta-theoretic property with
+the \Property{Expandability}, \Property{Typed Expansion}
+and \Property{Progress} properties from this paper, we establish a
+uniquely powerful invariant: \emph{Every} edit state has a \emph{static
+meaning} (a la~\Hazelnut) and a \emph{dynamic meaning} (a la~\HazelnutLive).
+%
+In other words, live feedback never ``flickers in and out'' nor reflects ``stale'' edit states.
+%
+The current implementation serves as a proof-of-concept of this invariant, 
+by providing a working prototype for this section's definitions.
+
+%, and provides to be of use to researchers studying the calculus as presented in this section.
 % Consistent with this goal, it closely follows the theoretical account in this section, rather than including advanced language features.
 
-We are also separately integrating the mechanisms developed in this paper into the \Hazel programming environment being developed by \citet{HazelnutSNAPL} with the goal of realizing a full-scale hole-driven development experience rooted in the type theoretic foundations established by \Hazelnut. 
-Ongoing development is focused on extending the language of \Hazelnut following, in large part, the design of the popular Elm language \cite{Elm,czaplicki2012elm}, and on adding various syntactic and edit-time conveniences that are orthogonal to the topics of this paper. 
-For the sake of exposition, the examples in Sec.~\ref{sec:examples} assumed some of these orthogonal features and conveniences, all of which are available in Elm and standard in ML-like languages.
-We plan to keep our interpreter for \Hazel, which is an extension of the interpreter in the included implementation, up-to-date as \Hazel evolves.%
-\todo{say that we'll use existing results from gradual typing to handle polymorphism and so on}{} 
-The included implementation provides a link to \Hazel for interested readers.\todo{bad idea?}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Sec.~\ref{sec:discussion} discusses integration of the ideas from \HazelnutLive into other programming systems.\todo{do this}
+%% \matt{I'd drop everything else in this sub-section; 
+%% it leaves us open to attack from a hostile reviewer 
+%% who is cranky that the implementation is not ``complete'' yet; also, we'd save the space}
+
+%% Separately, we are integrating the mechanisms developed in this paper
+%% into the \Hazel programming environment being developed
+%% by \citet{HazelnutSNAPL} with the goal of realizing a full-scale
+%% hole-driven development experience rooted in the type theoretic
+%% foundations established by \Hazelnut.
+%% %
+%% Ongoing development is focused on extending the language of \Hazelnut following, in large part, the design of the popular Elm language \cite{Elm,czaplicki2012elm}, and on adding various syntactic and edit-time conveniences that are orthogonal to the topics of this paper. 
+%% For the sake of exposition, the examples in Sec.~\ref{sec:examples} assumed some of these orthogonal features and conveniences, all of which are available in Elm and standard in ML-like languages.
+%% We plan to keep our interpreter for \Hazel, which is an extension of the interpreter in the included implementation, up-to-date as \Hazel evolves.%
+%% \todo{say that we'll use existing results from gradual typing to handle polymorphism and so on}{} 
+%% The included implementation provides a link to \Hazel for interested readers.\todo{bad idea?}{}
+
+%% Sec.~\ref{sec:discussion} discusses integration of the ideas from \HazelnutLive into other programming systems.\todo{do this}
+
 
 %%   \halam{x}{\htau}{\evalctx} ~\vert~
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
