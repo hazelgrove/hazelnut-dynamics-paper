@@ -446,32 +446,15 @@ application rules, including the original account of \cite{Siek06a}).
 \subsection{Dynamic Semantics}
 \label{sec:evaluation}
 
-To recap, the result of expansion is a well-typed internal expression with hole closures and casts, 
-where the former corresponds to metavariable closures from CMTT \cite{Nanevski2008}, 
-and the latter corresponds to casts from gradual type theory \cite{Siek06a,DBLP:conf/snapl/SiekVCB15}. 
-However, the dynamic semantics for \HazelnutLive does not simply ``fall out'' from these observations. 
-
-The problem is first that \citet{Nanevski2008} defined only the logical reductions for CMTT, viewing it as a proof system for intuitionistic contextual modal logic via the propositions-as-types (Curry-Howard) principle. 
-The paper therefore proved only a subject reduction property (which is closely related to type preservation). 
-This is not a full dynamic semantics, and in particular, there is no notion of \emph{progress}, i.e. that well-typed terms cannot get ``stuck'' in an undefined state \cite{wright94:_type_soundness}. 
-In any case, a conventional dynamic semantics for CMTT would not be immediately relevant to our goal of evaluating incomplete programs because, by our interpretation of hole closures, we would need a dynamic semantics for terms with free metavariables. 
-\citet{Nanevski2008} sketched an interpretation of CMTT into the simply-typed lambda calculus with sums under permutation conversion%
-\footnote{Permutation conversions are necessary to encode the commuting reductions of CMTT, which in turn are necessary to prove a strong normalization property. These issues are not relevant in \HazelnutLive because, as in the gradually typed lambda calculus, type holes admit non-termination: we can express the Y combinator as $(\halam{x}{\tehole}{x(x)}) (\halam{x}{\tehole}{x(x)})$.}, 
-which has been studied by \citet{DBLP:journals/iandc/Groote02}, 
-but under this interpretation an analagous problem arises---metavariables become variables of a function type, so again we cannot rely on the standard notion of progress on closed terms.\todo{citations}{}% We also cannot rely on, for example, weak head normalization because \HazelnutLive admits non-termination (due to casts).\todo{citation} 
-
-Furthermore, we need to integrate casts into the dynamic semantics. 
-Fortunately, the dynamic semantics for the cast calculus from the gradually typed lambda calculus provides most, but not all, of the necessary machinery. 
-The first problem is again with progress: in the cast calculus, the only irreducible terms of hole type are casts, which are accounted for by the progress theorem, but in $\HazelnutLive$, holes induce additional irreducible terms. 
-The second missing piece is that in prior work on casts, evaluation aborts when cast failure occurs. 
-Our goal, as discussed in Sec.~\ref{sec:failed-cast-example}\todo{where?}{}, is for cast failure to instead insert a membrane around the dynamic type error, 
-much like a non-empty hole serves as a membrane around a static type error, 
-allowing in both cases for evaluation to safely and meaningfully continue past the error when desired.
-
-The dynamic semantics for \HazelnutLive specified in Figures~\ref{fig:isGround}-\ref{fig:step} addresses the difficulties just outlined, 
-resulting in a system capable of running incomplete programs without aborting when a hole is encountered. 
-This semantics is equipped with a meaningful notion of type safety (involving both preservation and progress). 
+Figures~\ref{fig:isGround}-\ref{fig:step} give dynamic semantics for \HazelnutLive,
+%
+resulting in a system capable of running incomplete programs without aborting when a hole is encountered.
+%
+We equip this semantics with a meaningful notion of type safety (involving both preservation and progress).
+%
 We also establish that the standard notion of type safety falls out when running complete terms.
+
+%%%%%%%%%%%%%%%%%%% MATT is here (2018.04.14 -- 6:40am MT)
 
 The dynamic semantics is specified as a ``small-step'' transition system. 
 The cast-related machinery is based closely on the cast calculus from the ``refined'' account of the gradually typed lambda calculus by \citet{DBLP:conf/snapl/SiekVCB15}, which is known to be theoretically well-behaved. 
