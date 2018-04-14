@@ -441,8 +441,6 @@ However, it is safe to eliminate such identity casts during expansion,
 and some formal accounts of gradual typing do so by defining three
 application rules, including the original account of \cite{Siek06a}).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Matt is here (2018.04.14, ~6:15am MT)
-
 \subsection{Dynamic Semantics}
 \label{sec:evaluation}
 
@@ -454,43 +452,91 @@ We equip this semantics with a meaningful notion of type safety (involving both 
 %
 We also establish that the standard notion of type safety falls out when running complete terms.
 
-%%%%%%%%%%%%%%%%%%% MATT is here (2018.04.14 -- 6:40am MT)
 
-The dynamic semantics is specified as a ``small-step'' transition system. 
-The cast-related machinery is based closely on the cast calculus from the ``refined'' account of the gradually typed lambda calculus by \citet{DBLP:conf/snapl/SiekVCB15}, which is known to be theoretically well-behaved. 
-In particular, Fig.~\ref{fig:isGround} defines the judgement $\isGround{\htau}$, which distinguishes the base type, $b$, and the least specific arrow type, $\tarr{\tehole}{\tehole}$, as \emph{ground types}, which play a role in simplifying the treatment of function casts. 
-Fig.~\ref{fig:isFinal} defines the judgement $\isFinal{d}$, which distinguishes the final forms of the transition system. 
-There are two classes of final forms: (possibly-)boxed values and indeterminate forms.%
-\footnote{In most accounts of the cast calculus, values and ground types are distinguished with separate grammars together with an implicit identification convention. 
-Our judgemental formulation is more faithful to the mechanization and cleaner for our purposes, because we are distinguishing several classes of final forms.}
+The dynamic semantics consists of a ``small-step'' transition system,
+%
+where cast-related machinery closely follows the cast calculus from
+the ``refined'' account of the gradually typed lambda calculus
+by \citet{DBLP:conf/snapl/SiekVCB15}, which is known to be
+theoretically well-behaved.
+%
+In particular, \Figref{fig:isGround} defines the judgement
+$\isGround{\htau}$, which distinguishes the base type~$b$ and the
+least specific arrow type~$\tarr{\tehole}{\tehole}$, as \emph{ground
+types}; this judgement helps simplify the treatment of function casts.
+%
+\Figref{fig:isFinal} defines the judgement $\isFinal{d}$, which
+distinguishes the final forms of the transition system.
+%
+There are two classes of final forms: (possibly-)boxed values and
+indeterminate forms.%
+%
+\footnote{
+        In most accounts of the cast calculus, values and ground types
+        are distinguished with separate grammars together with an
+        implicit identification convention.
+        %
+        Our judgemental formulation is more faithful to the mechanization and
+        cleaner for our purposes, because we are distinguishing several
+        classes of final forms.
+}
 
 \input{fig-ground-types}
 \input{fig-dynamics-aux}
 
-The judgement $\isBoxedValue{d}$ distinguishes (possibly-)boxed values, which correspond to the values from the cast calculus and include the classic values from the lambda calculus, distinguished by $\isValue{d}$, as well as two cast forms: 
-casts between function types (except identity casts) 
-and casts from a ground type to the hole type. In both cases, the cast must be on a boxed value.
-
-The judgement $\isIndet{d}$ distinguishes \emph{indeterminate} forms, 
-so named because they arise from the presence of expression holes and failed casts in a program, and so, conceptually, their ultimate value awaits programmer action (see Sec.~\ref{sec:resumption}). 
-The first two rules specify that hole closures are indeterminate (in the case of non-empty hole closures, when the inner expression is final). 
-The rules defining the remaining indeterminate forms are explained simultaneously with the corresponding transition rules below.\todo{relationship to weak head normal forms}
+The judgement $\isBoxedValue{d}$ defines (possibly-)boxed values as
+either ordinary values~(Rule~{BVVal}), or one of two cast forms: casts
+between function types (except identity casts) and casts from a ground
+type to the hole type. In each case, the cast operates on a boxed
+value.
+%
+%, which correspond to the values from the cast calculus and include
+%the classic values from the lambda calculus, distingui%shed by
+%$\isValue{d}$,
+%
+The judgement $\isIndet{d}$ defines \emph{indeterminate} forms, so
+named because they arise from the presence of expression holes and
+failed casts in a program, and so, conceptually, their ultimate value
+awaits programmer action (see Sec.~\ref{sec:resumption}).
+%
+The first two rules specify that \emph{empty} hole closures are always
+indeterminate, and that \emph{non}-empty hole closures are indeterminate when
+they consist of a \emph{final} inner expression.
+%
+Below, we discuss the the remaining indeterminate forms simultaneously
+with the corresponding transition rules, also discussed
+below.\todo{relationship to weak head normal forms}
 
 \input{fig-dynamics-contexts}
 
-The transition rules are defined in Fig.~\ref{fig:instruction-transitions}-\ref{fig:step}. 
-Top-level transitions, i.e. \emph{steps}, $\stepsToD{}{d}{d'}$, are governed by a single rule, Rule {Step} in Fig.~\ref{fig:step}, which 
-(1) decomposes $d$ into an evaluation context, $\evalctx$, and a selected sub-term, $d_0$; 
-(2) takes an \emph{instruction transition}, $\reducesE{}{d_0}{d_0'}$, as specified in Fig.~\ref{fig:instruction-transitions}; 
-and (3) places $d_0'$ back in the selected position, which is marked%
-\footnote{In the literature, the form $\evalhole$ in the grammar of evaluation contexts is referred to as the \emph{hole}, but this hole is a technical device entirely orthogonal to the holes of this paper, so we use the term ``mark'' instead.} 
-in the evaluation context by $\evalhole$, to obtain $d'$.
+The transition rules are defined in Fig.~\ref{fig:instruction-transitions}-\ref{fig:step}.
+%
+Top-level transitions are \emph{steps}~$\stepsToD{}{d}{d'}$, governed by Rule~{Step} in \Figref{fig:step}, which
+%
+(1) decomposes $d$ into an evaluation context, $\evalctx$, and a selected sub-term, $d_0$;
+%
+(2) takes an \emph{instruction transition}, $\reducesE{}{d_0}{d_0'}$, as specified in \Figref{fig:instruction-transitions};
+%
+and (3) places $d_0'$ back in the selected position, indicated in
+the evaluation context by the \emph{mark}~$\evalhole$, to obtain $d'$.%
+\footnote{
+        We say ``mark'' here to avoid confusion with the (orthogonal) ``holes'' of \HazelnutLive.
+        %
+        %the form $\evalhole$ in the grammar of
+        %evaluation contexts is referred to as the \emph{hole}, but
+        %this hole is a technical device entirely orthogonal to the
+        %holes of this paper, so we use the term ``mark'' instead.
+        }
+%
+
+\matt{Next paragraph can be dropped entirely for space}
+%
 This approach was originally developed in the reduction semantics of \citet{DBLP:journals/tcs/FelleisenH92} and is the predominant style of operational semantics in the literature on gradual typing. 
 Because we distinguish final forms judgementally, rather than syntactically, we use a judgemental formulation of this approach called a \emph{contextual dynamics} by \citet{pfpl}. 
 It would be straightforward to derive an equivalent structural operational semantics \cite{DBLP:journals/jlp/Plotkin04a} by using search rules instead of evaluation contexts (\citet{pfpl} relates the two approaches).
 \todo{Put the search rules in the appendix?}{}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MATT is here (2018.04.14 -- ~7am MT)
 
 %% \input{fig-dynamics-steps}
 
