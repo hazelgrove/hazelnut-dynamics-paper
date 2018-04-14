@@ -541,12 +541,20 @@ It would be straightforward to derive an equivalent structural operational seman
 %% \input{fig-dynamics-steps}
 
 \subsubsection{Application and Substitution} 
-Rule {ITBeta} in Fig.~\ref{fig:instruction-transitions} specifies the standard beta reduction transition. 
-The bracketed premises of the form $\maybePremise{\isFinal{\dexp}}$ in Fig.~\ref{fig:instruction-transitions}-\ref{fig:step} can be included to specify an eager, left-to-right evaluation strategy, 
-or excluded to leave the evaluation order unspecified. 
-We do the latter in our metatheory, both for the sake of generality and for reasons we return to in Sec.~\ref{sec:resumption}.
+%
+Rule {ITBeta} in Fig.~\ref{fig:instruction-transitions} specifies the
+standard beta reduction transition.
+%
+The bracketed premises of the form $\maybePremise{\isFinal{\dexp}}$ in
+Fig.~\ref{fig:instruction-transitions}-\ref{fig:step} may be \emph{included}
+to specify an eager, left-to-right evaluation strategy, or \emph{excluded} to
+leave the evaluation order unspecified.
+%
+In our metatheory, we use the latter version of the rules, both for
+the sake of generality, and to support fill-and-resume~(\Secref{sec:resumption}).
 
-Substitution, $[d/x]d'$, operates in the standard capture-avoiding manner \cite{pfpl}. 
+A substitution~$[d/x]d'$ operates in the standard capture-avoiding manner~\cite{pfpl}. 
+%
 The only cases of special interest arise when substitution reaches a hole closure:
 \[
 \begin{array}{rcl}
@@ -554,40 +562,99 @@ The only cases of special interest arise when substitution reaches a hole closur
   \substitute{d}{x}{\dhole{d'}{u}{\sigma}{}} & = & \dhole{[d/x]d'}{u}{[d/x]\sigma}{}
 \end{array}
 \]
-In both cases, we write $[d/x]\sigma$ to perform substitution on each expression in the hole environment, $\sigma$. 
-For example, $\stepsToD{}{\hap{(\halam{x}{b}{\halam{y}{b}{\dehole{u}{[x/x, y/y]}{}}})}{c}}{\halam{y}{b}{\dehole{u}{[c/x, y/y]}{}}}$. 
-Hole closures can be duplicated like any other term by substitution, and the environments of different closures for the same hole name can differ, e.g. because a function with a hole closure in its body is applied multiple times.%
+In both cases, we write~$[d/x]\sigma$ to perform substitution on each expression in the hole environment~$\sigma$. 
+%
+For example, $\stepsToD{}
+    {\hap{(\halam{x}{b}{\halam{y}{b}{\dehole{u}{[x/x, y/y]}{}}})}{c}}
+    {\halam{y}{b}{\dehole{u}{[c/x, y/y]}{}}}$. 
+%
+Reduction may duplicate hole closures, just as with any other substituted term;
+%
+consequently, the environments of different closures for the same hole name may differ, 
+e.g., when an reduction applies a function with a hole closure body multiple times.%
 \todo{show example here or refer back to sec 2?}{} 
-Hole closures can also appear within the environments of other hole closures (this gives rise to the closure paths described in Sec.~\ref{sec:paths}\todo{where?}{}).
+%
+Hole closures may also appear within the environments of other hole
+closures, giving rise to the closure paths described in
+Sec.~\ref{sec:paths}\todo{where?}{}.
 
-The ITBeta rule is not the only rule we need to handle function application, because lambdas are not the only final forms of arrow type. There are two other classes of possibilities. 
+The ITBeta rule is not the only rule we need to handle function
+application, because lambdas merely one (final) form of arrow type.
+%
+Two other situations may also arise.
 
-The expression in function position might be a cast between arrow types, in which case we apply the arrow cast conversion rule, Rule {ITApCast}, to rewrite the application form, obtaining an equivalent application where the expression under the function cast, $d_1$, is exposed. 
-We know from inverting the typing rules that $d_1$ is of type $\tarr{\htau_1}{\htau_2}$ and that $d_2$ is of type $\htau_1'$ where $\tconsistent{\htau_1}{\htau_1'}$, so to maintain type safety, we must place a cast on $d_2$ from  $\htau_1'$ to $\htau_1$. 
-The result of this application will be of type $\htau_2$, but the original cast promised that the result would be of consistent type $\htau_2'$, so we also need a cast on the result from $\htau_2$ to $\htau_2'$.
+First, the expression in function position might be a cast between
+arrow types, in which case we apply the arrow cast conversion rule,
+Rule {ITApCast}, to rewrite the application form, obtaining an
+equivalent application where the expression under the function
+cast~$d_1$ is exposed.
+%
+We know from inverting the typing rules that~$d_1$ has type
+$\tarr{\htau_1}{\htau_2}$, and that~$d_2$ has type~$\htau_1'$, where
+$\tconsistent{\htau_1}{\htau_1'}$; consequently, we maintain type
+safety by placing a cast on~$d_2$ from~$\htau_1'$ to~$\htau_1$.
+%
+The result of this application will has type $\htau_2$, but the
+original cast promised that the result would have consistent type
+$\htau_2'$, so we also need a cast on the result from $\htau_2$ to
+$\htau_2'$.
 
-The other possibility is that the expression in function position is indeterminate and arrow cast conversion is not applicable, e.g. $\hap{(\dehole{u}{\sigma}{})}{c}$. 
-In this case, no further progress can be made, so the function application as a whole is also deemed indeterminate by Rule {IAp} in Fig.~\ref{fig:isFinal}. 
-Note that we are careful to maintain the following property, which establishes that expressions that step are not final, and that final expressions do not step.%
+Second, the expression in function position may be indeterminate,
+where arrow cast conversion is not applicable,
+e.g. $\hap{(\dehole{u}{\sigma}{})}{c}$.
+%
+In this case, the application is indeterminate (Rule~{IAp}
+in \Figref{fig:isFinal}), and the application's reduction reduces no
+further.
+
+The rules take care to maintain the following property, which establishes that expressions that step are not final, and that final expressions do not step.%
 \todo{prove this as stated from Ian's disjointness proofs}{}%
 \todo{do we need a typing premise?}{}
 \begin{thm}[Finality] There does not exist $d$ such that both $\isFinal{d}$ and $\stepsToD{}{d}{d'}$ for some $d'$.
 \end{thm}
 
 \subsubsection{Casts}
-Rule {ITCastId} drops identity casts. The remaining instruction transition rules assign meaning to non-trivial casts. 
-As discussed in Sec.~\ref{sec:cast-insertion}, the structure of a term cast to hole type is statically obscure, 
-so we need to wait until it is actually used at some other type, via a cast away from hole type, to be able to determine whether there is a problem. 
-Rules {ITCastSucceed} and {ITCastFail} handle this situation when the two types involved are ground types (Fig.~\ref{fig:isGround}). 
-If the two ground types are equal, then the cast succeeds and the cast can be dropped. 
-If they are not equal, then the cast fails and the failed cast form, $\dcastfail{\dexp}{\htau_1}{\htau_2}$, arises. 
-Rule {TAFailedCast} specifies that a failed cast is well-typed exactly when $d$ has ground type $\tau_1$ and $\tau_2$ is a ground type disequal to $\tau_1$. 
-Rule {IFailedCast} specifies that a failed cast operates as an indeterminate form once $d$ is final. 
-This allows evaluation to proceed after cast failure, much as with hole closures.
+Rule {ITCastId} drops identity casts. The remaining instruction
+transition rules assign meaning to non-trivial casts.
+%
+As discussed in Sec.~\ref{sec:cast-insertion}, the structure of a term
+cast to hole type is statically obscure,
+%
+so we must wait for \emph{use} of the term at some other type, via a
+cast away from hole type, to detect dynamic type errors.
+%
+Rules {ITCastSucceed} and {ITCastFail} handle this situation when the
+two types involved are ground types (Fig.~\ref{fig:isGround}).
+%
+If the two ground types are equal, then the cast succeeds and the cast
+may be dropped.
+%
+If they are not equal, then the cast fails and the failed cast form,
+$\dcastfail{\dexp}{\htau_1}{\htau_2}$, arises.
+%
+Rule {TAFailedCast} specifies that a failed cast is well-typed exactly
+when $d$ has ground type $\tau_1$ and $\tau_2$ is a ground type
+disequal to $\tau_1$.
+%
+Rule {IFailedCast} specifies that a failed cast operates as an
+indeterminate form once $d$ is final.
+%
+This rule allows evaluation to proceed after cast failure, much as
+with hole closures.
 
-The two rules just described operate at ground type. 
-The two remaining instruction transition rules, Rule {ITGround} and {ITExpand}, operate as technical devices that allow us to restrict our interest to ground types exclusively by inserting intermediate casts from non-ground type to  a consistent ground type, and \emph{vice versa}. 
-In this core calculus, the only non-ground types are the arrow types, so the grounding judgement $\groundmatch{\tau_1}{\htau_2}$ defined in Fig.~\ref{fig:groundmatch}, produces the ground arrow type, $\tarr{\tehole}{\tehole}$. 
+Rules {TAFailedCast} and {IFailedCast} each operate at ground type. 
+%
+The two remaining instruction transition rules, Rule~{ITGround}
+and~{ITExpand}, insert intermediate casts from non-ground type to a
+consistent ground type, and \emph{vice versa}.
+%
+These rules serve as technical devices, permitting us to restrict our
+interest exclusively to ground types.
+%
+Here, the only non-ground types are the arrow types, so the grounding
+judgement~$\groundmatch{\tau_1}{\htau_2}$ (\Figref{fig:groundmatch}),
+produces the ground arrow type~$\tarr{\tehole}{\tehole}$.
+%
 More generally, this judgement is governed by the following invariant:
 \begin{lem}[Grounding] 
   If $\groundmatch{\htau}{\htau'}$
@@ -596,17 +663,37 @@ More generally, this judgement is governed by the following invariant:
   and $\htau\neq\htau'$.
 \end{lem}
 
-In all other cases, casts are either boxed values or indeterminate according to the remaining rules in Fig.~\ref{fig:isFinal}. 
-Note in particular Rule {ICastHoleGround}, which handles casts from hole to ground type that are not of the form $\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}$. 
-In the cast calculus, there are no such irreducible terms because the only canonical form of type $\tehole$ is $\dcasttwo{\dexp}{\htau_1}{\tehole}$.
+In all other cases, casts either consist of boxed values or
+indeterminate terms according to the remaining rules
+in \Figref{fig:isFinal}.
+%
+In particular, Rule {ICastHoleGround} handles casts that are not of
+the form $\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}$, from hole to
+ground type.
+%
+In the cast calculus, since the only canonical form of type $\tehole$
+is $\dcasttwo{\dexp}{\htau_1}{\tehole}$, there exist no such
+irreducible terms.
 
 \subsubsection{Type Safety} 
-The purpose of establishing type safety is to ensure that the static and dynamic semantics of a language cohere. 
-We follow the approach developed by \citet{wright94:_type_soundness}, now standard \cite{pfpl}, which distinguishes two type safety properties, preservation and progress. 
-In order to allow for the evaluation of incomplete programs, we establish these properties for terms typed under arbitrary hole context $\Delta$. 
-We can assume $\hGamma$ is empty (in order to run programs with free variables, the system can treat them as empty holes with a corresponding name).
+%
+Type safety establishes that the static and dynamic semantics of a
+language cohere.
+%
+We follow the approach developed by \citet{wright94:_type_soundness},
+now standard \cite{pfpl}, which distinguishes two type safety
+properties, preservation and progress.
+%
+To permit the evaluation of incomplete programs, we establish these
+properties for terms typed under arbitrary hole context $\Delta$.
+%
+We assume an empty context for~$\hGamma$; to run open programs, the
+system may treat free variables as empty holes with a corresponding
+name.
 
-The preservation theorem establishes that type assignment is preserved by transitions, i.e. that the type of an expression accurately predicts the type of the result of evaluating that expression.
+The preservation theorem establishes that transitions perserve type
+assignment, i.e. that the type of an expression accurately predicts
+the type of the result of reducing that expression.
 
 \begin{thm}[Preservation]
   If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ and
@@ -614,10 +701,18 @@ The preservation theorem establishes that type assignment is preserved by transi
   $\hasType{\Delta}{\emptyset}{\dexp'}{\htau}$.
 \end{thm}
 \noindent
-The proof relies on an analagous preservation lemma for instruction transitions and a standard substitution lemma (stated in Appendix~\ref{sec:additional-defns}). 
-Hole closures can disappear during evaluation, so we rely on weakening of $\Delta$.
+%
+The proof relies on an analagous preservation lemma for instruction
+transitions and a standard substitution lemma (stated in
+Appendix~\ref{sec:additional-defns}).
+%
+Hole closures can disappear during evaluation, so we rely on weakening
+of $\Delta$.
 
-The progress theorem establishes that the dynamic semantics accounts for every well-typed term, i.e. that we have not forgotten some necessary rules or premises.
+The progress theorem establishes that the dynamic semantics accounts
+for every well-typed term, i.e. that we have not forgotten some
+necessary rules or premises.
+%
 \begin{thm}[Progress]
   If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either
   (a) $\stepsToD{}{\dexp}{\dexp'}$ or
@@ -625,11 +720,22 @@ The progress theorem establishes that the dynamic semantics accounts for every w
   (c) $\isIndet{\dexp}$.
 \end{thm}
 \noindent
-The key to being able to establish the progress theorem under a non-empty hole context lies in the fact that we have explicitly accounted for indeterminate forms, i.e. those rooted at either a hole closure or a failed cast. 
-The proof relies on canonical forms lemmas stated in Appendix~\ref{sec:additional-defns}.
+The key to establishing the progress theorem under a non-empty hole
+context consists of explicitly accounting for indeterminate forms,
+i.e. those rooted at either a hole closure or a failed cast.
+%
+The proof relies on canonical forms lemmas stated in
+Appendix~\ref{sec:additional-defns}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MATT is here (2018.04.14 -- ~noon MT)
 
 \subsubsection{Complete Programs} 
-Although our focus in this paper is on running incomplete programs, it is helpful to know that the necessary machinery does not interfere with reasoning about the behavior of complete programs, i.e. those with no holes. 
+%
+Although this paper focuses running incomplete programs, it helps
+to know that its machinery does not interfere
+with reasoning about the behavior of complete programs, i.e. those
+with no holes.
+%
 Appendix~\ref{sec:additional-defns} defines complete programs with the judgements $\isComplete{e}$ and $\isComplete{d}$. 
 Failed casts cannot appear in complete internal expressions. 
 The following theorem establishes that expansion preserves program completeness.
