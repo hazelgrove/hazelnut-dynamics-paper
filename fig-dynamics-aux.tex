@@ -2,21 +2,6 @@
 \begin{figure}[t]
 
 \begin{tabular}[t]{cc}
-\begin{minipage}{0.5\textwidth}
-    
-\judgbox{\isValue{\dexp}}{$\dexp$ is a value}
-\begin{mathpar}
-\inferrule[VConst]{ }{
-  \isValue{c}
-}
-
-\inferrule[VLam]{ }{
-  \isValue{\halam{x}{\htau}{\dexp}}
-}
-\end{mathpar}
-\end{minipage}
-
-&
 
 \begin{minipage}{0.5\textwidth}
 \judgbox{\isFinal{\dexp}}{$\dexp$ is final}
@@ -28,6 +13,22 @@
 \and
 \inferrule[FIndet]
 {\isIndet{\dexp}}{\isFinal{\dexp}}
+\end{mathpar}
+\end{minipage}
+
+& 
+
+\begin{minipage}{0.5\textwidth}
+    
+\judgbox{\isValue{\dexp}}{$\dexp$ is a value}
+\begin{mathpar}
+\inferrule[VConst]{ }{
+  \isValue{c}
+}
+
+\inferrule[VLam]{ }{
+  \isValue{\halam{x}{\htau}{\dexp}}
+}
 \end{mathpar}
 \end{minipage}
 
