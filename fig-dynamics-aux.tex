@@ -1,5 +1,9 @@
 % !TEX root = hazelnut-dynamics.tex
 \begin{figure}[t]
+
+\begin{tabular}[t]{cc}
+\begin{minipage}{0.5\textwidth}
+    
 \judgbox{\isValue{\dexp}}{$\dexp$ is a value}
 \begin{mathpar}
 \inferrule[VConst]{ }{
@@ -10,6 +14,24 @@
   \isValue{\halam{x}{\htau}{\dexp}}
 }
 \end{mathpar}
+\end{minipage}
+
+&
+
+\begin{minipage}{0.5\textwidth}
+\judgbox{\isFinal{\dexp}}{$\dexp$ is final}
+\begin{mathpar}
+%% \inferrule[FVal]
+%% {\isValue{\dexp}}{\isFinal{\dexp}}
+\inferrule[FBoxedVal]
+{\isBoxedValue{\dexp}}{\isFinal{\dexp}}
+\and
+\inferrule[FIndet]
+{\isIndet{\dexp}}{\isFinal{\dexp}}
+\end{mathpar}
+\end{minipage}
+
+\end{tabular}
 
 \vsepRule
 
@@ -95,59 +117,8 @@
 
 \end{mathpar}
 
-\vsepRule
+%\vsepRule
 
-\judgbox{\isFinal{\dexp}}{$\dexp$ is final}
-\begin{mathpar}
-%% \inferrule[FVal]
-%% {\isValue{\dexp}}{\isFinal{\dexp}}
-\inferrule[FBoxedVal]
-{\isBoxedValue{\dexp}}{\isFinal{\dexp}}
-\and
-\inferrule[FIndet]
-{\isIndet{\dexp}}{\isFinal{\dexp}}
-\end{mathpar}
-
-%% \vsepRule
-%% 
-%% \judgbox{\isErr{\Delta}{\dexp}}{$\dexp$ contains a cast error}
-%% \begin{mathpar}
-%% \inferrule[ECastError]{
-%%   \hasType{\Delta}{\emptyset}{\dexp}{\htau_2}\\
-%%   \tinconsistent{\htau_1}{\htau_2}
-%% }{
-%%   \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
-%% }
-%% 
-%% \inferrule[EConst]{
-%% }{
-%%   \isErr{\Delta}{\dcast{\tau}{\dconst}}
-%% }
-%% 
-%% \inferrule[EAp1]{
-%%   \isErr{\Delta}{\dexp_1}
-%% }{
-%%   \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
-%% }
-%% 
-%% \inferrule[EAp2]{
-%%   \isErr{\Delta}{\dexp_2}
-%% }{
-%%   \isErr{\Delta}{\dap{\dexp_1}{\dexp_2}}
-%% }
-%% 
-%% \inferrule[ENEHole]{
-%%   \isErr{\Delta}{\dexp}
-%% }{
-%%   \isErr{\Delta}{\dhole{\dexp}{\mvar}{\subst}{}}
-%% }
-%% 
-%% \inferrule[ECastProp]{
-%%   \isErr{\Delta}{\dexp}
-%% }{
-%%   \isErr{\Delta}{\dcast{\htau_1}{\dexp}}
-%% }
-%% \end{mathpar}
 \CaptionLabel{Final Forms}{fig:isFinal}
 \label{fig:isValue}
 \label{fig:isIndet}
