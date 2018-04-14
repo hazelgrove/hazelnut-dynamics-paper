@@ -291,53 +291,157 @@ Empty hole closures, $\dehole{u}{\sigma}{}$,  correspond to the metavariable clo
 %
 Non-empty hole closures~$\dhole{d}{u}{\sigma}{}$ have no direct correspondance with a notion from CMTT (see Sec.~\ref{sec:resumption}).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Matt is here (2018.04.12, ~8am MT)
-
-\subsubsection{Cast Insertion}\label{sec:cast-insertion} 
+\subsubsection{Cast Insertion}\label{sec:cast-insertion}
 %
-Consider the following example: $\hap{(\halam{x}{\tehole}{\hap{x}{c}})}{c}$. 
-The type synthesized for this example viewed as an external expression is $\tehole$, because the hole type annotation on $x$ allows us to apply it as a function of type $\tarr{\tehole}{\tehole}$, as previously discussed, and $c$ can be checked against type $\tehole$ by subsumption. 
-However, viewed as an internal expression, this example is not well-typed---we do not have subsumption in the type assignment system defined in Fig.~\ref{fig:hasType}. 
-Indeed, it would violate type safety if we could assign a type to this example in the internal language, because beta reduction of this example viewed as an internal expression would result in $c(c)$, which is clearly not well-typed.
-The difficulty is that leaving the argument type unknown leaves how the argument is being used (in this case, as a function) also unknown.\footnote{In a system where type reconstruction is first used to try to fill in type holes, we could express a similar example by using $x$ at two or more different types, thereby causing type reconstruction to fail.
-%On the other hand, if it is acceptable to arbitrarily choose one of the possible types, and type reconstruction is complete, then type holes will never appear in the internal language and the cast insertion machinery described in this section can be omitted entirely, leaving only the hole closure machinery described previously.
+% USE A TOPIC SENTENCE SO THAT THE READER IS GUIDED A LITTLE MORE, e.g.,
+%
+Cast insertion mediates between the type systems of the external and
+internal languages, where the former permits subsumption, and the
+latter does not.
+%-----------------------------------------------------------------------------------------------
+%
+To see why this mediation is necessary, consider the following
+example: $\hap{(\halam{x}{\tehole}{\hap{x}{c}})}{c}$.
+%
+Viewed as an external expression, this example synthesizes type
+$\tehole$, since the hole type annotation on variable~$x$ permits
+applying~$x$ as a function of type~$\tarr{\tehole}{\tehole}$, and base
+constant~$c$ may be checked against type~$\tehole$, by subsumption.
+%
+However, viewed as an internal expression, this example is not
+well-typed---the type assignment system defined in
+\Figref{fig:hasType} lacks subsumption.
+%
+Indeed, it would violate type safety if we could assign a type to this
+example in the internal language, because beta reduction of this
+example viewed as an internal expression would result in $c(c)$, which
+is clearly not well-typed.
+%
+The difficulty arises because leaving the argument type unknown also leaves unknown how
+the argument is being used (in this case, as a function).\footnote{In a system where type reconstruction is first used
+to try to fill in type holes, we could express a similar example by
+using $x$ at two or more different types, thereby causing type
+reconstruction to fail.
+%
+% On the other hand, if it is acceptable to arbitrarily choose one of
+%the possible types, and type reconstruction is complete, then type
+%holes will never appear in the internal language and the cast
+%insertion machinery described in this section can be omitted
+%entirely, leaving only the hole closure machinery described
+%previously.
 }
 \todo{talk about elsewhere? maybe do type-hole-free version of calculus in appendix if there is time}{} 
-By our  interpretation of hole types as unknown types from gradual type theory, we can address the problem by performing cast insertion. 
+By our interpretation of hole types as unknown types from gradual type
+theory, we can address the problem by performing cast insertion.
 %
 
-The cast form in Hazelnut Live is $\dcasttwo{\dexp}{\htau_1}{\htau_2}$, which, as specified by Rule TACast in Fig.~\ref{fig:hasType}, serves to ``box'' an expression of type $\htau_1$ for treatment as an expression of a consistent type $\htau_2$.%
-\footnote{In the earliest work on gradual type theory, the cast form only gave the target type, $\htau_2$ \cite{Siek06a}, but it simplifies matters to include the assigned type, $\htau_1$, in the syntax \cite{DBLP:conf/snapl/SiekVCB15}.}
+The cast form in Hazelnut Live consists of $\dcasttwo{\dexp}{\htau_1}{\htau_2}$.
+%
+This form serves to ``box'' an expression of type $\htau_1$ for
+treatment as an expression of a consistent type $\htau_2$
+(Rule TACast in \Figref{fig:hasType}).
+%
+\footnote{
+In the earliest work on gradual type theory, the cast form only gave
+the target type~$\htau_2$ \cite{Siek06a}, but it simplifies matters
+to include the assigned type~$\htau_1$ in the syntax \cite{DBLP:conf/snapl/SiekVCB15}.
+}
 
-Casts are inserted during the expansion of function applications and ascriptions. 
-The latter is more straightforward: 
-Rule~{ESAsc} in Fig.~\ref{fig:expandSyn} inserts a cast from the assigned type to the ascribed  type. 
-Theorem~\ref{thm:typed-expansion} inductively ensures that the two types are consistent.  
-Note that we included ascription only for the sake of exposition---it can be defined using application together with the half-annotated identity, $e : \tau = \hap{(\halam{x}{\htau}{x})}{e}$, so application expansion, discussed next, is more general.
+Expansion inserts casts for function applications and ascriptions.
+%
+The latter is more straightforward: Rule~{ESAsc}
+in \Figref{fig:expandSyn} inserts a cast from the assigned type to the
+ascribed type.
+%
+Theorem~\ref{thm:typed-expansion} inductively ensures that the two
+types are consistent.
+%
+We include ascription for exposition purposes---this form is derivable
+by using application together with the half-annotated identity, $e
+: \tau = \hap{(\halam{x}{\htau}{x})}{e}$; as such, application
+expansion, discussed below, is more general.
 
-Cast insertion by the application expansion rule, Rule~{ESAp}, requires a bit more care. 
-To understand the rule, consider the expansion for the example above:
-\[\hap{\dcasttwo{(\halam{x}{\tehole}{\underline{\hap{\dcasttwo{x}{\tehole}{\tarr{\tehole}{\tehole}}}{\dcasttwo{c}{b}{\tehole}}}})}{\tarr{\tehole}{\tehole}}{\tarr{\tehole}{\tehole}}}{\dcasttwo{c}{b}{\tehole}}
+Rule~{ESAp} expands function applications.
+%
+To understand the rule, consider the expansion of external
+expression~$\hap{(\halam{x}{\tehole}{\hap{x}{c}})}{c}$, the example
+discussed above:
+\[
+        \hap{\dcasttwo{
+        (\halam{x}{\tehole}{\underbrace{
+                \hap{\dcasttwo{x}{\tehole}{\tarr{\tehole}{\tehole}}}
+                {\dcasttwo{c}{b}{\tehole}}
+                }_{\textrm{expansion of function body}~x(c)}
+        }
+        )}{\tarr{\tehole}{\tehole}}{
+           \tarr{\tehole}{\tehole}}
+           }
+           {\dcasttwo{c}{b}{\tehole}}
 \]
-Let us focus on the expansion of the function body, underlined\todo{shaded?}, first. 
-A cast has been inserted on both the function expression, $x$, and the the argument, $c$. 
+Consider the (indicated) function body,
+%
+where expansion inserts a cast on both the function expression~$x$ and its argument~$c$.
+%
+Together, these casts for~$x$ and~$c$ permit assigning a type to the
+function body according to the rules in \Figref{fig:hasType}, where we
+could not do so under the same context without casts.
+%
+We separately consider the expansions of~$x$ and of~$c$.
 
-The cast on $x$ allows us to treat the variable $x$, which is of type $\tehole$, as being of the matched arrow type $\tarr{\tehole}{\tehole}$, as described in Sec.~\ref{sec:external-statics}. 
-The first three premises of Rule~{ESAp} accomplish this by first synthesizing a type for the function expression, here $\tehole$, then determining the matched arrow type, $\tarr{\tehole}{\tehole}$, and then performing analytic expansion on the function expression with this matched arrow type.
-The resulting expansion will have some type $\tau_1'$ consistent with the matched arrow type. 
-In this case, because $x$ is of variable form, analytic expansion goes through subsumption so $\tau_1'$ is simply $\tehole$. 
-The conclusion of the rule inserts the corresponding cast. 
-We go through type synthesis then analytic expansion so that the hole context records the matched arrow type for holes in function position, rather than the type $\tehole$ for all such holes as would be the case in a variant of this rule using synthetic expansion for the function expression\todo{put this in the appendix?}{}.
+First, consider the function position of this application, here variable~$x$.
+%
+Without any cast, the type of variable~$x$ is hole type~$\tehole$;
+however, the inserted cast on~$x$ permits treating it as though it has
+arrow type $\tarr{\tehole}{\tehole}$, as described
+in \Secref{sec:external-statics}.
+%
+The first three premises of Rule~{ESAp} accomplish this
+%
+by first synthesizing a type for the function expression, here
+$\tehole$, then
+%
+by determining the matched arrow type~$\tarr{\tehole}{\tehole}$, and
+finally,
+%
+by performing analytic expansion on the function expression with this
+matched arrow type.
+%
+The resulting expansion has some type~$\tau_1'$ consistent with the matched arrow type.
+%
+In this case, because the subexpression~$x$ is a variable, analytic
+expansion goes through subsumption so that type~$\tau_1'$ is
+simply~$\tehole$.
+%
+The conclusion of the rule inserts the corresponding cast.
+%
+We go through type synthesis, \emph{then} analytic expansion, so that the hole
+context records the matched arrow type for holes in function position,
+rather than the type~$\tehole$ for all such holes, as would be the case
+in a variant of this rule using synthetic expansion for the function
+expression\todo{put this in the appendix?}{}.
 
-The conclusion of Rule~{ESAp} inserts the cast on the argument's expansion, from the type it is assigned by the final premise of the rule, here $b$ as described at the start of Sec.~\ref{sec:expansion}, to the argument type of the matched arrow type of the function expression, here $\tehole$.
+Next, consider the application's argument, here constant~$c$.
+%
+The conclusion of Rule~{ESAp} inserts the cast on the argument's
+expansion, ufrom the type it is assigned by the final premise of the
+rule~(type~$b$ here), to the argument type of the matched arrow type
+of the function expression~(type~$\tehole$ here).
 
-Observe that together, these casts allow us assign a type to the function body according to the rules in Fig.~\ref{fig:hasType}, where we could not do so under the same context without casts.
+The the example's second, outermost application uses through the same
+application expansion rule.
+%
+In this case, the cast on the function is the identity cast for
+$\tarr{\tehole}{\tehole}$.
+%
+For simplicity, we do not attempt to avoid the insertion of identity
+casts in the core calculus; these will simply never fail during
+evaluation.
+%
+However, it is safe to eliminate such identity casts during expansion,
+and some formal accounts of gradual typing do so by defining three
+application rules, including the original account of \cite{Siek06a}).
 
-The outer application in the example above goes through the same rule. 
-In this case, the cast on the function is the identity cast for $\tarr{\tehole}{\tehole}$. 
-We do not attempt to avoid the insertion of identity casts in the core calculus for simplicity (these will simply never fail during evaluation), 
-but it is safe to eliminate these during expansion (and some formal accounts of gradual typing do so by defining three application rules, including the original account of \cite{Siek06a}).
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Matt is here (2018.04.14, ~6:15am MT)
 
 \subsection{Dynamic Semantics}
 \label{sec:evaluation}
