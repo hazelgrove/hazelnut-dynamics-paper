@@ -8,19 +8,19 @@
 \inferrule[ESConst]{ }{
   \expandSyn{\hGamma}{c}{b}{c}{\emptyset}
 }
-
+\and
 \inferrule[ESVar]{
   x : \htau \in \hGamma
 }{
   \expandSyn{\hGamma}{x}{\htau}{x}{\emptyset}
 }
-
+\and
 \inferrule[ESLam]{
   \expandSyn{\hGamma, x : \htau_1}{\hexp}{\htau_2}{\dexp}{\Delta}
 }{
   \expandSyn{\hGamma}{\halam{x}{\htau_1}{\hexp}}{\tarr{\htau_1}{\htau_2}}{\halam{x}{\htau_1}{\dexp}}{\Delta}
 }
-
+\and
 \inferrule[ESAp]{
   \hsyn{\hGamma}{\hexp_1}{\htau_1}\\
   \arrmatch{\htau_1}{\tarr{\htau_2}{\htau}}
@@ -80,24 +80,22 @@
 % \inferrule[expand-plus]{ }{
 %   \expandSyn{\hGamma}{\hadd{\hexp_1}{\hexp_2}}{\tnum}{\hadd{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
 % }
-
+\and
 \inferrule[ESEHole]{ }{
   \expandSyn{\hGamma}{\hehole{u}}{\tehole}{\dehole{u}{\idof{\hGamma}}{}}{\Dbinding{u}{\hGamma}{\tehole}}
 }
-
+\and
 \inferrule[ESNEHole]{
   \expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}
 }{
   \expandSyn{\hGamma}{\hhole{\hexp}{u}}{\tehole}{\dhole{\dexp}{u}{\idof{\hGamma}}{}}{\Delta, \Dbinding{u}{\hGamma}{\tehole}}
-}\\
-%
-
+}
+\and
 \inferrule[ESAsc]{
   \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}
 }{
   \expandSyn{\hGamma}{\hexp : \htau}{\htau}{\dcasttwo{\dexp}{\htau'}{\htau}}{\Delta}
 }
-
 %% \inferrule[ESAsc1]{
 %%   \expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}\\
 %%   \htau \neq \htau'

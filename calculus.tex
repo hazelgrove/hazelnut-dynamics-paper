@@ -160,7 +160,7 @@ The following theorem establishes that expansions are well-typed and in the anal
   \end{enumerate}
 \end{thm}
 \noindent
-
+%
 %The reason analytic expansion produces an expansion of consistent
 %type is because the subsumption rule, as previously discussed, allows
 %us to check an external expression against any type consistent with
@@ -170,11 +170,10 @@ The following theorem establishes that expansions are well-typed and in the anal
 %
 Analytic expansion produces an expansion of consistent type:
 %
-Intuitively, the subsumption rule, as previously discussed, allows us
+Intuitively, the subsumption rule permits us
 to check an external expression against any type consistent with the
-type the expression actually synthesizes.
-
-
+type that the expression \emph{actually} synthesizes:
+%
 \begin{thm}[Type Assignment Unicity]
   If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$
   and $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$
@@ -900,14 +899,16 @@ evaluation} of previously indeterminate expressions, which are
 (generally) more determined after the programmer fills a hole than
 beforehand.
 %
-We call this feature \emph{fill-and-resume}, by analogy to the
-``edit-and-resume'' features available in some systems today, such as
-Visual Studio (see below for a comparison)\todo{cite and compare}{}.
+This \emph{fill-and-resume} behavior formalizes the (ad hoc)
+``edit-and-resume'' behavior permitted by some current systems,
+e.g.,~Microsoft Visual Studio.\todo{cite}
+
+%(see below for a comparison)\todo{cite and compare}{}. ---NO TIME/SPACE for this.
 
 %%%%%%%%% New par
 Formally, 
 %
-we interpret the hole environments as \emph{delayed substitutions},
+we interpret hole environments as \emph{delayed substitutions},
 the same interpretation suggested for closures in contextual modal
 type theory (CMTT) by \citet{Nanevski2008}.
 %
