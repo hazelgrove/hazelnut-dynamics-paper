@@ -17,7 +17,7 @@ Each well-typed external expression (as specified in Sec.~\ref{sec:external-stat
 We take this approach, notably also taken in the specification of Standard ML by \citet{Harper00atype-theoretic}, because (1) the external language supports type inference and explicit type ascriptions, $\hexp : \htau$, but it is formally simpler to eliminate ascriptions and specify a type assignment system when defining the dynamic semantics; and 
 (2) we need additional syntactic machinery during evaluation for tracking hole closures and dynamic type casts. 
 This machinery is inserted by the expansion step, rather than entered explicitly by the programmer. 
-In this regard, the internal language is analagous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects. We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently} 
+In this regard, the internal language is analogous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects. We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently} 
 (see Sec.~\ref{sec:agda-mechanization}). We have also implemented \HazelnutLive in a manner that maintains a novel end-to-end well-definedness invariant (see Sec.~\ref{sec:implementation}).
 
 % \rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
@@ -48,7 +48,7 @@ Algorithmically, analysis accepts a type as input, and synthesis gives
 a type as output.
 %
 We start with synthesis for the programmer's ``top level'' external
-exression.
+expression.
 
 % Algorithmically, the type is an output of type synthesis but an input of type analysis.
 
@@ -164,7 +164,7 @@ The governing theorem below establishes that expansions are well-typed and in th
 %
 Analytic expansion produces an expansion of consistent type:
 %
-Inuitively, the subsumption rule, as previously discussed, allows us
+Intuitively, the subsumption rule, as previously discussed, allows us
 to check an external expression against any type consistent with the
 type the expression actually synthesizes.
 
@@ -289,7 +289,7 @@ Empty hole closures, $\dehole{u}{\sigma}{}$,  correspond to the metavariable clo
 %
 \Secref{sec:evaluation} defines how these closure environments evolve during evaluation.
 %
-Non-empty hole closures~$\dhole{d}{u}{\sigma}{}$ have no direct correspondance with a notion from CMTT (see Sec.~\ref{sec:resumption}).
+Non-empty hole closures~$\dhole{d}{u}{\sigma}{}$ have no direct correspondence with a notion from CMTT (see Sec.~\ref{sec:resumption}).
 
 \subsubsection{Cast Insertion}\label{sec:cast-insertion}
 %
@@ -423,7 +423,7 @@ expression\todo{put this in the appendix?}{}.
 Next, consider the application's argument, here constant~$c$.
 %
 The conclusion of Rule~{ESAp} inserts the cast on the argument's
-expansion, ufrom the type it is assigned by the final premise of the
+expansion, from the type it is assigned by the final premise of the
 rule~(type~$b$ here), to the argument type of the matched arrow type
 of the function expression~(type~$\tehole$ here).
 
@@ -476,7 +476,7 @@ indeterminate forms.%
         are distinguished with separate grammars together with an
         implicit identification convention.
         %
-        Our judgemental formulation is more faithful to the mechanization and
+        Our judgmental formulation is more faithful to the mechanization and
         cleaner for our purposes, because we are distinguishing several
         classes of final forms.
 }
@@ -689,7 +689,7 @@ We assume an empty context for~$\hGamma$; to run open programs, the
 system may treat free variables as empty holes with a corresponding
 name.
 
-The preservation theorem establishes that transitions perserve type
+The preservation theorem establishes that transitions preserve type
 assignment, i.e. that the type of an expression accurately predicts
 the type of the result of reducing that expression.
 
@@ -700,7 +700,7 @@ the type of the result of reducing that expression.
 \end{thm}
 \noindent
 %
-The proof relies on an analagous preservation lemma for instruction
+The proof relies on an analogous preservation lemma for instruction
 transitions and a standard substitution lemma (stated in
 Appendix~\ref{sec:additional-defns}).
 %
@@ -799,7 +799,7 @@ Agda is a good choice because it is designed to explicitly communicate a proof's
 Agda itself was also an inspiration for this work because it supports holes, albeit in a more limited form than described here (cf. Sec.~\ref{sec:intro}). 
 %
 The basic approach is standard: we model judgements as 
-inductive datatypes, and rules as dependently typed constructors of these judgements\todo{cite somtehing?}{}. 
+inductive datatypes, and rules as dependently typed constructors of these judgements\todo{cite something?}{}. 
 %
 We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and encode typing 
 contexts, hole contexts and hole environments using metafunctions.\todo{say something about axioms?}{}
