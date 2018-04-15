@@ -1,6 +1,7 @@
 % !TEX root = hazelnut-dynamics.tex
 
-\begin{figure}[t]
+\begin{figure}
+\small
 %% TODO use instantiate macro
 \judgbox
   {\instantiate{\dexp}{u}{\dexp'} = \dexp''}
@@ -50,6 +51,11 @@ x\\
 \dhole{\instantiate{\dexp}{u}{\dexp'}}{v}{\instantiate{\dexp}{u}{\subst}}{}
 & \text{when $u \neq v$}
 \\
+%\end{array}
+%\]
+%\[
+%\begin{array}{lcll}
+%
 \instantiate{\dexp}{u}{\dcasttwo{\dexp'}{\htau}{\htau'}}
 &=&
 \dcasttwo{(\instantiate{\dexp}{u}{\dexp'})}{\htau}{\htau'}

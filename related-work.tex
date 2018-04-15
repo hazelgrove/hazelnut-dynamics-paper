@@ -237,6 +237,15 @@ Hole-like constructs also appear in work on program slicing
 %
 \subsection{MOVED FROM: Dynamic Semantics}
 
+\matt{This discussion relates our design to CMTT; if we leave it in
+  the paper, we should leave it in this section, whose point is to be
+  comparative; the technical sections lack a sufficent ``attention
+  budget'' for the reader to wade through this discussion as they are
+  still learning the details of our paper.  Even for a really studious
+  reader that already knows CMTT, I still think it makes more sense
+  (organizationally) to give a detailed comparison here, and not
+  there.}
+
 To recap, the result of expansion is a well-typed internal expression with hole closures and casts, 
 where the former corresponds to metavariable closures from CMTT \cite{Nanevski2008}, 
 and the latter corresponds to casts from gradual type theory \cite{Siek06a,DBLP:conf/snapl/SiekVCB15}. 
@@ -251,7 +260,7 @@ In any case, a conventional dynamic semantics for CMTT would not be immediately 
 \citet{Nanevski2008} sketched an interpretation of CMTT into the simply-typed lambda calculus with sums under permutation conversion%
 \footnote{Permutation conversions are necessary to encode the commuting reductions of CMTT, which in turn are necessary to prove a strong normalization property. These issues are not relevant in \HazelnutLive because, as in the gradually typed lambda calculus, type holes admit non-termination: we can express the Y combinator as $(\halam{x}{\tehole}{x(x)}) (\halam{x}{\tehole}{x(x)})$.}, 
 which has been studied by \citet{DBLP:journals/iandc/Groote02}, 
-but under this interpretation an analagous problem arises---metavariables become variables of a function type, so again we cannot rely on the standard notion of progress on closed terms.\todo{citations}{}% We also cannot rely on, for example, weak head normalization because \HazelnutLive admits non-termination (due to casts).\todo{citation} 
+but under this interpretation an analogous problem arises---metavariables become variables of a function type, so again we cannot rely on the standard notion of progress on closed terms.\todo{citations}{}% We also cannot rely on, for example, weak head normalization because \HazelnutLive admits non-termination (due to casts).\todo{citation} 
 
 Furthermore, we need to integrate casts into the dynamic semantics. 
 Fortunately, the dynamic semantics for the cast calculus from the gradually typed lambda calculus provides most, but not all, of the necessary machinery. 
@@ -260,3 +269,91 @@ The second missing piece is that in prior work on casts, evaluation aborts when 
 Our goal, as discussed in Sec.~\ref{sec:failed-cast-example}\todo{where?}{}, is for cast failure to instead insert a membrane around the dynamic type error, 
 much like a non-empty hole serves as a membrane around a static type error, 
 allowing in both cases for evaluation to safely and meaningfully continue past the error when desired.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2018.04.15
+%
+% MATT MOVED THIS MATERIAL HERE FROM calculus.tex
+%
+\subsection{MOVED FROM: Fill-and-resume}
+
+\matt{This discussion relies on a more developed exposition of CMTT
+  that we have/will give in this paper; we should leave it in this
+  section, or remove it}
+
+So far, we have understood hole filling as an extralinguistic operation. 
+%
+However, a key feature CMTT that we have not yet touched on is the
+\emph{internalization} of metavariable binding and contextual
+substitution via the contextual modal types, $[\hGamma]\htau$, which
+are introduced by the operation $\mathsf{box}(\hGamma.d)$ and
+eliminated by the operation $\mathsf{letbox}(d_1, u.d_2)$.
+%
+A hole filling can be interpreted as an expression of contextual modal
+type, and the act of hole filling followed by evaluation to the next
+possibly-indeterminate edit state as evaluation under the binder of a
+suitable $\mathsf{letbox}$ construct, which is enabled by the dynamic
+semantics in Sec.~\ref{sec:calculus}.
+%
+This interpretation allows us to \emph{compute} hole fillings, rather
+than simply stating them, by specifying non-trivial expressions of
+modal type.
+%
+This could serve as the basis for a \emph{live} computational hole
+refinement system, extending the capabilities of purely static hole
+refinement systems like those available in some proof assistants,
+e.g. the elaborator reflection system of Idris
+\cite{brady2013idris,DBLP:conf/icfp/ChristiansenB16} and the tactic
+system\todo{right? read a bit more}{} of Beluga
+\cite{DBLP:conf/flops/Pientka10,pientka2015inductive}.
+%
+Each applied hole filling serves as a boundary between dynamic
+\emph{edit stages}.
+%
+This contextual modal interpretation of live staged hole refinement
+nicely mirrors the modal interpretation of staged argument evaluation
+\cite{Davies:2001op}.
+%
+We leave further development of this interpretation of hole refinement
+to future work.
+
+\subsubsection{Fill-and-resume example}
+
+\matt{I think this example is intended to illustrate some point, but I
+  could not discern what that point was}
+
+As an example, consider two edits, the first filling a hole~$u$ with
+the number~$2$, and the next applying operator~$+$, resulting in $2
++ \dehole{v}{\sigma}{}$.
+%
+This second edit is not a hole filling edit with respect to the
+immediately preceding edit state, but it can be understood as filling
+hole $u$ with $2 + \dehole{v}{\sigma}{}$. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+\matt{This thought seems to rely on a more developed exposition of
+  CMTT that we have/will give in this paper; we should leave it in
+  this section, or remove it}
+
+Another related case arises in lab notebook interfaces like that of
+Jupyter/IPython \cite{PER-GRA:2007}.
+%
+In this case, each cell can be understood as a series of \li{let}
+bindings ending in a hole, which is filled by the next cell.
+%
+The result from each cell can be cached to avoid recomputing the
+environment from preceding cells. This contextual modal interpretation
+of lab notebook cells (and read-eval-print loops as a restricted case
+where edits to previous cells are impossible) is novel.
+
+\subsubsection{Unmoored notes}
+
+ \matt{Will any reader actually wonder this? Other than the definition
+   of substitution in Section 4, does this thought connect to any
+   other statement elsewhere in the paper?}
+
+This case shows why we cannot interpret a non-empty hole as an empty
+hole of arrow type applied to the enveloped expression---the hole
+filling operation would not operate as expected under this
+interpretation.

@@ -876,30 +876,139 @@ by providing a working prototype for this section's definitions.
 
 
 %The result of evaluation is a final internal expression with hole closures, each with an associated hole environment, $\sigma$. These hole environments can be reported directly to the programmer, e.g. via the sidebar shown in Fig.~X\todo{fig}, to help them as they think about how to fill in the corresponding hole in the external expression. Hole environments might also be useful indirectly, e.g. by informing an edit action synthesis and suggestion system. In any case, 
-When the programmer performs one or more edit actions to fill in a hole in the program, a new result must be computed. Na\"ively, the system would need to compute the result ``from scratch'' on each such edit. A more efficient approach supported by the structure of \HazelnutLive is to resume evaluation from where it left off after an edit that amounts to hole filling. We call this feature \emph{fill-and-resume}, by analogy to the ``edit-and-resume'' features available in some systems, e.g. Visual Studio (see below for a comparison)\todo{cite and compare}{}.
 
-\todo{fix definition of instantiation in the agda}The key is to interpret the hole environments as delayed substitutions, and indeed this is exactly the interpretation suggested for closures in contextual modal type theory by \citet{Nanevski2008}. We can derive the hole filling operation, $\instantiate{d}{u}{d'}$, defined in Fig.~\ref{fig:substitution}, from the contextual substitution operation of CMTT. Notice that unlike standard substitution, which is capture-avoiding, hole filling imposes no condition on the binder when passing into the body of a lambda expression---the expression that fills a hole can, of course, refer to variables in scope where the hole appears. When hole filling encounters an empty closure for the hole being instantiated, $\instantiate{d}{u}{\dehole{u}{\sigma}{}}$, the result is $[\instantiate{d}{u}{\sigma}]d$, i.e. the delayed substitution is applied to the fill expression, $d$, after first recursively filling any instances of hole $u$ that may appear in $\sigma$. Hole filling for non-empty closures is analagous (the enveloped expression can be discarded). Note that this is the reason why we cannot interpret a non-empty hole as an empty hole of arrow type applied to the enveloped expression---the hole filling operation would not operate as expected under this interpretation.
+When the programmer interactively fills a program hole, that program's
+reduction and result are generally each affected, and the system
+should respond by (quickly) updating the program's output.
+%
+Na\"ively, this response requires recomputing the program output
+``from scratch'' after each such edit.
+%
+However, by virtue of its design principles (based on
+CMTT), \HazelnutLive offers a more efficient approach: To \emph{resume
+evaluation} of previously indeterminate expressions, which are
+(generally) more determined after the programmer fills a hole than
+beforehand.
+%
+We call this feature \emph{fill-and-resume}, by analogy to the
+``edit-and-resume'' features available in some systems today, such as
+Visual Studio (see below for a comparison)\todo{cite and compare}{}.
+
+%%%%%%%%% New par
+Formally, 
+%
+we interpret the hole environments as \emph{delayed substitutions},
+the same interpretation suggested for closures in contextual modal
+type theory (CMTT) by \citet{Nanevski2008}.
+%
+%In practice, it may be useful to cache results from several previous
+%expansions, e.g., by employing off-the-shelf programming language
+%abstractions for incremental computation~\cite{Hammer14,Hammer15}.
+%
+We define hole filling in terms of the expanded (internal) program,
+and define filling a hole in an external language term as filling the
+corresponding hole in its expansion.
+
+%%%%%%%%% New par
+\Figref{fig:substitution} defines the hole filling operation~$\instantiate{d}{u}{d'}$,
+mirroring the contextual substitution operation of~CMTT.
+%
+Unlike usual notions of capture-avoiding substitution, 
+hole filling imposes no condition on the binder when passing into the
+body of a lambda expression---the expression that fills a hole can, of
+course, refer to variables in scope where the hole appears.
+%
+When hole filling encounters an empty closure for the hole being
+instantiated, $\instantiate{d}{u}{\dehole{u}{\sigma}{}}$, the result
+is $[\instantiate{d}{u}{\sigma}]d$.
+%
+That is, we apply the delayed substitution to the fill expression~$d$
+after first recursively filling any instances of hole~$u$ in~$\sigma$.
+%
+Hole filling for non-empty closures is analogous, where it discards
+the previously-enveloped expression.
+%
+%
+% \matt{Will any reader actually wonder this? Does this thought connect to any other statement elsewhere in the paper?}
+%
+%This case shows why we cannot interpret a non-empty hole as an empty
+%hole of arrow type applied to the enveloped expression---the hole
+%filling operation would not operate as expected under this
+%interpretation.
 
 \input{fig-substitution}
 
+%%%%%%%%% New par
 The following theorem characterizes the static behavior of hole filling.
 \begin{thm}[Filling]
   If $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\hGamma}{\dexp}{\tau}$
   and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$
   then $\hasType{\hDelta}{\hGamma}{\instantiate{\dexp'}{u}{\dexp}}{\tau}$.
-\end{thm}
 \begin{proof}
-We prove a stronger version of the theorem which accounts for both terms and finite substitutions (see \cite{Nanevski2008}). In each case, we proceed by rule induction on the first assumption, appealing to the finite substitution lemma in the corresponding cases.
+We prove a stronger version of the theorem which accounts for both
+terms and finite substitutions (see \cite{Nanevski2008}).
+%
+Each case proceeds by rule induction on the first assumption, applying
+the finite substitution lemma.
 \end{proof}
+\end{thm}
 
-For the fill-and-resume feature to be reasonable, we need the following commutativity property, where we write $\multiStepsTo{\dexp_1}{\dexp_2}$ for the reflexive, transitive closure of  stepping (see Fig.~\ref{fig:multi-step} in Appendix~\ref{sec:additional-defns}). In words, if there is some sequence of steps that go from $d_1$ to $d_2$, then you can fill the hole either at the beginning or at the end of that step sequence because if you do the former, you can take some sequence of steps to the latter. 
+Dynamically, the fill-and-resume enjoys an
+important \emph{commutativity} property: If there is some sequence of
+steps that go from $d_1$ to $d_2$, then one can fill a hole in these
+terms at \emph{either} the beginning or at the end of that step
+sequence.
+%
+We write $\multiStepsTo{\dexp_1}{\dexp_2}$ for the reflexive,
+transitive closure of stepping (see \Figref{fig:multi-step} in
+Appendix~\ref{sec:additional-defns}).
+%
 \begin{thm}[Commutativity]
   If $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_1}{\tau}$
   and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ and $\multiStepsTo{\dexp_1}{\dexp_2}$
   then $\multiStepsTo{\instantiate{\dexp'}{u}{\dexp_1}}
                      {\instantiate{\dexp'}{u}{\dexp_2}}$.
 \end{thm}
-Note that this property follows because the specification in Sec.~\ref{sec:calculus} left evaluation order unspecified (i.e. formally, we omitted the bracketed premises). It is not the case in general that resuming from $\instantiate{\dexp'}{u}{d_2}$ will cause sub-expressions to be evaluated in the same order as they would have been if we had restarted from $\instantiate{\dexp'}{u}{d_1}$ and selected sub-expressions in, for example, an eager, left-to-right manner, because the hole that is being filled may have been ``skipped past''. In other words, this simple fill-and-resume protocol only works for languages where evaluation order ``does not matter''. There are various ways to encode this intuition. One way to do so is by establishing a confluence property (which is closely related to the Church-Rosser property \cite{church1936some}). The most general confluence property does not hold for the dynamic semantics in Sec.~\ref{sec:calculus} for the usual reason: we do not reduce under binders (\citet{DBLP:conf/birthday/BlancLM05} discuss the standard counterexample). We could recover confluence by specifying reduction under binders, either generally or in a more restricted form where only closed sub-expressions are reduced \cite{DBLP:journals/tcs/CagmanH98,DBLP:conf/birthday/BlancLM05,levy1999explicit}, but reduction under binders is at odds with the standard approaches used in implementing programming languages \cite{DBLP:conf/birthday/BlancLM05}. A more satisfying approach is to consider confluence modulo equality \cite{Huet:1980ng}. The simplest approach is to restrict our interest to top-level expressions of base type that result in values, in which case the following special case of confluence does hold (trivially when the only base type has a single value, but also more generally for other base types).
+%
+Critically, this property relies on the more permissive version of
+reduction from \Secref{sec:calculus}, where evaluation order is
+unspecified (i.e. formally, we omitted the bracketed premises):
+%
+In general, resuming from $\instantiate{\dexp'}{u}{d_2}$ will not
+reduce sub-expressions in the same order as a ``fresh'' left-to-right
+reduction sequence starting from $\instantiate{\dexp'}{u}{d_1}$.
+%
+In other words, this notion of fill-and-resume only works for
+languages where evaluation order always results in \emph{confluent}
+reductions; viz., those that \emph{eventually} yield the same
+resulting term.
+
+%% Everyone knows what confluence means, or they should.  We don't need to cite Church :)
+%%
+%There are various ways to encode this intuition. One way to do so is
+%by establishing a confluence property (which is closely related to
+%the Church-Rosser property \cite{church1936some}).
+
+The most general confluence property does not hold for the dynamic
+semantics in Sec.~\ref{sec:calculus} for the usual reason: We do not
+reduce under binders (\citet{DBLP:conf/birthday/BlancLM05} discuss the
+standard counterexample).
+%
+We could recover confluence by specifying reduction under binders,
+either generally or in a more restricted form where only closed
+sub-expressions are
+reduced \cite{DBLP:journals/tcs/CagmanH98,DBLP:conf/birthday/BlancLM05,levy1999explicit},
+but reduction under binders is at odds with the standard approaches
+used in implementing programming
+languages \cite{DBLP:conf/birthday/BlancLM05}.
+%
+A more satisfying approach is to consider confluence modulo equality \cite{Huet:1980ng}. 
+%
+The simplest approach restricts our interest to top-level expressions
+of base type that result in values, in which case the following
+special case of confluence does hold (trivially when the only base
+type has a single value, but also more generally for other base
+types).
 \begin{lem}[Base Confluence]
   If $\hasType{\Delta}{\emptyset}{\dexp}{b}$ and 
   $\multiStepsTo{\dexp}{\dexp_1}$
@@ -923,11 +1032,33 @@ We can then prove the following property, which establishes that fill-and-resume
   \end{proof}
 \end{thm}
 
-The proofs are outlined in Appendix~\ref{sec:hole-filling}, along with a number of other necessary lemmas and definitions. In particular, we need additional machinery to properly handle the situation where we have filled a non-empty hole where a step had taken place in the original evaluation. These proofs and definitions are not included in the mechanization for two reasons. First, fill-and-resume is an optimization, and as just discussed, these properties, unlike those in Sec.~\ref{sec:calculus}, would not be conserved by some reasonable extensions of the core calculus. Second, it would require a significantly more complex representation of hole environments to encode the hole filling operation. Under the simple representation that suffices for the developments in Sec.~\ref{sec:calculus}, Agda cannot be convinced that the definition is well-founded (\citet{Nanevski2008} establish that it is in fact well-founded).
+We outline the proofs in Appendix~\ref{sec:hole-filling}, along with a
+number of other necessary lemmas and definitions.
+%
+In particular, additional machinery handles the situation wherein a
+now-filled non-empty hole had taken a step in the original evaluation.
 
-Hole filling in the external language is understood in terms of hole filling in its expansion. Note that in practice, it may be useful to cache results from several previous expansions. For example, consider two edits, the first filling a hole $u$ with the number $2$, and the next applying the $+$ operator, resulting in $2 + \dehole{v}{\sigma}{}$. This second edit is not a hole filling edit with respect to the immediately preceding edit state, but it can be understood as filling hole $u$ with $2 + \dehole{v}{\sigma}{}$. Another related case arises in lab notebook interfaces like that of Jupyter/IPython \cite{PER-GRA:2007}. In this case, each cell can be understood as a series of \li{let} bindings ending in a hole, which is filled by the next cell. The result from each cell can be cached to avoid recomputing the environment from preceding cells. This contextual modal interpretation of lab notebook cells (and read-eval-print loops as a restricted case where edits to previous cells are impossible) is novel.
+\matt{We could (should?) move the next paragraph to the appendix, 
+before/after the proofs mentioned above; 
+its not really adding much to the discussion above, 
+but may be interesting to the very studious reader/prover}
 
-So far, we have understood hole filling as an extralinguistic operation. However, a key feature CMTT that we have not yet touched on is the \emph{internalization} of metavariable binding and contextual substitution via the contextual modal types, $[\hGamma]\htau$, which are introduced by the operation $\mathsf{box}(\hGamma.d)$ and eliminated by the operation $\mathsf{letbox}(d_1, u.d_2)$. A hole filling can be interpreted as an expression of contextual modal type, and the act of hole filling followed by evaluation to the next possibly-indeterminate edit state as evaluation under the binder of a suitable $\mathsf{letbox}$ construct, which is enabled by the dynamic semantics in Sec.~\ref{sec:calculus}. This interpretation allows us to \emph{compute} hole fillings, rather than simply stating them, by specifying non-trivial expressions of modal type. This could serve as the basis for a \emph{live} computational hole refinement system, extending the capabilities of purely static hole refinement systems like those available in some proof assistants, e.g. the elaborator reflection system of Idris \cite{brady2013idris,DBLP:conf/icfp/ChristiansenB16} and the tactic system\todo{right? read a bit more}{} of Beluga \cite{DBLP:conf/flops/Pientka10,pientka2015inductive}. Each applied hole filling serves as a boundary between dynamic \emph{edit stages}. This contextual modal interpretation of live staged hole refinement nicely mirrors the modal interpretation of staged argument evaluation \cite{Davies:2001op}. We leave further development of this interpretation of hole refinement to future work.
+We exclude these proofs and definitions from the Agda mechanization
+for two reasons.
+%
+First, fill-and-resume is merely an optimization, and unlike the meta
+theory of \Secref{sec:calculus}, these properties are generally not
+conserved by certain reasonable extensions of the core
+calculus~(e.g., \matt{such as what?}).
+%
+Second, to properly encode the hole filling operation, such a
+mechanization requires a significantly more complex representation of
+hole environments; unfortunately, Agda cannot be easily convinced that
+the corresponding definition is well-founded (\citet{Nanevski2008}
+establish that it is in fact well-founded).
+%
+By contrast, the developments in \Secref{sec:calculus} do not require
+these more complex (and somewhat problematic) representations.
 
 \begin{comment}
 
