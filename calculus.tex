@@ -791,16 +791,18 @@ indeterminate forms.
 The supplemental material includes our Agda-based
 mechanization  \cite{norell2009dependently,norell:thesis} 
 of the semantics and metatheory of \HazelnutLive, 
-including proofs of all of the theorems stated above and all necessary lemmas\todo{make this so ian!}{}. 
+%including proofs of all of the 
+for the theorems stated above, and all necessary lemmas\todo{make this so ian!}{}. 
 %
 %We choose the 
 %(as did the mechanization of \Hazelnut by \citet{popl-paper}, though only a few definitions are common). 
 %
 %Agda is a good choice because it is designed to explicitly communicate a proof's structure, as is our goal, rather than relying on proof automation. 
 %
-A%gda itself was also an inspiration for this work because it supports holes, albeit in a more limited form than described here (cf. Sec.~\ref{sec:intro}). 
+%Agda itself was also an inspiration for this work because it supports holes, albeit in a more limited form than described here (cf. Sec.~\ref{sec:intro}). 
 %
-The basic approach is standard: we model judgements as 
+%
+Our approach is standard: We model judgements as 
 inductive datatypes, and rules as dependently typed constructors of these judgements\todo{cite something?}{}. 
 %
 We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and encode typing 
