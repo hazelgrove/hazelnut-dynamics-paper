@@ -29,9 +29,13 @@ In this regard, the internal language is analogous to the cast calculus in the g
 \label{sec:external-statics}
 
 
-We start with the type system of the \HazelnutLive
-external language, which closely follows the \Hazelnut type
-system \cite{popl-paper}; we discuss the minor differences as they come up below.
+We start with the type system of the \HazelnutLive external language,
+which closely follows the \Hazelnut type system \cite{popl-paper},
+except that (1) holes in \HazelnutLive each have a \emph{unqiue name},
+and (2) for brievity of exposition, we consider a more austere core
+language here that lacks numbers and sum types, which we discuss
+(along with other systematic extensions) in
+Appendix~\ref{sec:extensions}.
 
 \Figref{fig:bidirectional-typing} defines the type system in the \emph{bidirectional} style 
 %
@@ -58,7 +62,7 @@ bidirectionally is that the programmer need not annotate each hole with a type.
 An empty hole is
 written $\hehole{u}$, where $u$ is a name for the hole, which we tacitly assume is unique.
 %
-Holes in \Hazelnut are \emph{unnamed}.
+%(Holes in \Hazelnut are \emph{unnamed}).
 %
 Rule {SEHole}\todo{rule name macros}{} specifies that an empty hole synthesizes hole type, written $\tehole$.
 %
@@ -90,7 +94,8 @@ For the familiar forms of the lambda calculus, the rules again follow prior work
 %
 For simplicity, the core calculus includes only a single base type~$b$ with a single constant~$c$, governed by Rule {SConst} (i.e. $b$ is the unit type).
 %
-By contrast, \Hazelnut instead defines a number type with a single operation, which we include in Appendix~\ref{sec:extensions} alongside various other standard extensions to the core calculus\todo{do this, say more?}. 
+%\matt{Extraneous and uninteresting:}
+%By contrast, \Hazelnut instead defines a number type with a single operation, which we include in Appendix~\ref{sec:extensions} alongside various other standard extensions to the core calculus\todo{do this, say more?}. 
 %
 Rule {SVar} specifies that variables synthesize the corresponding type from $\hGamma$. 
 
