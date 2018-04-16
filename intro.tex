@@ -11,7 +11,7 @@
 Programmers typically shift back and forth between program editing and evaluation many times before converging upon a program that behaves correctly. 
 Live programming environments support this workflow by interleaving editing and evaluation so as to   
 narrow what \citet{burckhardt2013s} call ``the temporal and perceptive gap'' between these activities.
-% In other words, the goal is to provide continuous feedback about the dynamic behavior of the program, in whole or in part,
+% In other words, the goal \IS to provide continuous feedback about the dynamic behavior of the program, in whole or in part,
 % directly alongside the program text itself.
 
 For example, read-evaluate-print loops (REPLs) and derivatives thereof, like the IPython/Jupyter lab notebooks popular in data science~\cite{PER-GRA:2007}, allow the programmer to edit and immediately execute program fragments organized into a sequence of cells. 
@@ -28,14 +28,14 @@ and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98},
 Editor-integrated debuggers \cite{mccauley2008debugging} and other systems that support editing the state of a running program, like Smalltalk environments \cite{Goldberg:1983cn}, are also live programming environments. 
 Live programming, in its various incarnations \cite{DBLP:journals/vlc/Tanimoto90,DBLP:conf/icse/Tanimoto13}, has been and continues to be an active area of research and development.
 
-The problem that specifically motivates this paper is that programming languages typically assign dynamic meaning only to {complete programs}, i.e. programs that are syntactically well-formed and free of static type and binding errors. A program editor, however, frequently encounters incomplete, and therefore meaningless, editor states. As a result, live feedback either ``flickers in and out'', creating temporal gaps, or it ``goes stale'', i.e. it relies on the most recent complete editor state, creating a perceptive gap because the feedback does not necessarily reflect what the programmer is actually seeing and writing in the editor.\todo{Could put the sentence about ``this is when live feedback would be most useful'' here, but thats an empirical statement that we do not support...}
+The problem that specifically motivates this paper \IS that programming languages typically assign dynamic meaning only to {complete programs}, i.e. programs that are syntactically well-formed and free of static type and binding errors. A program editor, however, frequently encounters incomplete, and therefore meaningless, editor states. As a result, live feedback either ``flickers in and out'', creating temporal gaps, or it ``goes stale'', i.e. it relies on the most recent complete editor state, creating a perceptive gap because the feedback does not necessarily reflect what the programmer \IS actually seeing and writing in the editor.\todo{Could put the sentence about ``this \IS when live feedback would be most useful'' here, but thats an empirical statement that we do not support...}
 
-In some cases these gaps are momentary, like while the programmer is entering a short expression. In other cases, these gaps can persist over substantial lengths of time, such as when there are many branches of a case analysis whose bodies are initially left blank, or when the programmer makes a mistake (so they arise somewhat more frequently for novice programmers \cite{mccauley2008debugging,fitzgerald2008debugging}). The problem is particularly pronounced in languages with rich static type systems, where certain program changes, such as a change to a type definition, can cause type errors to propagate throughout the program. Throughout the process of addressing these errors, the program text remains formally meaningless. 
+In some cases these gaps are momentary, like while the programmer \IS entering a short expression. In other cases, these gaps can persist over substantial lengths of time, such as when there are many branches of a case analysis whose bodies are initially left blank, or when the programmer makes a mistake (so they arise somewhat more frequently for novice programmers \cite{mccauley2008debugging,fitzgerald2008debugging}). The problem \IS particularly pronounced in languages with rich static type systems, where certain program changes, such as a change to a type definition, can cause type errors to propagate throughout the program. Throughout the process of addressing these errors, the program text remains formally meaningless. 
 Overall, an analysis of edits performed by Java programmers using Eclipse found that about 40\% of edit states were malformed \cite{popl-paper,6883030} and some additional number, which could not be determined from the data, were well-formed but ill-typed.
 
  % From the perspective of the language definition, these edit states are wholly meaningless, so editor services cannot rely on the same operations and reasoning principles that would be available to, for example, the compiler. 
 
-% Despite these advances, there is a fundamental limitation which hinders
+% Despite these advances, there \IS a fundamental limitation which hinders
 % the full realization of live programming: traditional programming languages
 % cannot evaluate \emph{incomplete programs}, \ie{}, programs that are either
 % syntactically ill-formed, or ill-typed.
@@ -76,7 +76,7 @@ or a structure editor can insert holes fully automatically \cite{popl-paper} (we
 
 For the purposes of live programming, however, a static semantics for incomplete programs does not suffice---%
 we also need a corresponding dynamic semantics for incomplete programs that specifies how to evaluate expressions with holes. 
-Our goal in this paper is to develop just such a dynamic semantics for incomplete functional programs, 
+Our goal in this paper \IS to develop just such a dynamic semantics for incomplete functional programs, 
 based on the static semantics just mentioned.
 
 One approach would be for evaluation to simply stop with an error when it encounters an expression hole.
@@ -84,9 +84,9 @@ This mirrors a workaround that programmers commonly deploy:
 raising an exception when the intended expression has yet be determined, e.g. \lismall{raise Unimplemented}. 
 Some languages provide more concise notation for this interpretation of expression holes, 
 e.g. Scala uses \lismall{???} for missing method bodies 
-and GHC Haskell with the \lismall{-fdefer-typed-holes} or \lismall{-fdefer-ty}\lismall{pe-errors} flags uses \lismall{_u} where \lismall{u} is an optional hole name \cite{GHCWIKI}\todo{fix citation}{}.%
+and GHC Haskell with the \lismall{-fdefer-typed-holes} or \lismall{-fdefer-ty}\lismall{pe-errors} flags uses \lismall{_u} where \lismall{u} \IS an optional hole name \cite{GHCWIKI}\todo{fix citation}{}.%
 \footnote{Without these flags, holes cause compilation to fail. The compiler reports static information about each hole's type and typing context. 
-This is also how holes in proof assistants like Agda \cite{norell:thesis,norell2009dependently} and Idris \cite{brady2013idris} behave.}
+This \IS also how holes in proof assistants like Agda \cite{norell:thesis,norell2009dependently} and Idris \cite{brady2013idris} behave.}
 
 Although better than nothing, this approach of stopping with an exception upon reaching an expression hole has limitations 
 as the basis for a live programming environment because 
@@ -98,12 +98,12 @@ parts of which may not depend at all on the missing or erroneous expression; and
 
 Moreover, we need to be able to run programs containing not only expression holes but also type holes.
 In the static semantics developed by \citet{popl-paper}, the machinery for 
-reasoning statically about type holes is derived from gradual type theory, 
+reasoning statically about type holes \IS derived from gradual type theory, 
 identifying the type hole with the unknown type \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}. 
 To specify our intended dynamic semantics for incomplete programs, then, we can look to the dynamic semantics from
 gradual type theory, which selectively inserts dynamic casts as necessitated by missing type information to maintain type safety. 
-However, this is again somewhat dissatisfying from the perspective of live programming because when a cast fails, evaluation again stops with 
-an exception. As a result, the live programming environment is left unable to provide feedback about even parts 
+However, this \IS again somewhat dissatisfying from the perspective of live programming because when a cast fails, evaluation again stops with 
+an exception. As a result, the live programming environment \IS left unable to provide feedback about even parts 
 of the program that do not depend on the problematic sub-expression (e.g. later cells in a lab notebook).
 
 
@@ -126,7 +126,7 @@ We begin in Sec.~\ref{sec:examples} by detailing the approach informally, with s
 Sec.~\ref{sec:calculus} then abstracts away orthogonal details and makes these intuitions formally precise by detailing the primary contribution of this paper: a core calculus, \HazelnutLive, that supports evaluating incomplete expressions as just outlined, in a manner that admits clean type safety theorems (in particular, a Progress theorem). The semantics of \HazelnutLive borrows machinery from gradual type theory~\cite{DBLP:conf/snapl/SiekVCB15,Siek06a}
 (to handle incomplete types) and contextual modal type theory~\cite{Nanevski2008} (CMTT,
 which provides a logical foundation for hole environment tracking). 
-These non-obvious connections to well-established existing systems help support our claim that this approach is theoretically well-grounded\todo{note that our exposition is self-contained here? or later?}.
+These non-obvious connections to well-established existing systems help support our claim that this approach \IS theoretically well-grounded\todo{note that our exposition \IS self-contained here? or later?}.
 
 Sec.~\ref{sec:agda-mechanization} outlines our mechanization of the core calculus using the Agda proof assistant. 
 Sec.~\ref{sec:implementation} outlines our simple implementation of the core calculus, which implements the live programming features from Sec.~\ref{sec:examples},
@@ -134,11 +134,11 @@ but for the more austere language of Sec.~\ref{sec:calculus}.
 The editor component of this implementation provides a language of structured edit actions, 
 based on the \Hazelnut structure editor calculus developed by \cite{popl-paper}, that guarantees that
 every editor state has some, possibly incomplete, type. 
-Together with the theorems established earlier in Sec.~\ref{sec:calculus}, the result is a proof-of-concept
+Together with the theorems established earlier in Sec.~\ref{sec:calculus}, the result \IS a proof-of-concept
 live functional programming environment where every possible editor state has both non-trivial static and dynamic 
 meaning, i.e. live feedback never ``flickers'' or ``goes out''. 
 The mechanization and the implementation are both available in the supplemental material.
 
-Sec.~\ref{sec:resumption} defines the fill-and-resume feature, which is rooted in the contextual substitution operation from CMTT. We establish the correctness of fill-and-resume with a novel commutativity property and discuss how it provides a semantic interpretation for cells in a live lab notebook environment.
+Sec.~\ref{sec:resumption} defines the fill-and-resume feature, which \IS rooted in the contextual substitution operation from CMTT. We establish the correctness of fill-and-resume with a novel commutativity property and discuss how it provides a semantic interpretation for cells in a live lab notebook environment.
 
 Sec.~\ref{sec:relatedWork} describes related work in more detail and simultaneous discusses directions for future work. Sec.~\ref{sec:discussion} briefly concludes. The appendix includes some straightforward auxiliary definitions and proofs mentioned in the paper, some extensions to the core calculus, and some screenshots and additional details on the implementation. 
