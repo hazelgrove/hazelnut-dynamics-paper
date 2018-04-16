@@ -11,14 +11,14 @@ Grammar (within a single sentence)
 
 - **Use short active sentences, where the subject is close to its verb.**
 
-- Use **singlar** over plural sentence subjects, whenever possible.
+- Use **singular** over plural sentence subjects, whenever possible.
 
 - Use **present tense**; I prefer the phrasing "Hazelnut defines" not
   "Hazelnut defined" --- temporal ordering in "idea space" is
   inherently confusing to a reader that encounters papers in a
   different order than chronologically
 
-- Prefix each greek letter with an English word 'classifier',
+- Prefix each Greek letter with an English word 'classifier',
   e.g., `expression~$e$`, not just `$e$`.
 
 
@@ -71,15 +71,43 @@ Multi-sentence and paragraph structure
  paragraph, as I did below).
 
 
-Paper structure: Intro section
+Paper structure: **Intro** section
 --------------------------------
-TODO
+Evan's "intro recipe":
+ 1. **What** is the problem we are attacking?
+ 2. **Why** is it important to address this problem?
+ 3. **What else** _follows_ from solving this problem?
 
 Paper structure: Overview section
 -----------------------------------
-TODO
 
+- Summary of overview structure:
+  1. Explain an example program.
+  2. Explain the challenges posed by example program.
+  3. Explain how the paper's approach addresses each challenge.
 
+- In part 1, some cases, a _progression_ of worked examples may be
+  more appropriate than a single example.  For instance, such a
+  progression helps if the paper is proposing a new programming model,
+  rather than some analysis or verification approach for an existing
+  programming model.
+
+- In part 2, separate **challenges** of the example (as introduced in
+  Intro) from the **approach** that addresses these challenges.  Avoid
+  touring both of these aspects together.  Rather, the section should
+  re-establish the challenges (recalling material from Intro).
+  Afterward, the section should introduce details about the paper's
+  approach, one by one, as they address the challenges.
+
+- In part 3, the discussion of *how* the system works ideally results
+  in a "**worked example**": An example program that demonstrates, in
+  concrete terms (not abstract ones), how the approach applies.
+  
+- The end of part 3 summaries the challenges and approach, and in so
+  doing, it ties the concrete details of the worked example to the
+  _general_ approach, which is the subject of the paper's technical
+  section(s); these technical sections immediately follow the overview
+  section.
 
 Latex-specific
 -----------------
