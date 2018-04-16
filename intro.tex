@@ -28,9 +28,16 @@ and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98},
 Editor-integrated debuggers \cite{mccauley2008debugging} and other systems that support editing the state of a running program, like Smalltalk environments \cite{Goldberg:1983cn}, are also live programming environments. 
 Live programming, in its various incarnations \cite{DBLP:journals/vlc/Tanimoto90,DBLP:conf/icse/Tanimoto13}, has been and continues to be an active area of research and development.
 
-The problem that specifically motivates this paper \IS that programming languages typically assign dynamic meaning only to {complete programs}, i.e. programs that are syntactically well-formed and free of static type and binding errors. A program editor, however, frequently encounters incomplete, and therefore meaningless, editor states. As a result, live feedback either ``flickers in and out'', creating temporal gaps, or it ``goes stale'', i.e. it relies on the most recent complete editor state, creating a perceptive gap because the feedback does not necessarily reflect what the programmer \IS actually seeing and writing in the editor.\todo{Could put the sentence about ``this \IS when live feedback would be most useful'' here, but thats an empirical statement that we do not support...}
+%The problem that specifically motivates this paper \IS that
+Meanwhile,
+programming languages typically assign dynamic meaning only to {complete programs}, i.e. programs that are syntactically well-formed and free of static type and binding errors. A program editor, however, frequently encounters incomplete, and therefore meaningless, editor states. As a result, live feedback either ``flickers in and out'', creating temporal gaps, or it ``goes stale'', i.e. it relies on the most recent complete editor state, creating a perceptive gap because the feedback does not necessarily reflect what the programmer \IS actually seeing and writing in the editor.\todo{Could put the sentence about ``this \IS when live feedback would be most useful'' here, but thats an empirical statement that we do not support...}
 
-In some cases these gaps are momentary, like while the programmer \IS entering a short expression. In other cases, these gaps can persist over substantial lengths of time, such as when there are many branches of a case analysis whose bodies are initially left blank, or when the programmer makes a mistake (so they arise somewhat more frequently for novice programmers \cite{mccauley2008debugging,fitzgerald2008debugging}). The problem \IS particularly pronounced in languages with rich static type systems, where certain program changes, such as a change to a type definition, can cause type errors to propagate throughout the program. Throughout the process of addressing these errors, the program text remains formally meaningless. 
+In some cases these gaps are momentary, like while the programmer
+%\IS entering
+enters
+a short expression. In other cases, these gaps can persist over substantial lengths of time, such as when there are many branches of a case analysis whose bodies are initially left blank, or when the programmer makes a mistake (so they arise somewhat more frequently for novice programmers \cite{mccauley2008debugging,fitzgerald2008debugging}).
+%
+The problem \IS particularly pronounced in languages with rich static type systems, where certain program changes, such as a change to a type definition, can cause type errors to propagate throughout the program. Throughout the process of addressing these errors, the program text remains formally meaningless. 
 Overall, an analysis of edits performed by Java programmers using Eclipse found that about 40\% of edit states were malformed \cite{popl-paper,6883030} and some additional number, which could not be determined from the data, were well-formed but ill-typed.
 
  % From the perspective of the language definition, these edit states are wholly meaningless, so editor services cannot rely on the same operations and reasoning principles that would be available to, for example, the compiler. 
@@ -75,8 +82,11 @@ or semi-automatically via code completion techniques \cite{Amorim2016},
 or a structure editor can insert holes fully automatically \cite{popl-paper} (we say more about this technique in Sec.~\ref{sec:implementation}).
 
 For the purposes of live programming, however, a static semantics for incomplete programs does not suffice---%
-we also need a corresponding dynamic semantics for incomplete programs that specifies how to evaluate expressions with holes. 
-Our goal in this paper \IS to develop just such a dynamic semantics for incomplete functional programs, 
+we also need a corresponding dynamic semantics for incomplete programs that specifies how to evaluate expressions with holes.
+%
+%Our goal in this paper \IS to develop
+This paper develops
+just such a dynamic semantics for incomplete functional programs, 
 based on the static semantics just mentioned.
 
 One approach would be for evaluation to simply stop with an error when it encounters an expression hole.
