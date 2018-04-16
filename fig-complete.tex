@@ -93,3 +93,11 @@
 \caption{Complete types, external expressions, and internal expressions}
 \label{fig:complete}
 \end{figure}
+
+When two types are complete and consistent, they are equal.
+
+\begin{lem}[Complete Consistency] If $\tconsistent{\htau_1}{\htau_2}$ an $\isComplete{\htau_1}$ and $\isComplete{\htau_2}$ then $\htau_1 = \htau_2$. 
+\end{lem}
+\begin{proof} By straightforward rule induction. \end{proof}
+
+This implies that in a well-typed internal expression, every cast is an identity cast.

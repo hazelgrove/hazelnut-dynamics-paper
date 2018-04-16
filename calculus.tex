@@ -21,7 +21,7 @@ We take this approach, notably also taken in the ``redefinition'' of Standard ML
 (2) we need additional syntactic machinery during evaluation for tracking hole closures and dynamic type casts. 
 This machinery is inserted by the expansion step, rather than entered explicitly by the programmer. 
 In this regard, the internal language is analogous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects. We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently} 
-(see Sec.~\ref{sec:agda-mechanization}). Rule names, written \rulename{SVar}, correspond to the names used in the mechanization. We have also implemented \HazelnutLive in a manner that maintains a novel end-to-end well-definedness invariant (see Sec.~\ref{sec:implementation}).
+(see Sec.~\ref{sec:agda-mechanization}). Rule names, e.g. \rulename{SVar}, correspond to the names used in the mechanization. We have also implemented \HazelnutLive in a manner that maintains a novel end-to-end well-definedness invariant (see Sec.~\ref{sec:implementation}).
 
 % \rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
 % ITGround, and ITExpand. that's not many, and those rules don't look much more
@@ -190,7 +190,7 @@ For example, we can derive that $\expandAna{\hGamma}{c}{\tehole}{c}{b}{\emptyset
 
 Before describing the rules in detail, let us state two other guiding theorems. 
 The following theorem establishes that an expansion exists for every well-typed external expression. 
-The mechanization also establishes when an expansion exists, it is unique (not shown).
+The mechanization also establishes that ywhen an expansion exists, it is unique (not shown).
  \begin{thm}[Expandability] \label{thm:expandability}~
   \begin{enumerate}[nolistsep]
     \item
@@ -448,7 +448,7 @@ application expansion rules, including the original account of \citet{Siek06a}.
 \label{sec:evaluation}
 
 To recap, the result of expansion is a well-typed internal expression with appropriately initialized hole closures and casts. 
-We can now specify, in Figures~\ref{fig:isGround}-\ref{fig:step}, the dynamic semantics of \HazelnutLive as a ``small-step'' transition system equipped with a meaningful notion of type safety even for incomplete programs, i.e. expressions typed under a non-empty hole context, $\Delta$. 
+This section specifies the dynamic semantics of \HazelnutLive as a ``small-step'' transition system over internal expressions equipped with a meaningful notion of type safety even for incomplete programs, i.e. expressions typed under a non-empty hole context, $\Delta$. 
 We establish that evaluation does not stop immediately when it encounters a hole, nor when a cast fails, by precisely characterizing when evaluation \emph{does} stop. 
 We also establish that an essentially standard notion of type safety holds when running complete programs. 
 
@@ -468,22 +468,23 @@ We say more after discussing type safety below.\todo{do this, or change to relat
 
 
 
-The dynamic semantics consists of ,
+Figures~\ref{fig:isGround}-\ref{fig:step} specify the dynamic semantics. 
 %
-where cast-related machinery closely follows the cast calculus from
+Most of the cast-related machinery closely follows the cast calculus from
 the ``refined'' account of the gradually typed lambda calculus
 by \citet{DBLP:conf/snapl/SiekVCB15}, which is known to be
-theoretically well-behaved.
+theoretically well-behaved. 
 %
 In particular, \Figref{fig:isGround} defines the judgement
 $\isGround{\htau}$, which distinguishes the base type~$b$ and the
-least specific arrow type~$\tarr{\tehole}{\tehole}$, as \emph{ground
-types}; this judgement helps simplify the treatment of function casts.
+least specific arrow type~$\tarr{\tehole}{\tehole}$ as \emph{ground
+types}; this judgement helps simplify the treatment of function casts, discussed below.
+
 %
 \Figref{fig:isFinal} defines the judgement $\isFinal{d}$, which
-distinguishes the final forms of the transition system.
+distinguishes the final, i.e. irreducible, forms of the transition system.
 %
-There are two classes of final forms: (possibly-)boxed values and
+The two rules distinguish two classes of final forms: (possibly-)boxed values and
 indeterminate forms.%
 %
 \footnote{
@@ -491,36 +492,35 @@ indeterminate forms.%
         are distinguished with separate grammars together with an
         implicit identification convention.
         %
-        Our judgmental formulation is more faithful to the mechanization and
+        Our judgemental formulation is more faithful to the mechanization and
         cleaner for our purposes, because we are distinguishing several
         classes of final forms.
 }
-
-
 The judgement $\isBoxedValue{d}$ defines (possibly-)boxed values as
 either ordinary values~(Rule~\rulename{BVVal}), or one of two cast forms: casts
-between function types (except identity casts) and casts from a ground
-type to the hole type. In each case, the cast operates on a boxed
+between disequal function types and casts from a ground
+type to the hole type. In each case, the cast must appear inductively on a boxed
 value.
+These forms are irreducible because they represent values that have been boxed 
+but have never flowed into a corresponding ``unboxing'' operation, discussed below. 
 %
 %, which correspond to the values from the cast calculus and include
 %the classic values from the lambda calculus, distingui%shed by
 %$\isValue{d}$,
 %
 The judgement $\isIndet{d}$ defines \emph{indeterminate} forms, so
-named because they arise from the presence of expression holes and
-failed casts in a program, and so, conceptually, their ultimate value
+named because they are rooted at expression holes and
+failed casts, and so, conceptually, their ultimate value
 awaits programmer action (see Sec.~\ref{sec:resumption}).
 %
-The first two rules specify that \emph{empty} hole closures are always
-indeterminate, and that \emph{non}-empty hole closures are indeterminate when
-they consist of a \emph{final} inner expression.
+The first two rules specify that {empty} hole closures are always
+indeterminate, and that {non}-empty hole closures are indeterminate when
+they consist of a {final} inner expression.
 %
-Below, we discuss the the remaining indeterminate forms simultaneously
-with the corresponding transition rules, also discussed
-below.\todo{relationship to weak head normal forms}
+Below, we describe failed casts and the remaining indeterminate forms simultaneously
+with the corresponding transition rules.\todo{relationship to weak head normal forms}
 
-The transition rules are defined in Fig.~\ref{fig:instruction-transitions}-\ref{fig:step}.
+Figures~\ref{fig:instruction-transitions}-\ref{fig:step} define\todo{use define instead of specify everywhere?}{} the transition rules. 
 %
 Top-level transitions are \emph{steps}~$\stepsToD{}{d}{d'}$, governed by Rule~\rulename{Step} in \Figref{fig:step}, which
 %
@@ -528,10 +528,10 @@ Top-level transitions are \emph{steps}~$\stepsToD{}{d}{d'}$, governed by Rule~\r
 %
 (2) takes an \emph{instruction transition}, $\reducesE{}{d_0}{d_0'}$, as specified in \Figref{fig:instruction-transitions};
 %
-and (3) places $d_0'$ back in the selected position, indicated in
-the evaluation context by the \emph{mark}~$\evalhole$, to obtain $d'$.%
+and (3) places $d_0'$ back at the selected position, indicated in
+the evaluation context by the \emph{mark}, $\evalhole$, to obtain $d'$.%
 \footnote{
-        We say ``mark'' here to avoid confusion with the (orthogonal) ``holes'' of \HazelnutLive.
+        We say ``mark'', rather than the more conventional ``hole'', to avoid confusion with the (orthogonal) holes of \HazelnutLive.
         %
         %the form $\evalhole$ in the grammar of
         %evaluation contexts is referred to as the \emph{hole}, but
@@ -539,13 +539,16 @@ the evaluation context by the \emph{mark}~$\evalhole$, to obtain $d'$.%
         %holes of this paper, so we use the term ``mark'' instead.
         }
 %
-
 %% \matt{Next paragraph can be dropped entirely for space}
 %% %
-%% This approach was originally developed in the reduction semantics of \citet{DBLP:journals/tcs/FelleisenH92} and is the predominant style of operational semantics in the literature on gradual typing. 
-%% Because we distinguish final forms judgementally, rather than syntactically, we use a judgemental formulation of this approach called a \emph{contextual dynamics} by \citet{pfpl}. 
-%% It would be straightforward to derive an equivalent structural operational semantics \cite{DBLP:journals/jlp/Plotkin04a} by using search rules instead of evaluation contexts (\citet{pfpl} relates the two approaches).
-%% \todo{Put the search rules in the appendix?}{}
+This approach was originally developed in the reduction semantics of \citet{DBLP:journals/tcs/FelleisenH92} and is the predominant style of operational semantics in the literature on gradual typing. 
+Because we distinguish final forms judgementally, rather than syntactically, we use a judgemental formulation of this approach called a \emph{contextual dynamics} by \citet{pfpl}. 
+It would be straightforward to construct an equivalent structural operational semantics \cite{DBLP:journals/jlp/Plotkin04a} by using search rules instead of evaluation contexts (\citet{pfpl} relates the two approaches).
+
+The rules take care to maintain the property that final expressions cannot take a step.%
+\todo{prove this as stated from Ian's disjointness proofs}{}%
+\begin{thm}[Finality] There does not exist $d$ such that both $\isFinal{d}$ and $\stepsToD{}{d}{d'}$ for some $d'$.
+\end{thm}
 
 %% \input{fig-dynamics-steps}
 
@@ -557,12 +560,16 @@ standard beta reduction transition.
 The bracketed premises of the form $\maybePremise{\isFinal{\dexp}}$ in
 Fig.~\ref{fig:instruction-transitions}-\ref{fig:step} may be \emph{included}
 to specify an eager, left-to-right evaluation strategy, or \emph{excluded} to
-leave the evaluation order unspecified.
+leave the evaluation strategy and order unspecified.
 %
-In our metatheory, we use the latter version of the rules, both for
-the sake of generality, and to support fill-and-resume~(\Secref{sec:resumption}).
+In our metatheory, we exclude these premises, both for
+the sake of generality, and to support the specification of the fill-and-resume operation~(see \Secref{sec:resumption}).
 
-A substitution~$[d/x]d'$ operates in the standard capture-avoiding manner~\cite{pfpl}. 
+
+\input{fig-ground-types}
+\input{fig-dynamics-aux}
+
+Substitution, written $[d/x]d'$, operates in the standard capture-avoiding manner~\cite{pfpl} (see Appendix~\ref{sec:additional-defns}).
 %
 The only cases of special interest arise when substitution reaches a hole closure:
 \[
@@ -571,29 +578,26 @@ The only cases of special interest arise when substitution reaches a hole closur
   \substitute{d}{x}{\dhole{d'}{u}{\sigma}{}} & = & \dhole{[d/x]d'}{u}{[d/x]\sigma}{}
 \end{array}
 \]
-In both cases, we write~$[d/x]\sigma$ to perform substitution on each expression in the hole environment~$\sigma$. 
+In both cases, we write~$[d/x]\sigma$ to perform substitution on each expression in the hole environment~$\sigma$, i.e. the environment ``records'' the substitution. 
 %
 For example, $\stepsToD{}
     {\hap{(\halam{x}{b}{\halam{y}{b}{\dehole{u}{[x/x, y/y]}{}}})}{c}}
     {\halam{y}{b}{\dehole{u}{[c/x, y/y]}{}}}$. 
 %
-Reduction may duplicate hole closures, just as with any other substituted term;
+Beta reduction can duplicate hole closures.
 %
-consequently, the environments of different closures for the same hole name may differ, 
-e.g., when an reduction applies a function with a hole closure body multiple times.%
+Consequently, the environments of different closures with the same hole name may differ, 
+e.g., when an reduction applies a function with a hole closure body multiple times as in Fig.~\ref{fig:grades-example}.%
 \todo{show example here or refer back to sec 2?}{} 
 %
 Hole closures may also appear within the environments of other hole
 closures, giving rise to the closure paths described in
 Sec.~\ref{sec:paths}\todo{where?}{}.
 
-\input{fig-ground-types}
-\input{fig-dynamics-aux}
-
 
 
 The ITBeta rule is not the only rule we need to handle function
-application, because lambdas merely one (final) form of arrow type.
+application, because lambdas are not the only final form of arrow type.
 %
 Two other situations may also arise.
 
@@ -618,28 +622,22 @@ where arrow cast conversion is not applicable,
 e.g. $\hap{(\dehole{u}{\sigma}{})}{c}$.
 %
 In this case, the application is indeterminate (Rule~\rulename{IAp}
-in \Figref{fig:isFinal}), and the application's reduction reduces no
-further.
+in \Figref{fig:isFinal}), and the application reduces no
+further.\todo{mention WHNF here?}
 
 \input{fig-dynamics-contexts}
 
-The rules take care to maintain the following property, which establishes that expressions that step are not final, and that final expressions do not step.%
-\todo{prove this as stated from Ian's disjointness proofs}{}%
-\todo{do we need a typing premise?}{}
-\begin{thm}[Finality] There does not exist $d$ such that both $\isFinal{d}$ and $\stepsToD{}{d}{d'}$ for some $d'$.
-\end{thm}
-
 \subsubsection{Casts}
 Rule \rulename{ITCastId} drops identity casts. The remaining instruction
-transition rules assign meaning to non-trivial casts.
+transition rules assign meaning to non-identity casts. 
 %
 As discussed in Sec.~\ref{sec:cast-insertion}, the structure of a term
 cast to hole type is statically obscure,
 %
 so we must wait for \emph{use} of the term at some other type, via a
-cast away from hole type, to detect dynamic type errors.
+cast away from hole type, to detect the type error dynamically.
 %
-Rules {ITCastSucceed} and {ITCastFail} handle this situation when the
+Rules \rulename{ITCastSucceed} and \rulename{ITCastFail} handle this situation when the
 two types involved are ground types (Fig.~\ref{fig:isGround}).
 %
 If the two ground types are equal, then the cast succeeds and the cast
@@ -653,15 +651,12 @@ when $d$ has ground type $\tau_1$ and $\tau_2$ is a ground type
 disequal to $\tau_1$.
 %
 Rule \rulename{IFailedCast} specifies that a failed cast operates as an
-indeterminate form once $d$ is final.
-%
-This rule allows evaluation to proceed after cast failure, much as
-with hole closures.
+indeterminate form (once $d$ is final), i.e. evaluation does not stop.\todo{talk about blame somewhere}{}
 
-Rules {TAFailedCast} and {IFailedCast} each operate at ground type. 
+Rules \rulename{TAFailedCast} and \rulename{IFailedCast} each operate at ground type. 
 %
 The two remaining instruction transition rules, Rule~\rulename{ITGround}
-and~{ITExpand}, insert intermediate casts from non-ground type to a
+and~\rulename{ITExpand}, insert intermediate casts from non-ground type to a
 consistent ground type, and \emph{vice versa}.
 %
 These rules serve as technical devices, permitting us to restrict our
@@ -671,29 +666,29 @@ Here, the only non-ground types are the arrow types, so the grounding
 judgement~$\groundmatch{\tau_1}{\htau_2}$ (\Figref{fig:groundmatch}),
 produces the ground arrow type~$\tarr{\tehole}{\tehole}$.
 %
-More generally, this judgement is governed by the following invariant:
+More generally, the following invariant governs this judgement.
 \begin{lem}[Grounding] 
-  If $\groundmatch{\htau}{\htau'}$
-  then $\isGround{\htau'}$
-  and $\tconsistent{\htau}{\htau'}$
-  and $\htau\neq\htau'$.
+  If $\groundmatch{\htau_1}{\htau_2}$
+  then $\isGround{\htau_2}$
+  and $\tconsistent{\htau_1}{\htau_2}$
+  and $\htau_1\neq\htau_2$.
 \end{lem}
 
-In all other cases, casts either consist of boxed values or
-indeterminate terms according to the remaining rules
+In all other cases, casts evaluate either to boxed values or to 
+indeterminate forms according to the remaining rules
 in \Figref{fig:isFinal}.
 %
 In particular, Rule \rulename{ICastHoleGround} handles casts that are not of
 the form $\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}$, from hole to
 ground type.
 %
-In the cast calculus, since the only canonical form of type $\tehole$
-is $\dcasttwo{\dexp}{\htau_1}{\tehole}$, there exist no such
-irreducible terms.
+(In the cast calculus, there exist no such
+irreducible terms; the only canonical form of type $\tehole$
+is $\dcasttwo{\dexp}{\htau_1}{\tehole}$.)
 
 \subsubsection{Type Safety} 
 %
-Type safety establishes that the static and dynamic semantics of a
+The purpose of establishing type safety is to ensure that the static and dynamic semantics of a
 language cohere.
 %
 We follow the approach developed by \citet{wright94:_type_soundness},
@@ -703,7 +698,7 @@ properties, preservation and progress.
 To permit the evaluation of incomplete programs, we establish these
 properties for terms typed under arbitrary hole context $\Delta$.
 %
-We assume an empty context for~$\hGamma$; to run open programs, the
+We assume an empty typing context, $\hGamma$; to run open programs, the
 system may treat free variables as empty holes with a corresponding
 name.
 
@@ -737,7 +732,7 @@ necessary rules or premises.
 \end{thm}
 \noindent
 The key to establishing the progress theorem under a non-empty hole
-context consists of explicitly accounting for indeterminate forms,
+context is to explicitly account for indeterminate forms,
 i.e. those rooted at either a hole closure or a failed cast.
 %
 The proof relies on canonical forms lemmas stated in
@@ -750,7 +745,7 @@ to know that its machinery does not interfere
 with reasoning about the behavior of \emph{complete} programs, i.e. those
 with no holes.
 %
-Appendix~\ref{sec:additional-defns} defines complete programs via judgements~$\isComplete{e}$ and~$\isComplete{d}$. 
+Appendix~\ref{sec:additional-defns} defines the judgements~$\isComplete{e}$ and~$\isComplete{d}$. 
 %
 Failed casts cannot appear in complete internal expressions. 
 %
@@ -768,7 +763,7 @@ The following theorem establishes that expansion preserves program completeness.
   \end{enumerate}
 \end{thm}
 
-The following preservation theorem establishes that stepping preserves program completeness.\todo{can we do complete preservation without the typing assumption?}
+The following preservation theorem establishes that stepping preserves program completeness.
 \begin{thm}[Complete Preservation]
   If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
   and $\isComplete{\dexp}$
@@ -810,7 +805,8 @@ The supplemental material includes our Agda-based
 mechanization  \cite{norell2009dependently,norell:thesis} 
 of the semantics and metatheory of \HazelnutLive, 
 %including proofs of all of the 
-including the theorems stated above, and all necessary lemmas\todo{make this so ian!}{}. 
+including the theorems stated above and necessary lemmas.
+We take as assumptions only a few standard properties of general hypothetical judgements and finite maps.\todo{what about hole disjointness}
 %
 %We choose the 
 %(as did the mechanization of \Hazelnut by \citet{popl-paper}, though only a few definitions are common). 
@@ -820,11 +816,11 @@ including the theorems stated above, and all necessary lemmas\todo{make this so 
 %Agda itself was also an inspiration for this work because it supports holes, albeit in a more limited form than described here (cf. Sec.~\ref{sec:intro}). 
 %
 %
-Our approach is standard: We model judgements as 
+Our approach is standard: we model judgements as 
 inductive datatypes, and rules as dependently typed constructors of these judgements\todo{cite something?}{}. 
 %
 We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and encode typing 
-contexts, hole contexts and hole environments using metafunctions.\todo{say something about axioms?}{}
+contexts, hole contexts and hole environments using metafunctions.\todo{say something about funext?}{}
 
 \subsection{Implementation}\label{sec:implementation}
 
