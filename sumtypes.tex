@@ -1,3 +1,4 @@
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
 %%%%%%% Syntax
 We extend the syntax for sum types as follows:
 \[
@@ -18,6 +19,7 @@ We extend the syntax for sum types as follows:
 \end{array}
 \]
 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
 %%%%%%% Definition of Join: a meta-level, binary function over types.
 
 %\newcommand{\JoinTypes}[2]{\textsf{join}~~#1~~#2}
@@ -65,8 +67,8 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 \end{proof}
 \end{thm}
 
-%%%%%%% 
-\vspace*{5mm}
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+\vsepRule
 
 \judgbox
  {\summatch{\htau}{\tsum{\htau_1}{\htau_2}}}
@@ -77,8 +79,8 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 \inferrule[]{~}{\summatch{\tehole}{\tsum{\tehole}{\tehole}}}
 \end{mathpar}
 
-%%%%%%%%%%
-\vspace*{5mm}
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+\vsepRule
 
 \judgbox
   {\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}}
@@ -125,4 +127,200 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
             }
 \end{mathpar}
 
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+
+\judgbox{\hasType{\Delta}{\hGamma}{\dexp}{\htau}}{$\dexp$ is assigned type $\htau$}
+\begin{mathpar}
+\inferrule[]{
+  \hasType{\Delta}{\hGamma}{\dexp}{\htau_1}
+}{
+  \hasType{\Delta}{\hGamma}{\dinL{\tau_2}{\dexp}}{\tsum{\htau_1}{\htau_2}}
+}
+
+\inferrule[]{
+  \hasType{\Delta}{\hGamma}{\dexp}{\htau_2}
+}{
+  \hasType{\Delta}{\hGamma}{\dinR{\tau_1}{\dexp}}{\tsum{\htau_1}{\htau_2}}
+}
+
+\inferrule[]{
+  \hasType{\Delta}{\hGamma}{\dexp_1}{\tsum{\htau_1}{\htau_2}}
+  \\
+  \hasType{\Delta}{\hGamma,x:\htau_1}{\dexp_2}{\htau}
+  \\  
+  \hasType{\Delta}{\hGamma,y:\htau_2}{\dexp_3}{\htau}
+}{
+  \hasType{\Delta}{\hGamma}{\dcase{\dexp_1}{x}{\dexp_2}{y}{\dexp_3}}{\htau}
+}
+\end{mathpar}
+
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+  
+\judgbox{\isValue{\dexp}}{$\dexp$ is a value}
+\begin{mathpar}
+\inferrule[]
+{\isValue{\dexp}}
+{\isValue{\dinL{\htau}{\dexp}}}
+
+\inferrule[]
+{\isValue{\dexp}}
+{\isValue{\dinR{\htau}{\dexp}}}
+\end{mathpar}
+
+\vsepRule
+
+\judgbox{\isGround{\htau}}{$\htau$ is a ground type}
+\begin{mathpar}
+\inferrule[]{~}{
+  \isGround{\tsum{\tehole}{\tehole}}
+}
+\end{mathpar}
+
+\vsepRule
+
+\judgbox{\isBoxedValue{\dexp}}{$\dexp$ is a boxed value}
+\begin{mathpar}
+\inferrule[]
+{\isBoxedValue{\dexp}}
+{\isBoxedValue{\dinL{\htau}{\dexp}}}
+
+\inferrule[]
+{\isBoxedValue{\dexp}}
+{\isBoxedValue{\dinR{\htau}{\dexp}}}
+
+\inferrule[]
+{\tsum{\htau_1}{\htau_2} \ne 
+ \tsum{\htau_1'}{\htau_2'}
+ \\
+ \isBoxedValue{\dexp}
+}
+{\isBoxedValue{\dcasttwo{\dexp}
+    {\tsum{\htau_1}{\htau_2}}
+    {\tsum{\htau_1'}{\htau_2'}}
+}}
+\end{mathpar}
+
+\vsepRule
+
+\judgbox{\isIndet{\dexp}}{$\dexp$ is indeterminate}
+\begin{mathpar}
+\inferrule[]
+{\isIndet{\dexp}}
+{\isIndet{\dinL{\htau}{\dexp}}}
+
+\inferrule[]
+{\isIndet{\dexp}}
+{\isIndet{\dinR{\htau}{\dexp}}}
+
+\inferrule[]
+{\tsum{\htau_1}{\htau_2} \ne 
+ \tsum{\htau_1'}{\htau_2'}
+ \\
+ \isIndet{\dexp}
+}
+{\isIndet{\dcasttwo{\dexp}
+    {\tsum{\htau_1}{\htau_2}}
+    {\tsum{\htau_1'}{\htau_2'}}
+}}
+
+\inferrule[]
+{
+  \dexp_1 \ne \dinL{\tau}{\dexp_1'}
+  \\
+  \dexp_1 \ne \dinR{\tau}{\dexp_1'}
+  \\
+  \dexp_1 \ne \dcasttwo{\dexp_1'}{\tsum{\htau_1}{\htau_2}}{\tsum{\htau_1'}{\htau_2'}}
+  \\
+  \isIndet{\dexp_1}
+}  
+{
+  \dcase{\dexp_1}{x}{\dexp_2}{y}{\dexp_3}
+}
+\end{mathpar}
+
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+
+\judgbox{\isevalctx{\evalctx}}{$\evalctx$ is an evaluation context}
+\begin{mathpar}
+\inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinL{\htau}{\evalctx}}}
+\and
+\inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinR{\htau}{\evalctx}}}
+\and
+\inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dcase{\evalctx}{x}{\dexp_1}{y}{\dexp_2}}}
+\end{mathpar}
+
+\judgbox{\selectEvalCtx{\dexp}{\evalctx}{\dexp'}}{$\dexp$ is obtained by placing $\dexp'$ at the mark in $\evalctx$}
+\begin{mathpar}
+\inferrule[]
+{\selectEvalCtx{\dexp_1}{\evalctx}{\dexp_1'}}
+{\dcase{\dexp_1}{x}{\dexp_2}{y}{\dexp_3}}
+\end{mathpar}
+
+\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
+\begin{mathpar}
+\inferrule[]
+{\maybePremise{\isFinal{\dexp_1}}}
+{\stepsToD{\Delta}
+  {\dcase{\dinL{\dexp_1}{\htau}}{x}{\dexp_2}{y}{\dexp_3}}
+  {\DoSubst{\dexp_1}{x}{\dexp_2}}}
+
+\inferrule[]
+{\maybePremise{\isFinal{\dexp_1}}}
+{\stepsToD{\Delta}
+  {\dcase{\dinR{\dexp_1}{\htau}}{x}{\dexp_2}{y}{\dexp_3}}
+  {\DoSubst{\dexp_1}{x}{\dexp_3}}}
+
+\inferrule[]
+{\maybePremise{\isFinal{\dexp_1}}}
+{\stepsToD{\Delta}
+  {\dcase
+    {\dcasttwo{\dexp_1}{\tsum{\tau_1}{\tau_2}}{\tsum{\tau_1'}{\tau_2'}}}
+    {x}{\dexp_2}{y}{\dexp_3}}
+  {\dcase
+    {\dexp_1}
+    {x}{\DoSubst{\dcasttwo{x}{\tau_1}{\tau_1'}}{x}{\dexp_2}}
+    {y}{\DoSubst{\dcasttwo{y}{\tau_2}{\tau_2'}}{y}{\dexp_3}}}
+}
+\end{mathpar}
+
+\judgbox{\groundmatch{\htau}{\htau'}}{$\htau$ has matched ground type $\htau'$}
+\begin{mathpar}
+\inferrule[]{
+  \tsum{\htau_1}{\htau_2}\neq\tsum{\tehole}{\tehole}
+}{
+  \groundmatch{\tsum{\htau_1}{\htau_2}}{\tsum{\tehole}{\tehole}}
+}
+\end{mathpar}
+
+%% \begin{thm}[Canonical value forms--Sums] 
+%% If $\hasType{\Delta}{\EmptyhGamma}{\dexp}{\tsum{\htau}{\htau}}$
+%% and $\isValue{\dexp}$ then either
+%% \begin{enumerate}
+%% \item 
+%% $\dexp = \dinL{\tau_2}{\dexp'}$ 
+%% where $\isValue{\dexp'}$ 
+%% and $\hasType{\Delta}{\EmptyhGamma}{\dexp'}{\htau_1}$
+%% \item
+%% $\dexp = \dinR{\tau_1}{\dexp'}$ 
+%% where $\isValue{\dexp'}$ 
+%% and $\hasType{\Delta}{\EmptyhGamma}{\dexp'}{\htau_1}$
+%% \end{enumerate}
+%% \end{thm}
+
+%% \begin{thm}[Canonical boxed value forms--Sums] 
+%% If $\hasType{\Delta}{\EmptyhGamma}{\dexp}{\tsum{\htau}{\htau}}$
+%% and $\isValue{\dexp}$ then either
+%% \begin{enumerate}
+%% \item 
+%% $\dexp = \dinL{\tau_2}{\dexp'}$ 
+%% where $\isValue{\dexp'}$ 
+%% and $\hasType{\Delta}{\EmptyhGamma}{\dexp'}{\htau_1}$
+%% \item
+%% $\dexp = \dinR{\tau_1}{\dexp'}$ 
+%% where $\isValue{\dexp'}$ 
+%% and $\hasType{\Delta}{\EmptyhGamma}{\dexp'}{\htau_1}$
+%% \end{enumerate}
+%% \end{thm}
+
 %% %%%%%%% 
+
