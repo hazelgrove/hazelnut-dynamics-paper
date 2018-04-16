@@ -131,11 +131,13 @@ parts of which may not depend at all on the missing or erroneous expression; and
 (3)~it provides no means by which to resume evaluation after filling the hole.
 
 Moreover, we need to be able to run programs containing not only expression holes but also type holes.
-In the static semantics developed by \citet{popl-paper}, we derive the machinery for 
+The static semantics developed by \citet{popl-paper} derives the machinery for 
 reasoning statically about type holes from gradual type theory, 
-identifying the type hole with the unknown type \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}. 
-To specify our intended dynamic semantics for incomplete programs, then, we can look to the dynamic semantics from
-gradual type theory, which selectively inserts dynamic casts as necessitated by missing type information to maintain type safety. 
+identifying the type hole with the unknown type \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}.
+%
+As such, we can look to the dynamic semantics from
+gradual type theory to specify the dynamic semantics for incomplete programs,
+which selectively inserts dynamic casts as necessitated by missing type information to maintain type safety. 
 %However, this \IS again somewhat dissatisfying from the perspective of live programming because when a cast fails, evaluation again stops with 
 However, when a cast fails, evaluation again stops with 
 an exception.
