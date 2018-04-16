@@ -9,7 +9,7 @@
 
 We will now make the intuitions developed in the previous section formally precise by specifying the \HazelnutLive core calculus and  its accompanying metatheory. 
 
-The syntax of the core calculus, specified in Fig.~\ref{fig:hazelnut-live-syntax}, consists of types and expressions with holes. 
+The syntax of the core calculus specified in Fig.~\ref{fig:hazelnut-live-syntax} consists of types and expressions with holes. 
 We distinguish between \emph{external} expressions, $e$, and \emph{internal} expressions, $d$. 
 External expressions correspond to programs as entered by the programmer 
 (see Sec.~\ref{sec:intro}\todo{or maybe Sec. 2?}{} for discussion of manual, semi-automated and fully automated hole entry methods). 
@@ -555,6 +555,15 @@ The included implementation provides a link to \Hazel for interested readers.\to
 
 Sec.~\ref{sec:discussion} discusses integration of the ideas from \HazelnutLive into other programming systems.\todo{do this}
 
+\todo{integrate this}{}
+In the more common situation of a text editor, there are several alternative approaches,  
+reviewed in more detail by \citet{HazelnutSNAPL}. 
+Briefly, 
+(1) holes can be inserted implicitly using error recovery heuristics, like those used in production-grade parsers today \cite{DBLP:journals/siamcomp/AhoP72,charles1991practical,graham1979practical,DBLP:conf/oopsla/KatsJNV09}; or 
+(2) holes can be explicit as part of the surface syntax of the language as supported 
+by an extension to the Glasgow Haskell Compiler \cite{GHCWIKI}, and the dependently typed proof assistants Idris~\cite{brady2013idris} and Agda~\cite{norell2009dependently}. 
+When holes are explicitly part of the surface syntax, recent work by \cite{Amorim2016} shows how an editor can insert them in a semi-automatic manner as a form of code completion.
+
 %%   \halam{x}{\htau}{\evalctx} ~\vert~
 
 
@@ -567,7 +576,7 @@ Sec.~\ref{sec:discussion} discusses integration of the ideas from \HazelnutLive 
 
 
 %The result of evaluation is a final internal expression with hole closures, each with an associated hole environment, $\sigma$. These hole environments can be reported directly to the programmer, e.g. via the sidebar shown in Fig.~X\todo{fig}, to help them as they think about how to fill in the corresponding hole in the external expression. Hole environments might also be useful indirectly, e.g. by informing an edit action synthesis and suggestion system. In any case, 
-When the programmer performs one or more edit actions to fill in a hole in the program, a new result must be computed. Na\"ively, the system would need to compute the result ``from scratch'' on each such edit. A more efficient approach supported by the structure of \HazelnutLive is to resume evaluation from where it left off after an edit that amounts to hole filling. We call this feature \emph{fill-and-resume}, by analogy to the ``edit-and-resume'' features available in some systems, e.g. Visual Studio (see below for a comparison)\todo{cite and compare}{}.
+\todo{cite tanimoto paper, mention Level 4 liveness property}When the programmer performs one or more edit actions to fill in a hole in the program, a new result must be computed. Na\"ively, the system would need to compute the result ``from scratch'' on each such edit. A more efficient approach supported by the structure of \HazelnutLive is to resume evaluation from where it left off after an edit that amounts to hole filling. We call this feature \emph{fill-and-resume}, by analogy to the ``edit-and-resume'' features available in some systems, e.g. Visual Studio (see below for a comparison)\todo{cite and compare}{}.
 
 \todo{fix definition of instantiation in the agda}The key is to interpret the hole environments as delayed substitutions, and indeed this is exactly the interpretation suggested for closures in contextual modal type theory by \citet{Nanevski2008}. We can derive the hole filling operation, $\instantiate{d}{u}{d'}$, defined in Fig.~\ref{fig:substitution}, from the contextual substitution operation of CMTT. Notice that unlike standard substitution, which is capture-avoiding, hole filling imposes no condition on the binder when passing into the body of a lambda expression---the expression that fills a hole can, of course, refer to variables in scope where the hole appears. When hole filling encounters an empty closure for the hole being instantiated, $\instantiate{d}{u}{\dehole{u}{\sigma}{}}$, the result is $[\instantiate{d}{u}{\sigma}]d$, i.e. the delayed substitution is applied to the fill expression, $d$, after first recursively filling any instances of hole $u$ that may appear in $\sigma$. Hole filling for non-empty closures is analagous (the enveloped expression can be discarded). Note that this is the reason why we cannot interpret a non-empty hole as an empty hole of arrow type applied to the enveloped expression---the hole filling operation would not operate as expected under this interpretation.
 
