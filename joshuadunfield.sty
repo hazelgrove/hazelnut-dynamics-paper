@@ -501,7 +501,8 @@
 %             {\text{USING ENTIRE LINE HEIGHT}}
 %
 
-\def \TirNameStyle #1{{#1}}
+\newcommand{\rulename}[1]{\texttt{#1}}
+\def \TirNameStyle #1{\rulename{#1}}
 \newcommand{\Infer}[3]{\inferrule*[right={\text{\strut#1}}]{{}#2\mathstrut}{{}#3\mathstrut}}
 
 %

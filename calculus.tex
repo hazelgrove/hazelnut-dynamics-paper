@@ -4,21 +4,24 @@
 \newcommand{\calculusSec}{Hazelnut Live, Formally}
 \section{\protect\calculusSec}
 \label{sec:calculus}
+
+% \def \TirNameStyle \Vtexttt{#1}{{#1}}
+
 \input{fig-syntax}
 \input{fig-bidirectional-typing}
 
-We will now make the intuitions developed in the previous section formally precise by specifying the \HazelnutLive core calculus and  its accompanying metatheory. 
+We will now make the intuitions developed in the previous section formally precise by specifying a core calculus, which we call \HazelnutLive, and its accompanying metatheory.
 
-The syntax of the core calculus specified in Fig.~\ref{fig:hazelnut-live-syntax} consists of types and expressions with holes. 
-We distinguish between \emph{external} expressions, $e$, and \emph{internal} expressions, $d$. 
+\parahead{Overview} The syntax of the core calculus given in Fig.~\ref{fig:hazelnut-live-syntax} consists of types and expressions with holes. 
+We distinguish between {external} expressions, $e$, and {internal} expressions, $d$. 
 External expressions correspond to programs as entered by the programmer 
-(see Sec.~\ref{sec:intro}\todo{or maybe Sec. 2?}{} for discussion of manual, semi-automated and fully automated hole entry methods). 
+(see Sec.~\ref{sec:intro} for discussion of implicit, manual, semi-automated and fully automated hole entry methods). 
 Each well-typed external expression (as specified in Sec.~\ref{sec:external-statics} below) expands to a well-typed internal expression (see Sec.~\ref{sec:expansion}) before it is evaluated (see Sec.~\ref{sec:evaluation}). 
-We take this approach, notably also taken in the specification of Standard ML by \citet{Harper00atype-theoretic}, because (1) the external language supports type inference and explicit type ascriptions, $\hexp : \htau$, but it is formally simpler to eliminate ascriptions and specify a type assignment system when defining the dynamic semantics; and 
+We take this approach, notably also taken in the ``redefinition'' of Standard ML by \citet{Harper00atype-theoretic}, because (1) the external language supports type inference and explicit type ascriptions, $\hexp : \htau$, but it is formally simpler to eliminate ascriptions and specify a type assignment system when defining the dynamic semantics; and 
 (2) we need additional syntactic machinery during evaluation for tracking hole closures and dynamic type casts. 
 This machinery is inserted by the expansion step, rather than entered explicitly by the programmer. 
 In this regard, the internal language is analogous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects. We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently} 
-(see Sec.~\ref{sec:agda-mechanization}). We have also implemented \HazelnutLive in a manner that maintains a novel end-to-end well-definedness invariant (see Sec.~\ref{sec:implementation}).
+(see Sec.~\ref{sec:agda-mechanization}). Rule names, written \rulename{SVar}, correspond to the names used in the mechanization. We have also implemented \HazelnutLive in a manner that maintains a novel end-to-end well-definedness invariant (see Sec.~\ref{sec:implementation}).
 
 % \rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
 % ITGround, and ITExpand. that's not many, and those rules don't look much more
@@ -30,12 +33,13 @@ In this regard, the internal language is analogous to the cast calculus in the g
 
 
 We start with the type system of the \HazelnutLive external language,
-which closely follows the \Hazelnut type system \cite{popl-paper},
-except that (1) holes in \HazelnutLive each have a \emph{unqiue name},
-and (2) for brievity of exposition, we consider a more austere core
-language here that lacks numbers and sum types, which we discuss
-(along with other systematic extensions) in
-Appendix~\ref{sec:extensions}.
+which closely follows the \Hazelnut type system \cite{popl-paper}; we summarize the minor differences as they come up.
+
+% except that (1) holes in \HazelnutLive each have a \emph{unique name};
+% (2) for brevity of exposition, we removed numbers in favor of a simpler base type, $b$, with one value, $c$ (i.e. $b$ is the unit type); and 
+% (3) we include both unannotated lambdas, $\hlam{x}{\hexp}$, and half-annotated lambdas, $\halam{x}{\htau}{\hexp}$.  which we discuss
+% (along with other systematic extensions) in
+% Appendix~\ref{sec:extensions}.
 
 \Figref{fig:bidirectional-typing} defines the type system in the \emph{bidirectional} style 
 %
@@ -60,17 +64,15 @@ The primary benefit of specifying the \HazelnutLive external language
 bidirectionally is that the programmer need not annotate each hole with a type. 
 %
 An empty hole is
-written $\hehole{u}$, where $u$ is a name for the hole, which we tacitly assume is unique.
-%
-%(Holes in \Hazelnut are \emph{unnamed}).
-%
-Rule {SEHole}\todo{rule name macros}{} specifies that an empty hole synthesizes hole type, written $\tehole$.
+written simply $\hehole{u}$, where $u$ is the hole name, which we tacitly assume is unique 
+(holes in \Hazelnut were not named).
+Rule \rulename{SEHole} specifies that an empty hole synthesizes hole type, written $\tehole$.
 %
 If an empty hole appears where an expression of some other type is
-expected, e.g. under an explicit ascription (governed by Rule {SAsc})
+expected, e.g. under an explicit ascription (governed by Rule \rulename{SAsc})
 or in the argument position of a function application (governed by
-Rule {SAp}, discussed below), we apply the \emph{subsumption rule},
-Rule {ASubsume}, which specifies that if an expression $e$ synthesizes
+Rule \rulename{SAp}, discussed below), we apply the \emph{subsumption rule},
+Rule \rulename{ASubsume}, which specifies that if an expression $e$ synthesizes
 type $\htau$, then it may be checked against any \emph{consistent}
 type, $\htau'$.
 
@@ -82,44 +84,44 @@ The hole type is consistent with every type, and so, by the subsumption rule, ex
 %
 Type consistency is reflexive and symmetric, but it is \emph{not} transitive.
 %
-This relation stands in contrast to subtyping, which is anti-symmetric and transitive; subtyping may be integrated into a gradual type system following \citet{Siek:2007qy}).
+This stands in contrast to subtyping, which is anti-symmetric and transitive; subtyping may be integrated into a gradual type system following \citet{Siek:2007qy}.
 
 Non-empty expression holes, written $\hhole{\hexp}{u}$, behave similarly to empty holes.
 %
-Rule {SNEHole} specifies that a non-empty expression hole also synthesizes hole type as long as the expression inside the hole, $\hexp$, synthesizes some (arbitrary) type.
+Rule \rulename{SNEHole} specifies that a non-empty expression hole also synthesizes hole type as long as the expression inside the hole, $\hexp$, synthesizes some (arbitrary) type.
 %
-Non-empty expression holes therefore internalize the ``red squiggles'' that many editors display under or around type inconsistencies in a program.\todo{example?}\todo{briefly say something about binding inconsistencies?}
+Non-empty expression holes therefore internalize the ``red underline'' that many editors display under or around type inconsistencies in a program.
 
 For the familiar forms of the lambda calculus, the rules again follow prior work.
 %
-For simplicity, the core calculus includes only a single base type~$b$ with a single constant~$c$, governed by Rule {SConst} (i.e. $b$ is the unit type).
+For simplicity, the core calculus includes only a single base type~$b$ with a single constant~$c$, governed by Rule \rulename{SConst} (i.e. $b$ is the unit type).
 %
 %\matt{Extraneous and uninteresting:}
-%By contrast, \Hazelnut instead defines a number type with a single operation, which we include in Appendix~\ref{sec:extensions} alongside various other standard extensions to the core calculus\todo{do this, say more?}. 
+By contrast, \Hazelnut instead defines a number type with a single operation, which we include in Appendix~\ref{sec:extensions} alongside various other simple extensions to the calculus\todo{do this, say which ones}. 
 %
-Rule {SVar} synthesizes the corresponding type from $\hGamma$. 
 
+Rule \rulename{SVar} synthesizes the corresponding type from $\hGamma$. 
 For the sake of exposition, \HazelnutLive includes ``half-annotated'' lambdas, $\halam{x}{\htau}{\hexp}$, in addition to the unannotated lambdas, $\hlam{x}{\hexp}$, from \Hazelnut.
 %
-Half-annotated lambdas may appear in synthetic position according to Rule {SLam}, which is standard \cite{Chlipala:2005da}.
+Half-annotated lambdas may appear in synthetic position according to Rule \rulename{SLam}, which is standard \cite{Chlipala:2005da}.
 %
 Unannotated lambdas may only appear where the expected type is known to be either an arrow type or the hole type, which is treated as if it were $\tarr{\tehole}{\tehole}$.
 %
-To avoid the need for two separate rules, Rule {ALam} uses the auxiliary relation $\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$ in \Figref{fig:arrmatch}, which produces the matched arrow type $\tarr{\tehole}{\tehole}$ given the hole type, and operates as the identity on arrow types \cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/popl/GarciaC15}.
+To avoid the need for two separate rules, Rule \rulename{ALam} uses the matching relation $\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$ defined in \Figref{fig:arrmatch}, which produces the matched arrow type $\tarr{\tehole}{\tehole}$ given the hole type, and operates as the identity on arrow types \cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/popl/GarciaC15}.\footnote{A system supporting ML-style type reconstruction \cite{damas1982principal} might also include a synthetic rule for unannotated lambdas, e.g. as outlined by \citet{DBLP:conf/icfp/DunfieldK13}, but we stick to this simpler ``Scala-style'' local type inference scheme in this paper \cite{Pierce:2000ve,Odersky:2001lb}.}
 %
-\Secref{sec:related} dicusses how \HazelnutLive might be enriched with
-with ML-style type reconstruction~\cite{damas1982principal}, perhaps via
-the approach outlined by~\citet{DBLP:conf/icfp/DunfieldK13}.
+% \Secref{sec:related} dicusses how \HazelnutLive might be enriched with
+% with ML-style type reconstruction~\cite{damas1982principal}, perhaps via
+% the approach outlined by~\citet{DBLP:conf/icfp/DunfieldK13}.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % To Cyrus from Matt:
 %
 % Why say the following here? --- It's discussing a different design that we didn't pursue here.  We should move such discussion to related work.
 %
-%Note that a system supporting ML-style type reconstruction \cite{damas1982principal} might include a synthetic rule for unannotated lambdas, e.g. as outlined by \citet{DBLP:conf/icfp/DunfieldK13}.
+%Note that 
 %%
 
-The rule governing function application, Rule {SAp}, similarly treats an expression of hole type in function position as if it were of type $\tarr{\tehole}{\tehole}$ using the same matched arrow type judgement.
+The rule governing function application, Rule \rulename{SAp}, similarly treats an expression of hole type in function position as if it were of type $\tarr{\tehole}{\tehole}$ using the same matched arrow type judgement.
 
 \vspace{-4px}
 \subsection{Expansion}
@@ -131,23 +133,23 @@ The rule governing function application, Rule {SAp}, similarly treats an express
 
 Each well-typed external expression~$e$ expands to a well-typed internal expression~$d$, for evaluation.
 %
-\Figref{fig:expansion} defines this expansion, and \Figref{fig:hasType} defines type assignment for internal expressions.
+\Figref{fig:expansion} specifies expansion, and \Figref{fig:hasType} specifies type assignment for internal expressions.
 %
-\Secref{sec:evaluation} discusses internal expression evaluation.
+% \Secref{sec:evaluation} discusses internal expression evaluation.
 
 As with the type system for the external language (above), 
 we specify expansion bidirectionally \cite{DBLP:conf/ppdp/FerreiraP14}.
 %
-The synthetic expansion judgement~$\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$ synthesizes a type~$\htau$ from~$\hexp$.
+The synthetic expansion judgement~$\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$  
 %
-Synthetic expansion produces an internal expression~$d$ and a hole context~$\hDelta$.
+produces an expansion~$d$ and a hole context~$\hDelta$ when synthesizing type $\htau$ for $\hexp$. 
 %
 %We say more about hole contexts, which are used in the type assignment judgement, $\hasType{\Delta}{\hGamma}{d}{\htau}$, below.
 We describe hole contexts, which serve as ``inputs'' to the type assignment judgement~$\hasType{\Delta}{\hGamma}{d}{\htau}$, further below. 
 %
-The analytic expansion judgement~$\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$, checks~$\hexp$ against~$\htau$ and produces an expansion~$d$ of type~$\htau'$, and a hole context~$\hDelta$.
+The analytic expansion judgement~$\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$, produces an expansion~$d$ of type~$\htau'$, and a hole context~$\hDelta$, when checking~$\hexp$ against~$\htau$.
 %
-The following theorem establishes that expansions are well-typed and in the analytic case that the type $\htau'$ is consistent with $\htau$.
+The following theorem establishes that expansions are well-typed and in the analytic case that the assigned type, $\htau'$, is consistent with provided type, $\htau$.
 %
 \begin{thm}[Typed Expansion]\label{thm:typed-expansion} ~
   \begin{enumerate}[nolistsep]
@@ -168,11 +170,13 @@ The following theorem establishes that expansions are well-typed and in the anal
 %expression can be assigned at most one type, i.e. the following
 %standard unicity property holds of the type assignment system.
 %
-Analytic expansion produces an expansion of consistent type:
+The reason that $\htau'$ is only consistent with the provided type $\htau$ is because 
 %
-Intuitively, the subsumption rule permits us
+ the subsumption rule permits us
 to check an external expression against any type consistent with the
-type that the expression \emph{actually} synthesizes:
+type that the expression \emph{actually} synthesizes, whereas every internal
+expression can be assigned at most one type, i.e. the following
+standard unicity property holds of the type assignment system.
 %
 \begin{thm}[Type Assignment Unicity]
   If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$
@@ -184,8 +188,9 @@ Consequently, analytic expansion reports the type actually assigned to the expan
 %
 For example, we can derive that $\expandAna{\hGamma}{c}{\tehole}{c}{b}{\emptyset}$.% where $\emptyset$ is the empty hole context.
 
-Before describing the rules in detail, let us state a few other useful theorems. 
-The following theorem establishes that an expansion exists for every well-typed external expression.
+Before describing the rules in detail, let us state two other guiding theorems. 
+The following theorem establishes that an expansion exists for every well-typed external expression. 
+The mechanization also establishes when an expansion exists, it is unique (not shown).
  \begin{thm}[Expandability] \label{thm:expandability}~
   \begin{enumerate}[nolistsep]
     \item
@@ -198,22 +203,22 @@ The following theorem establishes that an expansion exists for every well-typed 
       for some $\dexp$ and $\htau'$ and $\Delta$.
   \end{enumerate}
 \end{thm}
-\noindent
-The following theorem establishes that when an expansion exists, it is unique.
-\begin{thm}[Expansion Unicity] \label{thm:expansion-unicity}~
-  \begin{enumerate}[nolistsep]
-    \item
-      If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
-      and $\expandSyn{\hGamma}{\hexp}{\htau'}{\dexp'}{\Delta'}$
-      then $\htau=\htau'$ and $\dexp=\dexp'$ and $\Delta=\Delta'$.
-    \item
-      If $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}$
-      and $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp'}{\htau_2'}{\Delta'}$
-      then $\dexp=\dexp'$ and $\htau_2=\htau_2'$ and $\Delta=\Delta'$.
-  \end{enumerate}
-\end{thm}
-\noindent
-The following theorem establishes that expansion generalizes external typing.\todo{rename correspondence to generality}
+% \noindent
+% The following theorem establishes that when an expansion exists, it is unique.
+% \begin{thm}[Expansion Unicity] \label{thm:expansion-unicity}~
+%   % \begin{enumerate}[nolistsep]
+%   %   \item
+%       If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+%       and $\expandSyn{\hGamma}{\hexp}{\htau'}{\dexp'}{\Delta'}$
+%       then $\htau=\htau'$ and $\dexp=\dexp'$ and $\Delta=\Delta'$.
+%   %   \item
+%   %     If $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}$
+%   %     and $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp'}{\htau_2'}{\Delta'}$
+%   %     then $\dexp=\dexp'$ and $\htau_2=\htau_2'$ and $\Delta=\Delta'$.
+%   % \end{enumerate}
+% \end{thm}
+% \noindent
+The following theorem establishes that expansion generalizes external typing.
 \begin{thm}[Expansion Generality] \label{thm:expansion-generality}~
   \begin{enumerate}[nolistsep]
     \item
@@ -226,71 +231,68 @@ The following theorem establishes that expansion generalizes external typing.\to
 \end{thm}
 
 The rules governing expansion of constants, variables and lambda expressions
---- Rules {ESConst}, {ESVar}, {ESLam} and {EALam}
---- and the corresponding type assignment rules
---- Rules {TAConst}, {TAVar} and {TALam}
---- mirror the typing rules from Fig.~\ref{fig:bidirectional-typing}.
+--- Rules \rulename{ESConst}, \rulename{ESVar}, \rulename{ESLam} and \rulename{EALam}
+--- mirror the corresponding type assignment rules
+--- Rules \rulename{TAConst}, \rulename{TAVar} and \rulename{TALam}
+--- mirror the bidirectional typing rules from Fig.~\ref{fig:bidirectional-typing}.
 %
-Consequently, the corresponding cases of
-Theorem~\ref{thm:typed-expansion}, Theorem~\ref{thm:expandability} and
-Theorem~\ref{thm:expansion-generality} are straightforward.
+% Consequently, the corresponding cases of
+% Theorem~\ref{thm:typed-expansion}, Theorem~\ref{thm:expandability} and
+% Theorem~\ref{thm:expansion-generality} are straightforward.
 %
 To support type assignment, all lambdas in the internal language are
-half-annotated---Rule {EALam} inserts the annotation when expanding an
+half-annotated---Rule \rulename{EALam} inserts the annotation when expanding an
 unannotated external lambda based on the given type.
 %
-Some rules perform \emph{cast insertion}, making them more interesting
-than the others; these rules include those for holes, and the those for
-function applications and ascriptions.  We consider each below.
+The rules governing hole expansion, and the rules that perform \emph{cast insertion}---those governing
+function application and type ascription---are more interesting. We consider each of these two groups of rules, in turn, below.
 
 \subsubsection{Hole Expansion}\label{sec:hole-expansion} 
-Rules {ESEHole}, {ESNEHole}, {EAEHole} and {EANEHole} govern the expansion of empty and non-empty expression holes to empty and non-empty \emph{hole closures}, $\dehole{u}{\sigma}{}$ and $\dhole{\dexp}{u}{\sigma}{}$, respectively. 
+Rules \rulename{ESEHole}, \rulename{ESNEHole}, \rulename{EAEHole} and \rulename{EANEHole} govern the expansion of empty and non-empty expression holes to empty and non-empty \emph{hole closures}, $\dehole{u}{\sigma}{}$ and $\dhole{\dexp}{u}{\sigma}{}$. 
 %
 The hole name~$u$ on a hole closure identifies the external hole to which the hole closure corresponds.
 %
-%Note that
-While we assume each hole name to be unique in the external language, due to substitution, evaluated (internal) terms may consist of multiple hole closures with the same name.
+While we assume each hole name to be unique in the external language, once evaluation begins, there may be multiple hole closures with the same name due to substitution.
 %
-For example, the result from Fig.~\ref{fig:grades-example} shows four closures for the hole named 1\todo{update with actual number (four?) and hole name later}.
+For example, the result from Fig.~\ref{fig:grades-example} shows four closures for the hole named 1\todo{update with actual number (four?) and hole name later}{}.
 %
 There, we number each hole closure for a given hole sequentially, \li{1:1}, \li{1:2} and so on, but this is strictly for the sake of presentation, so we omit hole closure numbers from the core calculus.
 
-The hole expansion rules introduce hypotheses of the form~$\Dbinding{u}{\hGamma}{\htau}$ into the hole context~$\Delta$.
 %
-For each hole name~$u$, the hole context records a type~$\tau$, and a typing context~$\Gamma$.\footnote{
+For each hole, $u$, in an external expression, the hole context generated by expansion, $\Delta$, contains a hypothesis of the form~$\Dbinding{u}{\hGamma}{\htau}$, which records the hole's type, $\tau$, and the typing context, $\Gamma$, from where it appears in the original expression.\footnote{
 We use a hole context, rather than recording the typing context and type directly on each hole closure, to ensure that all closures for a hole name have the same typing context and type.}
 %
 We borrow this hole context notation from contextual modal type theory (CMTT) \cite{Nanevski2008}, identifying hole names with metavariables and hole contexts with modal contexts (we say more about the connection with CMTT below).
 %
-Each hole expansion rule records the ``current'' typing context under which the hole is expanded.
+% Each hole expansion rule records the ``current'' typing context under which the hole is expanded.
 %
-In the synthetic hole expansion rules~{ESEHole} and~{ESNEHole}, the generated hole context assigns the hole type~$\tehole$ to hole name~$u$, as in the typing rules.
+In the synthetic hole expansion rules~\rulename{ESEHole} and~\rulename{ESNEHole}, the generated hole context assigns the hole type~$\tehole$ to hole name~$u$, as in the external typing rules.
 %
-However, the first two premises of the expansion subsumption rule~{EASubsume} disallow the use of subsumption for holes in analytic position.
+However, the first two premises of the expansion subsumption rule~\rulename{EASubsume} disallow the use of subsumption for holes in analytic position.
 %
-Instead, we employ separate analytic rules~{EAEHole} and~{EANEHole}, which each record the checked type~$\tau$ in the hole context.
+Instead, we employ separate analytic rules~\rulename{EAEHole} and~\rulename{EANEHole}, which each record the checked type~$\tau$ in the hole context.
 %
-Consequently, we can use type assignment for the internal language --- the type assignment rules TAEHole and TANEHole in Fig.~\ref{fig:hasType} assign a hole closure for hole name~$u$ the corresponding type from the hole context.
+Consequently, we can use type assignment for the internal language --- the type assignment rules \rulename{TAEHole} and \rulename{TANEHole} in Fig.~\ref{fig:hasType} assign a hole closure for hole name~$u$ the corresponding type from the hole context.
 
 Each hole closure also has an associated environment~$\sigma$ which consists of a finite substitution of the form $[d_1/x_1, ~\cdots, d_n/x_n]$ for $n \geq 0$.
 %
 The closure environment keeps a record of the substitutions that occur around the hole as evaluation occurs.
 %
-Initially, when no evaluation has yet occurred, the hole expansion rules generate an initial environment that consists of the identity substitution for the typing context associated with hole name~$u$ in hole context~$\Delta$, which we notate $\idof{\hGamma}$, and define as follows.
+Initially, when no evaluation has yet occurred, the hole expansion rules generate the identity substitution for the typing context associated with hole name~$u$ in hole context~$\Delta$, which we notate $\idof{\hGamma}$, and define as follows.
 %
 \begin{defn}[Identity Substitution] $\idof{x_1 : \tau_1, ~\cdots, x_n : \tau_n} = [x_1/x_1, ~\cdots, x_n/x_n]$
 \end{defn}
 \noindent
 The type assignment rules for hole closures~{TAEHole} and {TANEHole} each require that the hole closure environment~$\sigma$ be consistent with the corresponding typing context, written as $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$.
 %
-Formally, we define this relation as follows:\todo{check that the definition in the Agda corresponds}
+Formally, we define this relation in terms of type assignment as follows:
 \begin{defn}[Substitution Typing]
 $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff $\domof{\sigma} = \domof{\hGamma'}$ and for each $x : \htau \in \hGamma'$ we have that $d/x \in \sigma$ and $\hasType{\Delta}{\hGamma}{d}{\tau}$.
 \end{defn}
 \noindent
 It is easy to verify that the identity substitution satisfies this requirement, i.e. that $\hasType{\Delta}{\hGamma}{\idof{\hGamma}}{\hGamma}$. 
 
-Empty hole closures, $\dehole{u}{\sigma}{}$,  correspond to the metavariable closures (a.k.a. deferred substitutions) from CMTT, $\cmttclo{u}{\sigma}$.\todo{change notation from CMTT}{}
+Empty hole closures, $\dehole{u}{\sigma}{}$,  correspond to the metavariable closures (a.k.a. deferred substitutions) from CMTT, $\cmttclo{u}{\sigma}$.
 %
 \Secref{sec:evaluation} defines how these closure environments evolve during evaluation.
 %
@@ -300,12 +302,10 @@ Non-empty hole closures~$\dhole{d}{u}{\sigma}{}$ have no direct correspondence w
 %
 % USE A TOPIC SENTENCE SO THAT THE READER IS GUIDED A LITTLE MORE, e.g.,
 %
-Cast insertion mediates between the type systems of the external and
-internal languages, where the former permits subsumption, and the
-latter does not.
+Holes in types require us to defer certain structural checks to run time. 
 %-----------------------------------------------------------------------------------------------
 %
-To see why this mediation is necessary, consider the following
+To see why this is necessary, consider the following
 example: $\hap{(\halam{x}{\tehole}{\hap{x}{c}})}{c}$.
 %
 Viewed as an external expression, this example synthesizes type
@@ -335,26 +335,24 @@ reconstruction to fail.
 %entirely, leaving only the hole closure machinery described
 %previously.
 }
-\todo{talk about elsewhere? maybe do type-hole-free version of calculus in appendix if there is time}{} 
 By our interpretation of hole types as unknown types from gradual type
 theory, we can address the problem by performing cast insertion.
 %
 
-The cast form in Hazelnut Live consists of $\dcasttwo{\dexp}{\htau_1}{\htau_2}$.
+The cast form in Hazelnut Live is $\dcasttwo{\dexp}{\htau_1}{\htau_2}$.
 %
 This form serves to ``box'' an expression of type $\htau_1$ for
 treatment as an expression of a consistent type $\htau_2$
-(Rule TACast in \Figref{fig:hasType}).
-%
+(Rule TACast in \Figref{fig:hasType}).%
 \footnote{
 In the earliest work on gradual type theory, the cast form only gave
-the target type~$\htau_2$ \cite{Siek06a}, but it simplifies matters
+the target type~$\htau_2$ \cite{Siek06a}, but it simplifies the dynamic semantics substantially
 to include the assigned type~$\htau_1$ in the syntax \cite{DBLP:conf/snapl/SiekVCB15}.
 }
 
-Expansion inserts casts for function applications and ascriptions.
+Expansion inserts casts at function applications and ascriptions.
 %
-The latter is more straightforward: Rule~{ESAsc}
+The latter is more straightforward: Rule~\rulename{ESAsc}
 in \Figref{fig:expandSyn} inserts a cast from the assigned type to the
 ascribed type.
 %
@@ -366,7 +364,7 @@ by using application together with the half-annotated identity, $e
 : \tau = \hap{(\halam{x}{\htau}{x})}{e}$; as such, application
 expansion, discussed below, is more general.
 
-Rule~{ESAp} expands function applications.
+Rule~\rulename{ESAp} expands function applications.
 %
 To understand the rule, consider the expansion of external
 expression~$\hap{(\halam{x}{\tehole}{\hap{x}{c}})}{c}$, the example
@@ -400,7 +398,7 @@ however, the inserted cast on~$x$ permits treating it as though it has
 arrow type $\tarr{\tehole}{\tehole}$, as described
 in \Secref{sec:external-statics}.
 %
-The first three premises of Rule~{ESAp} accomplish this
+The first three premises of Rule~\rulename{ESAp} accomplish this
 %
 by first synthesizing a type for the function expression, here
 $\tehole$, then
@@ -423,16 +421,16 @@ We go through type synthesis, \emph{then} analytic expansion, so that the hole
 context records the matched arrow type for holes in function position,
 rather than the type~$\tehole$ for all such holes, as would be the case
 in a variant of this rule using synthetic expansion for the function
-expression\todo{put this in the appendix?}{}.
+expression.
 
 Next, consider the application's argument, here constant~$c$.
 %
-The conclusion of Rule~{ESAp} inserts the cast on the argument's
+The conclusion of Rule~\rulename{ESAp} inserts the cast on the argument's
 expansion, from the type it is assigned by the final premise of the
 rule~(type~$b$ here), to the argument type of the matched arrow type
 of the function expression~(type~$\tehole$ here).
 
-The example's second, outermost application uses through the same
+The example's second, outermost application goes through the same
 application expansion rule.
 %
 In this case, the cast on the function is the identity cast for
@@ -442,23 +440,35 @@ For simplicity, we do not attempt to avoid the insertion of identity
 casts in the core calculus; these will simply never fail during
 evaluation.
 %
-However, it is safe to eliminate such identity casts during expansion,
+However, it is safe in practice to eliminate such identity casts during expansion,
 and some formal accounts of gradual typing do so by defining three
-application rules, including the original account of \cite{Siek06a}).
+application expansion rules, including the original account of \citet{Siek06a}.
 
 \subsection{Dynamic Semantics}
 \label{sec:evaluation}
 
-Figures~\ref{fig:isGround}-\ref{fig:step} give dynamic semantics for \HazelnutLive,
+To recap, the result of expansion is a well-typed internal expression with appropriately initialized hole closures and casts. 
+We can now specify, in Figures~\ref{fig:isGround}-\ref{fig:step}, the dynamic semantics of \HazelnutLive as a ``small-step'' transition system equipped with a meaningful notion of type safety even for incomplete programs, i.e. expressions typed under a non-empty hole context, $\Delta$. 
+We establish that evaluation does not stop immediately when it encounters a hole, nor when a cast fails, by precisely characterizing when evaluation \emph{does} stop. 
+We also establish that an essentially standard notion of type safety holds when running complete programs. 
+
+It is perhaps worth stating at the outset that a dynamic semantics equipped with these properties does not simply ``fall out'' from the observations made above that (1) empty hole closures correspond to metavariable closures from CMTT \cite{Nanevski2008} and (2) casts also arise in gradual type theory \cite{DBLP:conf/snapl/SiekVCB15}. 
 %
-resulting in a system capable of running incomplete programs without aborting when a hole is encountered.
+We say more after discussing type safety below.\todo{do this, or change to related work}{}
 %
-We equip this semantics with a meaningful notion of type safety (involving both preservation and progress).
-%
-We also establish that the standard notion of type safety falls out when running complete terms.
+
+%  specify the dynamic semantics of \HazelnutLive. 
+% %
+% The dynamic semantics is capable of running incomplete programs, i.e. those with hole closures, without aborting at holes, or when a cast fails.
+% %
 
 
-The dynamic semantics consists of a ``small-step'' transition system,
+
+
+
+
+
+The dynamic semantics consists of ,
 %
 where cast-related machinery closely follows the cast calculus from
 the ``refined'' account of the gradually typed lambda calculus
@@ -486,11 +496,9 @@ indeterminate forms.%
         classes of final forms.
 }
 
-\input{fig-ground-types}
-\input{fig-dynamics-aux}
 
 The judgement $\isBoxedValue{d}$ defines (possibly-)boxed values as
-either ordinary values~(Rule~{BVVal}), or one of two cast forms: casts
+either ordinary values~(Rule~\rulename{BVVal}), or one of two cast forms: casts
 between function types (except identity casts) and casts from a ground
 type to the hole type. In each case, the cast operates on a boxed
 value.
@@ -512,11 +520,9 @@ Below, we discuss the the remaining indeterminate forms simultaneously
 with the corresponding transition rules, also discussed
 below.\todo{relationship to weak head normal forms}
 
-\input{fig-dynamics-contexts}
-
 The transition rules are defined in Fig.~\ref{fig:instruction-transitions}-\ref{fig:step}.
 %
-Top-level transitions are \emph{steps}~$\stepsToD{}{d}{d'}$, governed by Rule~{Step} in \Figref{fig:step}, which
+Top-level transitions are \emph{steps}~$\stepsToD{}{d}{d'}$, governed by Rule~\rulename{Step} in \Figref{fig:step}, which
 %
 (1) decomposes $d$ into an evaluation context, $\evalctx$, and a selected sub-term, $d_0$;
 %
@@ -545,7 +551,7 @@ the evaluation context by the \emph{mark}~$\evalhole$, to obtain $d'$.%
 
 \subsubsection{Application and Substitution} 
 %
-Rule {ITBeta} in Fig.~\ref{fig:instruction-transitions} specifies the
+Rule \rulename{ITBeta} in Fig.~\ref{fig:instruction-transitions} specifies the
 standard beta reduction transition.
 %
 The bracketed premises of the form $\maybePremise{\isFinal{\dexp}}$ in
@@ -581,6 +587,11 @@ Hole closures may also appear within the environments of other hole
 closures, giving rise to the closure paths described in
 Sec.~\ref{sec:paths}\todo{where?}{}.
 
+\input{fig-ground-types}
+\input{fig-dynamics-aux}
+
+
+
 The ITBeta rule is not the only rule we need to handle function
 application, because lambdas merely one (final) form of arrow type.
 %
@@ -588,7 +599,7 @@ Two other situations may also arise.
 
 First, the expression in function position might be a cast between
 arrow types, in which case we apply the arrow cast conversion rule,
-Rule {ITApCast}, to rewrite the application form, obtaining an
+Rule \rulename{ITApCast}, to rewrite the application form, obtaining an
 equivalent application where the expression~$d_1$ under the function
 cast is exposed.
 %
@@ -606,9 +617,11 @@ Second, the expression in function position may be indeterminate,
 where arrow cast conversion is not applicable,
 e.g. $\hap{(\dehole{u}{\sigma}{})}{c}$.
 %
-In this case, the application is indeterminate (Rule~{IAp}
+In this case, the application is indeterminate (Rule~\rulename{IAp}
 in \Figref{fig:isFinal}), and the application's reduction reduces no
 further.
+
+\input{fig-dynamics-contexts}
 
 The rules take care to maintain the following property, which establishes that expressions that step are not final, and that final expressions do not step.%
 \todo{prove this as stated from Ian's disjointness proofs}{}%
@@ -617,7 +630,7 @@ The rules take care to maintain the following property, which establishes that e
 \end{thm}
 
 \subsubsection{Casts}
-Rule {ITCastId} drops identity casts. The remaining instruction
+Rule \rulename{ITCastId} drops identity casts. The remaining instruction
 transition rules assign meaning to non-trivial casts.
 %
 As discussed in Sec.~\ref{sec:cast-insertion}, the structure of a term
@@ -635,11 +648,11 @@ may be dropped.
 If they are not equal, then the cast fails and the failed cast form,
 $\dcastfail{\dexp}{\htau_1}{\htau_2}$, arises.
 %
-Rule {TAFailedCast} specifies that a failed cast is well-typed exactly
+Rule \rulename{TAFailedCast} specifies that a failed cast is well-typed exactly
 when $d$ has ground type $\tau_1$ and $\tau_2$ is a ground type
 disequal to $\tau_1$.
 %
-Rule {IFailedCast} specifies that a failed cast operates as an
+Rule \rulename{IFailedCast} specifies that a failed cast operates as an
 indeterminate form once $d$ is final.
 %
 This rule allows evaluation to proceed after cast failure, much as
@@ -647,7 +660,7 @@ with hole closures.
 
 Rules {TAFailedCast} and {IFailedCast} each operate at ground type. 
 %
-The two remaining instruction transition rules, Rule~{ITGround}
+The two remaining instruction transition rules, Rule~\rulename{ITGround}
 and~{ITExpand}, insert intermediate casts from non-ground type to a
 consistent ground type, and \emph{vice versa}.
 %
@@ -670,7 +683,7 @@ In all other cases, casts either consist of boxed values or
 indeterminate terms according to the remaining rules
 in \Figref{fig:isFinal}.
 %
-In particular, Rule {ICastHoleGround} handles casts that are not of
+In particular, Rule \rulename{ICastHoleGround} handles casts that are not of
 the form $\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}$, from hole to
 ground type.
 %

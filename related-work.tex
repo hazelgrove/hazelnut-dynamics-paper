@@ -246,13 +246,6 @@ Hole-like constructs also appear in work on program slicing
   (organizationally) to give a detailed comparison here, and not
   there.}
 
-To recap, the result of expansion is a well-typed internal expression with hole closures and casts, 
-where the former corresponds to metavariable closures from CMTT \cite{Nanevski2008}, 
-and the latter corresponds to casts from gradual type theory \cite{Siek06a,DBLP:conf/snapl/SiekVCB15}. 
-However, the dynamic semantics for \HazelnutLive does not simply ``fall out'' from these observations.
-%
-For further discussion, see \Secref{sec:related}
-
 The problem is first that \citet{Nanevski2008} defined only the logical reductions for CMTT, viewing it as a proof system for intuitionistic contextual modal logic via the propositions-as-types (Curry-Howard) principle. 
 The paper therefore proved only a subject reduction property (which is closely related to type preservation). 
 This is not a full dynamic semantics, and in particular, there is no notion of \emph{progress}, i.e. that well-typed terms cannot get ``stuck'' in an undefined state \cite{wright94:_type_soundness}. 
