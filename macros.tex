@@ -31,6 +31,7 @@
 % HTyp
 \newcommand{\htau}{\tau}
 \newcommand{\tarr}[2]{#1 \rightarrow #2}
+%\newcommand{\tsum}[2]{#1 + #2}
 \newcommand{\tprod}[2]{#1 \times #2}
 \newcommand{\tnum}{\texttt{num}}
 \newcommand{\tb}{\texttt{b}}
@@ -51,6 +52,7 @@
 \newcommand{\lblL}{\mathsf{L}}
 \newcommand{\lblR}{\mathsf{R}}
 \newcommand{\hnum}[1]{\underline{#1}}
+%\newcommand{\hcase}[5]{\mathsf{case}\,#1\,\mathsf{of}\,#2\Rightarrow#3~\vert~#4\Rightarrow#5}
 \newcommand{\hadd}[2]{#1 + #2}
 \newcommand{\hehole}[1]{\llparenthesiscolor\rrparenthesiscolor^{#1}}
 % \newcommand{\hhole}[1]{\setlength{\fboxsep}{0pt}\fcolorbox{red}{white}{\vphantom{)}$#1$}}
@@ -59,7 +61,9 @@
   % \setlength{\fboxsep}{0pt}
   % \colorbox{violet!10!white!100}{\ensuremath{\llparenthesiscolor#1\rrparenthesiscolor}}}
 \newcommand{\hindet}[1]{\lceil#1\rceil}
-\newcommand{\hinj}[2]{\texttt{inj}_{#1}({#2})}
+%\newcommand{\hinj}[2]{\texttt{inj}_{#1}({#2})}
+\newcommand{\hinL}[1]{\mathsf{inl}(#1)}
+\newcommand{\hinR}[1]{\mathsf{inr}(#1)}
 \newcommand{\hcase}[5]{\texttt{case}({#1},{#2}.{#3},{#4}.{#5})}
 
 \newcommand{\hGamma}{\Gamma}
@@ -181,13 +185,16 @@
 \newcommand{\dap}[2]{#1(#2)}
 \newcommand{\dapP}[2]{(#1)(#2)} % Extra paren around function term
 \newcommand{\dnum}[1]{\underline{#1}}
+%\newcommand{\dcase}[5]{\mathsf{case}\,#1\,\mathsf{of}\,#2\Rightarrow#3~\vert~#4\Rightarrow#5}
 \newcommand{\dadd}[2]{#1 + #2}
 %% TODO third arg should be empty
 \newcommand{\dehole}[3]{\leftidx{^{#3}}{\llparenthesiscolor\rrparenthesiscolor}{^{#1}_{#2}}}
 %% TODO fourth arg should be empty
 \newcommand{\dhole}[4]{\leftidx{^{#4}}{\llparenthesiscolor#1\rrparenthesiscolor}{^{#2}_{#3}}}
 \newcommand{\dindet}[1]{\lceil#1\rceil}
-\newcommand{\dinj}[2]{\texttt{inj}_{#1}({#2})}
+%\newcommand{\dinj}[2]{\texttt{inj}_{#1}({#2})}
+\newcommand{\dinL}[2]{\mathsf{inl}_{#1}(#2)}
+\newcommand{\dinR}[2]{\mathsf{inr}_{#1}(#2)}
 \newcommand{\dcase}[5]{\texttt{case}({#1},{#2}.{#3},{#4}.{#5})}
 
 \newcommand{\expandAna}[6]{#1 \vdash #2 \Leftarrow #3 \leadsto #4 : #5 \dashv #6}

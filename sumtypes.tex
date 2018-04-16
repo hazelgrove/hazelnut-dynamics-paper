@@ -1,0 +1,49 @@
+%%%%%%% Syntax
+
+\[
+\begin{array}{rllllll}
+\mathsf{HTyp} & \htau & ::= \cdots ~\vert~ {\htau + \htau} &
+\\
+\mathsf{HExp} & \hexp & ::= \cdots
+~\vert~ \hinL{\hexp}
+~\vert~ \hinR{\hexp}
+%~\vert~ \hcase{\hexp}{\hinL{x}}{\hexp}{\hinR{x}}{\hexp}
+~\vert~ \hcase{\hexp}{x}{\hexp}{y}{\hexp}
+\\
+\mathsf{IHExp} & \dexp & ::= \cdots
+~\vert~ \dinL{\htau}{\dexp}
+~\vert~ \dinR{\htau}{\dexp}
+%~\vert~ \dcase{\dexp}{\hinL{x}}{\dexp}{\hinR{x}}{\dexp}
+~\vert~ \dcase{\dexp}{x}{\dexp}{y}{\dexp}
+\end{array}
+\]
+
+%%%%%%% Definition of Join: a meta-level, binary function over types.
+%\newcommand{\JoinTypes}[2]{\textsf{join}~~#1~~#2}
+\newcommand{\JoinTypes}[2]{\textsf{join}(#1,#2)}
+
+\fbox{$\JoinTypes{\htau_1}{\htau_2} = \htau_3$}
+\\
+\[
+\begin{array}{lcl}
+\JoinTypes{\htau}{\htau} &=&  \htau
+\\
+\JoinTypes{\tehole}{\htau} &=&  \htau
+\\
+\JoinTypes{\htau}{\tehole} &=&  \htau
+\\
+\JoinTypes
+{\tarr{\htau_1}{\htau_2}}
+{\tarr{\htau_1}{\htau_2}}
+&=&
+\tarr{\JoinTypes{\htau_1}{\htau_2}}
+     {\JoinTypes{\htau_1}{\htau_2}}
+\\
+\JoinTypes
+{\tsum{\htau_1}{\htau_2}}
+{\tsum{\htau_1}{\htau_2}}
+&=&
+\tsum{\JoinTypes{\htau_1}{\htau_2}}
+     {\JoinTypes{\htau_1}{\htau_2}}
+\end{array}
+\]
