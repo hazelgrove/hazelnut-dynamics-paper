@@ -63,7 +63,7 @@ The first example was purposely simple. Let us briefly consider a second more so
 
 The programmer has called \li{qsort} on an example list. However, 
 the indeterminate result in this case is rather uninteresting: it simply confirms that for this example, evaluation went through the recursive case of \li{qsort}, which ends with hole \li{1}. The live context inspector, on the other hand, provides a wealth of feedback about the dynamic behavior of this incomplete program. For example, the programmer can confirm that
-the lists \li{smaller} and \li{bigger} are appropriate named.
+the lists \li{smaller} and \li{bigger} are appropriately named.
 
 The results from the recursive calls, \li{r_smaller} and \li{r_bigger}, are again hole instances, \li{1:2} and \li{1:3}. The programmer can click on these hole instances to reveal the environments at the corresponding recursive calls. For example, clicking on \li{1:2} reveals that the pivot in that case is \li{7} (not shown). In exploring these paths rooted at the result, the programmer can develop intuitions about the recursive structure of the computation before the program is complete. 
 (We leave to future work the pedagogical question of whether such early feedback might help students with recursion.)
