@@ -240,14 +240,31 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 
 %%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
 
-\judgbox{\isevalctx{\evalctx}}{$\evalctx$ is an evaluation context}
 \begin{mathpar}
-\inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinL{\htau}{\evalctx}}}
-\and
-\inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinR{\htau}{\evalctx}}}
-\and
-\inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dcase{\evalctx}{x}{\dexp_1}{y}{\dexp_2}}}
+\arraycolsep=4pt\begin{array}{rllllll}
+\mathsf{EvalCtx} & \evalctx & ::= & \cdots ~\vert~
+  \dinL{\htau}{\evalctx}
+  ~\vert~
+  \dinR{\htau}{\evalctx}
+  ~\vert~
+  \dcase{\evalctx}{x}{\dexp_1}{y}{\dexp_2}
+  %% \evalhole ~\vert~
+  %% \hap{\evalctx}{\dexp} ~\vert~
+  %% \hap{\dexp}{\evalctx} ~\vert~
+  %% \dhole{\evalctx}{\mvar}{\subst}{} ~\vert~
+  %% \dcasttwo{\evalctx}{\htau}{\htau} ~\vert~
+  %% \dcastfail{\evalctx}{\htau}{\htau}
+\end{array}
 \end{mathpar}
+
+%% \judgbox{\isevalctx{\evalctx}}{$\evalctx$ is an evaluation context}
+%% \begin{mathpar}
+%% \inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinL{\htau}{\evalctx}}}
+%% \and
+%% \inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinR{\htau}{\evalctx}}}
+%% \and
+%% \inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dcase{\evalctx}{x}{\dexp_1}{y}{\dexp_2}}}
+%% \end{mathpar}
 
 \judgbox{\selectEvalCtx{\dexp}{\evalctx}{\dexp'}}{$\dexp$ is obtained by placing $\dexp'$ at the mark in $\evalctx$}
 \begin{mathpar}
