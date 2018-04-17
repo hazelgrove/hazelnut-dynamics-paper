@@ -23,7 +23,7 @@ We extend the syntax for sum types as follows:
 %%%%%%% Definition of Join: a meta-level, binary function over types.
 
 %\newcommand{\JoinTypes}[2]{\textsf{join}~~#1~~#2}
-\newcommand{\JoinTypes}[2]{\textsf{join}(#1,#2)}
+%\newcommand{\JoinTypes}[2]{\textsf{join}(#1,#2)}
 
 %\fbox{$\JoinTypes{\htau_1}{\htau_2} = \htau_3$}
 \judgbox
@@ -270,7 +270,8 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 \begin{mathpar}
 \inferrule[]
 {\selectEvalCtx{\dexp_1}{\evalctx}{\dexp_1'}}
-{\dcase{\dexp_1}{x}{\dexp_2}{y}{\dexp_3}}
+{\selectEvalCtx{\dcase{\dexp_1}{x}{\dexp_2}{y}{\dexp_3}}
+               {\dcase{\evalctx}{x}{\dexp_2}{y}{\dexp_3}}{\dexp_1'}}
 \end{mathpar}
 
 \judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
@@ -278,13 +279,13 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 \inferrule[]
 {\maybePremise{\isFinal{\dexp_1}}}
 {\stepsToD{\Delta}
-  {\dcase{\dinL{\dexp_1}{\htau}}{x}{\dexp_2}{y}{\dexp_3}}
+  {\dcase{\dinL{\htau}{\dexp_1}}{x}{\dexp_2}{y}{\dexp_3}}
   {\DoSubst{\dexp_1}{x}{\dexp_2}}}
 
 \inferrule[]
 {\maybePremise{\isFinal{\dexp_1}}}
 {\stepsToD{\Delta}
-  {\dcase{\dinR{\dexp_1}{\htau}}{x}{\dexp_2}{y}{\dexp_3}}
+  {\dcase{\dinR{\htau}{\dexp_1}}{x}{\dexp_2}{y}{\dexp_3}}
   {\DoSubst{\dexp_1}{x}{\dexp_3}}}
 
 \inferrule[]

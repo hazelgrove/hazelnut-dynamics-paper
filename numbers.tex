@@ -1,0 +1,143 @@
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%% Syntax
+To include natural numbers, we extend the syntax as follows:
+\[
+\begin{array}{rllllll}
+\mathsf{HTyp} & \htau & ::= \cdots ~\vert~ \tnum
+\\
+\mathsf{HExp} & \hexp & ::= \cdots
+~\vert~ \hnum{n}
+~\vert~ \hadd{\hexp}{\hexp}
+\\
+\mathsf{IHExp} & \dexp & ::= \cdots
+~\vert~ \dnum{n}
+~\vert~ \dadd{\dexp}{\dexp}
+\end{array}
+\]
+
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+
+\vsepRule
+
+\judgbox
+  {\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}
+  {$\hexp$ synthesizes type $\htau$ and expands to $\dexp$}
+\begin{mathpar}
+\inferrule[]{ ~ }{
+  \expandSyn{\hGamma}{\hnum{n}}{\tnum}{\hnum{n}}{\EmptyDelta}
+}
+
+\inferrule[]{
+  \expandSyn{\hGamma}{\hexp_1}{\tnum}{\dexp_1}{\Delta_1}
+  \\
+  \expandSyn{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\Delta_1}
+}{
+  \expandSyn{\hGamma}
+            {\dadd{\hexp_1}{\hexp_2}}
+            {\tnum}
+            {\dadd{\dexp_1}{\dexp_2}}
+            {\Delta_1 \cup \Delta_2}
+}
+\end{mathpar}
+
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+
+\judgbox{\hasType{\Delta}{\hGamma}{\dexp}{\htau}}{$\dexp$ is assigned type $\htau$}
+\begin{mathpar}
+\inferrule[]{
+  ~
+}{
+  \hasType{\Delta}{\hGamma}{\hnum{n}}{\tnum}
+}
+
+\inferrule[]{
+  \hasType{\Delta}{\hGamma}{\dexp_1}{\tnum}
+  \\
+  \hasType{\Delta}{\hGamma}{\dexp_2}{\tnum}
+}{
+  \hasType{\Delta}{\hGamma}{\dadd{\dexp_1}{\dexp_2}}{\tnum}
+} 
+
+\end{mathpar}
+
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+  
+\judgbox{\isValue{\dexp}}{$\dexp$ is a value}
+
+\begin{mathpar}
+\inferrule[]
+{~}
+{\isValue{\dnum{n}}}
+\end{mathpar}
+
+\vsepRule
+
+\judgbox{\isGround{\htau}}{$\htau$ is a ground type}
+\begin{mathpar}
+\inferrule[]{~}{
+  \isGround{\tnum}
+}
+\end{mathpar}
+
+\vsepRule
+
+\judgbox{\isIndet{\dexp}}{$\dexp$ is indeterminate}
+\begin{mathpar}
+\inferrule[]
+{\dexp_1 \ne \dnum{n}
+ \\
+ \isIndet{\dexp_1}
+ \\
+ \isIndet{\dexp_2}
+}
+{\isIndet{\dadd{\dexp_1}{\dexp_2}}}
+
+\inferrule[]
+{\dexp_2 \ne \dnum{n}
+ \\
+ \isIndet{\dexp_1}
+ \\
+ \isIndet{\dexp_2}
+}
+{\isIndet{\dadd{\dexp_1}{\dexp_2}}}
+\end{mathpar}
+
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+
+\begin{mathpar}
+\arraycolsep=4pt\begin{array}{rllllll}
+\mathsf{EvalCtx} & \evalctx & ::= & \cdots ~\vert~
+  \dadd{\evalctx}{\dexp_2}
+  ~\vert~  
+  \dadd{\dexp_1}{\evalctx}
+\end{array}
+\end{mathpar}
+
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+
+\judgbox{\selectEvalCtx{\dexp}{\evalctx}{\dexp'}}{$\dexp$ is obtained by placing $\dexp'$ at the mark in $\evalctx$}
+\begin{mathpar}
+\inferrule[]
+{\selectEvalCtx{\dexp_1}{\evalctx}{\dexp_1'}}
+{\selectEvalCtx{\dadd{\dexp_1}{\dexp_2}}
+               {(\dadd{\evalctx}{\dexp_2})}
+               {\dexp_1'}}
+
+\inferrule[]
+{\selectEvalCtx{\dexp_2}{\evalctx}{\dexp_2'}}
+{\selectEvalCtx{\dadd{\dexp_1}{\dexp_2}}
+               {(\dadd{\dexp_1}{\evalctx})}
+               {\dexp_2'}}
+\end{mathpar}
+
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+
+\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
+\begin{mathpar}
+\inferrule[]
+{ n_1 + n_2 = n_3 }
+{\stepsToD{\Delta}
+  {\dadd{\dnum{n_1}}{\dnum{n_2}}}
+  {\dnum{n_3}}
+}
+\end{mathpar}
