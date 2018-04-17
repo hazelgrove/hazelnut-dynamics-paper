@@ -157,7 +157,7 @@ We begin in Sec.~\ref{sec:examples} by detailing the approach informally, with s
 Sec.~\ref{sec:calculus} then abstracts away orthogonal details of the language and user interface and makes these intuitions formally precise by detailing the primary contribution of this paper: a core calculus, \HazelnutLive, that supports evaluating incomplete expressions as just outlined, in a manner that admits clean type safety theorems (in particular, a Progress theorem). The semantics of \HazelnutLive borrows machinery from gradual type theory~\cite{DBLP:conf/snapl/SiekVCB15}
 (to handle incomplete types) and contextual modal type theory~\cite{Nanevski2008} (CMTT,
 which provides a logical foundation for hole environment tracking). 
-These non-obvious connections to well-established existing systems help support our claim that this approach is theoretically well-grounded\todo{note that our exposition \IS self-contained here? or later?}.
+These non-obvious connections to well-established existing systems help support our claim that this approach is theoretically well-grounded.
 
 Sec.~\ref{sec:agda-mechanization} outlines our mechanization of the core calculus using the Agda proof assistant. 
 Sec.~\ref{sec:implementation} outlines our simple implementation of the core calculus, which implements the live programming features from Sec.~\ref{sec:examples},

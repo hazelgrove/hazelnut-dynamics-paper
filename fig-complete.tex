@@ -102,3 +102,8 @@ When two types are complete and consistent, they are equal.
 
 This implies that in a well-typed internal expression, every cast is
 an identity cast.
+
+We define $\isComplete{\hGamma}$ as follows.
+\begin{defn}[Typing Context Completeness]
+$\isComplete{\hGamma}$ iff for each $x : \htau \in \hGamma$, we have $\isComplete{\htau}$.
+\end{defn}
