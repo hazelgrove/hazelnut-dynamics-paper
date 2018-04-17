@@ -2,11 +2,11 @@
 \begin{figure}[h]
 \judgbox{\isComplete{\htau}}{$\htau$ is complete}
 \begin{mathpar}
-\inferrule[BComplete]{ }{
+\inferrule[TCBase]{ }{
   \isComplete{b}
 }
 
-\inferrule[ArrComplete]{
+\inferrule[TCArr]{
   \isComplete{\htau_1}\\
   \isComplete{\htau_2}
 }{
@@ -18,35 +18,35 @@
 
 \judgbox{\isComplete{\hexp}}{$\hexp$ is complete}
 \begin{mathpar}
-\inferrule[EVarComplete]{ }{
+\inferrule[ECVar]{ }{
   \isComplete{x}
 }
 
-\inferrule[EConstComplete]{ }{
+\inferrule[ECConst]{ }{
   \isComplete{c}
 }
 
-\inferrule[ESynLamComplete]{
+\inferrule[ECLam1]{
   \isComplete{\htau}\\
   \isComplete{\hexp}
 }{
   \isComplete{\halam{x}{\htau}{\hexp}}
 }
 
-\inferrule[EAnaLamComplete]{
+\inferrule[ECLam2]{
   \isComplete{\hexp}
 }{
   \isComplete{\hlam{x}{\hexp}}
 }
 
-\inferrule[EApComplete]{
+\inferrule[ECAp]{
   \isComplete{\hexp_1}\\
   \isComplete{\hexp_2}
 }{
   \isComplete{\hap{\hexp_1}{\hexp_2}}
 }
 
-\inferrule[EAscComplete]{
+\inferrule[ECAsc]{
   \isComplete{\hexp}\\
   \isComplete{\htau}
 }{
@@ -59,29 +59,29 @@
 
 \judgbox{\isComplete{\dexp}}{$\dexp$ is complete}
 \begin{mathpar}
-\inferrule[DVarComplete]{ }{
+\inferrule[DCVar]{ }{
   \isComplete{x}
 }
 
-\inferrule[DConstComplete]{ }{
+\inferrule[DCConst]{ }{
   \isComplete{c}
 }
 
-\inferrule[DLamComplete]{
+\inferrule[DCLam]{
   \isComplete{\htau}\\
   \isComplete{\dexp}
 }{
   \isComplete{\dlam{x}{\htau}{\dexp}}
 }
 
-\inferrule[DApComplete]{
+\inferrule[DCAp]{
   \isComplete{\dexp_1}\\
   \isComplete{\dexp_2}
 }{
   \isComplete{\dap{\dexp_1}{\dexp_2}}
 }
 
-\inferrule[DCastComplete]{
+\inferrule[DCCast]{
   \isComplete{\dexp}\\
   \isComplete{\htau_1}\\
   \isComplete{\htau_2}
@@ -96,8 +96,9 @@
 
 When two types are complete and consistent, they are equal.
 
-\begin{lem}[Complete Consistency] If $\tconsistent{\htau_1}{\htau_2}$ an $\isComplete{\htau_1}$ and $\isComplete{\htau_2}$ then $\htau_1 = \htau_2$. 
+\begin{lem}[Complete Consistency] If $\tconsistent{\htau_1}{\htau_2}$ an $\isComplete{\htau_1}$ and $\isComplete{\htau_2}$ then $\htau_1 = \htau_2$.
 \end{lem}
 \begin{proof} By straightforward rule induction. \end{proof}
 
-This implies that in a well-typed internal expression, every cast is an identity cast.
+This implies that in a well-typed internal expression, every cast is
+an identity cast.
