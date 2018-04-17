@@ -23,7 +23,7 @@ We extend the syntax for sum types as follows:
 %%%%%%% Definition of Join: a meta-level, binary function over types.
 
 %\newcommand{\JoinTypes}[2]{\textsf{join}~~#1~~#2}
-\newcommand{\JoinTypes}[2]{\textsf{join}(#1,#2)}
+%\newcommand{\JoinTypes}[2]{\textsf{join}(#1,#2)}
 
 %\fbox{$\JoinTypes{\htau_1}{\htau_2} = \htau_3$}
 \judgbox
@@ -240,20 +240,38 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 
 %%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
 
-\judgbox{\isevalctx{\evalctx}}{$\evalctx$ is an evaluation context}
 \begin{mathpar}
-\inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinL{\htau}{\evalctx}}}
-\and
-\inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinR{\htau}{\evalctx}}}
-\and
-\inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dcase{\evalctx}{x}{\dexp_1}{y}{\dexp_2}}}
+\arraycolsep=4pt\begin{array}{rllllll}
+\mathsf{EvalCtx} & \evalctx & ::= & \cdots ~\vert~
+  \dinL{\htau}{\evalctx}
+  ~\vert~
+  \dinR{\htau}{\evalctx}
+  ~\vert~
+  \dcase{\evalctx}{x}{\dexp_1}{y}{\dexp_2}
+  %% \evalhole ~\vert~
+  %% \hap{\evalctx}{\dexp} ~\vert~
+  %% \hap{\dexp}{\evalctx} ~\vert~
+  %% \dhole{\evalctx}{\mvar}{\subst}{} ~\vert~
+  %% \dcasttwo{\evalctx}{\htau}{\htau} ~\vert~
+  %% \dcastfail{\evalctx}{\htau}{\htau}
+\end{array}
 \end{mathpar}
+
+%% \judgbox{\isevalctx{\evalctx}}{$\evalctx$ is an evaluation context}
+%% \begin{mathpar}
+%% \inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinL{\htau}{\evalctx}}}
+%% \and
+%% \inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dinR{\htau}{\evalctx}}}
+%% \and
+%% \inferrule[]{\isevalctx{\evalctx}}{\isevalctx{\dcase{\evalctx}{x}{\dexp_1}{y}{\dexp_2}}}
+%% \end{mathpar}
 
 \judgbox{\selectEvalCtx{\dexp}{\evalctx}{\dexp'}}{$\dexp$ is obtained by placing $\dexp'$ at the mark in $\evalctx$}
 \begin{mathpar}
 \inferrule[]
 {\selectEvalCtx{\dexp_1}{\evalctx}{\dexp_1'}}
-{\dcase{\dexp_1}{x}{\dexp_2}{y}{\dexp_3}}
+{\selectEvalCtx{\dcase{\dexp_1}{x}{\dexp_2}{y}{\dexp_3}}
+               {\dcase{\evalctx}{x}{\dexp_2}{y}{\dexp_3}}{\dexp_1'}}
 \end{mathpar}
 
 \judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
@@ -261,13 +279,13 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 \inferrule[]
 {\maybePremise{\isFinal{\dexp_1}}}
 {\stepsToD{\Delta}
-  {\dcase{\dinL{\dexp_1}{\htau}}{x}{\dexp_2}{y}{\dexp_3}}
+  {\dcase{\dinL{\htau}{\dexp_1}}{x}{\dexp_2}{y}{\dexp_3}}
   {\DoSubst{\dexp_1}{x}{\dexp_2}}}
 
 \inferrule[]
 {\maybePremise{\isFinal{\dexp_1}}}
 {\stepsToD{\Delta}
-  {\dcase{\dinR{\dexp_1}{\htau}}{x}{\dexp_2}{y}{\dexp_3}}
+  {\dcase{\dinR{\htau}{\dexp_1}}{x}{\dexp_2}{y}{\dexp_3}}
   {\DoSubst{\dexp_1}{x}{\dexp_3}}}
 
 \inferrule[]
