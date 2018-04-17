@@ -32,7 +32,6 @@
 \usepackage{todonotes}
 \usepackage{xspace}
 \usepackage{wrapfig}
-\usepackage[export]{adjustbox}% http://ctan.org/pkg/adjustbox
 
 
 \usepackage{listings}%
@@ -51,8 +50,6 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 \newcommand{\li}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
 \newcommand{\lismall}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
 
-
-
 %% Joshua Dunfield macros
 \def\OPTIONConf{1}%
 \usepackage{joshuadunfield}
@@ -61,6 +58,25 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 \usepackage{blindtext}
 
 \usepackage{enumitem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Matt says: Cyrus, this package `adjustbox` seems directly related
+%% to the `clipbox` error; To get rid of the error, I moved it last
+%% (after other usepackages) and I added the line just above it, which
+%% permits it to redefine `clipbox` (apparently also defined in
+%% `pstricks`, and due to latex's complete lack of namespace
+%% management, these would otherwise names clash).
+\let\clipbox\relax
+\usepackage[export]{adjustbox}% http://ctan.org/pkg/adjustbox
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{draftwatermark}
+%\SetWatermarkText{DRAFT}
+%\SetWatermarkScale{1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % A macro for the name of the system being described by ``this paper''
 \newcommand{\HazelnutLive}{\textsf{Hazelnut Live}\xspace}
