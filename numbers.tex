@@ -147,11 +147,11 @@ We extend the syntax as follows:
 
 %%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
 
-\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
+\judgbox{\reducesE{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
 \begin{mathpar}
 \inferrule[]
 { n_1 + n_2 = n_3 }
-{\stepsToD{\Delta}
+{\reducesE{\Delta}
   {\dadd{\dnum{n_1}}{\dnum{n_2}}}
   {\dnum{n_3}}
 }

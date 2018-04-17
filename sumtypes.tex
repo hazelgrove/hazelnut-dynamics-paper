@@ -278,23 +278,23 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
                {\dcase{\evalctx}{x}{\dexp_2}{y}{\dexp_3}}{\dexp_1'}}
 \end{mathpar}
 
-\judgbox{\stepsToD{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
+\judgbox{\reducesE{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
 \begin{mathpar}
 \inferrule[]
 {\maybePremise{\isFinal{\dexp_1}}}
-{\stepsToD{\Delta}
+{\reducesE{\Delta}
   {\dcase{\dinL{\htau}{\dexp_1}}{x}{\dexp_2}{y}{\dexp_3}}
   {\DoSubst{\dexp_1}{x}{\dexp_2}}}
 
 \inferrule[]
 {\maybePremise{\isFinal{\dexp_1}}}
-{\stepsToD{\Delta}
+{\reducesE{\Delta}
   {\dcase{\dinR{\htau}{\dexp_1}}{x}{\dexp_2}{y}{\dexp_3}}
   {\DoSubst{\dexp_1}{x}{\dexp_3}}}
 
 \inferrule[]
 {\maybePremise{\isFinal{\dexp_1}}}
-{\stepsToD{\Delta}
+{\reducesE{\Delta}
   {\dcase
     {\dcasttwo{\dexp_1}{\tsum{\tau_1}{\tau_2}}{\tsum{\tau_1'}{\tau_2'}}}
     {x}{\dexp_2}{y}{\dexp_3}}
