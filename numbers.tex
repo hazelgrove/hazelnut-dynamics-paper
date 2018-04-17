@@ -1,6 +1,6 @@
 %%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
 %%%%%%% Syntax
-To include natural numbers, we extend the syntax as follows:
+To numbers, and addition, we extend the syntax as follows:
 \[
 \begin{array}{rllllll}
 \mathsf{HTyp} & \htau & ::= \cdots ~\vert~ \tnum
@@ -100,14 +100,14 @@ To include natural numbers, we extend the syntax as follows:
  \\
  \isIndet{\dexp_1}
  \\
- \isIndet{\dexp_2}
+ \isFinal{\dexp_2}
 }
 {\isIndet{\dadd{\dexp_1}{\dexp_2}}}
 
 \inferrule[]
 {\dexp_2 \ne \dnum{n}
  \\
- \isIndet{\dexp_1}
+ \isFinal{\dexp_1}
  \\
  \isIndet{\dexp_2}
 }
