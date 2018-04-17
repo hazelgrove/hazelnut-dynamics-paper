@@ -27,10 +27,22 @@ To include natural numbers, we extend the syntax as follows:
   \expandSyn{\hGamma}{\hnum{n}}{\tnum}{\hnum{n}}{\EmptyDelta}
 }
 
+%% \inferrule[]{
+%%   \expandSyn{\hGamma}{\hexp_1}{\tnum}{\dexp_1}{\Delta_1}
+%%   \\
+%%   \expandSyn{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\Delta_1}
+%% }{
+%%   \expandSyn{\hGamma}
+%%             {\dadd{\hexp_1}{\hexp_2}}
+%%             {\tnum}
+%%             {\dadd{\dexp_1}{\dexp_2}}
+%%             {\Delta_1 \cup \Delta_2}
+%% }
+
 \inferrule[]{
-  \expandSyn{\hGamma}{\hexp_1}{\tnum}{\dexp_1}{\Delta_1}
+  \expandAna{\hGamma}{\hexp_1}{\tnum}{\dexp_1}{\tnum}{\Delta_1}
   \\
-  \expandSyn{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\Delta_1}
+  \expandAna{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\tnum}{\Delta_1}
 }{
   \expandSyn{\hGamma}
             {\dadd{\hexp_1}{\hexp_2}}
