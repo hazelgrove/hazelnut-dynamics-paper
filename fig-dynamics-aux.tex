@@ -16,10 +16,10 @@
 \end{mathpar}
 \end{minipage}
 
-& 
+&
 
 \begin{minipage}{0.5\textwidth}
-    
+
 \judgbox{\isValue{\dexp}}{$\dexp$ is a value}
 \begin{mathpar}
 \inferrule[VConst]{ }{
@@ -38,20 +38,20 @@
 
 \judgbox{\isBoxedValue{\dexp}}{$\dexp$ is a boxed value}
 \begin{mathpar}
-\inferrule[BVVal\rkc{name?}]{
+\inferrule[BVVal]{
   \isValue{\dexp}
 }{
   \isBoxedValue{\dexp}
 }
 
-\inferrule[BVCastArr\rkc{name?}]{
+\inferrule[BVArrCast]{
   \tarr{\htau_1}{\htau_2} \neq \tarr{\htau_3}{\htau_4}\\
   \isBoxedValue{\dexp}
 }{
   \isBoxedValue{\dcasttwo{\dexp}{\tarr{\htau_1}{\htau_2}}{\tarr{\htau_3}{\htau_4}}}
 }
 
-\inferrule[BVHoleCast\rkc{name?}]{
+\inferrule[BVHoleCast]{
   \isBoxedValue{\dexp}\\
   \isGround{\htau}
 }{

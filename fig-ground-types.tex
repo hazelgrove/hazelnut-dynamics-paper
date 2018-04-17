@@ -4,11 +4,11 @@
 \begin{subfigure}[t]{0.5\textwidth}
 \judgbox{\isGround{\htau}}{$\htau$ is a ground type}
 \begin{mathpar}
-\inferrule[GBase\rkc{name?}]{ }{
+\inferrule[GBase]{ }{
   \isGround{b}
 }
 
-\inferrule[GArrHole\rkc{name?}]{ }{
+\inferrule[GHole]{ }{
   \isGround{\tarr{\tehole}{\tehole}}
 }
 \end{mathpar}
