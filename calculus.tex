@@ -1,11 +1,10 @@
 % !TEX root = hazelnut-dynamics.tex
-
-\clearpage
+% \clearpage
 \newcommand{\calculusSec}{Hazelnut Live, Formally}
 \section{\protect\calculusSec}
 \label{sec:calculus}
-
 % \def \TirNameStyle \Vtexttt{#1}{{#1}}
+
 
 \input{fig-syntax}
 \input{fig-bidirectional-typing}
@@ -30,6 +29,7 @@ In this regard, the internal language is analogous to the cast calculus in the g
 
 \subsection{Static Semantics of the External Language}
 \label{sec:external-statics}
+
 
 
 We start with the type system of the \HazelnutLive external language,
@@ -755,9 +755,10 @@ The following theorem establishes that expansion preserves program completeness.
     \item
       If $\isComplete{\hexp}$
       and $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
-      then $\isComplete{\dexp}$.
+      then $\isComplete{\htau}$ and $\isComplete{\dexp}$.
     \item
-      If $\isComplete{\hexp}$
+      If $\isComplete{\hexp}$ 
+and $\isComplete{\htau}$
       and $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
       then $\isComplete{\dexp}$.
   \end{enumerate}

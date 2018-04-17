@@ -1,62 +1,76 @@
-\subsection{Live Programming with Incomplete Expressions}
+% !TEX root = hazelnut-dynamics.tex
 
-The process of writing new program fragments includes many states in which the
-program under construction is, by definition, incomplete.
-%
-It is natural for a programmer to ``jump back and forth'' between different
-places in the program, iteratively and alternately developing the missing
-pieces.
-%
-The primary benefit of our approach is that such programs can be evaluated in
-order to provide useful feedback during this editing workflow.
+\subsection{Example 1: Evaluating Past Holes and Hole Closures}
 
-\input{fig-grades-example}
+Consider the perspective of a teacher in the midst of developing a \Hazel{} notebook
+to compute final student grades at the end of a course.
+The top of \autoref{fig:grades-example} depicts the cell containing the incomplete program that 
+the teacher has written so far (we omit irrelevant parts of the UI). 
+%
 
-\overviewExample{1a}{Computing Weighted Averages}
-%
-Consider a teacher who is in the midst of developing a \Hazel{} notebook
-(depicted at the top of \autoref{fig:grades-example}) to compute final student
-grades at the end of a term.
-%
-At the top of the program, the teacher defines a
-record type, \li{student_data}, for each student's course data.
-%
-In our simplified example, this includes the student's name, of type
-\li{string}, and five grades, each of type \li{float}.
+At the top of this program, the teacher defines a
+record type, \lismall{Student}, for recording a student's course data---here,
+the student's name, of type
+\lismall{string}, and, for simplicity, three grades, each of type \lismall{float}. The variable \lismall{students} binds a list of such student records. For simplicity, we include only three example students.
+At the bottom of the program, the teacher maps a function \li{weighted_average} over this student data (\li{map} is the standard map function over lists, not shown), intending to compute a final weighted average for each student.
+However, the program is incomplete because the teacher has not yet completed the body of the \lismall{weighted_average} function. This pattern is well-established: programmers often consume a function before implementing it.
 
-The teacher begins writing a \li{weighted_average} function that will
-compute a weighted average, of type \li{float}, for each \li{student_data}
-record.
-%
-The body of \li{weighted_average} is not yet written---marked with the
-\emph{empty hole} on line \rkc{XXX}---but the teacher jumps ahead to map the
-function over the \li{grades} list on line \rkc{XXX}.
-%
-\Hazel{} evaluates this incomplete program, showing its
-\emph{indeterminate} result in \emph{results panel} just below the
-program in the center of the window (\autoref{fig:grades-example});
-this value is a list whose length is the same as
-\li{grades}, where each element is the (indeterminate) result of evaluating the
-hole expression inside \li{weighted_average}.
-%
-\rkc{The editor shows the first three elements of a result list, by default; the
-... can be clicked and expanded to see additional elements.}
+Thusfar in Fig.~\ref{fig:grades-example}, the teacher has decomposed the function argument into variables by record destructuring, then multiplied the homework grade, \li{hw}, by \li{30.0} and finally inserted the \li{+} operator. The cursor now sits at an \emph{empty hole}, as indicated by the vertical bar and the green background. Each hole has a unique name (generated automatically in \Hazel), here simply \li{1}. 
+%In this case, there is only one hole in the program, but in general, there may be many such holes.
 
-Notice that the hole expression on line \rkc{XXX} is assigned a unique static
-identifier (\ie{}~\li{a}) and that the indeterminate results it produces are
-assigned corresponding unique dynamic identifiers (\ie{}~\li{a.1}, \li{a.2},
-etc.).
-%
-In contrast, the typical ad-hoc approach to simulating hole expressions, namely,
-using placeholder expressions like \li{raise "Not yet implemented."}, would halt
-the program as soon it is evaluated (in this case, inside the definition of
-\li{List.map} when the function is applied to the first element of \li{grades}.
-%
-By ``evaluating around'' the hole in \HazelnutLive{}, the programmer can at
-least see that the resulting expression does indeed evaluate to a list with the
-correct number of (indeterminate) values.
+Let us briefly digress: in a conventional ``batch'' programming system, writing \li{30.0*hw +} by itself would simply cause parsing to fail and there would be no static or dynamic feedback available to the programmer.
+In response, the programmer might insert a temporary universal placeholder, e.g. by raising an exception as suggested in Sec.~\ref{sec:intro} (note however that Elm does not support exceptions, by design). This would cause typechecking to succeed. 
+However, when the programming environment attempts to evaluate the program, 
+evaluation would proceed only as far as the first \li{map} iteration, 
+which would call into \li{weighted_average} and then fail when attempting to evaluate the hole.%
+\footnote{In a lazy language, like Haskell, the result would be much the same because the environment forces the result for printing.}
+While the stack trace would confirm that \li{weighted_average} has been called, this is not entirely satisfying.
 
-Now the teacher returns to \li{weighted_average} to work on the missing
+\Hazel{} does not take this ``exceptional'' interpretation of holes. Instead, evaluation continues past the hole, treating it as an opaque expression of the appropriate type. The result, shown at the bottom of Fig.~\ref{fig:grades-cell-mockup}, is a list of length $3$, confirming that \li{map} does indeed behave as expected in this regard despite the teacher having provided an incomplete argument. Furthermore, each element of the resulting list has been evaluated as far as possible, i.e. the arithmetic expression \li{30.0*hw} has been evaluated for each corresponding value of \li{hw}, as expected. Evaluation cannot proceed any further because holes appear as addends. We say that each of these addition expressions is an \emph{indeterminate} sub-expression, and the result as a hole is therefore also indeterminate, because it is not yet a value, nor can it take a step due to holes in critical positions.
+
+Given this indeterminate result, the teacher might take notice of the magnitude of the numbers being computed, e.g. \li{2640.0} and \li{2280.0}, and
+decide immediately that a mistake has been made: the teacher wants to compute a 
+weighted average between \li{0.0} and \li{100.0}, and so the correct
+constant is \li{0.30} rather than \li{30.0}. (There are of course other possible fixes.)
+
+Although these observations might 
+save only a small amount of time in this case, 
+% relative to the 
+% situation where the teacher notices this mistake only once  
+% the \li{weighted_average} function has been completed, 
+it demonstrates
+the broader motivations of live programming: continuous feedback about the dynamic behavior of the 
+program can help confirm the mental model 
+that the programmer has developed (in this case, regarding the behavior of \li{map}), or else help quickly dispel 
+inconsistencies between the programmer's expectations and the 
+actual behavior of the program (in this case, the arithmetic expression).
+
+% The result itself is not the only live feedback that \Hazel reports to the programmer.
+% Programmers also keep track of the names and types of the variables that are in scope at the cursor. 
+\Hazel also helps programmers reason about the dynamic behavior of bound variables in scope at a hole via the \emph{live context inspector}, normally displays it as a sidebar but shown disembodied in three states in Fig.~\ref{fig:grades-sidebar}. 
+In all three states, the live context inspector displays the names and types of the variables that are in scope, as is a common feature of programming environments.
+
+New to our approach are the values associated with each binding.
+These values come from the environments associated with each hole instance in the result. In this case, there are three instances of hole \li{1} in the result, numbered sequentially: \li{1:1}, \li{1:2} and \li{1:3}, arising from the three calls to \li{weighted_averages}. An environment is a partial mapping of each variable in scope to a value. We call a hole instance paired with an  environment a \emph{hole closure}, by analogy to function closures (and also due to the logical foundations detailed in Sec.~\ref{sec:calculus}). The programmer can select different closures by clicking on a hole instance (here, instance \li{1:1} was selected by default, as indicated by the purple outline), or cycle rapidly through all of the closures for the hole at the cursor by clicking the arrows, e.g. $\blacktriangleright$, at the bottom of the context inspector, or corresponding hotkeys.
+
+\vspace{-4px}
+\subsection{Example 2: Recursive Functions}\label{sec:qsort1}
+\vspace{-2px}
+
+\input{qsort-example}
+
+The first example was purposely simple. Let us briefly consider a second more sophisticated example of these concepts: an incomplete implementation of quicksort as a recursive function, shown in Fig.~\ref{fig:qsort-cell-mockup}. Here, the programmer has selected a pivot, split the remainder of the list relative to this pivot and made the appropriate recursive calls. A hole appears in the return position of the function body as the programmer contemplates how to combine the results from the recursive calls. 
+
+The programmer has called \li{qsort} on an example list. However, 
+the indeterminate result in this case is rather uninteresting: it simply confirms that for this example, evaluation went through the recursive case of \li{qsort}, which ends with hole \li{1}. The live context inspector, on the other hand, provides a wealth of feedback about the dynamic behavior of this incomplete program. For example, the programmer can confirm that
+the lists \li{smaller} and \li{bigger} are appropriate named.
+
+The results from the recursive calls, \li{r_smaller} and \li{r_bigger}, are again hole instances, \li{1:2} and \li{1:3}. The programmer can click on these hole instances to reveal the environments at the corresponding recursive calls. For example, clicking on \li{1:2} reveals that the pivot in that case is \li{7} (not shown). In exploring these paths rooted at the result, the programmer can develop intuitions about the recursive structure of the computation before the program is complete. 
+(We leave to future work the pedagogical question of whether such early feedback might help students with recursion.)
+
+
+\begin{comment}
+Now the teacher returns to \lismall{weighted_average} to work on the missing
 expression, with the goal of computing a weighted sum of each of a student's
 grades.
 %
@@ -64,36 +78,38 @@ The teacher performs several \Hazel{} edit actions (each of which is a single
 keystroke, a shortcut to selecting one of the edit tools from the left panel,
 followed by a tool-specific argument terminated with the Enter key):
 %
-navigating the cursor to hole \li{a} and typing \li{+}, which creates a
-sum expression \li{??_b + ??_c} with the cursor placed, by default, under
-left operand (the hole labeled \li{b});
+navigating the cursor to hole \lismall{a} and typing \lismall{+}, which creates a
+sum expression \lismall{??_b + ??_c} with the cursor placed, by default, under
+left operand (the hole labeled \lismall{b});
 %
-typing \li{*} to create a multiplication expression \li{??_d * ??_e + ??_c},
-with the cursor place under hole \li{d};
+typing \lismall{*} to create a multiplication expression \lismall{??_d * ??_e + ??_c},
+with the cursor place under hole \lismall{d};
 %
-typing \li{\#10} to enter a numeric scaling factor, which then moves
-the cursor to the second operand, hole \li{e}; and
+typing \lismall{\#10} to enter a numeric scaling factor, which then moves
+the cursor to the second operand, hole \lismall{e}; and
 %
-typing \li{vg.hw1} to use the \li{hw1} field of the function argument
+typing \lismall{vg.hw1} to use the \lismall{hw1} field of the function argument
 as the right operand of the multiplication.
 %
-The resulting partial expression, \li{(10.0 *. g.hw1) +. ??_b}---shown
+The resulting partial expression, \lismall{(10.0 *. g.hw1) +. ??_b}---shown
 in the screenshot in the bottom half of \autoref{fig:grades-example}---marks the
-first of five weighted summands in the eventual finished \li{weighted_average}
+first of five weighted summands in the eventual finished \lismall{weighted_average}
 calculation.
+\end{comment}
 
+\begin{comment}
 Each \Hazel{} edit action transforms an incomplete but well-formed and
 well-typed program into another such program, and, thus, \Hazel{} immediately
 runs the program after each edit.
 %
 After the above edit sequence, \Hazel{} display the updated list of
-indeterminate expressions \li{[760.0 + ??_b.1, 880.0 + ??_b.2, ...]}.
+indeterminate expressions \lismall{[760.0 + ??_b.1, 880.0 + ??_b.2, ...]}.
 %
 Right away, the teacher recognizes that the values are too large; they should be
-at most \li{100.0}.
+at most \lismall{100.0}.
 %
-The teacher realizes that representing percentage points as \li{float}s requires
-that the constant on line \rkc{XXX} ought to be \li{0.10} instead.
+The teacher realizes that representing percentage points as \lismall{float}s requires
+that the constant on line \rkc{XXX} ought to be \lismall{0.10} instead.
 %
 Because of this live feedback, the teacher corrects this error right away and
 avoids making similar programming errors in the rest of the calculation.
@@ -101,8 +117,10 @@ avoids making similar programming errors in the rest of the calculation.
 The teacher continues to build the rest of the arithmetic expression until it is
 complete (there are no longer any expression holes), and the result of
 immediately running the finished program shows that each of values in the final
-result list is in the range \li{0.0} to \li{100.0}.
+result list is in the range \lismall{0.0} to \lismall{100.0}.
+\end{comment}
 
+\begin{comment}
 \input{fig-grades-example-2}
 
 \overviewExample{1b}{Assigning Letter Grades}
@@ -110,37 +128,37 @@ result list is in the range \li{0.0} to \li{100.0}.
 The teacher's next task is to map the weighted averages to the letter grades A
 through F (we consider only ``whole'' letter grades, for simplicity).
 %
-The \li{grade_cutoffs} record type, shown at the top of
+The \lismall{grade_cutoffs} record type, shown at the top of
 \autoref{fig:grades-example-b}, describes the minimum cutoff for each of
 these six possible grades.
 %
-Initially, each value in the \li{cutoffs} record is a hole.
+Initially, each value in the \lismall{cutoffs} record is a hole.
 
 %
 %% initially all holes, because it will be different year-to-year based on the %
 %data, differences in course difficulty, and to satisfy fairness criteria.
 %
 Before starting to fill in the cutoff values, the teacher jumps ahead to write a
-function \li{letter_grade} that will make the connection between \li{cutoffs}
-and \li{weighted_averages}.
+function \lismall{letter_grade} that will make the connection between \lismall{cutoffs}
+and \lismall{weighted_averages}.
 %
 Because she intends to look at the data to help select the cutoff values, the
-teacher sorts the \li{weighted_averages} (on line \rkc{XXX}) and then maps
-them to \li{letter_grades} (on line \rkc{XXX}).
+teacher sorts the \lismall{weighted_averages} (on line \rkc{XXX}) and then maps
+them to \lismall{letter_grades} (on line \rkc{XXX}).
 
 When \Hazel{} runs this program, the guard of the outermost conditional
-(\li{n >= cutoffs.a} on line \rkc{XXX}), is indeterminate because \li{cutoffs.a}
+(\lismall{n >= cutoffs.a} on line \rkc{XXX}), is indeterminate because \lismall{cutoffs.a}
 is.
 %
-Therefore, each of the indeterminate expressions in \li{letter_grades} is the
-entire expression body, albeit with different bindings for \li{n}.
+Therefore, each of the indeterminate expressions in \lismall{letter_grades} is the
+entire expression body, albeit with different bindings for \lismall{n}.
 %
 Displaying such ``large'' indeterminate expressions can quickly consume all
 available screen space, overwhelming the user with too much information.
 %
 \autoref{fig:XXX} shows how \Hazel{} renders large indeterminate
 expressions (\ie{}~anything other than ``small'' indeterminate value (a constant
-or hole) or list of small values) simply as \li{..} to save space.
+or hole) or list of small values) simply as \lismall{..} to save space.
 %
 Hovering over this abbreviation (\rkc{???}) displays the full
 indeterminate expression---as well as the evaluation environment that surrounds
@@ -152,18 +170,18 @@ trying to display useful live feedback without overwhelming the user.
 These usability factors are beyond the scope of our work, which is to define
 semantic foundations on which such user interfaces can be built.
 
-To start deciding \li{cutoffs}, the teacher clicks the \li{weighted_averages}
+To start deciding \lismall{cutoffs}, the teacher clicks the \lismall{weighted_averages}
 expression, and views the results panel to see the data sorted in descending
 order.
 %
-The result shows a natural gap between \li{92.2} and \li{89.5}.
+The result shows a natural gap between \lismall{92.2} and \lismall{89.5}.
 %
-So, she chooses to use \li{92.0} as the cutoff for A, replacing hole \li{XXX} on
+So, she chooses to use \lismall{92.0} as the cutoff for A, replacing hole \lismall{XXX} on
 line \rkc{XXX} with that numeric value.
 %
 Resuming the computation from before, \Hazel{} resolves the conditional
 expressions for the first \rkc{XXX} indeterminate expressions, because each of
-those \li{n} values was greater than \li{cutoffs.a}.
+those \lismall{n} values was greater than \lismall{cutoffs.a}.
 %
 The remaining \rkc{XXX} expressions also proceeded to evaluate the first guard,
 and are now indeterminate at the guard for the second conditional.
@@ -171,18 +189,18 @@ and are now indeterminate at the guard for the second conditional.
 Before assigning subsequent cutoff values, the teacher would like to get a sense
 of whether this first choice is a good one.
 %
-She jumps ahead to to write a function (\li{compute_distribution} on lines
+She jumps ahead to to write a function (\lismall{compute_distribution} on lines
 rkc{XXX}-\rkc{XXX}) that computes the distribution of letter grades based
 on \verb+cutoffs+..
 %
-Running \li{compute_distribution} shows that the percentage of As is
+Running \lismall{compute_distribution} shows that the percentage of As is
 \rkc{XXX\%}, which is smaller than what the teacher would like;
 the remaining percentages are all indeterminate.
 %
-Returning to the value of \li{sorted_data}, she sees a cluster around \li{89.0}
-and then another gap between \li{88.2} and {85.5}.
+Returning to the value of \lismall{sorted_data}, she sees a cluster around \lismall{89.0}
+and then another gap between \lismall{88.2} and {85.5}.
 %
-So, the teacher adjusts \li{cutoffs.a} to be \li{88.0}.
+So, the teacher adjusts \lismall{cutoffs.a} to be \lismall{88.0}.
 %
 Because this edit is not just filling a hole expression, \Hazel{} discards the
 previous execution state and reevaluates the entire program.
@@ -207,3 +225,4 @@ from before can simply be resumed.
 Overall, throughout the workflow described in these two examples, the programmer
 can continue to evaluate the program, and receive meaningful feedback, while
 going back and forth between different pieces under development.
+\end{comment}

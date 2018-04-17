@@ -32,6 +32,8 @@
 \usepackage{todonotes}
 \usepackage{xspace}
 \usepackage{wrapfig}
+\usepackage[export]{adjustbox}% http://ctan.org/pkg/adjustbox
+
 
 \usepackage{listings}%
 \lstloadlanguages{ML}
@@ -43,9 +45,10 @@ stringstyle=\ttfamily\color{purple},
 mathescape=false,escapechar=\#,
 numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily, language=ML, showspaces=false,showstringspaces=false,xleftmargin=15pt, 
 morekeywords={string, float, int},
-classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount
+classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount,
+moredelim=**[is][\color{red}]{SSTR}{ESTR}
 }
-\let\li\lstinline
+\newcommand{\li}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
 \newcommand{\lismall}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
 
 

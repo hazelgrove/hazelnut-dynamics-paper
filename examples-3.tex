@@ -1,5 +1,27 @@
-\subsection{Live Programming with Gradual Type Errors}
+% !TEX root = hazelnut-dynamics.tex
 
+\vspace{-4px}
+\subsection{Example 4: Gradual Type Errors}
+\vspace{-2px}
+So far, we have only discussed programs where a hole appears within an expression.
+\Hazel also allows holes to appear in types.
+Fortunately, \citet{popl-paper} confirms that the substantial literature on \emph{gradual type systems} \cite{Siek06a,DBLP:conf/snapl/SiekVCB15} is directly relevant to the problem of reasoning statically around type holes.
+Unsurprisingly, it is also relevant to the problem of running 
+programs with incomplete types. Indeed, that is the very purpose of gradual typing. As such, let us consider only a small synthetic example to demonstrate what is different in \Hazel.
+\begin{lstlisting}
+f : ? -> int
+f x = if x then 1 else 2
+(f true, f 3, f false)
+\end{lstlisting}
+Evaluation produces the following result:
+\begin{lstlisting}[numbers=none]
+(1, if SSTR3<int => ? =/> bool>ESTR then 1 else 2, 2)
+\end{lstlisting}
+Here, we have left a hole, \li{?}, in the type of \li{f}. On Line 3, we call \li{f} three times, with two different types of arguments. The static semantics of gradual typing permits all of these calls (see next section) and indeed, the first call, with \li{true} as the argument, evaluates unproblematically to \li{1}. 
+
+The second call, however, is problematic: \li{3} is of type \li{int} but it flows into boolean guard position. The usual semantics for gradual typing would simply abort evaluation here with a dynamic type error. However, this deprives the programmer of live feedback about other parts of the program that might not depend at all on this problematic function call---in this case, the third call to \li{f}. Instead, we follow the approach we took above for static type inconsistencies: we treat a failed cast like a hole. A failed cast, notated textually and in red \li{SSTR3<int => ? =/> bool>ESTR} (see next section), reports both the expected type, here \li{bool}, and the assigned type, here \li{int}. Consequently, the second call to \li{f} stops as if the guard were an empty hole, but the third call can progress safely.
+
+\begin{comment}
 \emph{Gradual type systems}~(\eg{}~\cite{XXX,XXX,XXX}) can statically accept
 programs that would otherwise be rejected by static type systems---either
 because type inference cannot reconstruct a valid type assignment, or because
@@ -63,3 +85,4 @@ approach allows us to report multiple dynamic cast errors, and otherwise make
 progress on expressions that do not depend on failed casts.
 %
 This approach can be incorporated into existing gradually typed languages.
+\end{comment}

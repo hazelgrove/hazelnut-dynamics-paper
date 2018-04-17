@@ -1,50 +1,81 @@
-%% \subsection{Live Programming with Type Errors}
-\subsection{Live Programming with Static Type Errors}
+% !TEX root = hazelnut-dynamics.tex
 
-In the previous section, we described example programs that were incomplete
+%% \subsection{Live Programming with Type Errors}
+
+\subsection{Example 3: Live Programming with Static Type Errors}
+
+
+% \begin{subfigure}[t]{\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth,interpolate=false,valign=t]{images/qsort-type-error.png}
+\caption{Example 3: Ill-Typed Quicksort}
+\label{fig:qsort-type-error}
+\vspace{-8px}
+\end{figure}
+% \end{subfigure}
+
+
+The previous examples were incomplete 
 because of \emph{missing} expressions.
 %
-Next, we describe example programs that are incomplete because of
-\emph{type-inconsistent} expressions.
+Now, we discuss programs that are incomplete, 
+and therefore conventionally meaningless, because of
+\emph{type inconsistencies}. 
 %
-For example, consider the following two definitions.
+Let us return to the quicksort example just described, 
+but assume that the programmer has filled in the previous hole
+as shown in Fig.~\ref{fig:qsort-type-error}. (In Sec.~\ref{sec:resumption}, we discuss
+how the programming environment might avoid restarting evaluation after such edits, but for small examples like this, restarting works fine.)
 
-\begin{lstlisting}
-let bad_bool : bool = ?? 0 ??_bad_bool;
+The programmer appears to be on the right track conceptually
+in recognizing that the pivot needs to appear between the 
+smaller and bigger elements. 
+However, the types do not quite work out: the \li{@} operator here
+performs list concatenation, but the pivot is an integer. 
+Most compilers and editors will report a static error message, 
+of varying utility, to the programmer in this case (and \Hazel 
+follows suit, not shown). 
+Our argument is that this should not cause all feedback about 
+the dynamic behavior of the program to ``flicker out'' or ``go stale''. After all,
+the error is localized and there is perfectly good code elsewhere 
+in the program (if not nearby, then perhaps far away).
 
-let bad_int : int = 1 + ?? true ??_bad_int_second_argument;
-\end{lstlisting}
+Our approach, following the prior work of \citet{popl-paper}, 
+is to semantically internalize the ``red outline'' around
+type inconsistencies as a \emph{non-empty hole}.
+From the outside, a non-empty hole behaves statically much like an empty hole.
+Our approach takes the same approach for the dynamic semantics,
+i.e. evaluation safely proceeds past a non-empty hole just as if it were an empty hole.
+The semantics also associates an environment with each instance of a non-empty hole (not shown). 
+The difference is that evaluation also proceeds inside the hole, so that 
+feedback about an expression that might ``almost'' be correct is available. 
+In this case, the result at the bottom of Fig.~\ref{fig:qsort-type-error}
+reveals that the programmer is on the right track: the list elements 
+(here, for a shorter example for the sake of exposition) are in the right order.
+They simply have not been combined correctly.
 
-\noindent
-%
-These two definitions are ill-typed under standard typing disciplines.
-%
-In contrast, \citet{popl-paper} present a bidirectional type system that assigns
-types to both, by wrapping type-inconsistent expressions (\li{0} on line
-\rkc{XXX} and \li{true} on line \rkc{XXX} above) in \emph{non-empty} holes.
-%
-Non-empty holes prevent local type inconsistencies from polluting the rest of
-the program surrounding it, which may or may not itself contain additional
-inconsistencies.
+% For example, consider the following two definitions.
 
-Understanding and debugging static type errors is notoriously difficult,
-particularly for novices.
-%
-A variety of approaches have been
-proposed~\cite{Seminal,ChenErwig2014,Pavlinovic2015,sherrloc} to better localize
-and explain type errors.
-%
-One of these approaches~\cite{Seidel2016} proposes to generate a dynamic witness
-that demonstrates a run-time failure, and then displays a compressed execution
-trace to the user as a graph.
-%
-In \HazelnutLive{}, we can run programs with type errors (\ie{}, programs with
-non-empty holes) as far as possible, in particular, until they
-would go wrong.
-%
-Thus, our operational semantics provides a similar benefit to the approach of
-\citet{Seidel2016}.
+% \begin{lstlisting}
+% let bad_bool : bool = ?? 0 ??_bad_bool;
 
+% let bad_int : int = 1 + ?? true ??_bad_int_second_argument;
+% \end{lstlisting}
+
+% \noindent
+% %
+% These two definitions are ill-typed under standard typing disciplines.
+% %
+% In contrast, \citet{popl-paper} present a bidirectional type system that assigns
+% types to both, by wrapping type-inconsistent expressions (\li{0} on line
+% \rkc{XXX} and \li{true} on line \rkc{XXX} above) in \emph{non-empty} holes.
+% %
+% Non-empty holes prevent local type inconsistencies from polluting the rest of
+% the program surrounding it, which may or may not itself contain additional
+% inconsistencies.
+
+\begin{comment}
 \overviewExample{2}{Sum List}
 %
 Consider the following buggy program (observed during an undergraduate
@@ -76,7 +107,7 @@ realizes that it needs to be an integer, specifically, \li{0}.
 Compared to the trace displayed by \citet{Seidel2016}, the indeterminate result
 produced by \HazelnutLive{} is ``flattened'' because the expression \li{1 + 2}
 successfully proceeded to evaluate despite the error elsewhere.
-
+\end{comment}
 
 %% TODO fold error from Erwig paper.
 %% %

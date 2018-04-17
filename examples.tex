@@ -1,56 +1,19 @@
 % !TEX root = hazelnut-dynamics.tex
 %% \newcommand{\examplesSec}{Live Functional Programming in Hazel, By Example}
 %% \newcommand{\examplesSec}{Live Programming in \HazelnutLive, By Example}
-\newcommand{\examplesSec}{\HazelnutLive, By Example}
+\newcommand{\examplesSec}{Live Functional Programming with Typed Holes in Hazel}
 \section{\protect\examplesSec} % don't like the all-caps thing that the template does, so protecting it from that
 \label{sec:examples}
 
+\input{fig-grades-example}
+
+
 \newcommand{\overviewExample}[2]{\paragraph{Example {#1}: {#2}}}
 
-The language of \Hazel is tracking toward parity with \Elm, a popular pure functional programming language \cite{czaplicki2012elm,Elm}, 
-and the user interface is a lab notebook interface based roughly on IPython/Jupyter \cite{Perez:2007:ISI:1251563.1251831}. 
+We begin with an example-driven overview of our proposed approach  within the \Hazel programming environment \citet{HazelnutSNAPL}. \Hazel is an open source web lab notebook environment based roughly on IPython/Jupyter \cite{Perez:2007:ISI:1251563.1251831}. The language of \Hazel is tracking toward parity with \Elm, a popular pure functional programming language similar to ``core ML'' \cite{czaplicki2012elm,Elm}. We assume familiarity with the basic concepts of ML/Elm (see \url{http://elm-lang.org/}).
 
-We introduce \HazelnutLive{} in this section using several examples,
-demonstrating how running incomplete programs---with missing expressions and/or
-type-inconsistent expressions---can be useful.
-%
-We will also demonstrate how running even complete programs with subexpressions
-marked as holes may be useful in debugging.
-
-The screenshot at the top of \autoref{fig:grades-example} shows a mockup of
-\Hazel{}, a work-in-progress programming environment that we are building on top
-of our dynamic semantics.
-%
-\Hazel{} programs are written in OCaml \cite{leroy03:_ocaml}, using the
-alternative Reason syntax \cite{reason-what} extended to support holes.
-%
-On the left side of the window is the \emph{edit action panel}, which
-provides a user interface for performing structured edits to the program
-displayed in the center of the window.
-%
-On the right side of the window is the \emph{environment panel}, which provides
-static and dynamic information about the expression in the program currently in
-focus (\ie{}~under the cursor).
-
-Our current implementation, a reference implementation of the \HazelnutLive{}
-calculus, provides the edit action, code, and environment panels as shown in
-\autoref{fig:grades-example}, but does not yet provide support for many of the
-programming constructs and syntactic sugar described in the examples in this
-section.
-%
-\autoref{sec:implementation} describes the status of \HazelnutLive{} in more
-detail.
-%
-%
-%% As shown in \autoref{fig:grades-example}, a \HazelnutLive{} notebook is a
-%% literate program \cite{knuth1984literate}: rich text comments appear at the top
-%% level and code appears within cells embedded into these comments.
-%
-The reader is encouraged \rkc{(maybe not)}
-to work through the following examples in our prototype
-implementation or watch video demonstrations, both available in
-\suppMaterials{}.
-
+Both the user interface and the language of \Hazel are under active development. For the sake of 
+exposition, we have ``post-processed'' the examples in this section to make use of several convenient language mechanisms from \Elm~that are not yet implemented in \Hazel as of this writing. These mechanisms are orthogonal to the contributions of this paper. We have implemented all of the live programming features described in this section, both in a branch of \Hazel and in the implementation of the core calculus that we describe in Sec.~\ref{sec:implementation} and include in the supplement.
 
 \input{examples-1}
 \input{examples-2}
@@ -58,18 +21,18 @@ implementation or watch video demonstrations, both available in
 \input{examples-4}
 
 
-\paragraph{Recap}
-%
-In the above four subsections, respectively, we considered programs with:
-%
-(1) empty expression holes,
-%
-(2) non-empty expression holes for ill-typed expressions,
-%
-(3) type holes, and
-%
-(4) non-empty expression holes for well-typed expressions.
-%
-Next, we will formally describe the novel dynamic semantics of \HazelnutLive{}
-that allows programs with combinations of these kinds of incompleteness to be
-evaluated.
+% \paragraph{Recap}
+% %
+% In the above four subsections, respectively, we considered programs with:
+% %
+% (1) empty expression holes,
+% %
+% (2) non-empty expression holes for ill-typed expressions,
+% %
+% (3) type holes, and
+% %
+% (4) non-empty expression holes for well-typed expressions.
+% %
+% Next, we will formally describe the novel dynamic semantics of \HazelnutLive{}
+% that allows programs with combinations of these kinds of incompleteness to be
+% evaluated.

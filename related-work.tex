@@ -121,7 +121,7 @@ programs with type and expression holes.
 As already discussed in Track 1, type holes are closely related to the unknown
 types of gradual type theory \cite{Siek06a}. This has implications for our
 dynamic semantics as well---we need to be able to run programs where type holes
-have obscured a type inconsistency, \eg{}~\li{let f(g : }\ \li{) => g 3 in f 4}.
+have obscured a type inconsistency, \eg{}~\lstinline{let f(g : }\ \lstinline{) => g 3 in f 4}.
 This term is well-typed according to the static semantics of Track 1 because the
 argument \li{g} of \li{f} has an unknown type, and so it can be applied to
 \li{3}, but when \li{f} is applied to \li{4}, there is a problem because \li{4 3}
@@ -188,9 +188,27 @@ features of Idris \cite{brady2013idris}.
 	\item maybe also search for ``partial programs'' 
 \end{itemize}
 
-put Seidel here
+Understanding and debugging static type errors is notoriously difficult,
+particularly for novices.
+%
+A variety of approaches have been
+proposed~\cite{Seminal,ChenErwig2014,Pavlinovic2015,sherrloc} to better localize
+and explain type errors.
+%
+One of these approaches~\cite{Seidel2016} proposes to generate a dynamic witness
+that demonstrates a run-time failure, and then displays a compressed execution
+trace to the user as a graph.
+%
+In \HazelnutLive{}, we can run programs with type errors (\ie{}, programs with
+non-empty holes) as far as possible, in particular, until they
+would go wrong.
+%
+Thus, our operational semantics provides a similar benefit to the approach of
+\citet{Seidel2016}.
 
 \parahead{Debugging}
+This approach is reminiscent of the workflow that debuggers make available using breakpoints \cite{fitzgerald2008debugging,DBLP:journals/jfp/TolmachA95}. 
+The difference here is twofold. First, evaluation does not stop at each breakpoint and so it is straightforward to explore the \emph{space} of values that a variable takes. Second, breakpoints make available the values of a variable at a position in the evaluation trace. Hole closures, on the other hand, convey information from a syntactic position in the result of evaluation. The result is, by nature, a simpler object than the full evaluation trace that produced the result. These approaches are fundamentally complementary, rather than opposed.\todo{move to related work?}{}\todo{talk about tracing/recording}{}
 
 \begin{itemize}
 	\item work on debuggers that allow you to inspect environments
