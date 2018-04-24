@@ -6,6 +6,12 @@
 \judgbox
   {\instantiate{\dexp}{u}{\dexp'} = \dexp''}
   {$\dexp''$ is obtained by filling hole $u$ with $\dexp$ in $\dexp'$}
+
+\vsepRule
+
+\judgbox
+  {\instantiate{\dexp}{u}{\sigma} = \sigma'}
+  {$\sigma'$ is obtained by filling hole $u$ with $\dexp$ in $\sigma$}
   %% {$\dexp''$ is the result of substituting $\dexp$ for $u$ in $\dexp'$}
 \[
 \begin{array}{lcll}
@@ -62,11 +68,18 @@ x\\
 \\
 \instantiate{\dexp}{u}{\dcastfail{\dexp'}{\htau_1}{\htau_2}}
 &=&
-\dcastfail{(\instantiate{\dexp}{u}{\dexp'})}{\htau_1}{\htau_2}
+\dcastfail{(\instantiate{\dexp}{u}{\dexp'})}{\htau_1}{\htau_2}\\
+\instantiate{\dexp}{u}{\cdot} 
+&=&
+\cdot\\
+\instantiate{\dexp}{u}{\sigma, \dexp'/x} 
+&=&
+\instantiate{\dexp}{u}{\sigma}, \instantiate{\dexp}{u}\dexp'/x
 %% {[\dexp_1 / x] \dcast{\htau}{\dexp}}
 %% &=&
 %% \dcast{\htau}{[\dexp_1 / x] \dexp}
 \end{array}
 \]
 \CaptionLabel{Hole Filling}{fig:substitution}
+\vspace{-8px}
 \end{figure}
