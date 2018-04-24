@@ -1,9 +1,9 @@
 % !TEX root = hazelnut-dynamics.tex
-\vspace{-7px}
+\vspace{-5px}
 \newcommand{\introSec}{Introduction}
 \section{\protect\introSec} % don't like the all-caps thing that the template does, so protecting it from that
 \label{sec:intro}
-% \vspace{-2px}
+\vspace{-2px}
 
 % Programming environments often operate in ``batch mode'', assuming that the programmer will spend a substantial amount 
 % of time editing the program text blindly before evaluating (i.e. running) the program. 
@@ -25,17 +25,17 @@ live user interface frameworks \cite{burckhardt2013s};
 live image processing languages~\cite{DBLP:journals/vlc/Tanimoto90};
 %
 and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98}, which can support live coding in an artistic performance.
-Editor-integrated debuggers \cite{mccauley2008debugging} and other systems that support editing the state of a running program, like Smalltalk environments \cite{Goldberg:1983cn}, are also live programming environments. 
-Live programming, in its various incarnations \cite{DBLP:journals/vlc/Tanimoto90,DBLP:conf/icse/Tanimoto13},
+Editor-integrated debuggers \cite{mccauley2008debugging} and other systems that support editing run-time state, like Smalltalk environments \cite{Goldberg:1983cn}, are also live programming environments. 
+% Live programming, in its various incarnations \cite{DBLP:journals/vlc/Tanimoto90,DBLP:conf/icse/Tanimoto13},
 %has been and continues to be an active area of research and development.
-has been, and continues to be, an active area of research and development.
+% has been, and continues to be, an active area of research and development.
 
 % \matt{ ``The problem that specifically motivates this paper'' is a
 % really long noun phrase; the sentence is more interesting, IMO, when
 % the subject is 'programming languages' and not that noun phrase.  }
 %
 The problem at the heart of this paper is that
-programming languages typically assign meaning only to {complete programs}, i.e. programs that are syntactically well-formed and free of static type and binding errors. A program editor, however, frequently encounters incomplete, and therefore meaningless, editor states. As a result, live feedback either ``flickers in and out'', creating temporal gaps, or it ``goes stale'', i.e. it relies on the most recent complete editor state, creating a perceptive gap because the feedback may not accurately reflect what the programmer is actually seeing and writing in the editor.
+programming languages typically assign meaning only to {complete programs}, i.e. programs that are syntactically well-formed and free of static type and binding errors. A program editor, however, frequently encounters incomplete, and therefore meaningless, editor states. As a result, live feedback either ``flickers out'', creating a temporal gap, or it ``goes stale'', i.e. it relies on the most recent complete editor state, creating a perceptive gap because the feedback may not accurately reflect what the programmer is seeing in the editor.
 
 In some cases these gaps are momentary, like while the programmer
 %\IS entering
@@ -46,7 +46,7 @@ Novice programmers, of course, make more mistakes \cite{mccauley2008debugging,fi
 %
 %\matt{we are not really modeling a language with user type definitions -- what does the following sentence really add here? also, I just added this scenerio to the list above}
 The problem is particularly pronounced for languages with rich static type systems, where certain program changes, such as a change to a type definition, can cause type errors to propagate throughout the program. Throughout the process of addressing these errors, the program text remains formally meaningless. 
-Overall, an analysis of edits performed by Java programmers using Eclipse found that about 40\% of edit states were malformed \cite{popl-paper,6883030} and some additional number, which could not be determined from the data, were well-formed but ill-typed.
+Overall, about 40\% of edits performed by Java programmers using Eclipse left the program text malformed \cite{popl-paper,6883030} and some additional number, which could not be determined from the data, were well-formed but ill-typed.
 
  % From the perspective of the language definition, these edit states are wholly meaningless, so editor services cannot rely on the same operations and reasoning principles that would be available to, for example, the compiler. 
 
@@ -108,11 +108,15 @@ This mirrors a workaround to the problem that programmers commonly deploy:
 raising an exception where an expression has yet be determined, e.g. \lismall{raise Unimplemented}. 
 Some languages provide more concise notation for this ``encoding'' of expression holes, 
 e.g. Scala provides \lismall{???}  
-and GHC Haskell with the \lismall{-fdefer-typed-holes} or \lismall{-fdefer-ty}\lismall{pe-errors} flags uses \lismall{_u}
+and GHC Haskell with the \lismall{-fdefer-typed-holes} flag 
+%or \lismall{-fdefer-ty}\lismall{pe-errors} flags 
+uses \lismall{_u}
 where \lismall{u} serves as an
-optional hole name \cite{GHCHoles}.%
-\footnote{Without these flags, holes cause compilation to fail. The compiler reports static information about each hole's type and typing context. 
-Proof assistants like Agda \cite{norell:thesis,norell2009dependently} and Idris \cite{brady2013idris} also respond to holes in this way.}
+optional hole name \cite{GHCHoles}. %
+% \footnote{
+Without these flags, holes cause compilation to fail. The compiler reports static information about each hole's type and typing context. 
+Proof assistants like Agda \cite{norell:thesis,norell2009dependently} and Idris \cite{brady2013idris} also respond to holes in this way.
+% }
 
 Although better than nothing, this approach of stopping with an exception upon reaching an expression hole has limitations 
 as the basis for a live programming environment because 
