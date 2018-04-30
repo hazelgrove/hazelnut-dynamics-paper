@@ -1,6 +1,8 @@
 \PassOptionsToPackage{svgnames,dvipsnames,svgnames}{xcolor}
 %% For double-blind review submission
-\documentclass[acmsmall,review]{acmart}
+%\documentclass[acmsmall,review]{acmart}
+%%% Note: arxiv does not want line numbers (they are detected somehow, and are not allowed)
+\documentclass[acmsmall]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 \setcopyright{none}
 \renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
@@ -349,7 +351,7 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 \input{related-work}
 \input{discussion}
 
-\clearpage
+%\clearpage
 \bibliography{references,all.short,hazel_NSF}
 
 \clearpage
