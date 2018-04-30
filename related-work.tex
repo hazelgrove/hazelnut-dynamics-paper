@@ -109,7 +109,11 @@ Work on explicit substitutions confronts problems similar to the problem of trac
 
 % \parahead{Structure Editor Calculus}
 
-Our approach is reminiscent of the workflow that debuggers make available using breakpoints \cite{fitzgerald2008debugging,DBLP:journals/jfp/TolmachA95} and a variety of logging and tracing capabilities. Debuggers do not directly support incomplete programs, so the programmer first needs to insert suitable dummy exceptions as discussed in Sec.~\ref{sec:intro}. Beyond that, there are two main distinctions. First, evaluation does not stop at each breakpoint and so it is straightforward to explore the \emph{space} of values that a variable takes. Second, breakpoints, logs and tracing tools convey the values of a variable at a position in the evaluation trace. Hole closures, on the other hand, convey information from a syntactic position in the \emph{result} of evaluation. The result is, by nature, a simpler object.%  These approaches are fundamentally complementary in that standard debugging facilities are useful even when there are no holes in the program whereas our focus has been on incomplete programs.
+Our approach is reminiscent of the workflow that debuggers make available using breakpoints \cite{fitzgerald2008debugging,DBLP:journals/jfp/TolmachA95} and a variety of logging and tracing capabilities.
+%
+Debuggers do not directly support incomplete programs, so the programmer first needs to insert suitable dummy exceptions as discussed in Sec.~\ref{sec:intro}.
+%
+Beyond that, there are two main distinctions. First, evaluation does not stop at each breakpoint and so it is straightforward to explore the \emph{space} of values that a variable takes. Second, breakpoints, logs and tracing tools convey the values of a variable at a position in the evaluation trace. Hole closures, on the other hand, convey information from a syntactic position in the \emph{result} of evaluation. The result is, by nature, a simpler object.%  These approaches are fundamentally complementary in that standard debugging facilities are useful even when there are no holes in the program whereas our focus has been on incomplete programs.
 Some debuggers support ``edit-and-continue'', e.g. Visual Studio \cite{VSEditAndContinue} and Flutter \cite{flutter}, based on the dynamic software update (DSU) capabilities of the underlying run-time system \cite{DBLP:journals/toplas/StoyleHBSN07,DBLP:conf/vstte/HaydenMHFF12,DBLP:journals/toplas/HicksN05}. These features do not come with any guarantee that rerunning the program will produce the same result. The ``fill-and-resume'' feature described in Sec.~\ref{sec:resumption} is a special case that comes with this stronger guarantee.
 
 Holes play a prominent role in structure editors, and indeed the prior work on \Hazelnut was primarily motivated by this application \cite{popl-paper}. 
@@ -118,10 +122,26 @@ present. This is important work---presenting a fluid user interface involving
 exclusively structural edit actions is a non-trivial problem that has not yet
 been fully resolved, though recent studies have started to show productivity
 gains for blocks-based structure editors like Scratch for novice programmers \cite{Resnick:2009:SP:1592761.1592779,DBLP:conf/chi/WeintropASFLSF18,DBLP:conf/acmidc/WeintropW15}, and for keyboard-driven structure
-editors like \li{mbeddr} in professional programming settings~\cite{DBLP:conf/vl/Asenov014,DBLP:conf/sle/VolterSBK14,voelter_mbeddr:_2012}. 
+editors like \li{mbeddr} in professional programming settings~\cite{DBLP:conf/vl/Asenov014,DBLP:conf/sle/VolterSBK14,voelter_mbeddr:_2012}.
+%
 Some structure editors support live programming in various ways, e.g. Lamdu is a structure editor for a typed functional language that displays variable values inline based on recorded execution traces (see above) \cite{lamdu}. However, they do not generally support execution of incomplete programs, which was our focus in this paper. Scratch will execute a program with holes by simply skipping over incomplete commands, but this is a limited protocol because rerunning the program after filling the hole may produce a result unrelated to initial result in any way. Though in some situations, skipping over problematic commands has been observed to work surprisingly well \cite{DBLP:conf/dac/Rinard12}, this paper contributes a semantically sound approach (Sec.~\ref{sec:resumption}). Combined with the aforementioned UI advances, there is reason to believe that structure editing could be the foundation for a ``next-generation'' live programming experience. We emphasize, however,   
 that our proposed contributions will be relevant no matter how holes come to appear (see Sec.~\ref{sec:intro}). % We will say more about all of these systems later. 
 
+In addition to offering semantic foundations for live programming, we
+believe that \HazelnutLive also holds promise as a formal basis for
+educational programming environments that visualize program execution
+for novice programmers (e.g., students).
+%
+For instance, \citet{Nelson2017} and \citet{Guo13} each give
+approaches for visualizing the internal machine states of imperative
+programs, including mutable program variables, activation records
+(stack frames), pointers, and heap records.
+%
+By contrast, \HazelnutLive offers an alternative basis for visualizing
+the internal machine states of typed, functional programs.
+%
+As outlined above, we believe that this basis can be extended to
+richer programming models, including those with imperative state.
 
 
 % two main remaining questions (beyond scaling up the calculus) are how to run
