@@ -648,7 +648,7 @@ when $d$ has ground type $\tau_1$ and $\tau_2$ is a ground type
 disequal to $\tau_1$.
 %
 Rule \rulename{IFailedCast} specifies that a failed cast operates as an
-indeterminate form (once $d$ is final), i.e. evaluation does not stop. For simplicity, we do not include blame labels as found in some accounts of gradual typing \cite{DBLP:conf/snapl/SiekVCB15}, but it would be straightforward to do so by recording the blame labels from the two constituent casts on the two arrows of the failed cast form.
+indeterminate form (once $d$ is final), i.e. evaluation does not stop. For simplicity, we do not include blame labels as found in some accounts of gradual typing \cite{DBLP:conf/esop/WadlerF09,DBLP:conf/snapl/SiekVCB15}, but it would be straightforward to do so by recording the blame labels from the two constituent casts on the two arrows of the failed cast.
 
 Rules \rulename{ITCastSucceed} and \rulename{ITCastFail} rules just described only operate at ground type. 
 %
@@ -805,7 +805,7 @@ mechanization  \cite{norell2009dependently,norell:thesis,Aydemir:2005fk}
 of the semantics and metatheory of \HazelnutLive, 
 %including proofs of all of the 
 including all of the theorems stated above and necessary lemmas.
-We take as assumptions only a few standard properties of general hypothetical judgements and finite maps, and, to avoid excessive machinery related to hole name tracking in the bidirectional typing rules, we axiomatize some hole name uniqueness assumptions made implicitly in this paper.
+We take as assumptions only a few standard properties of general hypothetical judgements and finite maps.
 %
 %We choose the 
 %(as did the mechanization of \Hazelnut by \citet{popl-paper}, though only a few definitions are common). 
