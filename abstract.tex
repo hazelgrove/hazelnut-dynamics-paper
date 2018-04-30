@@ -31,15 +31,15 @@ This paper confronts this problem from type-theoretic first principles by develo
 based in part on the static semantics for incomplete functional programs
 developed in recent work by \citet{popl-paper}. 
 %
-Incomplete functional programs are modeled as expressions with \emph{holes}, 
+We model incomplete functional programs as expressions with \emph{holes}, 
 with empty holes standing for missing expressions or types, and  non-empty holes 
 operating as ``membranes'' around static and dynamic type inconsistencies. 
 %
 Rather than aborting with an exception when evaluation encounters any of these holes (as in
 several existing systems), evaluation proceeds ``around'' the holes,
 performing as much of the remaining computation as is possible and tracking the 
-closure around each hole instance as it flows through the program.  These hole closures
- can be reported both directly and indirectly, via various editor services, to help the programmer decide how to fill a hole. 
+closure around each hole instance as it flows through the program. Various editor services can report information from these hole closures 
+to help the programmer decide how to fill a hole. 
 They also enable a ``fill-and-resume'' feature that 
 avoids the need to restart evaluation after edits that amount to hole filling. 
 Formally, the semantics draws from both gradual type theory (to handle
