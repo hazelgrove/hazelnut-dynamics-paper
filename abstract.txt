@@ -1,6 +1,6 @@
 This paper develops a dynamic semantics for incomplete functional programs,
 based in part on the static semantics for incomplete functional
-programs developed in recent work by Omar et al [2017].  We model
+programs developed in our recent work.  We model
 incomplete functional programs as expressions with holes, with empty
 holes standing for missing expressions or types, and non-empty holes
 operating as "membranes" around static and dynamic type
@@ -25,7 +25,7 @@ assistant.  We also describe a simple implementation, called
 HazelnutLive, that inserts holes as necessary during the editing
 process to guarantee that every edit state has some (possibly
 incomplete) type, based in part on the Hazelnut edit action calculus
-in prior work by Omar et al [2017].  Taken together with the type
+in our recent work.  Taken together with the type
 safety property that this paper establishes, the result is a
 proof-of-concept live typed functional programming environment where
 dynamic feedback is truly continuous, i.e. it is available for every
