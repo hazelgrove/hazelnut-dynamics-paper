@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# Script to extract the contents of \begin{abstract}...\end{abstract},
+# strip newlines (preserving paragraph breaks), remove multiple blank lines,
+# remove \emph{} markup,
+# remove leading spaces, and remove newlines at end of file.
+#
+# Usage:
+#  pull-abstract
+#
+# Creates abstract.txt from abstract.tex
+#
+# sources: various, including http://sed.sourceforge.net/sed1line.txt
+
+if [ "$(uname -s)" == "Darwin" -a "`whoami`" == "joshua" ] # If the system is Mac OS X
+then
+  sed=gsed
+else
+  sed=sed
+fi
+
+cat abstract.tex \
+  | $sed -e 's/^ *//' \
+  | $sed -e 's/\\emph{\([^}]*\)}/\1/g' \
+  | $sed -e 's/\\@//g' \
+  | $sed -e 's/\~/ /g' \
+  | $sed -e 's/\\Fungi/Fungi/g' \
+  | $sed -e 's/\$\\lambda\$/lambda/g' \
+  | $sed -e 's/\$\\beta\$/beta/g' \
+  | $sed -e 's/\$\\eta\$/eta/g' \
+  | $sed -e 's/\\"{o}/oe/g' \
+  | $sed -e 's/\\"o/oe/g' \
+  | $sed -e 's/\\citet{siek15criteria}/Siek et al. (2015)/g' \
+  | $sed -e 's/\$\\times\$/x/g' \
+  | $sed -e 's/``/"/g' \
+  | $sed -e "s/''/\"/g" \
+  | $sed -e '1,/begin{abstract}/ d' \
+  | $sed -e '/end{abstract}/,$ d' \
+  | $sed -e '/^%.*$/ d' \
+  | $sed -e 's/%.*$//' \
+  | $sed -e 's/^ *$/\$/' \
+  | $sed -e ':a;N;$!ba;s/\n/ /g' \
+  | $sed -e 's/\$/\n\n/g' \
+  | $sed -e 's/^  *//' \
+  | $sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' \
+  > abstract.txt
