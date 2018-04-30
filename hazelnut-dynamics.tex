@@ -1,6 +1,10 @@
 \PassOptionsToPackage{svgnames,dvipsnames,svgnames}{xcolor}
 %% For double-blind review submission
-\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=false,printccs=false,printacmref=false}
+\documentclass[acmsmall,review]{acmart}
+\settopmatter{printfolios=false,printccs=false,printacmref=false}
+\setcopyright{none}
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+
 %% For single-blind review submission
 %\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
 %% For final camera-ready submission
@@ -118,7 +122,6 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 
 
 
-%% Listings
 \makeatletter\if@ACM@journal\makeatother
 %% Journal information (used by PACMPL format)
 %% Supplied to authors by publisher for camera-ready submission
@@ -133,7 +136,8 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 \else\makeatother
 %% Conference information (used by SIGPLAN proceedings format)
 %% Supplied to authors by publisher for camera-ready submission
-\acmConference[PL'18]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2017}{New York, NY, USA}
+% \acmConference[]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2017}{New York, NY, USA}
+
 \acmYear{2018}
 \acmISBN{978-x-xxxx-xxxx-x/YY/MM}
 \acmDOI{10.1145/nnnnnnn.nnnnnnn}
@@ -149,6 +153,9 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 %\setcopyright{acmlicensed}
 %\setcopyright{rightsretained}
 %\copyrightyear{2017}           %% If different from \acmYear
+
+
+\fancyfoot{} % suppresses the footer (also need \thispagestyle{empty} after \maketitle below)
 
 
 %% Bibliography style
@@ -333,6 +340,7 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 %% commands, abstract environment, Computing Classification System
 %% environment and commands, and keywords command.
 \maketitle
+\thispagestyle{empty} % suppresses the footer
 
 \input{intro}
 \input{examples}
