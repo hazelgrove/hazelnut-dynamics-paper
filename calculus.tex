@@ -753,12 +753,12 @@ The following theorem establishes that expansion preserves program completeness.
     \item
       If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$
       and $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
-      then $\isComplete{\htau}$ and $\isComplete{\dexp}$.
+      then $\isComplete{\htau}$ and $\isComplete{\dexp}$ and $\Delta = \emptyset$.
     \item
       If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$ 
 and $\isComplete{\htau}$
       and $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
-      then $\isComplete{\dexp}$.
+      then $\isComplete{\dexp}$ and $\isComplete{\htau'}$ and $\Delta=\emptyset$
   \end{enumerate}
 \end{thm}
 
@@ -805,7 +805,7 @@ mechanization  \cite{norell2009dependently,norell:thesis,Aydemir:2005fk}
 of the semantics and metatheory of \HazelnutLive, 
 %including proofs of all of the 
 including all of the theorems stated above and necessary lemmas.
-We take as assumptions only a few standard properties of general hypothetical judgements and finite maps.
+We take as assumptions only a few standard properties of general hypothetical judgements, substitution and finite maps.
 %
 %We choose the 
 %(as did the mechanization of \Hazelnut by \citet{popl-paper}, though only a few definitions are common). 
@@ -821,7 +821,7 @@ inductive datatypes, and rules as dependently typed constructors of these judgem
 We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and hole names and encode typing 
 contexts, hole contexts and finite substitutions using metafunctions.
 To support this encoding choice, we postulate function extensionality (which is independent of Agda's axioms) \cite{awodey2012inductive}. 
-The documentation provided with the mechanization has more technical details.
+The documentation provided with the mechanization has more details.
 
 \subsection{Implementation}\label{sec:implementation}
 

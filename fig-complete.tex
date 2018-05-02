@@ -94,16 +94,17 @@
 \label{fig:complete}
 \end{figure}
 
-When two types are complete and consistent, they are equal.
-
-\begin{lem}[Complete Consistency] If $\tconsistent{\htau_1}{\htau_2}$ an $\isComplete{\htau_1}$ and $\isComplete{\htau_2}$ then $\htau_1 = \htau_2$.
-\end{lem}
-\begin{proof} By straightforward rule induction. \end{proof}
-
-This implies that in a well-typed internal expression, every cast is
-an identity cast.
-
 We define $\isComplete{\hGamma}$ as follows.
 \begin{defn}[Typing Context Completeness]
 $\isComplete{\hGamma}$ iff for each $x : \htau \in \hGamma$, we have $\isComplete{\htau}$.
 \end{defn}
+
+When two types are complete and consistent, they are equal.
+
+\begin{lem}[Complete Consistency] If $\tconsistent{\htau_1}{\htau_2}$ and $\isComplete{\htau_1}$ and $\isComplete{\htau_2}$ then $\htau_1 = \htau_2$.
+\end{lem}
+\begin{proof} By straightforward rule induction. \end{proof}
+
+This implies that in a well-typed and complete internal expression, every cast is 
+an identity cast.
+
