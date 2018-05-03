@@ -62,7 +62,7 @@
 \begin{figure}
 \judgbox{\reducesE{}{\dexp}{\dexp'}}{$\dexp$ takes an instruction transition to $\dexp'$}
 \begin{mathpar}
-\inferrule[ITBeta]{
+\inferrule[ITLam]{
   \maybePremise{\isFinal{\dexp_2}}
 }{
   \reducesE{}{\hap{(\halam{x}{\htau}{\dexp_1})}{\dexp_2}}{[\dexp_2/x]\dexp_1}
@@ -127,11 +127,11 @@
 %% }{
 %%   \reducesE{\Delta}{\dcast{\htau_1}{d}}{d}
 %% }
-%% 
+%%
 %% \inferrule[ITEHole]{ }{
 %%   \reducesE{\Delta}{\dehole{\mvar}{\subst}{\unevaled}}{\dehole{\mvar}{\subst}{\evaled}}
 %% }
-%% 
+%%
 %% \inferrule[ITNEHole]{
 %%   \isFinal{d}
 %% }{
@@ -182,7 +182,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 %% \inferrule[FHEHole]{ }{
 %%   \selectEvalCtx{\dehole{\mvar}{\subst}{}}{\evalhole}{\dehole{\mvar}{\subst}{}}
 %% }
-%% 
+%%
 %% \inferrule[FHNEHoleEvaled]{ }{
 %%   \selectEvalCtx{\dhole{d}{\mvar}{\subst}{\evaled}}{\evalhole}{\dhole{d}{\mvar}{\subst}{\evaled}}
 %% }
