@@ -11,15 +11,15 @@
 
 We will now make the intuitions developed in the previous section formally precise by specifying a core calculus, which we call \HazelnutLive, and developing its metatheory.
 
-\parahead{Overview} The syntax of the core calculus given in Fig.~\ref{fig:hazelnut-live-syntax} consists of types and expressions with holes. 
-We distinguish between {external} expressions, $e$, and {internal} expressions, $d$. 
-External expressions correspond to programs as entered by the programmer 
-(see Sec.~\ref{sec:intro} for discussion of implicit, manual, semi-automated and fully automated hole entry methods). 
-Each well-typed external expression (as specified in Sec.~\ref{sec:external-statics} below) expands to a well-typed internal expression (see Sec.~\ref{sec:expansion}) before it is evaluated (see Sec.~\ref{sec:evaluation}). 
-We take this approach, notably also taken in the ``redefinition'' of Standard ML by \citet{Harper00atype-theoretic}, because (1) the external language supports type inference and explicit type ascriptions, $\hexp : \htau$, but it is formally simpler to eliminate ascriptions and specify a type assignment system when defining the dynamic semantics; and 
-(2) we need additional syntactic machinery during evaluation for tracking hole closures and dynamic type casts. 
-This machinery is inserted by the expansion step, rather than entered explicitly by the programmer. 
-In this regard, the internal language is analogous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects. We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently} 
+\parahead{Overview} The syntax of the core calculus given in Fig.~\ref{fig:hazelnut-live-syntax} consists of types and expressions with holes.
+We distinguish between {external} expressions, $e$, and {internal} expressions, $d$.
+External expressions correspond to programs as entered by the programmer
+(see Sec.~\ref{sec:intro} for discussion of implicit, manual, semi-automated and fully automated hole entry methods).
+Each well-typed external expression (as specified in Sec.~\ref{sec:external-statics} below) expands to a well-typed internal expression (see Sec.~\ref{sec:expansion}) before it is evaluated (see Sec.~\ref{sec:evaluation}).
+We take this approach, notably also taken in the ``redefinition'' of Standard ML by \citet{Harper00atype-theoretic}, because (1) the external language supports type inference and explicit type ascriptions, $\hexp : \htau$, but it is formally simpler to eliminate ascriptions and specify a type assignment system when defining the dynamic semantics; and
+(2) we need additional syntactic machinery during evaluation for tracking hole closures and dynamic type casts.
+This machinery is inserted by the expansion step, rather than entered explicitly by the programmer.
+In this regard, the internal language is analogous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects. We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently}
 (see Sec.~\ref{sec:agda-mechanization}). Rule names in this section, e.g. \rulename{SVar}, correspond to variable names used in the mechanization. We have also implemented \HazelnutLive in a manner that maintains a novel end-to-end well-definedness invariant (see Sec.~\ref{sec:implementation}).
 
 % \rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
@@ -36,12 +36,12 @@ We start with the type system of the \HazelnutLive external language,
 which closely follows the \Hazelnut type system \cite{popl-paper}; we summarize the minor differences as they come up.
 
 % except that (1) holes in \HazelnutLive each have a \emph{unique name};
-% (2) for brevity of exposition, we removed numbers in favor of a simpler base type, $b$, with one value, $c$ (i.e. $b$ is the unit type); and 
+% (2) for brevity of exposition, we removed numbers in favor of a simpler base type, $b$, with one value, $c$ (i.e. $b$ is the unit type); and
 % (3) we include both unannotated lambdas, $\hlam{x}{\hexp}$, and half-annotated lambdas, $\halam{x}{\htau}{\hexp}$.  which we discuss
 % (along with other systematic extensions) in
 % Appendix~\ref{sec:extensions}.
 
-\Figref{fig:bidirectional-typing} defines the type system in the \emph{bidirectional} style 
+\Figref{fig:bidirectional-typing} defines the type system in the \emph{bidirectional} style
 %
 with two mutually defined judgements \cite{Pierce:2000ve,bidi-tutorial,DBLP:conf/icfp/DunfieldK13,Chlipala:2005da}. The type synthesis
 judgement~$\hsyn{\hGamma}{\hexp}{\htau}$ synthesizes a type~$\htau$
@@ -60,11 +60,11 @@ expression.
 
 % Algorithmically, the type is an output of type synthesis but an input of type analysis.
 
-The primary benefit of specifying the \HazelnutLive external language 
-bidirectionally is that the programmer need not annotate each hole with a type. 
+The primary benefit of specifying the \HazelnutLive external language
+bidirectionally is that the programmer need not annotate each hole with a type.
 %
 An empty hole is
-written simply $\hehole{u}$, where $u$ is the hole name, which we tacitly assume is unique 
+written simply $\hehole{u}$, where $u$ is the hole name, which we tacitly assume is unique
 (holes in \Hazelnut were not named).
 Rule \rulename{SEHole} specifies that an empty hole synthesizes hole type, written $\tehole$.
 %
@@ -97,10 +97,10 @@ For the familiar forms of the lambda calculus, the rules again follow prior work
 For simplicity, the core calculus includes only a single base type~$b$ with a single constant~$c$, governed by Rule \rulename{SConst} (i.e. $b$ is the unit type).
 %
 %\matt{Extraneous and uninteresting:}
-By contrast, \citet{popl-paper} instead defined a number type with a single operation. That paper also defined sum types as an extension to the core calculus. We follow suit on both counts in Appendix~\ref{sec:extensions}. 
+By contrast, \citet{popl-paper} instead defined a number type with a single operation. That paper also defined sum types as an extension to the core calculus. We follow suit on both counts in Appendix~\ref{sec:extensions}.
 %
 
-Rule \rulename{SVar} synthesizes the corresponding type from $\hGamma$. 
+Rule \rulename{SVar} synthesizes the corresponding type from $\hGamma$.
 For the sake of exposition, \HazelnutLive includes ``half-annotated'' lambdas, $\halam{x}{\htau}{\hexp}$, in addition to the unannotated lambdas, $\hlam{x}{\hexp}$, from \Hazelnut.
 %
 Half-annotated lambdas may appear in synthetic position according to Rule \rulename{SLam}, which is standard \cite{Chlipala:2005da}.
@@ -118,7 +118,7 @@ To avoid the need for two separate rules, Rule \rulename{ALam} uses the matching
 %
 % Why say the following here? --- It's discussing a different design that we didn't pursue here.  We should move such discussion to related work.
 %
-%Note that 
+%Note that
 %%
 
 The rule governing function application, Rule \rulename{SAp}, similarly treats an expression of hole type in function position as if it were of type $\tarr{\tehole}{\tehole}$ using the same matched arrow type judgement.
@@ -137,15 +137,15 @@ Each well-typed external expression~$e$ expands to a well-typed internal express
 %
 % \Secref{sec:evaluation} discusses internal expression evaluation.
 
-As with the type system for the external language (above), 
+As with the type system for the external language (above),
 we specify expansion bidirectionally \cite{DBLP:conf/ppdp/FerreiraP14}.
 %
-The synthetic expansion judgement~$\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$  
+The synthetic expansion judgement~$\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
 %
-produces an expansion~$d$ and a hole context~$\hDelta$ when synthesizing type $\htau$ for $\hexp$. 
+produces an expansion~$d$ and a hole context~$\hDelta$ when synthesizing type $\htau$ for $\hexp$.
 %
 %We say more about hole contexts, which are used in the type assignment judgement, $\hasType{\Delta}{\hGamma}{d}{\htau}$, below.
-We describe hole contexts, which serve as ``inputs'' to the type assignment judgement~$\hasType{\Delta}{\hGamma}{d}{\htau}$, further below. 
+We describe hole contexts, which serve as ``inputs'' to the type assignment judgement~$\hasType{\Delta}{\hGamma}{d}{\htau}$, further below.
 %
 The analytic expansion judgement~$\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$, produces an expansion~$d$ of type~$\htau'$, and a hole context~$\hDelta$, when checking~$\hexp$ against~$\htau$.
 %
@@ -170,7 +170,7 @@ The following theorem establishes that expansions are well-typed and in the anal
 %expression can be assigned at most one type, i.e. the following
 %standard unicity property holds of the type assignment system.
 %
-The reason that $\htau'$ is only consistent with the provided type $\htau$ is because 
+The reason that $\htau'$ is only consistent with the provided type $\htau$ is because
 %
  the subsumption rule permits us
 to check an external expression against any type consistent with the
@@ -188,8 +188,8 @@ Consequently, analytic expansion reports the type actually assigned to the expan
 %
 For example, we can derive that $\expandAna{\hGamma}{c}{\tehole}{c}{b}{\emptyset}$.% where $\emptyset$ is the empty hole context.
 
-Before describing the rules in detail, let us state two other guiding theorems. 
-The following theorem establishes that an expansion exists for every well-typed external expression. 
+Before describing the rules in detail, let us state two other guiding theorems.
+The following theorem establishes that an expansion exists for every well-typed external expression.
 The mechanization also establishes that when an expansion exists, it is unique (not shown).
  \begin{thm}[Expandability] \label{thm:expandability}~
   \begin{enumerate}[nolistsep]
@@ -245,10 +245,10 @@ half-annotated---Rule \rulename{EALam} inserts the annotation when expanding an
 unannotated external lambda based on the given type.
 %
 The rules governing hole expansion, and the rules that perform \emph{cast insertion}---those governing
-function application and type ascription---are more interesting. Let us consider each of these two groups of rules in turn in Sec.~\ref{sec:hole-expansion} and Sec.~\ref{sec:cast-insertion}, respectively. 
+function application and type ascription---are more interesting. Let us consider each of these two groups of rules in turn in Sec.~\ref{sec:hole-expansion} and Sec.~\ref{sec:cast-insertion}, respectively.
 
-\subsubsection{Hole Expansion}\label{sec:hole-expansion} 
-Rules \rulename{ESEHole}, \rulename{ESNEHole}, \rulename{EAEHole} and \rulename{EANEHole} govern the expansion of empty and non-empty expression holes to empty and non-empty \emph{hole closures}, $\dehole{u}{\sigma}{}$ and $\dhole{\dexp}{u}{\sigma}{}$. 
+\subsubsection{Hole Expansion}\label{sec:hole-expansion}
+Rules \rulename{ESEHole}, \rulename{ESNEHole}, \rulename{EAEHole} and \rulename{EANEHole} govern the expansion of empty and non-empty expression holes to empty and non-empty \emph{hole closures}, $\dehole{u}{\sigma}{}$ and $\dhole{\dexp}{u}{\sigma}{}$.
 %
 The hole name~$u$ on a hole closure identifies the external hole to which the hole closure corresponds.
 %
@@ -290,7 +290,7 @@ Formally, we define this relation in terms of type assignment as follows:
 $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$ iff $\domof{\sigma} = \domof{\hGamma'}$ and for each $x : \htau \in \hGamma'$ we have that $d/x \in \sigma$ and $\hasType{\Delta}{\hGamma}{d}{\tau}$.
 \end{defn}
 \noindent
-It is easy to verify that the identity substitution satisfies this requirement, i.e. that $\hasType{\Delta}{\hGamma}{\idof{\hGamma}}{\hGamma}$. 
+It is easy to verify that the identity substitution satisfies this requirement, i.e. that $\hasType{\Delta}{\hGamma}{\idof{\hGamma}}{\hGamma}$.
 
 Empty hole closures, $\dehole{u}{\sigma}{}$,  correspond to the metavariable closures (a.k.a. deferred substitutions) from CMTT, $\cmttclo{u}{\sigma}$.
 %
@@ -302,7 +302,7 @@ Non-empty hole closures~$\dhole{d}{u}{\sigma}{}$ have no direct correspondence w
 %
 % USE A TOPIC SENTENCE SO THAT THE READER IS GUIDED A LITTLE MORE, e.g.,
 %
-Holes in types require us to defer certain structural checks to run time. 
+Holes in types require us to defer certain structural checks to run time.
 %-----------------------------------------------------------------------------------------------
 %
 To see why this is necessary, consider the following
@@ -446,17 +446,17 @@ application expansion rules, including the original account of \citet{Siek06a}.
 \subsection{Dynamic Semantics}
 \label{sec:evaluation}
 
-To recap, the result of expansion is a well-typed internal expression with appropriately initialized hole closures and casts. 
-This section specifies the dynamic semantics of \HazelnutLive as a ``small-step'' transition system over internal expressions equipped with a meaningful notion of type safety even for incomplete programs, i.e. expressions typed under a non-empty hole context, $\Delta$. 
-We establish that evaluation does not stop immediately when it encounters a hole, nor when a cast fails, by precisely characterizing when evaluation \emph{does} stop. 
-We also establish that an essentially standard notion of type safety holds when running complete programs. 
+To recap, the result of expansion is a well-typed internal expression with appropriately initialized hole closures and casts.
+This section specifies the dynamic semantics of \HazelnutLive as a ``small-step'' transition system over internal expressions equipped with a meaningful notion of type safety even for incomplete programs, i.e. expressions typed under a non-empty hole context, $\Delta$.
+We establish that evaluation does not stop immediately when it encounters a hole, nor when a cast fails, by precisely characterizing when evaluation \emph{does} stop.
+We also establish that an essentially standard notion of type safety holds when running complete programs.
 
-It is perhaps worth stating at the outset that a dynamic semantics equipped with these properties does not simply ``fall out'' from the observations made above that (1) empty hole closures correspond to metavariable closures from CMTT \cite{Nanevski2008} and (2) casts also arise in gradual type theory \cite{DBLP:conf/snapl/SiekVCB15}. 
+It is perhaps worth stating at the outset that a dynamic semantics equipped with these properties does not simply ``fall out'' from the observations made above that (1) empty hole closures correspond to metavariable closures from CMTT \cite{Nanevski2008} and (2) casts also arise in gradual type theory \cite{DBLP:conf/snapl/SiekVCB15}.
 %
 We say more in Sec.~\ref{sec:relatedWork}.
 %
 
-%  specify the dynamic semantics of \HazelnutLive. 
+%  specify the dynamic semantics of \HazelnutLive.
 % %
 % The dynamic semantics is capable of running incomplete programs, i.e. those with hole closures, without aborting at holes, or when a cast fails.
 % %
@@ -467,12 +467,12 @@ We say more in Sec.~\ref{sec:relatedWork}.
 
 
 
-Figures~\ref{fig:isGround}-\ref{fig:step} define the dynamic semantics. 
+Figures~\ref{fig:isGround}-\ref{fig:step} define the dynamic semantics.
 %
 Most of the cast-related machinery closely follows the cast calculus from
 the ``refined'' account of the gradually typed lambda calculus
 by \citet{DBLP:conf/snapl/SiekVCB15}, which is known to be
-theoretically well-behaved. 
+theoretically well-behaved.
 %
 In particular, \Figref{fig:isGround} defines the judgement
 $\isGround{\htau}$, which distinguishes the base type~$b$ and the
@@ -500,8 +500,8 @@ either ordinary values~(Rule~\rulename{BVVal}), or one of two cast forms: casts
 between disequal function types and casts from a ground
 type to the hole type. In each case, the cast must appear inductively on a boxed
 value.
-These forms are irreducible because they represent values that have been boxed 
-but have never flowed into a corresponding ``unboxing'' cast, discussed below. 
+These forms are irreducible because they represent values that have been boxed
+but have never flowed into a corresponding ``unboxing'' cast, discussed below.
 %
 %, which correspond to the values from the cast calculus and include
 %the classic values from the lambda calculus, distingui%shed by
@@ -519,7 +519,7 @@ they consist of a {final} inner expression.
 Below, we describe failed casts and the remaining indeterminate forms simultaneously
 with the corresponding transition rules.
 
-Figures~\ref{fig:instruction-transitions}-\ref{fig:step} define the transition rules. 
+Figures~\ref{fig:instruction-transitions}-\ref{fig:step} define the transition rules.
 %
 Top-level transitions are \emph{steps}, $\stepsToD{}{d}{d'}$, governed by Rule~\rulename{Step} in \Figref{fig:step}, which
 %
@@ -540,8 +540,8 @@ the evaluation context by the \emph{mark}, $\evalhole$, to obtain $d'$.%
 %
 %% \matt{Next paragraph can be dropped entirely for space}
 %% %
-This approach was originally developed in the reduction semantics of \citet{DBLP:journals/tcs/FelleisenH92} and is the predominant style of operational semantics in the literature on gradual typing. 
-Because we distinguish final forms judgementally, rather than syntactically, we use a judgemental formulation of this approach called a \emph{contextual dynamics} by \citet{pfpl}. 
+This approach was originally developed in the reduction semantics of \citet{DBLP:journals/tcs/FelleisenH92} and is the predominant style of operational semantics in the literature on gradual typing.
+Because we distinguish final forms judgementally, rather than syntactically, we use a judgemental formulation of this approach called a \emph{contextual dynamics} by \citet{pfpl}.
 It would be straightforward to construct an equivalent structural operational semantics \cite{DBLP:journals/jlp/Plotkin04a} by using search rules instead of evaluation contexts (\citet{pfpl} relates the two approaches).
 
 The rules maintain the property that final expressions truly cannot take a step.%
@@ -550,9 +550,9 @@ The rules maintain the property that final expressions truly cannot take a step.
 
 %% \input{fig-dynamics-steps}
 
-\subsubsection{Application and Substitution} 
+\subsubsection{Application and Substitution}
 %
-Rule \rulename{ITBeta} in Fig.~\ref{fig:instruction-transitions} defines the
+Rule \rulename{ITLam} in Fig.~\ref{fig:instruction-transitions} defines the
 standard beta reduction transition.
 %
 The bracketed premises of the form $\maybePremise{\isFinal{\dexp}}$ in
@@ -576,23 +576,23 @@ The only cases of special interest arise when substitution reaches a hole closur
   \substitute{d}{x}{\dhole{d'}{u}{\sigma}{}} & = & \dhole{[d/x]d'}{u}{[d/x]\sigma}{}
 \end{array}
 \]
-In both cases, we write~$[d/x]\sigma$ to perform substitution on each expression in the hole environment~$\sigma$, i.e. the environment ``records'' the substitution. 
+In both cases, we write~$[d/x]\sigma$ to perform substitution on each expression in the hole environment~$\sigma$, i.e. the environment ``records'' the substitution.
 %
 For example, $\stepsToD{}
     {\hap{(\halam{x}{b}{\halam{y}{b}{\dehole{u}{[x/x, y/y]}{}}})}{c}}
-    {\halam{y}{b}{\dehole{u}{[c/x, y/y]}{}}}$. 
+    {\halam{y}{b}{\dehole{u}{[c/x, y/y]}{}}}$.
 %
 Beta reduction can duplicate hole closures.
 %
-Consequently, the environments of different closures with the same hole name may differ, 
-e.g., when an reduction applies a function with a hole closure body multiple times as in Fig.~\ref{fig:grades-example}. 
+Consequently, the environments of different closures with the same hole name may differ,
+e.g., when an reduction applies a function with a hole closure body multiple times as in Fig.~\ref{fig:grades-example}.
 Hole closures may also appear within the environments of other hole
 closures, giving rise to the closure paths described in
 Sec.~\ref{sec:paths}.
 
 
 
-The ITBeta rule is not the only rule we need to handle function
+The \rulename{ITLam} rule is not the only rule we need to handle function
 application, because lambdas are not the only final form of arrow type.
 %
 Two other situations may also arise.
@@ -605,7 +605,7 @@ cast is exposed.
 %
 We know from inverting the typing rules that~$d_1$ has type
 $\tarr{\htau_1}{\htau_2}$, and that~$d_2$ has type~$\htau_1'$, where
-$\tconsistent{\htau_1}{\htau_1'}$. 
+$\tconsistent{\htau_1}{\htau_1'}$.
 Consequently, we maintain type
 safety by placing a cast on~$d_2$ from~$\htau_1'$ to~$\htau_1$.
 %
@@ -626,7 +626,7 @@ further.
 
 \subsubsection{Casts}
 Rule \rulename{ITCastId} strips identity casts. The remaining instruction
-transition rules assign meaning to non-identity casts. 
+transition rules assign meaning to non-identity casts.
 %
 As discussed in Sec.~\ref{sec:cast-insertion}, the structure of a term
 cast \emph{to} hole type is statically obscure,
@@ -650,28 +650,28 @@ disequal to $\tau_1$.
 Rule \rulename{IFailedCast} specifies that a failed cast operates as an
 indeterminate form (once $d$ is final), i.e. evaluation does not stop. For simplicity, we do not include blame labels as found in some accounts of gradual typing \cite{DBLP:conf/esop/WadlerF09,DBLP:conf/snapl/SiekVCB15}, but it would be straightforward to do so by recording the blame labels from the two constituent casts on the two arrows of the failed cast.
 
-Rules \rulename{ITCastSucceed} and \rulename{ITCastFail} rules just described only operate at ground type. 
+Rules \rulename{ITCastSucceed} and \rulename{ITCastFail} rules just described only operate at ground type.
 %
 The two remaining instruction transition rules, Rule~\rulename{ITGround}
 and~\rulename{ITExpand}, insert intermediate casts from non-ground type to a
 consistent ground type, and \emph{vice versa}.
 %
 These rules serve as technical devices, permitting us to restrict our
-interest exclusively to casts involving ground types and type holes elsewhere. 
+interest exclusively to casts involving ground types and type holes elsewhere.
 %
 Here, the only non-ground types are the arrow types, so the grounding
 judgement~$\groundmatch{\tau_1}{\htau_2}$ (\Figref{fig:groundmatch}),
 produces the ground arrow type~$\tarr{\tehole}{\tehole}$.
 %
 More generally, the following invariant governs this judgement.
-\begin{lem}[Grounding] 
+\begin{lem}[Grounding]
   If $\groundmatch{\htau_1}{\htau_2}$
   then $\isGround{\htau_2}$
   and $\tconsistent{\htau_1}{\htau_2}$
   and $\htau_1\neq\htau_2$.
 \end{lem}
 
-In all other cases, casts evaluate either to boxed values or to 
+In all other cases, casts evaluate either to boxed values or to
 indeterminate forms according to the remaining rules
 in \Figref{fig:isFinal}.
 %
@@ -682,7 +682,7 @@ the form $\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}$.
 The need for this case is perhaps not obvious because in the cast calculus,  the only irreducible term of type $\tehole$
 is $\dcasttwo{\dexp}{\htau_1}{\tehole}$.
 
-\subsubsection{Type Safety} 
+\subsubsection{Type Safety}
 %
 The purpose of establishing type safety is to ensure that the static and dynamic semantics of a
 language cohere.
@@ -723,7 +723,7 @@ necessary rules or premises.
 \begin{thm}[Progress]
   If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either
   (a) $\stepsToD{}{\dexp}{\dexp'}$ or
-  (b) $\isBoxedValue{\dexp}$ or 
+  (b) $\isBoxedValue{\dexp}$ or
   (c) $\isIndet{\dexp}$.
 \end{thm}
 \noindent
@@ -734,16 +734,16 @@ i.e. those rooted at either a hole closure or a failed cast.
 The proof relies on canonical forms lemmas stated in
 Appendix~\ref{sec:additional-defns}.
 
-\subsubsection{Complete Programs} 
+\subsubsection{Complete Programs}
 %
 Although this paper focuses on running \emph{incomplete} programs, it helps
 to know that the necessary machinery does not interfere
 with running \emph{complete} programs, i.e. those
 with no type or expression holes.
 %
-Appendix~\ref{sec:additional-defns} defines the predicates~$\isComplete{e}$, $\isComplete{\htau}$, $\isComplete{\hGamma}$ and~$\isComplete{d}$. 
+Appendix~\ref{sec:additional-defns} defines the predicates~$\isComplete{e}$, $\isComplete{\htau}$, $\isComplete{\hGamma}$ and~$\isComplete{d}$.
 %
-Of note, failed casts cannot appear in complete internal expressions. 
+Of note, failed casts cannot appear in complete internal expressions.
 %
 The following theorem establishes that expansion preserves program completeness.
 
@@ -755,7 +755,7 @@ The following theorem establishes that expansion preserves program completeness.
       and $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
       then $\isComplete{\htau}$ and $\isComplete{\dexp}$ and $\Delta = \emptyset$.
     \item
-      If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$ 
+      If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$
 and $\isComplete{\htau}$
       and $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
       then $\isComplete{\dexp}$ and $\isComplete{\htau'}$ and $\Delta=\emptyset$
@@ -800,61 +800,61 @@ indeterminate forms.
 \label{sec:agda-mechanization}
 \vspace{-3px}
 
-The supplemental material includes our Agda 
-mechanization  \cite{norell2009dependently,norell:thesis,Aydemir:2005fk} 
-of the semantics and metatheory of \HazelnutLive, 
-%including proofs of all of the 
+The supplemental material includes our Agda
+mechanization  \cite{norell2009dependently,norell:thesis,Aydemir:2005fk}
+of the semantics and metatheory of \HazelnutLive,
+%including proofs of all of the
 including all of the theorems stated above and necessary lemmas.
 We take as assumptions only a few standard properties of general hypothetical judgements, substitution and finite maps.
 %
-%We choose the 
-%(as did the mechanization of \Hazelnut by \citet{popl-paper}, though only a few definitions are common). 
+%We choose the
+%(as did the mechanization of \Hazelnut by \citet{popl-paper}, though only a few definitions are common).
 %
-%Agda is a good choice because it is designed to explicitly communicate a proof's structure, as is our goal, rather than relying on proof automation. 
+%Agda is a good choice because it is designed to explicitly communicate a proof's structure, as is our goal, rather than relying on proof automation.
 %
-%Agda itself was also an inspiration for this work because it supports holes, albeit in a more limited form than described here (cf. Sec.~\ref{sec:intro}). 
+%Agda itself was also an inspiration for this work because it supports holes, albeit in a more limited form than described here (cf. Sec.~\ref{sec:intro}).
 %
 %
-Our approach is otherwise standard: we model judgements as 
-inductive datatypes, and rules as dependently typed constructors of these judgements. 
+Our approach is otherwise standard: we model judgements as
+inductive datatypes, and rules as dependently typed constructors of these judgements.
 %
-We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and hole names and encode typing 
+We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and hole names and encode typing
 contexts, hole contexts and finite substitutions using metafunctions.
-To support this encoding choice, we postulate function extensionality (which is independent of Agda's axioms) \cite{awodey2012inductive}. 
+To support this encoding choice, we postulate function extensionality (which is independent of Agda's axioms) \cite{awodey2012inductive}.
 The documentation provided with the mechanization has more details.
 
 \subsection{Implementation}\label{sec:implementation}
 
 The supplemental material includes a browser-based implementation
-of \HazelnutLive. 
-% The implementation supports the core calculus of this section but with the notional base type $b$ replaced by the $\tnum$ type from Appendix~\ref{sec:extensions}. The implementation also includes the sum types extension from Appendix~\ref{sec:extensions} and a few minor  conveniences, e.g. \li{let} binding. 
-All of the live programming features from \Secref{sec:examples} are available in the implementation essentially as shown, but for this more austere language (with some minor conveniences, notably let binding). Appendix~\ref{sec:impl-screenshots} provides screenshots of the full user interface. 
+of \HazelnutLive.
+% The implementation supports the core calculus of this section but with the notional base type $b$ replaced by the $\tnum$ type from Appendix~\ref{sec:extensions}. The implementation also includes the sum types extension from Appendix~\ref{sec:extensions} and a few minor  conveniences, e.g. \li{let} binding.
+All of the live programming features from \Secref{sec:examples} are available in the implementation essentially as shown, but for this more austere language (with some minor conveniences, notably let binding). Appendix~\ref{sec:impl-screenshots} provides screenshots of the full user interface.
 
  % which is a functional reactive program \cite{Elliott:1997jh,DBLP:conf/pldi/CzaplickiC13}
 %
 % Functional Reactive Animation (Hudak 1997) is the canonical FRP cite, not Elm, if you want one; we don't need one, I think. --Matt
 %
-%\cite{DBLP:conf/pldi/CzaplickiC13} 
+%\cite{DBLP:conf/pldi/CzaplickiC13}
 
-The implementation is written with the Reason toolchain for OCaml \cite{reason-what,leroy03:_ocaml} 
-together with the OCaml \lismall{React} library \cite{OcamlReact} 
+The implementation is written with the Reason toolchain for OCaml \cite{reason-what,leroy03:_ocaml}
+together with the OCaml \lismall{React} library \cite{OcamlReact}
 and the \lismall{js_of_ocaml} compiler and its associated libraries \cite{vouillon2014bytecode}. This follows the implementation of \Hazel, which, although tracking toward an Elm-like semantics, is implemented in OCaml because the Elm compiler is not yet self-hosted. The implementation of the dynamic semantics consists of a simple evaluator that closely follows the rules specified in this section.
 
 The editor component of the implementation is derived
 from the structure editor calculus of~\Hazelnut, but with support for more natural cursor-based movement and infix operator sequences (the details are beyond the scope of this paper). It exposes a language of structured
 edit actions (summarized in the sidebar on the left of
-the screenshots in Appendix~\ref{sec:impl-screenshots}) that automatically inserts holes as necessary 
+the screenshots in Appendix~\ref{sec:impl-screenshots}) that automatically inserts holes as necessary
 to guarantee that every edit state has some (possibly incomplete) type
-. This corresponds to the Sensibility invariant established by \citet{popl-paper}.  
+. This corresponds to the Sensibility invariant established by \citet{popl-paper}.
 By composing this metatheoretic property with
 the \Property{Expandability}, \Property{Typed Expansion}
 and \Property{Progress} properties from this paper, we establish a
 uniquely powerful invariant: \emph{every} edit state has a \emph{static
 meaning} (a la~\Hazelnut) and a \emph{dynamic meaning} (a la~\HazelnutLive).
 %
-In other words, live feedback never ``flickers in and out'' nor reflects ``stale'' edit states. 
+In other words, live feedback never ``flickers in and out'' nor reflects ``stale'' edit states.
 %
-The implementation is intended as a proof-of-concept of this invariant, and as a companion to this paper. 
+The implementation is intended as a proof-of-concept of this invariant, and as a companion to this paper.
 
 % We make no further claims about the usability or practicality of the implementation (and indeed, there remain many important and decidedly unresolved questions along these lines, which we leave beyond the scope of this paper).
 % We also reiterate that the essential ideas developed from type-theoretic first principles in this paper do not require that
@@ -866,8 +866,8 @@ The implementation is intended as a proof-of-concept of this invariant, and as a
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% \matt{I'd drop everything else in this sub-section; 
-%% it leaves us open to attack from a hostile reviewer 
+%% \matt{I'd drop everything else in this sub-section;
+%% it leaves us open to attack from a hostile reviewer
 %% who is cranky that the implementation is not ``complete'' yet; also, we'd save the space}
 
 %%   \halam{x}{\htau}{\evalctx} ~\vert~
@@ -879,11 +879,11 @@ The implementation is intended as a proof-of-concept of this invariant, and as a
 \label{sec:resumption}
 
 
-%The result of evaluation is a final internal expression with hole closures, each with an associated hole environment, $\sigma$. These hole environments can be reported directly to the programmer, e.g. via the sidebar shown in Fig.~X\todo{fig}, to help them as they think about how to fill in the corresponding hole in the external expression. Hole environments might also be useful indirectly, e.g. by informing an edit action synthesis and suggestion system. In any case, 
+%The result of evaluation is a final internal expression with hole closures, each with an associated hole environment, $\sigma$. These hole environments can be reported directly to the programmer, e.g. via the sidebar shown in Fig.~X\todo{fig}, to help them as they think about how to fill in the corresponding hole in the external expression. Hole environments might also be useful indirectly, e.g. by informing an edit action synthesis and suggestion system. In any case,
 When the programmer performs one or more edit actions to fill in a hole in the program, a new result must be computed, ideally quickly \cite{DBLP:conf/icse/Tanimoto13,DBLP:journals/vlc/Tanimoto90}. Na\"ively, the system would need to compute the result ``from scratch'' on each such edit. For small exploratory programming tasks, recomputation is acceptable, but in cases where a large amount of computation might occur, e.g. in data science tasks, a more efficient approach is to resume evaluation from where it left off after an edit that amounts to hole filling. This section briefly discusses the foundations of this feature, which we call \emph{fill-and-resume}. This approach is complementary to incremental computing techniques~\cite{Hammer2014}.
 
 %%%%%%%%% New par
-Formally, 
+Formally,
 %
 the key idea is to interpret hole environments as \emph{delayed substitutions}. This is the same interpretation suggested for closures in contextual modal
 type theory (CMTT) by \citet{Nanevski2008}.
@@ -893,10 +893,10 @@ type theory (CMTT) by \citet{Nanevski2008}.
 %abstractions for incremental computation~\cite{Hammer14,Hammer15}.
 %
 %%%%%%%%% New par
-\Figref{fig:substitution} defines the hole filling operation~$\instantiate{d}{u}{d'}$ 
+\Figref{fig:substitution} defines the hole filling operation~$\instantiate{d}{u}{d'}$
 based on the contextual substitution operation of~CMTT.
 %
-Unlike usual notions of capture-avoiding substitution, 
+Unlike usual notions of capture-avoiding substitution,
 hole filling imposes no condition on the binder when passing into the
 body of a lambda expression---the expression that fills a hole can, of
 course, refer to variables in scope where the hole appears.
@@ -956,50 +956,50 @@ reduce sub-expressions in the same order as a ``fresh'' left-to-right
 reduction sequence starting from $\instantiate{\dexp'}{u}{d_1}$.
 %
 In other words, this notion of fill-and-resume only works for
-languages where evaluation order ``does not matter''. 
+languages where evaluation order ``does not matter''.
 (There are various standard ways to formalize this intuition.
 For the sake of space, we review these in Appendix~\ref{sec:confluence}.)
 
 %% Everyone knows what confluence means, or they should.  We don't need to cite Church :)
 %%
 
-We describe the proof, which involves a 
-number of lemmas and definitions, in Appendix~\ref{sec:hole-filling}. 
+We describe the proof, which involves a
+number of lemmas and definitions, in Appendix~\ref{sec:hole-filling}.
 %
 In particular, care is needed to handle the situation where a
 now-filled non-empty hole had taken a step in the original evaluation.
 
-% \matt{We could (should?) move the next paragraph to the appendix, 
-% before/after the proofs mentioned above; 
-% its not really adding much to the discussion above, 
+% \matt{We could (should?) move the next paragraph to the appendix,
+% before/after the proofs mentioned above;
+% its not really adding much to the discussion above,
 % but may be interesting to the very studious reader/prover; also, leaving it here also gives a lazy/cranky reviewer a nice weapon to hit us with}
 
-We do not separately define hole filling in the external language 
-(i.e. we consider a change to an external expression to be a hole filling if the new expansion differs from 
-the previous expansion up to hole filling). 
+We do not separately define hole filling in the external language
+(i.e. we consider a change to an external expression to be a hole filling if the new expansion differs from
+the previous expansion up to hole filling).
 In practice, it may be useful to cache more than one recent edit state
-to take full advantage of hole filling. 
+to take full advantage of hole filling.
 As an example, consider two edits, the first filling a hole~$u$ with
 the number~$2$, and the next applying operator~$+$, resulting in $2
 + \dehole{v}{\sigma}{}$.
 %
 This second edit is not a hole filling edit with respect to the
 immediately preceding edit state, $2$, but it can be understood as filling
-hole $u$ from two states back with $2 + \dehole{v}{\sigma}{}$. 
+hole $u$ from two states back with $2 + \dehole{v}{\sigma}{}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 
 Hole filling also allows us to give a contextual modal interpretation
 to lab notebook cells  like those of
 Jupyter/IPython \cite{PER-GRA:2007} (and read-eval-print loops as a restricted case
-where edits to previous cells are impossible). 
+where edits to previous cells are impossible).
 %
 Each cell can be understood as a series of \li{let}
 bindings ending implicitly in a hole, which is filled by the next cell.
-The live environment in the subsequent cell is exactly the hole environment of this implicit trailing hole. 
+The live environment in the subsequent cell is exactly the hole environment of this implicit trailing hole.
 %
 Hole filling when a subsequent cell changes avoids recomputing the
-environment from preceding cells, without relying on mutable state. Commutativity provides a reproducibility guarantee 
+environment from preceding cells, without relying on mutable state. Commutativity provides a reproducibility guarantee
 missing from Jupyter/IPython, where editing and executing previous cells can cause the state to differ substantially from the state that would result when attempting to run the notebook from the top.
 % TODO citation
 

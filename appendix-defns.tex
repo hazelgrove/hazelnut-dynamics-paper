@@ -76,7 +76,7 @@ y
 \end{lem}
 \begin{proof} By rule induction on the first assumption in each case. The conclusion follows from the definition of substitution in each case. \end{proof}
 
-\subsection{Canonical Forms} 
+\subsection{Canonical Forms}
 \begin{lem}[Canonical Value Forms]\label{thm:canonincal-value-forms}
   If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$ and $\isValue{\dexp}$
   then $\htau\neq\tehole$ and
@@ -183,7 +183,7 @@ y
 
 The proofs for all three of these theorems follow by straightforward rule induction.
 
-% No weakening for Gammas in Delta: 
+% No weakening for Gammas in Delta:
 % If $\hasType{\Delta, \Dbinding{u}{\hGamma}{\tau}}{\hGamma'}{d}{\tau'}$ then $\hasType{\Delta, \Dbinding{u}{\hGamma, x : \tau''}{\tau}}{\hGamma'}{d}{\tau'}$.
 
 \clearpage
@@ -213,10 +213,10 @@ In each case, we proceed by rule induction on the first assumption, appealing to
 We need the following auxiliary definitions, which lift hole filling to evaluation contexts taking care to consider the special situation where the mark is inside the hole that is being filled, to prove the Commutativity theorem.
 \input{fig-evalctx-instantiation}
 \begin{lem}[Substitution Commutativity]
-  If 
+  If
   \begin{enumerate}[nolistsep]
-  	\item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{x : \htau_2}{\dexp_1}{\tau}$ and 
-  	\item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_2}{\htau_2}$ and 
+  	\item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{x : \htau_2}{\dexp_1}{\tau}$ and
+  	\item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_2}{\htau_2}$ and
   	\item $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$
   \end{enumerate}
 
@@ -228,10 +228,10 @@ variables in $d'$ are accounted for by every closure for $u$.
 \end{proof}
 
 \begin{lem}[Instruction Commutativity]
-  If 
+  If
   \begin{enumerate}[nolistsep]
-  	\item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_1}{\tau}$ and 
-  	\item $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ and 
+  	\item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_1}{\tau}$ and
+  	\item $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ and
   	\item $\reducesE{}{\dexp_1}{\dexp_2}$
   \end{enumerate}
 
@@ -239,7 +239,7 @@ variables in $d'$ are accounted for by every closure for $u$.
                      {\instantiate{\dexp'}{u}{\dexp_2}}$.
 \end{lem}
 \begin{proof}
-We proceed by cases on the instruction transition assumption (no induction is needed). For Rule \rulename{ITBeta}, we defer to the Substitution Commutativity lemma above. For the remaining cases, the conclusion follows from the definition of hole filling.
+We proceed by cases on the instruction transition assumption (no induction is needed). For Rule \rulename{ITLam}, we defer to the Substitution Commutativity lemma above. For the remaining cases, the conclusion follows from the definition of hole filling.
 \end{proof}
 
 \begin{lem}[Filling Totality]
@@ -247,10 +247,10 @@ Either $\inhole{u}{\evalctx}$ or $\instantiate{d}{u}{\evalctx}=\evalctx'$ for so
 \end{lem}
 \begin{proof} We proceed by structural induction on $\evalctx$. Every case is handled by one of the two judgements. \end{proof}
 
-\begin{lem}[Discarding] If 
+\begin{lem}[Discarding] If
 	\begin{enumerate}[nolistsep]
-	\item $\selectEvalCtx{d_1}{\evalctx}{\dexp_1'}$ and 
-	\item $\selectEvalCtx{d_2}{\evalctx}{\dexp_2'}$ and 
+	\item $\selectEvalCtx{d_1}{\evalctx}{\dexp_1'}$ and
+	\item $\selectEvalCtx{d_2}{\evalctx}{\dexp_2'}$ and
 	\item $\inhole{u}{\evalctx}$
 	\end{enumerate}
 
@@ -259,17 +259,17 @@ Either $\inhole{u}{\evalctx}$ or $\instantiate{d}{u}{\evalctx}=\evalctx'$ for so
 \begin{proof} We proceed by structural induction on $\evalctx$ and rule induction on all three assumptions. Each case follows from the definition of instruction selection and hole filling. \end{proof}
 
 
-\begin{lem}[Filling Distribution] If 
+\begin{lem}[Filling Distribution] If
 	$\selectEvalCtx{d_1}{\evalctx}{d_1'}$ and $\instantiate{d}{u}{\evalctx}=\evalctx'$ then $\selectEvalCtx{\instantiate{d}{u}{d_1}}{\evalctx'}{\instantiate{d}{u}{d_1'}}$.
 \end{lem}
 \begin{proof} We proceed by rule induction on both assumptions. Each case follows from the definition of instruction selection and hole filling. \end{proof}
 
 
 \begin{thm}[Commutativity]
-  If 
+  If
   \begin{enumerate}[nolistsep]
-  \item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_1}{\tau}$ and 
-  \item $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ and 
+  \item $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_1}{\tau}$ and
+  \item $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ and
   \item $\multiStepsTo{\dexp_1}{\dexp_2}$
 \end{enumerate}
 
@@ -316,7 +316,7 @@ reduced \cite{DBLP:journals/tcs/CagmanH98,DBLP:conf/birthday/BlancLM05,levy1999e
 However, reduction under binders conflicts with the standard implementation approaches
 for most programming languages \cite{DBLP:conf/birthday/BlancLM05}.
 %
-A more satisfying approach considers confluence modulo equality \cite{Huet:1980ng}. 
+A more satisfying approach considers confluence modulo equality \cite{Huet:1980ng}.
 %
 The simplest such approach restricts our interest to top-level expressions
 of base type that result in values, in which case the following
@@ -324,7 +324,7 @@ special case of confluence does hold (trivially when the only base
 type has a single value, but also more generally for other base
 types).
 \begin{lem}[Base Confluence]
-  If $\hasType{\Delta}{\emptyset}{\dexp}{b}$ and 
+  If $\hasType{\Delta}{\emptyset}{\dexp}{b}$ and
   $\multiStepsTo{\dexp}{\dexp_1}$
   and $\isValue{\dexp_1}$
   and $\multiStepsTo{\dexp}{\dexp_2}$
@@ -333,7 +333,7 @@ types).
 We can then prove the following property, which establishes that fill-and-resume is sound.
 \begin{thm}[Resumption]
   If $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp}{b}$
-  and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$ 
+  and $\hasType{\hDelta}{\hGamma'}{\dexp'}{\htau'}$
   and $\multiStepsTo{\dexp}{\dexp_1}$
   and $\multiStepsTo{\instantiate{\dexp'}{u}{\dexp}}{\dexp_2}$
   and $\isValue{\dexp_2}$
