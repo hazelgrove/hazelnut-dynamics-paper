@@ -1,7 +1,27 @@
-Thank you for your thoughtful reviews. We believe...
+Thank you for your thoughtful comments, all of which will be incorporated in our
+revision.
 
 
 # Review A
+
+> I'm still confused about which version of the language is implemented.
+> Are the screenshots in section 2 real, or only the ones in the appendix?
+
+The submitted implementation supports the language of Section 3 plus the
+extensions in the appendix.
+
+The screenshots in Section 2 are mockups, depicting language features that were
+not implemented at the time of submission. To create the screenshots in Section
+2, we first ran simpler versions of the examples (using encodings based on the
+core features), and then we manually post-processed the resulting HTML/CSS of
+the editor to obtain the mockups. The screenshots in the Appendix show the
+implementation at the time of submission. We will make this explanation even
+clearer in our revision.
+
+For artifact evaluation, we plan to submit a more recent snapshot of the Hazel
+implementation that either substantially narrows or eliminates the
+``convenience gap'' between the core language and the features depicted in
+Section 2.
 
 > The HazelnutLive calculus in the paper is really basic, it doesn't even have 
 > fixpoint.
@@ -10,32 +30,10 @@ Type holes actually allow you to express general recursion (e.g. via the Y
 combinator). See Siek and Taha [2006] for more on embedding the untyped lambda
 calculus into a gradually typed lambda calculus like Hazelnut Live.
 
-That said, we agree that an explicit fix operator in the style of Plotkin's PCF
-might be more clear and there is nothing that would complicate its inclusion, 
-so if requested, we would be happy to include it in the second phase submission, 
-either in the main calculus or as another extension.
+That said, we agree that an explicit fix operator might be more clear; there is
+nothing that would complicate its inclusion, so if requested in our revision, we
+would be happy to include either in the main calculus or as an extension.
 
-> I'm still confused about which version of the language is implemented.
-
-The language of the submitted implementation is the language of Section 3 + 
-the extensions in the appendix. We plan to archive a frozen version of that 
-implementation as a simple reference implementation of the core calculus of 
-this paper.
-
-The first two paragraphs of Section 2 were, we believe, direct in stating that 
-the figures in Section 2 were post-processed to use certain language features 
-that were not implemented at the time of submission. None of these language 
-features are particularly complex or unusual (records, simple pattern matching, 
-and syntactic sugar for function definitions and lists), and they are 
-orthogonal to the live programming features that are the topic of the paper, 
-which are all implemented as described in Section 2 (see the implementation 
-screenshots in Fig. 17-18 in the appendix).
-
-We plan to submit a more recent snapshot of the Hazel implementation for 
-artifact evaluation that either substantially narrows or eliminates this 
-``convenience gap''. 
-
-Our approach has been to...
 
 # Review B
 
