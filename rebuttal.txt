@@ -37,11 +37,32 @@ artifact evaluation that either substantially narrows or eliminates this
 
 Our approach has been to...
 
-# Review B
-
-(nothing to say, maybe just acknowledge the typos? remove this section entirely?)
-
 # Review C
+
+> While, the technical development is sound, it is mostly based prior work 
+> (Hazelnut type system), or a variation on gradually typed calculi, and 
+> not very surprising. In fact, evaluation of expression with holes is akin 
+> to evaluation of expressions with free variables extended with type casts 
+> from gradual typing.
+
+We certainly build directly upon the Hazelnut paper, as reviewed in Sec. 3.1, 
+but that paper did not define a dynamic semantics at all. 
+
+Gradually typed lambda calculi consider only type holes, and cast failure 
+immediately aborts evaluation. We do not abort immediately (Sec. 2.4). Moreover,
+we consider not just type holes but also expression holes, which operate not 
+merely as free variables, as suggested, but as closures. Closure tracking is 
+critical to the user experience in Sec. 2 and to the fill-and-resume feature 
+described in Sec. 4. 
+
+Closure tracking has a conceptual relationship with prior work on CMTT 
+(a non-obvious insight, we believe!), but that work also did not define an
+operational semantics nor consider the commutativity property in Sec. 4.
+
+So the novelty is in carefully combining all three of these pieces of prior work 
+and then defining the necessary technical infrastructure (e.g. indeterminate 
+forms) to be able to prove preservation, progress and commutativity theorems. 
+We are not aware of any comparable related work.
 
 > the calculus lacks recursion and control-flow. Dealing with these efficiently 
 > and providing a good user interface for inspecting the resulting reified values 
@@ -71,6 +92,4 @@ extension in the main body of the second phase submission.
 
 ## Novelty
 
-> While, the technical development is sound, it is mostly based prior work (Hazelnut type system), or a variation on gradually typed calculi, and not very surprising. In fact, evaluation of expression with holes is akin to evaluation of expressions with free variables extended with type casts from gradual typing.
 
-...
