@@ -1,5 +1,4 @@
-Thank you for your thoughtful comments, all of which will be incorporated in our
-revision.
+Thank you for your thoughtful comments.
 
 
 # Review A
@@ -15,7 +14,7 @@ All live programming features described in Section 2 are implemented. However,
 the figures in Section 2 do depict certain language conveniences that were not 
 implemented at the time of submission (per the intro of Section 2). To create 
 the figures, we first ran simpler versions of the examples (using encodings 
-based on the core calculus), and then we manually post-processed the resulting 
+based on the core calculus), and then we manually post-processed the resulting
 HTML/CSS of the editor to depict standard conveniences common to languages like 
 Elm and ML, e.g. records, basic pattern matching and syntactic sugar for 
 function definitions and lists.
@@ -44,51 +43,54 @@ would be happy to include it either in the main calculus or as an extension.
 > to evaluation of expressions with free variables extended with type casts 
 > from gradual typing.
 
-We certainly build directly upon the Hazelnut paper, as reviewed in Sec. 3.1, 
-but that paper did not define a dynamic semantics at all. 
+Our focus is the language from the Hazelnut paper, but that paper did not define
+a dynamic semantics at all. The solution we propose in this paper certainly
+builds on prior work (specifically, gradually typed calculi and CMTT), but we
+believe the differences are noteworthy.
 
-Gradually typed lambda calculi consider only type holes, and cast failure 
+1. Gradually typed lambda calculi consider only type holes, and cast failure
 immediately aborts evaluation. We do not abort immediately (Sec. 2.4). Moreover,
-we consider not just type holes but also expression holes, which operate not 
-merely as free variables, as suggested, but as closures. Closure tracking is 
-critical to the user experience in Sec. 2 and to the fill-and-resume feature 
+we consider not just type holes but also expression holes, which operate not
+merely as free variables, as suggested, but as closures. Closure tracking is
+critical to the user experience in Sec. 2 and to the fill-and-resume feature
 described in Sec. 4. 
 
-Closure tracking has a conceptual relationship with prior work on CMTT 
+2. Closure tracking has a conceptual relationship with prior work on CMTT
 (a non-obvious insight, we believe!), but that work also did not define an
 operational semantics nor consider the commutativity property in Sec. 4.
 
-So the novelty is in carefully combining all three of these pieces of prior work 
-and then defining the necessary technical infrastructure (e.g. indeterminate 
-forms) to be able to prove preservation, progress and commutativity theorems. 
+Combining these pieces of prior work with the necessary technical infrastructure
+(e.g. indeterminate forms) to be able to prove preservation, progress and
+commutativity theorems was not (for us, at least) completely straightforward; we
+iterated through several designs before settling on the proposal in the paper.
 We are not aware of any comparable related work.
 
 > the calculus lacks recursion and control-flow. Dealing with these efficiently 
 > and providing a good user interface for inspecting the resulting reified values 
 > is the hard problem in making such an environment.
 
-## Recursion
+## Semantics for Recursion and Control Flow
 
-See the response to Review A above regarding recursion in the core calculus. 
+Please see the discussion above regarding recursion.
 
-We also considered the topic of recursion in Sec. 2.2 (Example 2: Recursive 
-Functions). The UI was designed with recursion in mind in that it allows the 
-user to explore the recursive structure of hole closures iteratively as 
-described in that section, rather than displaying nested hole closures all at
-once, as is the case in the notation used for the core calculus. 
+The sum types extension in the appendix adds primitive control flow. With the
+additional page budget, we will include this extension in the main body of the
+second phase submission.
 
-The UI displays a "breadcrumb" path from the result to reflect the exploration 
-that the user has done (the basic UI can be seen at the bottom of Fig. 17). We 
-would be happy to include this more prominently in the second phase submission 
-(it requires showing a second, more deeply nested hole environment, so we will
-need the additional space available in the second phase submission).
+## UI for Recursion and Control Flow
 
-## Control Flow
+We describe our initial UI design considerations for recursion in Sec. 2.2. The
+UI allows the user to explore the recursive structure of hole closures
+iteratively as described in that section, rather than displaying nested hole
+closures all at once, as is the case in the notation used for the core calculus.
 
-The sum types extension in the appendix also adds
-primitive control flow. With the additional page budget, we will include this
-extension in the main body of the second phase submission.
+Regarding control flow, the UI displays a "breadcrumb" path from the result to
+reflect the exploration that the user has done (the basic UI can be seen at the
+bottom of Fig. 17). We would be happy to include this more prominently in the
+second phase submission (it requires showing a second, more deeply nested hole
+environment, so we will need the additional space available in the second phase
+submission).
 
-## Novelty
+## Effects and Mutation
 
-
+TODO
