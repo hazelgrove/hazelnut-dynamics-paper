@@ -8,20 +8,21 @@ revision.
 > Are the screenshots in section 2 real, or only the ones in the appendix?
 
 The submitted implementation supports the language of Section 3 plus the
-extensions in the appendix.
+extensions in the appendix. The screenshots in the Appendix show the 
+implementation at the time of submission.
 
-The screenshots in Section 2 are mockups, depicting language features that were
-not implemented at the time of submission. To create the screenshots in Section
-2, we first ran simpler versions of the examples (using encodings based on the
-core features), and then we manually post-processed the resulting HTML/CSS of
-the editor to obtain the mockups. The screenshots in the Appendix show the
-implementation at the time of submission. We will make this explanation even
-clearer in our revision.
+All live programming features described in Section 2 are implemented. However,
+the figures in Section 2 do depict certain language conveniences that were not 
+implemented at the time of submission (per the intro of Section 2). To create 
+the figures, we first ran simpler versions of the examples (using encodings 
+based on the core calculus), and then we manually post-processed the resulting 
+HTML/CSS of the editor to depict standard conveniences common to languages like 
+Elm and ML, e.g. records, basic pattern matching and syntactic sugar for 
+function definitions and lists.
 
 For artifact evaluation, we plan to submit a more recent snapshot of the Hazel
-implementation that either substantially narrows or eliminates the
-``convenience gap'' between the core language and the features depicted in
-Section 2.
+implementation that either substantially narrows or eliminates this 
+"convenience gap".
 
 > The HazelnutLive calculus in the paper is really basic, it doesn't even have 
 > fixpoint.
@@ -32,7 +33,7 @@ calculus into a gradually typed lambda calculus like Hazelnut Live.
 
 That said, we agree that an explicit fix operator might be more clear; there is
 nothing that would complicate its inclusion, so if requested in our revision, we
-would be happy to include either in the main calculus or as an extension.
+would be happy to include it either in the main calculus or as an extension.
 
 
 # Review C
