@@ -1,39 +1,34 @@
-Thank you for your thoughtful comments.
-
+Thank you for your thoughtful feedback!
 
 # Review A
+
+> it doesn't even have fixpoint
+
+Type holes actually allow you to express general recursion (e.g. via the Y 
+combinator) - see footnote 9 and Siek and Taha [2006].
+
+That said, we agree that an explicit fix operator might be more clear; there is
+nothing that would complicate its inclusion, so if requested, we would be happy 
+to include it either in the main calculus or as an extension.
 
 > I'm still confused about which version of the language is implemented.
 > Are the screenshots in section 2 real, or only the ones in the appendix?
 
-The submitted implementation supports the language of Section 3 plus the
-extensions in the appendix. The screenshots in the Appendix show the 
-implementation at the time of submission.
+The screenshots in the Appendix show the submitted implementation, which 
+supports all of the live programming features described in Section 2 for 
+the language of Section 3 plus the extensions in the appendix.
 
-All live programming features described in Section 2 are implemented. However,
-the figures in Section 2 do depict certain language conveniences that were not 
-implemented at the time of submission (per the intro of Section 2). To create 
-the figures, we first ran simpler versions of the examples (using encodings 
-based on the core calculus), and then we manually post-processed the resulting
-HTML/CSS of the editor to depict standard conveniences common to languages like 
-Elm and ML, e.g. records, basic pattern matching and syntactic sugar for 
+For the sake of exposition, the figures in Section 2 do depict certain language
+features that were not implemented at submission (as acknowledged in the 
+intro of Section 2). To create these figures, we first ran simpler variants of 
+the examples (using the usual lambda encoding tricks), and then we manually
+edited the resulting HTML/CSS to add in conveniences common to languages like 
+ML/Elm, namely record labels, basic pattern matching and syntactic sugar for 
 function definitions and lists.
 
 For artifact evaluation, we plan to submit a more recent snapshot of the Hazel
 implementation that either substantially narrows or eliminates this 
 "convenience gap".
-
-> The HazelnutLive calculus in the paper is really basic, it doesn't even have 
-> fixpoint.
-
-Type holes actually allow you to express general recursion (e.g. via the Y 
-combinator). See Siek and Taha [2006] for more on embedding the untyped lambda
-calculus into a gradually typed lambda calculus like Hazelnut Live.
-
-That said, we agree that an explicit fix operator might be more clear; there is
-nothing that would complicate its inclusion, so if requested in our revision, we
-would be happy to include it either in the main calculus or as an extension.
-
 
 # Review C
 
@@ -43,26 +38,24 @@ would be happy to include it either in the main calculus or as an extension.
 > to evaluation of expressions with free variables extended with type casts 
 > from gradual typing.
 
-We start from the Hazelnut paper, but that paper did not define
-a dynamic semantics at all. The solution we propose in this paper certainly
-builds on prior work (specifically, gradual typing and CMTT), but we
-believe the differences are noteworthy.
+Only the external type system comes from the Hazelnut paper (reviewed in 3.1). 
+That paper did not define a dynamic semantics at all. 
 
-Gradually typed lambda calculi consider only type holes, and cast failure
-immediately aborts evaluation. We do not abort immediately (Sec. 2.4). Moreover,
-we consider not just type holes but also expression holes, which operate not
-merely as free variables, as suggested, but as closures. Closure tracking is
-critical to the user experience in Sec. 2 and to the fill-and-resume feature
-described in Sec. 4. 
+Unlike gradually typed lambda calculi, we do not abort immediately on cast
+failure (Sec. 2.4). Moreover, we consider not just type holes but also 
+expression holes, which operate not merely as free variables, as suggested, 
+but as a sort of closure. Closure tracking is critical to the user experience 
+throughout Sec. 2 and to the fill-and-resume feature described in Sec. 4. 
 
-Closure tracking has a conceptual relationship with prior work on CMTT
-(a non-obvious insight, we believe!), but that work also did not define an
-operational semantics nor consider the commutativity property in Sec. 4.
+Closure tracking has a conceptual relationship with the prior work on CMTT (a 
+non-obvious and satisfying logical connection, we believe!), but that work 
+also did not define a dynamic semantics nor consider non-empty holes nor the 
+commutativity property in Sec. 4.
 
-Combining these pieces of prior work with the necessary technical infrastructure
-(e.g. indeterminate forms) to be able to prove preservation, progress and
-commutativity theorems was not completely straightforward. We are not aware of 
-any comparable related work.
+We carefully combined mechanisms from these prior systems and define new 
+technical infrastructure (e.g. indeterminate forms) to be able to prove 
+preservation, progress and commutativity theorems mechanically. We are not 
+aware of an operational semantics with comparable features and metatheory. 
 
 > the calculus lacks recursion and control-flow. Dealing with these efficiently 
 > and providing a good user interface for inspecting the resulting reified values 
