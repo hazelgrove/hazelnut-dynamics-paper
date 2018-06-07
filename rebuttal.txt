@@ -1,0 +1,76 @@
+Thank you for your thoughtful reviews. We believe...
+
+
+# Review A
+
+> The HazelnutLive calculus in the paper is really basic, it doesn't even have 
+> fixpoint.
+
+Type holes actually allow you to express general recursion (e.g. via the Y 
+combinator). See Siek and Taha [2006] for more on embedding the untyped lambda
+calculus into a gradually typed lambda calculus like Hazelnut Live.
+
+That said, we agree that an explicit fix operator in the style of Plotkin's PCF
+might be more clear and there is nothing that would complicate its inclusion, 
+so if requested, we would be happy to include it in the second phase submission, 
+either in the main calculus or as another extension.
+
+> I'm still confused about which version of the language is implemented.
+
+The language of the submitted implementation is the language of Section 3 + 
+the extensions in the appendix. We plan to archive a frozen version of that 
+implementation as a simple reference implementation of the core calculus of 
+this paper.
+
+The first two paragraphs of Section 2 were, we believe, direct in stating that 
+the figures in Section 2 were post-processed to use certain language features 
+that were not implemented at the time of submission. None of these language 
+features are particularly complex or unusual (records, simple pattern matching, 
+and syntactic sugar for function definitions and lists), and they are 
+orthogonal to the live programming features that are the topic of the paper, 
+which are all implemented as described in Section 2 (see the implementation 
+screenshots in Fig. 17-18 in the appendix).
+
+We plan to submit a more recent snapshot of the Hazel implementation for 
+artifact evaluation that either substantially narrows or eliminates this 
+``convenience gap''. 
+
+Our approach has been to...
+
+# Review B
+
+(nothing to say, maybe just acknowledge the typos? remove this section entirely?)
+
+# Review C
+
+> the calculus lacks recursion and control-flow. Dealing with these efficiently 
+> and providing a good user interface for inspecting the resulting reified values 
+> is the hard problem in making such an environment.
+
+## Recursion
+
+See the response to Review A above regarding recursion in the core calculus. 
+
+We also considered the topic of recursion in Sec. 2.2 (Example 2: Recursive 
+Functions). The UI was designed with recursion in mind in that it allows the 
+user to explore the recursive structure of hole closures iteratively as 
+described in that section, rather than displaying nested hole closures all at
+once, as is the case in the notation used for the core calculus. 
+
+The UI displays a "breadcrumb" path from the result to reflect the exploration 
+that the user has done (the basic UI can be seen at the bottom of Fig. 17). We 
+would be happy to include this more prominently in the second phase submission 
+(it requires showing a second, more deeply nested hole environment, so we will
+need the additional space available in the second phase submission).
+
+## Control Flow
+
+The sum types extension in the appendix also adds
+primitive control flow. With the additional page budget, we will include this
+extension in the main body of the second phase submission.
+
+## Novelty
+
+> While, the technical development is sound, it is mostly based prior work (Hazelnut type system), or a variation on gradually typed calculi, and not very surprising. In fact, evaluation of expression with holes is akin to evaluation of expressions with free variables extended with type casts from gradual typing.
+
+...
