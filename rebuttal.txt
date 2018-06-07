@@ -43,27 +43,26 @@ would be happy to include it either in the main calculus or as an extension.
 > to evaluation of expressions with free variables extended with type casts 
 > from gradual typing.
 
-Our focus is the language from the Hazelnut paper, but that paper did not define
+We start from the Hazelnut paper, but that paper did not define
 a dynamic semantics at all. The solution we propose in this paper certainly
-builds on prior work (specifically, gradually typed calculi and CMTT), but we
+builds on prior work (specifically, gradual typing and CMTT), but we
 believe the differences are noteworthy.
 
-1. Gradually typed lambda calculi consider only type holes, and cast failure
+Gradually typed lambda calculi consider only type holes, and cast failure
 immediately aborts evaluation. We do not abort immediately (Sec. 2.4). Moreover,
 we consider not just type holes but also expression holes, which operate not
 merely as free variables, as suggested, but as closures. Closure tracking is
 critical to the user experience in Sec. 2 and to the fill-and-resume feature
 described in Sec. 4. 
 
-2. Closure tracking has a conceptual relationship with prior work on CMTT
+Closure tracking has a conceptual relationship with prior work on CMTT
 (a non-obvious insight, we believe!), but that work also did not define an
 operational semantics nor consider the commutativity property in Sec. 4.
 
 Combining these pieces of prior work with the necessary technical infrastructure
 (e.g. indeterminate forms) to be able to prove preservation, progress and
-commutativity theorems was not (for us, at least) completely straightforward; we
-iterated through several designs before settling on the proposal in the paper.
-We are not aware of any comparable related work.
+commutativity theorems was not completely straightforward. We are not aware of 
+any comparable related work.
 
 > the calculus lacks recursion and control-flow. Dealing with these efficiently 
 > and providing a good user interface for inspecting the resulting reified values 
@@ -77,14 +76,14 @@ The sum types extension in the appendix adds primitive control flow. With the
 additional page budget, we will include this extension in the main body of the
 second phase submission.
 
-## UI for Recursion and Control Flow
+## UI
 
 We describe our initial UI design considerations for recursion in Sec. 2.2. The
 UI allows the user to explore the recursive structure of hole closures
 iteratively as described in that section, rather than displaying nested hole
 closures all at once, as is the case in the notation used for the core calculus.
 
-Regarding control flow, the UI displays a "breadcrumb" path from the result to
+Regarding , the UI displays a "breadcrumb" path from the result to
 reflect the exploration that the user has done (the basic UI can be seen at the
 bottom of Fig. 17). We would be happy to include this more prominently in the
 second phase submission (it requires showing a second, more deeply nested hole
@@ -94,3 +93,5 @@ submission).
 ## Effects and Mutation
 
 TODO
+
+Finish on 
