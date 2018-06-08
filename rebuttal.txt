@@ -62,7 +62,7 @@ adds primitive control flow. With the additional page budget, we could move
 this extension into the main body.
 
 > providing a good user interface for inspecting the resulting reified values 
-> is the hard problemin making such an environment
+> is the hard problem in making such an environment
 
 We agree that both theoretical and UI considerations are worthy of substantial 
 investigation. This paper focused on the former, laying detailed type-theoretic
