@@ -9,22 +9,23 @@ combinator) - see footnote 9 and [Siek and Taha, 2006] on embedding the
 untyped lambda calculus.
 
 That said, we agree that an explicit fix operator might be more clear; if 
-requested, we would be happy to make this small + simple addition.
+requested, we would be happy to make this small, straightforward addition.
 
 > Are the screenshots in section 2 real, or only the ones in the appendix?
 
 The appendix shows the submitted implementation, which 
 supports all of the live programming features in Section 2 for 
-the language of Section 3 plus Appendix B.
+the language of Section 3 + Appendix B.
 
-For the sake of exposition, the figures in Section 2 do go beyond the language
-of Section 3 (acknowledged in the intro to Section 2). To create these figures, 
+For the sake of exposition, the figures in Section 2 do go beyond this (as 
+acknowledged in the intro to Section 2). To create these figures, 
 we ran simpler variants of the examples (using typical lambda encodings), then 
-manually edited the HTML/CSS only to add conveniences from Elm, namely record 
-labels, pattern matching and sugar for functions and lists.
+manually edited the HTML/CSS using Chrome devtools only to add conveniences 
+from Elm: record labels, pattern matching and sugar for function definitions and 
+lists.
 
-(We plan to submit a more recent snapshot of Hazel that substantially narrows 
-or eliminates this small "convenience gap" for artifact evaluation.)
+(For artifact evaluation, we plan to submit a more recent snapshot of Hazel 
+that substantially narrows or eliminates this small "convenience gap".)
 
 # Review C
 
@@ -35,14 +36,14 @@ or eliminates this small "convenience gap" for artifact evaluation.)
 
 We disagree with this characterization.
 
-Only the external type system comes from Hazelnut (Sec 3.1). That paper did 
+Only the external type system (Sec 3.1) comes from Hazelnut. That paper did 
 not define a dynamic semantics at all.
 
 Unlike gradually typed calculi, we do not abort on cast failure. Furthermore, 
 we consider not only type holes but also expression holes, which operate not 
 merely as free variables (which, as suggested, would be uninteresting), but 
-as metavariable closures. Closure tracking is critical to the features in  
-Sections 2 and 4. 
+as metavariable closures. Closure tracking is critical to the features in Sections 
+2 and 4. 
 
 Closure tracking has a relationship with CMTT (a non-obvious 
 and satisfying logical connection, we believe!), but that work also did not 
@@ -57,13 +58,14 @@ adds control flow. We plan to move this into the main body.
 > providing a good user interface for inspecting the resulting reified values 
 > is the hard problem
 
-Both theoretical and UI considerations are worthy of substantial 
-investigation. This paper focuses on the former, motivated by a  
-proof-of-concept UI design and several small but non-trivial examples.
+Theoretical and UI considerations are both worthy of substantial 
+investigation. This paper intentionally focuses on the former, 
+motivated by a proof-of-concept UI design and several small but non-trivial 
+examples.
 
-This UI was designed with recursion in mind -- it allows you to  
-to explore the recursive structure of closures iteratively (Sec 2.2). 
-It does not display nested closures all at once, as in the 
+This UI was designed with recursion in mind -- it allows you 
+to explore the recursive structure of closures iteratively (Sec 2.2),
+rather than displaying nested closures all at once, as in the 
 formal notation. [more below the fold]
 
 Branches blocked on a hole can certainly "blow up" in size. A partial 
@@ -72,11 +74,11 @@ define a small step semantics, another approach is to pause evaluation when
 this occurs, continuing only if requested or, because we leave evaluation order
 undefined, allowing the user to shift the "evaluation cursor" elsewhere.
 
->> effects and mutation
+> effects and mutation
 
 The interactions between gradual typing and mutation are well-studied and 
-the standard approach (treating refs as invariant wrt consistency) should 
-be applicable to recover the properties of Section 3. However, the 
+the standard approach (treating refs as invariant wrt consistency) would allow
+us to recover the properties of Section 3. However, the 
 commutativity theorem in Section 4 would not hold.
 
 We anticipate that future work will explore variants of fill-and-resume
@@ -84,14 +86,12 @@ that support a weaker commutativity property (e.g. via checkpointing).
 
 However, in order to provide the simplest and strongest theoretical
 guarantees, we did not include mutation. (Note that Hazel is 
-based on Elm, which is pure and quite practical.)
+based on Elm, which is both pure and quite practical.)
 
--------
+---
 
-Regarding , the UI displays a "breadcrumb" path from the result to
-reflect the exploration that the user has done (the basic UI can be seen at the
+Regarding UI support for recursion, note also that the UI displays a "breadcrumb" 
+path from a hole in the result through to nested holes that the user has clicked 
+on to reflect the exploration that the user has done (the basic UI can be seen at the
 bottom of Fig. 17). We would be happy to include this more prominently in the
-second phase submission (it requires showing a second, more deeply nested hole
-environment, so we will need the additional space available in the second phase
-submission).
-
+second phase submission (by adding a second sidebar screenshot to Example 2) to emphasize how the UI has been designed to support recursion.
