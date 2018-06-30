@@ -283,7 +283,7 @@ Initially, when no evaluation has yet occurred, the hole expansion rules generat
 \begin{defn}[Identity Substitution] $\idof{x_1 : \tau_1, ~\cdots, x_n : \tau_n} = [x_1/x_1, ~\cdots, x_n/x_n]$
 \end{defn}
 \noindent
-The type assignment rules for hole closures~{TAEHole} and {TANEHole} each require that the hole closure environment~$\sigma$ be consistent with the corresponding typing context, written as $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$.
+The type assignment rules for hole closures,~\rulename{TAEHole} and \rulename{TANEHole}, each require that the hole closure environment~$\sigma$ be consistent with the corresponding typing context, written as $\hasType{\Delta}{\hGamma}{\sigma}{\hGamma'}$.
 %
 Formally, we define this relation in terms of type assignment as follows:
 \begin{defn}[Substitution Typing]
@@ -585,7 +585,7 @@ For example, $\stepsToD{}
 Beta reduction can duplicate hole closures.
 %
 Consequently, the environments of different closures with the same hole name may differ,
-e.g., when an reduction applies a function with a hole closure body multiple times as in Fig.~\ref{fig:grades-example}.
+e.g., when a reduction applies a function with a hole closure body multiple times as in Fig.~\ref{fig:grades-example}.
 Hole closures may also appear within the environments of other hole
 closures, giving rise to the closure paths described in
 Sec.~\ref{sec:paths}.
@@ -947,9 +947,9 @@ Appendix~\ref{sec:additional-defns}).
                      {\instantiate{\dexp'}{u}{\dexp_2}}$.
 \end{thm}
 %
-Critically, this property relies on the more version of
+Critically, this property relies on the version of
 the semantics from \Secref{sec:calculus} where evaluation order is
-unspecified (i.e. formally, we omit the bracketed premises).
+unspecified (i.e. where we omit the bracketed premises).
 %
 In general, resuming from $\instantiate{\dexp'}{u}{d_2}$ will not
 reduce sub-expressions in the same order as a ``fresh'' left-to-right
