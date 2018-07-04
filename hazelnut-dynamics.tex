@@ -2,11 +2,9 @@
 %% For double-blind review submission
 %\documentclass[acmsmall,review]{acmart}
 %%% Note: arxiv does not want line numbers (they are detected somehow, and are not allowed)
-\documentclass[acmsmall,review,anonymous]{acmart}
+\documentclass[acmsmall,review,anonymous,nonacm]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 % \settopmatter{printccs=false,printacmref=false}
-\setcopyright{none}
-\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
 
 %% For single-blind review submission
 %\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
@@ -158,7 +156,7 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 %\copyrightyear{2017}           %% If different from \acmYear
 
 
-\fancyfoot{} % suppresses the footer (also need \thispagestyle{empty} after \maketitle below)
+% \fancyfoot{} % suppresses the footer (also need \thispagestyle{empty} after \maketitle below)
 
 
 %% Bibliography style
@@ -343,7 +341,7 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 %% commands, abstract environment, Computing Classification System
 %% environment and commands, and keywords command.
 \maketitle
-\thispagestyle{empty} % suppresses the footer
+% \thispagestyle{empty} % suppresses the footer
 
 \input{intro}
 \input{examples}
