@@ -7,14 +7,14 @@
 %% PAR 1: Live programming environments --- Problem statement
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
-\emph{Live programming environments} aim to provide programmers (and sometimes audiences) 
+Live programming environments aim to provide programmers (and sometimes audiences) 
 with continuous feedback about a program's dynamic behavior as it is being edited. 
 %
 The problem is that programming languages typically assign dynamic meaning only 
  to programs that are \emph{complete}, i.e. syntactically well-formed and free
-of type errors. As a result,  
-live feedback flickers out or goes stale, 
-in many cases for substantial lengths of time.
+of type errors. Consequently,    
+live feedback presented to the programmer has gaps, i.e. it flickers in and out or it goes stale whenever the program becomes incomplete. 
+% In some cases, these gaps persist over a substantial length of time.
 %
 % Defining a semantics for incomplete functional programs would help bridge the
 % gap between well-formed states and allow live programming environments to
@@ -24,26 +24,26 @@ in many cases for substantial lengths of time.
 %% PAR 2: This paper's approach: New (dynamic) semantics for incomplete programs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This paper confronts this problem from type-theoretic first principles by developing 
+This paper confronts this \emph{gap problem} from type-theoretic first principles by developing 
 \emph{a dynamic semantics for incomplete functional programs}, 
-based in part on the static semantics for incomplete functional programs
-developed in recent work by \citet{popl-paper}. 
+starting from the static semantics for incomplete functional programs
+developed by \citet{popl-paper}. 
 %
 We model incomplete functional programs as expressions with \emph{holes}, 
 with empty holes standing for missing expressions or types, and  non-empty holes 
-operating as ``membranes'' around static and dynamic type inconsistencies. 
+operating as membranes around static and dynamic type inconsistencies. 
 %
-Rather than aborting with an exception when evaluation encounters any of these holes (as in
-several existing systems with holes), evaluation proceeds ``around'' the holes,
+Rather than aborting with an exception when evaluation encounters any of these holes as in
+several existing systems, evaluation proceeds around the holes,
 performing as much of the remaining computation as is possible and tracking the 
-closure around each hole instance as it flows through the program. Various editor services can report information from these hole closures 
-to help the programmer decide how to fill a hole. 
-They also enable a ``fill-and-resume'' feature that 
+closure around each hole instance as it flows through the program. Editor services can report information from these hole closures 
+to help the programmer decide how to fill the holes in the program. 
+Hole closures also enable a \emph{fill-and-resume} feature that 
 avoids the need to restart evaluation after edits that amount to hole filling. 
-Formally, the semantics draws from both gradual type theory (to handle
+Formally, the semantics borrows machinery from both gradual type theory (to handle
 type holes) and contextual modal type theory (which provides a
-logical basis for hole closures), and develops additional technical machinery necessary 
-to continue evaluation past the various hole forms and to prove several important metatheoretic properties. 
+logical basis for tracking hole closures), combining these and developing additional machinery necessary 
+to continue evaluation past the hole forms in a manner that admits important metatheoretic properties. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% PAR 3: We have an implementation, and have proofs
@@ -54,16 +54,16 @@ to continue evaluation past the various hole forms and to prove several importan
 % from the perspective of CMTT) and cast failure holes (which provide a novel), and (2) a commutativity property that establishes that the
 % ``edit-and-resume'' feature is sound.
 %
-We have mechanized this foundational calculus, called \HazelnutLive{}, using the Agda proof assistant.
+We have mechanized this core calculus, called \HazelnutLive{}, using the Agda proof assistant.
 %
-We also describe a simple implementation 
+We also describe a companion implementation 
 that inserts holes automatically to guarantee that every editor state has some (possibly incomplete)
 type, based on the \Hazelnut edit action calculus of \citet{popl-paper}.
-Taken together with the type safety property that we establish, the 
+Taken together with this paper's type safety property, the 
 % The 
 result is  
-a proof-of-concept live programming environment where dynamic feedback 
-is truly continuous, i.e. it is available for every possible editor state.
+a proof-of-concept live programming environment where rich dynamic feedback 
+is truly available without gaps, i.e. it is available for every possible editor state.
 % i.e. \emph{every edit state is guaranteed to have
 % non-trivial static and dynamic meaning}.
 
