@@ -10,10 +10,9 @@
 
 \newcommand{\overviewExample}[2]{\paragraph{Example {#1}: {#2}}}
 
-We begin with an example-driven overview of our proposed approach  within the \Hazel programming environment \citet{HazelnutSNAPL}. \Hazel is an open source web lab notebook environment based roughly on IPython/Jupyter \cite{PER-GRA:2007}. The language of \Hazel is tracking toward parity with \Elm, a popular pure functional programming language similar to ``core ML'' \cite{czaplicki2012elm,Elm}. We assume familiarity with the basic concepts of ML/Elm (see \url{http://elm-lang.org/}).
-
-Both the user interface and the language of \Hazel are under active development. For the sake of 
-exposition, we have ``post-processed'' the examples in this section to make use of several convenient language mechanisms from \Elm~that are not yet implemented in \Hazel as of this writing. These mechanisms are orthogonal to the contributions of this paper---we have implemented all of the live programming features described in this section, both in \Hazel and in the implementation of the core calculus included in the supplement (see Sec.~\ref{sec:implementation}).
+This section gives an example-driven overview of our  approach as implemented in  \Hazel, a browser-based lab notebook environment being developed by \cite{HazelnutSNAPL}. The \Hazel user interface is  based roughly on IPython/Jupyter \cite{PER-GRA:2007} and the \Hazel language is tracking toward feature parity with \Elm~(\url{elm-lang.org}), a popular pure functional programming language similar to ``core ML'' \cite{czaplicki2012elm,Elm}, with which we assume basic  familiarity.
+For the sake of 
+exposition, we have ``post-processed'' the screenshots in this section to make use of a few language conveniences from \Elm~that were not available in \Hazel as of this writing, e.g. pattern matching in function arguments, list  notation, and record labels (currently there are only tuples). These conveniences are entirely orthogonal to the contributions of this paper: all of the live programming features demonstrated in this section have been implemented, both in \Hazel itself and in the simplified companion implementation of the core calculus in the supplement (see Sec.~\ref{sec:implementation}).
 
 \input{examples-1}
 \input{examples-2}
