@@ -4,7 +4,7 @@
 
 Consider the perspective of a teacher in the midst of developing a \Hazel{} notebook
 to compute final student grades at the end of a course.
-\autoref{fig:grades-cell-mockup} depicts the cell containing the incomplete program that 
+Fig.~\ref{fig:grades-cell-mockup} depicts the cell containing the incomplete program that 
 the teacher has written so far (we omit irrelevant parts of the UI). 
 %
 
@@ -47,11 +47,12 @@ actual behavior of the program (in this case, the magnitude of the arithmetic ex
 
 % The result itself is not the only live feedback that \Hazel reports to the programmer.
 % Programmers also keep track of the names and types of the variables that are in scope at the cursor. 
-Going further, \Hazel helps programmers reason about the dynamic behavior of bound variables in scope at a hole via the \emph{live context inspector}, normally displayed  as a sidebar but shown disembodied in three different states in Fig.~\ref{fig:grades-sidebar}. 
-In all three states, the live context inspector displays the names and types of the variables that are in scope, as is a common feature of programming environments.
-
-New to our approach are the values associated with each binding.
-These values come from the environments associated with each hole instance in the result. In this case, there are three instances of hole \li{1} in the result, numbered sequentially: \li{1:1}, \li{1:2} and \li{1:3}, arising from the three calls to \li{weighted_averages}. An environment is a partial mapping of each variable in scope to a value. We call a hole instance paired with an  environment a \emph{hole closure}, by analogy to function closures (and also due to the logical foundations detailed in Sec.~\ref{sec:calculus}). The programmer can select different closures by clicking on a hole instance in the result (the first instance, \li{1:1}, is selected by default, as indicated by the solid purple outline), or cycle rapidly through all of the closures for the hole at the cursor by clicking the arrows, e.g. $\blacktriangleright$, at the bottom of the context inspector, or by using hotkeys.
+Going further, \Hazel helps programmers reason about the dynamic behavior of expressions bound to variables in scope at a hole via the \emph{live context inspector}, normally displayed  as a sidebar but shown disembodied in three different states in Fig.~\ref{fig:grades-sidebar}. 
+In all three states, the live context inspector displays the names and types of the variables that are in scope, as is a common feature of programming environments. 
+New to our approach are the values associated with bindings, which come from the environment associated with the selected hole instance in the result. In this case, there are three instances of hole \li{1} in the result, numbered sequentially: \li{1:1}, \li{1:2} and \li{1:3}, arising from the three calls to \li{weighted_averages}. 
+% An environment is a partial mapping of variables in scope to values. 
+We call a hole instance paired with an  environment a \emph{hole closure}, by analogy to function closures (and also due to the logical connection detailed in Sec.~\ref{sec:calculus}). 
+The programmer can select different closures by clicking on a hole instance in the result (the first instance, \li{1:1}, is selected by default, as indicated by the purple outline), or cycle through all of the closures for the hole at the cursor by clicking the arrows, e.g. $\blacktriangleright$, at the bottom of the context inspector or using hotkeys.
 
 \vspace{-4px}
 \subsection{Example 2: Recursive Functions}\label{sec:qsort1}\label{sec:paths}
@@ -59,15 +60,20 @@ These values come from the environments associated with each hole instance in th
 
 \input{qsort-example}
 
-The first example was purposely simple. Let us briefly consider a second more sophisticated example of these concepts: an incomplete implementation of quicksort as a recursive function, shown in Fig.~\ref{fig:qsort-cell-mockup}. Here, the programmer has selected a pivot, split the remainder of the list relative to this pivot and made the appropriate recursive calls. A hole appears in the return position of the function body as the programmer contemplates how to combine the results from the recursive calls. 
+Let us now consider a second more sophisticated example: an incomplete implementation of the recursive quicksort function, shown in Fig.~\ref{fig:qsort-example-code}. So far, the programmer (perhaps a student, or a lecturer using \Hazel as a presentational aid during class) has filled in the base case, and in the recursive case, has selected the head of the list as the pivot, partitioned the remainder of the list relative to the pivot and made the two recursive calls. A hole appears in the return position of the function body as the programmer contemplates how to combine the available variables. 
 
-The programmer has called \li{qsort} on an example list. However, 
-the indeterminate result in this case is rather uninteresting: it simply confirms that for this example, evaluation went through the recursive case of \li{qsort}, which ends with hole \li{1}. The live context inspector, on the other hand, provides a wealth of feedback about the dynamic behavior of this incomplete program. For example, the programmer can confirm that
-the lists \li{smaller} and \li{bigger} are appropriately named.
+At the bottom of the cell in Fig.~\ref{fig:qsort-example-code}, the programmer has applied \li{qsort} to an example list. However, 
+the indeterminate result of this function application appears rather uninteresting: it is simply an instance of hole \li{1}, which serves only to confirm that evaluation went through the recursive case of \li{qsort}. 
+More interesting is the live context inspector, shown in three states in Fig.~\ref{fig:qsort-sidebars}, which provides feedback about the values of the variables in scope at hole \li{1} from the the various instances of hole \li{1} that appear in the result. For example, the initial state of the context inspector (Fig.~\ref{fig:qsort-sidebars}, left) shows the closure at the instance of hole \li{1} that appears immediately in the result due to the outermost application of \li{qsort}. From this, the programmer can confirm (or the lecturer can visually point out) that 
+the lists \li{smaller} and \li{bigger} computed by the call to \li{partition} are appropriately named, and observe that they are not yet themselves sorted\todo{are there studies to cite here about how concrete examples help people in programming? math?}.
 
-The results from the recursive calls, \li{r_smaller} and \li{r_bigger}, are again hole instances, \li{1:2} and \li{1:3}. The programmer can click on these hole instances to reveal the environments at the corresponding recursive calls. For example, clicking on \li{1:2} reveals that the pivot in that case is \li{7} (not shown). In exploring these paths rooted at the result, the programmer can develop intuitions about the recursive structure of the computation before the program is complete. 
-(We leave to future work the pedagogical question of whether such early feedback might help students with recursion.)
-
+The results from the subsequent recursive calls, \li{r_smaller} and \li{r_bigger}, are again hole instances, \li{1:2} and \li{1:3}. 
+The programmer can click on either of these hole instances to reveal the associated closures from the corresponding recursive calls. 
+For example, clicking on \li{1:3} reveals the hole closure from the \li{r_bigger} recursive call as shown in Fig.~\ref{fig:qsort-sidebars} (middle). 
+From there, the programmer can click another hole closure, e.g. \li{1:6} to reveal the hole closure from the subsequent \li{r_smaller} recursive call as shown in Fig.~\ref{fig:qsort-sidebars} (right). 
+Notice that the path from the root to the selected hole closure is reported as shown at the bottom of the context inspector in Fig.~\ref{fig:qsort-sidebars}. 
+In exploring these paths rooted at the result, the programmer can develop concrete intuitions about the recursive structure of the computation (e.g. by following through to the base case as shown in Fig.~\ref{fig:qsort-sidebars}) even before the program is complete. 
+% (We leave to future work the pedagogical question of whether such early feedback might help students understand recursion.)
 
 \begin{comment}
 Now the teacher returns to \lismall{weighted_average} to work on the missing
