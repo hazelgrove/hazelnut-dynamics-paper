@@ -22,6 +22,8 @@ Here, we have left a hole, \li{?}, in the type of \li{f}. On Line 3, we call \li
 
 The second call, however, is problematic: \li{3} is of type \li{int} but it flows into boolean guard position. The usual semantics for gradual typing would simply abort evaluation here with a dynamic type error. However, this deprives the programmer of live feedback about other parts of the program that might not depend at all on this problematic function call---in this case, the third call to \li{f}. Instead, we follow the approach we took above for static type inconsistencies: we treat a failed cast like a hole. A failed cast, notated textually and in red \li{SSTR3<int => ? =/> bool>ESTR} (see next section), reports both the expected type, here \li{bool}, and the assigned type, here \li{int}. Consequently, the second call to \li{f} stops as if the guard were an empty hole, but the third call can progress safely.
 
+
+
 \begin{comment}
 \emph{Gradual type systems}~(\eg{}~\cite{XXX,XXX,XXX}) can statically accept
 programs that would otherwise be rejected by static type systems---either
