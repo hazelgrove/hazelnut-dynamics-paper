@@ -61,7 +61,7 @@ The programmer can select different closures by clicking on a hole instance in t
 
 \input{qsort-example}
 
-Let us now consider a second more sophisticated example: an incomplete implementation of the recursive quicksort function, shown in Fig.~\ref{fig:qsort-example-code}. So far, the programmer (perhaps a student, or a lecturer using \Hazel as a presentational aid during class) has filled in the base case, and in the recursive case, has selected the head of the list as the pivot, partitioned the remainder of the list relative to the pivot and made the two recursive calls. A hole appears in the return position of the function body as the programmer contemplates how to combine the available variables. 
+Let us now consider a second more sophisticated example: an incomplete implementation of the recursive quicksort function, shown in Fig.~\ref{fig:qsort-example-code}. So far, the programmer (perhaps a student, or a lecturer using \Hazel as a presentational aid during class) has filled in the base case, and in the recursive case, has selected the head of the list as the pivot, partitioned the remainder of the list relative to the pivot and made the two recursive calls. A hole appears in the return position of the function body as the programmer contemplates how to combine the available variables with an appropriate list expression, as indicated by the type inspector in Fig.~\ref{fig:qsort-type-inspector}.
 
 At the bottom of the cell in Fig.~\ref{fig:qsort-example-code}, the programmer has applied \li{qsort} to an example list. However, 
 the indeterminate result of this function application appears rather uninteresting: it is simply an instance of hole \li{1}, which serves only to confirm that evaluation went through the recursive case of \li{qsort}. 

@@ -1,12 +1,21 @@
 % !TEX root = hazelnut-dynamics.tex
 
 \begin{figure}[t]
-\begin{subfigure}[t]{\textwidth}
+\begin{subfigure}[t]{0.65\textwidth}
 \centering
-\includegraphics[width=0.57\textwidth,interpolate=false,valign=t]{images/qsort-code.png}
-\vspace{-3px}
-\caption{The result of evaluating this incomplete quicksort function applied to a test value is a hole closure.}
+\includegraphics[width=\textwidth,interpolate=false,valign=t]{images/qsort-code.png}
+\caption{The result of evaluation is a hole closure.}
 \label{fig:qsort-example-code}
+\end{subfigure}
+~
+\begin{subfigure}[t]{0.33\textwidth}
+\centering
+\includegraphics[width=\textwidth,interpolate=false,valign=t]{images/type-inspector.png}
+\vspace{-2px}
+\caption{The type inspector
+continuously provides static information about the expression at the cursor. Here, it tells us that the hole at the cursor should be filled by a list expression. Holes have hole (i.e. unknown) type.
+}
+\label{fig:qsort-type-inspector}
 \end{subfigure}
 
 \vspace{10px}
@@ -27,6 +36,8 @@
 \caption{Example 2: Incomplete Quicksort}
 \label{fig:qsort-cell-mockup}
 % \end{subfigure}
+
+\vspace{-6px}
 \end{figure}
 
 % \begin{subfigure}[t]{\textwidth}
