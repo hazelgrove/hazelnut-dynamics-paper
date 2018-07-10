@@ -24,14 +24,14 @@ However, when the programming environment attempts to evaluate the program,
 evaluation would proceed only as far as the first \li{map} iteration, 
 which would call into \li{weighted_average} and then fail when attempting to evaluate the hole.%
 \footnote{In a lazy language, like Haskell, the result would be much the same because the environment forces the result for printing.}
-While the stack trace would confirm that \li{weighted_average} has been called, this is not entirely satisfying.
+% While the stack trace would confirm that \li{weighted_average} has been called, this is not entirely satisfying.
 
 \Hazel{} does not take this ``exceptional'' interpretation of holes. Instead, evaluation continues past the hole, treating it as an opaque expression of the appropriate type. The result, shown at the bottom of Fig.~\ref{fig:grades-cell-mockup}, is a list of length $3$, confirming that \li{map} does indeed behave as expected in this regard despite the teacher having provided an incomplete argument. Furthermore, each element of the resulting list has been evaluated as far as possible, i.e. the arithmetic expression \li{30.0*hw} has been evaluated for each corresponding value of \li{hw}, as expected. Evaluation cannot proceed any further because holes appear as addends. We say that each of these addition expressions is an \emph{indeterminate} sub-expression, and the result as a hole is therefore also indeterminate, because it is not yet a value, nor can it take a step due to holes in elimination positions.
 
 At this point, the teacher might take notice of the magnitude of the numbers being computed, e.g. \li{2640.0} and \li{2280.0}, and
 realize immediately that a mistake has been made: the teacher wants to compute a 
 weighted average between \li{0.0} and \li{100.0}, and so the correct
-constant is \li{0.30} rather than \li{30.0}. (There are of course other possible fixes.)
+constant is \li{0.30}, not \li{30.0}. %(There are of course other possible fixes.)
 
 Although these observations might 
 save only a small amount of time in this case, 
@@ -42,17 +42,18 @@ it demonstrates
 the broader motivations of live programming: continuous feedback about the dynamic behavior of the 
 program can help confirm the mental model 
 that the programmer has developed (in this case, regarding the behavior of \li{map}), and also help quickly dispel 
-inconsistencies between the programmer's expectations and the 
+misconceptions about the 
 actual behavior of the program (in this case, the magnitude of the arithmetic expressions being computed).
 
 % The result itself is not the only live feedback that \Hazel reports to the programmer.
 % Programmers also keep track of the names and types of the variables that are in scope at the cursor. 
 Going further, \Hazel helps programmers reason about the dynamic behavior of expressions bound to variables in scope at a hole via the \emph{live context inspector}, normally displayed  as a sidebar but shown disembodied in three different states in Fig.~\ref{fig:grades-sidebar}. 
 In all three states, the live context inspector displays the names and types of the variables that are in scope, as is a common feature of programming environments. 
-New to our approach are the values associated with bindings, which come from the environment associated with the selected hole instance in the result. In this case, there are three instances of hole \li{1} in the result, numbered sequentially: \li{1:1}, \li{1:2} and \li{1:3}, arising from the three calls to \li{weighted_averages}. 
-% An environment is a partial mapping of variables in scope to values. 
+New to our approach are the values associated with bindings, which come from the environment associated with the selected hole instance in the result. 
 We call a hole instance paired with an  environment a \emph{hole closure}, by analogy to function closures (and also due to the logical connection detailed in Sec.~\ref{sec:calculus}). 
-The programmer can select different closures by clicking on a hole instance in the result (the first instance, \li{1:1}, is selected by default, as indicated by the purple outline), or cycle through all of the closures for the hole at the cursor by clicking the arrows, e.g. $\blacktriangleright$, at the bottom of the context inspector or using hotkeys.
+In this case, there are three instances of hole \li{1} in the result, numbered sequentially: \li{1:1}, \li{1:2} and \li{1:3}, arising from the three calls to \li{weighted_averages}. 
+% An environment is a partial mapping of variables in scope to values. 
+The programmer can select different closures by clicking on a hole instance in the result (the first instance, \li{1:1}, is selected by default, as indicated by the purple outline), or cycle through all of the closures for the hole at the cursor by clicking the arrows, e.g. $\blacktriangleright$, or using hotkeys.
 
 \vspace{-4px}
 \subsection{Example 2: Recursive Functions}\label{sec:qsort1}\label{sec:paths}
