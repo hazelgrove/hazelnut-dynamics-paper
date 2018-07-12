@@ -5,21 +5,32 @@
 \label{sec:relatedWork}
 \vspace{-2px}
 
-This paper defined a dynamic semantics for incomplete functional programs
-based directly on the static semantics developed by \citet{popl-paper}. That paper, as well as a subsequent ``vision paper'' introducing \Hazel, suggested as future work  
+This paper defined a dynamic semantics for incomplete functional programs,
+building on the static semantics developed by \citet{popl-paper}. That paper, as well as a subsequent ``vision paper'' introducing \Hazel, suggested as future work  
 a corresponding dynamic semantics for the purposes of live programming \cite{HazelnutSNAPL}. 
 This paper    
 develops the conceptual and type-theoretic details necessary to achieve this broader vision.
 
+\parahead{Gradual Type Theory}
+
 The semantics borrows machinery related to type holes from gradual type theory \cite{Siek06a,DBLP:conf/snapl/SiekVCB15}, as discussed
 at length in Sec.~\ref{sec:calculus}. The main innovation relative to this
 prior work is the treatment of cast failures as holes, rather than errors.
-Many of the methods developed to make gradual typing more expressive and practical are directly relevant to future directions for \Hazel and other implementations of the ideas herein \cite{takikawa_et_al:LIPIcs:2015:5215}. For example, there has been substantial work on the problem of implementing casts efficiently, e.g. by \citet{herman2010space}, and on integrating gradual typing with polymorphism \cite{DBLP:conf/esop/XieBO18,Igarashi:2017:PGT:3136534.3110284}, and with refinement types \cite{DBLP:conf/popl/LehmannT17}. Another direction that we leave to future work is the integration of these ideas into dependently typed proof assistants, 
+Many of the methods developed to make gradual typing more expressive and practical are directly relevant to future directions for \Hazel and other implementations of the ideas herein \cite{takikawa_et_al:LIPIcs:2015:5215}. For example, there has been substantial work on the problem of implementing casts efficiently \cite{herman2010space,siek2010threesomes,garcia2013threesomes}, and on integrating gradual typing with polymorphism \cite{DBLP:conf/esop/XieBO18,Igarashi:2017:PGT:3136534.3110284}, and with refinement types \cite{DBLP:conf/popl/LehmannT17}. Another direction that we leave to future work is the integration of these ideas into dependently typed proof assistants, 
 where evaluation is at the service of equational reasoning \cite{DBLP:journals/corr/abs-1009-2789}. Several modern proof assistants, e.g. Agda \cite{norell2009dependently,norell:thesis}, Idris \cite{brady2013idris} and Beluga \cite{DBLP:conf/flops/Pientka10} already provide initial syntactic and static support for holes (see Sec.~\ref{sec:intro}).
 
-Although our expectation is that \Hazel will remain a pure functional language \emph{a la} \Elm~or Haskell, another interesting future direction would be to move beyond
-pure functional programming and carefully integrate imperative features, e.g. ML-style references. These require particular care, as recognized by \citet{Siek06a} and \citet{DBLP:conf/esop/SiekVCTG15}, but the techniques are known and we see no reason why the type safety properties  established in this paper would not be conserved, with suitable modifications to account for a store. Going beyond references to incorporate external effects, e.g. IO effects, raises some important practical concerns, however---we do not want to continue past a hole or error and in so doing haphazardly trigger an unintended effect. In this setting, it is likely better to explicitly ask the programmer whether to continue evaluation past a hole or cast failure. More generally, the small step specification in this paper is suitable as the basis for a single stepper, which generalizes evaluation. \citet{ocaml-stepper} discuss some unresolved usability issues relevant to single steppers for functional languages. Note also that the commutativity property we establish in Sec.~\ref{sec:resumption} will not hold for a language that supports non-commutative effects. We leave to future work the task of defining more restricted special cases of commutativity in effectful settings.
+%% Although our expectation is that \Hazel will remain a pure functional language \emph{a la} \Elm~or Haskell,
+%
+Another interesting future direction would be to move beyond
+pure functional programming and carefully integrate imperative features, e.g. ML-style references.
+%
+%% These require particular care, as recognized by \citet{Siek06a} and \citet{DBLP:conf/esop/SiekVCTG15}, but the techniques are known and we see no reason why the type safety properties  established in this paper would not be conserved, with suitable modifications to account for a store.
+%
+\citet{Siek06a} and \citet{DBLP:conf/esop/SiekVCTG15} have shown how to incorporate such features into gradual type theory; we expect that the type safety properties established in this paper should also be conserved, with suitable modifications to account for a store.
+%
+Going beyond references to incorporate external effects, e.g. IO effects, raises some important practical concerns, however---we do not want to continue past a hole or error and in so doing haphazardly trigger an unintended effect. In this setting, it is likely better to explicitly ask the programmer whether to continue evaluation past a hole or cast failure. More generally, the small step specification in this paper is suitable as the basis for a single stepper, which generalizes evaluation. \citet{ocaml-stepper} discuss some unresolved usability issues relevant to single steppers for functional languages. Note also that the commutativity property we establish in Sec.~\ref{sec:resumption} will not hold for a language that supports non-commutative effects. We leave to future work the task of defining more restricted special cases of commutativity in effectful settings.
 
+\parahead{Contextual Modal Type Theory}
 
 The other major pillar of related work is the work on contextual modal type theory (CMTT) by \citet{Nanevski2008}, which we also discussed at length throughout the paper. To reiterate, there is a close relationship between expression holes in this paper and metavariables in CMTT. Hole contexts correspond to modal contexts.
 Empty hole closures 
@@ -27,7 +38,11 @@ relate to the concept of a {metavariable closure} in CMTT, which consists
 of a metavariable paired with a substitution for all of the variables in the
 typing context associated with that metavariable. Hole filling relates to contextual substitution. 
 
-Although these connections with gradual typing and CMTT are encouraging, our contributions do not neatly fall out from this prior work. The problem is first that \citet{Nanevski2008} defined only the logical reductions for CMTT, viewing it as a proof system for intuitionistic contextual modal logic via the propositions-as-types (Curry-Howard) principle. 
+%% Although these connections with gradual typing and CMTT are encouraging, our contributions do not neatly fall out from this prior work.
+%
+These connections with gradual typing and CMTT are instructive, but our contributions do not neatly fall out from this prior work.
+%
+The problem is first that \citet{Nanevski2008} defined only the logical reductions for CMTT, viewing it as a proof system for intuitionistic contextual modal logic via the propositions-as-types (Curry-Howard) principle. 
 The paper therefore proved only a subject reduction property (which is closely related to type preservation). 
 This is not a full dynamic semantics, and in particular, there is no notion of \emph{progress}, i.e. that well-typed terms cannot get ``stuck'' in an undefined state \cite{wright94:_type_soundness}. 
 In any case, a conventional dynamic semantics for CMTT would not be immediately relevant to our goal of evaluating incomplete programs because, by our interpretation of hole closures, we would need a dynamic semantics for terms with free metavariables (and, of course, with casts, i.e. \emph{gradual contextual modal type theory}).
@@ -70,7 +85,7 @@ Each applied hole filling serves as a boundary between dynamic
 \emph{edit stages}.
 %
 This contextual modal interpretation of live staged hole refinement
-nicely mirrors the modal interpretation of staged argument evaluation
+mirrors the modal interpretation of staged argument evaluation
 \cite{Davies:2001op}. 
 %
 This parallel neatly explains
@@ -82,7 +97,9 @@ function \cite{Jones:1993uq}, whereas holes have non-trivial contexts.
 There are various other systems similar in certain ways to CMTT in 
 that they consider the problem of reasoning about metavariables. 
 For example, McBride's OLEG is another system for reasoning contextually about metavariables
-\cite{DBLP:phd/ethos/McBride00}, and it is the conceptual basis of certain hole refinement features in Idris \cite{brady2013idris}. \citet{DBLP:conf/csl/GeuversJ02} discuss similar ideas. CMTT is unique relative to prior approaches in that it has a clear Curry-Howard interpretation and that it was designed with commutativity properties in mind. This paper bears out that it is nicely suited for the purpose of live functional programming with typed expression holes.
+\cite{DBLP:phd/ethos/McBride00}, and it is the conceptual basis of certain hole refinement features in Idris \cite{brady2013idris}. \citet{DBLP:conf/csl/GeuversJ02} discuss similar ideas. CMTT is unique relative to prior approaches in that it has a clear Curry-Howard interpretation and that it was designed with commutativity properties in mind.
+%
+This paper bears out that it is also well-suited for the purpose of live functional programming with typed expression holes.
 
 Work on explicit substitutions confronts problems similar to the problem of tracking the environment around a closure using delayed substitutions \cite{Abadi:1991fr,levy1999explicit,Abadi:1990ys}.  \citet{DBLP:journals/corr/abs-1009-2789} have developed a theory of explicit substitutions for CMTT, which, following other work on explicit substitutions and environmental abstract machines \cite{DBLP:journals/tcs/Curien91}, would be useful in implementing \HazelnutLive more efficiently by delaying both standard and contextual substitutions until needed during evaluation. We leave this and other questions of fast implementation (e.g. using thunks to encapsulate indeterminate sub-expressions) to future work. 
 
@@ -107,7 +124,7 @@ Work on explicit substitutions confronts problems similar to the problem of trac
 	% \item papers that show up in a search for ``typed holes'' -- \url{https://scholar.google.com/scholar?hl=en&as_sdt=0%2C39&q=%22typed+holes%22&btnG=}
 % \end{itemize}
 
-% \parahead{Structure Editor Calculus}
+\parahead{Debuggers}
 
 Our approach is reminiscent of the workflow that debuggers make available using breakpoints \cite{fitzgerald2008debugging,DBLP:journals/jfp/TolmachA95}, visualizers of program state \cite{Nelson2017,Guo13}, and a variety of logging and tracing capabilities.
 %
@@ -115,6 +132,8 @@ Debuggers do not directly support incomplete programs, so the programmer first n
 %
 Beyond that, there are two main distinctions. First, evaluation does not stop at each breakpoint and so it is straightforward to explore the \emph{space} of values that a variable takes. Second, breakpoints, logs and tracing tools convey the values of a variable at a position in the evaluation trace. Hole closures, on the other hand, convey information from a syntactic position in the \emph{result} of evaluation. The result is, by nature, a simpler object. %  These approaches are fundamentally complementary in that standard debugging facilities are useful even when there are no holes in the program whereas our focus has been on incomplete programs. 
 Some debuggers support ``edit-and-continue'', e.g. Visual Studio \cite{VSEditAndContinue} and Flutter \cite{flutter}, based on the dynamic software update (DSU) capabilities of the underlying run-time system \cite{DBLP:journals/toplas/StoyleHBSN07,DBLP:conf/vstte/HaydenMHFF12,DBLP:journals/toplas/HicksN05}. These features do not come with any guarantee that rerunning the program will produce the same result. The ``fill-and-resume'' feature described in Sec.~\ref{sec:resumption} is a special case that comes with this stronger guarantee.
+
+\parahead{Structure Editors}
 
 Holes play a prominent role in structure editors, and indeed the prior work on \Hazelnut was primarily motivated by this application \cite{popl-paper}. 
 Most work on structure editors has focused on the user interfaces that they
@@ -159,6 +178,8 @@ that our proposed contributions will be relevant no matter how holes come to app
 %   \item maybe other things, e.g. several papers by ron garcia
 % \end{itemize}
 
+\parahead{Type Error Messages}
+
 A key feature of our semantics is that it permits evaluation not only of terms with empty holes, but also terms with non-empty holes, i.e. reified static type inconsistencies. 
 Understanding and debugging static type errors is notoriously difficult,
 particularly for novices.
@@ -174,6 +195,8 @@ trace to the user as a graph.
 \HazelnutLive{} has similar motivations in that it can run programs with static or dynamic type errors  and provide meaningful feedback about where ill-typed terms end up in the program, even after the first problem is encountered (Sec.~\ref{sec:static-errors}-\ref{sec:dynamic-type-errors}). However, no attempt is made to synthesize examples that do not already appear in the program. 
 %
 Combining the strengths of these approaches may be fruitful in the future. 
+
+\parahead{Program Synthesis and Slicing}
 
 Expression holes also often appear in the context of program synthesis, serving as
 placeholders in \emph{templates}~\cite{srivastava2013template} or
