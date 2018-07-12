@@ -107,7 +107,7 @@ module canonical-indeterminate-forms where
                                        d indet →
                                        cif-arr Δ d τ1 τ2
   canonical-indeterminate-forms-arr (TAVar x₁) ()
-  canonical-indeterminate-forms-arr (TALam wt) ()
+  canonical-indeterminate-forms-arr (TALam _ wt) ()
   canonical-indeterminate-forms-arr (TAAp wt wt₁) (IAp x ind x₁) = CIFAAp (_ , _ , _ , _ , _ , refl , wt , wt₁ , ind , x₁ , x)
   canonical-indeterminate-forms-arr (TAEHole x x₁) IEHole = CIFAEHole (_ , _ , _ , refl , x)
   canonical-indeterminate-forms-arr (TANEHole x wt x₁) (INEHole x₂) = CIFANEHole (_ , _ , _ , _ , _ , refl , x₂ , wt , x)
@@ -153,7 +153,7 @@ module canonical-indeterminate-forms where
                                        cif-hole Δ d
   canonical-indeterminate-forms-hole (TAVar x₁) ()
   canonical-indeterminate-forms-hole (TAAp wt wt₁) (IAp x ind x₁) = CIFHAp (_ , _ , _ , refl , wt , wt₁ , ind , x₁ , x)
-  canonical-indeterminate-forms-hole (TAEHole x x₁) IEHole = CIFHEHole (_ , _ , _ , refl , x) -- todo: this doesn't export x₁
+  canonical-indeterminate-forms-hole (TAEHole x x₁) IEHole = CIFHEHole (_ , _ , _ , refl , x)
   canonical-indeterminate-forms-hole (TANEHole x wt x₁) (INEHole x₂) = CIFHNEHole (_ , _ , _ , _ , _ , refl , x₂ , wt , x )
   canonical-indeterminate-forms-hole (TACast wt x) (ICastGroundHole x₁ ind) = CIFHCast (_ , _ , refl , x₁ , ind)
   canonical-indeterminate-forms-hole (TACast wt x) (ICastHoleGround x₁ ind ())
@@ -168,7 +168,7 @@ module canonical-indeterminate-forms where
                                            ⊥
   canonical-indeterminate-forms-coverage TAConst () nb na nh
   canonical-indeterminate-forms-coverage (TAVar x₁) () nb na nh
-  canonical-indeterminate-forms-coverage (TALam wt) () nb na nh
+  canonical-indeterminate-forms-coverage (TALam _ wt) () nb na nh
   canonical-indeterminate-forms-coverage {τ = b} (TAAp wt wt₁) (IAp x ind x₁) nb na nh = nb refl
   canonical-indeterminate-forms-coverage {τ = ⦇⦈} (TAAp wt wt₁) (IAp x ind x₁) nb na nh = nh refl
   canonical-indeterminate-forms-coverage {τ = τ ==> τ₁} (TAAp wt wt₁) (IAp x ind x₁) nb na nh = na τ τ₁ refl

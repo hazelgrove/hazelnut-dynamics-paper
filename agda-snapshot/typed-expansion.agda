@@ -4,8 +4,10 @@ open import List
 open import core
 open import contexts
 open import lemmas-consistency
+open import lemmas-disjointness
 
 open import structural-assumptions
+open import structural
 
 module typed-expansion where
   lem : (Γ : tctx) (x : Nat) → (((id Γ) x) == Some (X x) × (Σ[ τ ∈ htyp ]((Γ x) == Some τ)))
@@ -29,14 +31,14 @@ module typed-expansion where
                             Δ , Γ ⊢ d :: τ
     typed-expansion-synth ESConst = TAConst
     typed-expansion-synth (ESVar x₁) = TAVar x₁
-    typed-expansion-synth (ESLam x₁ ex) = TALam (typed-expansion-synth ex)
+    typed-expansion-synth (ESLam x₁ ex) = TALam x₁ (typed-expansion-synth ex)
     typed-expansion-synth (ESAp {Δ1 = Δ1} _ d x₁ x₂ x₃ x₄)
       with typed-expansion-ana x₃ | typed-expansion-ana x₄
     ... | con1 , ih1 | con2 , ih2  = TAAp (TACast (lem-weakenΔ1 d ih1) con1) (TACast (lem-weakenΔ2 {Δ1 = Δ1} d ih2) con2)
-    typed-expansion-synth (ESEHole {Γ = Γ} {u = u})  = TAEHole (x∈sing ∅ u (Γ , ⦇⦈)) idsub
-    typed-expansion-synth (ESNEHole {Γ = Γ} {τ = τ} {u = u} {Δ = Δ} new ex)
+    typed-expansion-synth (ESEHole {Γ = Γ} {u = u})  = TAEHole (ctx-top ∅ u (Γ , ⦇⦈) refl) idsub
+    typed-expansion-synth (ESNEHole {Γ = Γ} {τ = τ} {u = u} {Δ = Δ} (d1 , d2) ex)
       with typed-expansion-synth ex
-    ... | ih1 = TANEHole {Δ = Δ ,, (u , Γ , ⦇⦈)} (x∈sing Δ u (Γ , ⦇⦈)) (lem-weakenΔ1 new ih1) idsub
+    ... | ih1 = TANEHole {Δ = Δ ,, (u , Γ , ⦇⦈)} (ctx-top Δ u (Γ , ⦇⦈) (d2 u (lem-domsingle _ _))) (lem-weakenΔ1 (d1 , d2) ih1) idsub
     typed-expansion-synth (ESAsc x)
       with typed-expansion-ana x
     ... | con , ih = TACast ih con
@@ -46,12 +48,12 @@ module typed-expansion where
                           (τ' ~ τ) × (Δ , Γ ⊢ d :: τ')
     typed-expansion-ana (EALam x₁ MAHole ex)
       with typed-expansion-ana ex
-    ... | con , D = TCHole1 , TALam D
+    ... | con , D = TCHole1 , TALam x₁ D
     typed-expansion-ana (EALam x₁ MAArr ex)
       with typed-expansion-ana ex
-    ... | con , D = TCArr TCRefl con , TALam D
+    ... | con , D = TCArr TCRefl con , TALam x₁ D
     typed-expansion-ana (EASubsume x x₁ x₂ x₃) = ~sym x₃ , typed-expansion-synth x₂
-    typed-expansion-ana (EAEHole {Γ = Γ} {u = u}) = TCRefl , TAEHole (x∈sing ∅ u (Γ , _)) idsub
-    typed-expansion-ana (EANEHole {Γ = Γ} {u = u} {τ = τ} {Δ = Δ} new x)
+    typed-expansion-ana (EAEHole {Γ = Γ} {u = u}) = TCRefl , TAEHole (ctx-top ∅ u (Γ , _) refl) idsub
+    typed-expansion-ana (EANEHole {Γ = Γ} {u = u} {τ = τ} {Δ = Δ} (d1 , d2) x)
       with typed-expansion-synth x
-    ... | ih1 = TCRefl , TANEHole {Δ = Δ ,, (u , Γ , τ)} (x∈sing Δ u (Γ , τ)) (lem-weakenΔ1 new ih1) idsub
+    ... | ih1 = TCRefl , TANEHole {Δ = Δ ,, (u , Γ , τ)} (ctx-top Δ u (Γ , τ) (d2 u (lem-domsingle _ _)) ) (lem-weakenΔ1 (d1 , d2) ih1) idsub

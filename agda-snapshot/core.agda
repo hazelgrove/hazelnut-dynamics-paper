@@ -75,19 +75,52 @@ module core where
   hctx : Set
   hctx = (htyp ctx × htyp) ctx
 
-  -- todo: this probably belongs in contexts, but need to abstract it.
+  -- the identity substition with respect to a type context
   id : tctx → subst
   id ctx x with ctx x
   id ctx x | Some τ = Some (X x)
   id ctx x | None   = None
 
-  -- this is just fancy notation to match the paper
+  -- this is just fancy notation for a triple to match the CMTT syntax
   _::[_]_ : Nat → tctx → htyp → (Nat × (tctx × htyp))
   u ::[ Γ ] τ = u , (Γ , τ)
 
-  postulate
-    holes-disjoint : hexp → hexp → Set
-    hole-name-new  : hexp → Nat → Set
+  -- defines when a name for a hole does not yet appear in a term
+  data hole-name-new : (e : hexp) (u : Nat) → Set where
+    HNConst : ∀{u} → hole-name-new c u
+    HNAsc : ∀{e τ u} →
+            hole-name-new e u →
+            hole-name-new (e ·: τ) u
+    HNVar : ∀{x u} → hole-name-new (X x) u
+    HNLam1 : ∀{x e u} →
+             hole-name-new e u →
+             hole-name-new (·λ x e) u
+    HNLam2 : ∀{x e u τ} →
+             hole-name-new e u →
+             hole-name-new (·λ x [ τ ] e) u
+    HNHole : ∀{u u'} →
+             u' ≠ u →
+             hole-name-new (⦇⦈[ u' ]) u
+    HNNEHole : ∀{u u' e} →
+               u' ≠ u →
+               hole-name-new e u →
+               hole-name-new (⦇ e ⦈[ u' ]) u
+    HNAp : ∀{ u e1 e2 } →
+           hole-name-new e1 u →
+           hole-name-new e2 u →
+           hole-name-new (e1 ∘ e2) u
+
+  -- describes when the collection of hole names used in two terms do
+  -- not overlap
+  data holes-disjoint : (e1 : hexp) → (e2 : hexp) → Set where
+    HDConst : ∀{e} → holes-disjoint c e
+    HDAsc : ∀{e1 e2 τ} → holes-disjoint e1 e2 → holes-disjoint (e1 ·: τ) e2
+    HDVar : ∀{x e} → holes-disjoint (X x) e
+    HDLam1 : ∀{x e1 e2} → holes-disjoint e1 e2 → holes-disjoint (·λ x e1) e2
+    HDLam2 : ∀{x e1 e2 τ} → holes-disjoint e1 e2 → holes-disjoint (·λ x [ τ ] e1) e2
+    HDHole : ∀{u e2} → hole-name-new e2 u → holes-disjoint (⦇⦈[ u ]) e2
+    HDNEHole : ∀{u e1 e2} → hole-name-new e2 u → holes-disjoint e1 e2 → holes-disjoint (⦇ e1 ⦈[ u ]) e2
+    HDAp :  ∀{e1 e2 e3} → holes-disjoint e1 e3 → holes-disjoint e2 e3 → holes-disjoint (e1 ∘ e2) e3
 
   -- bidirectional type checking judgements for hexp
   mutual
@@ -101,7 +134,7 @@ module core where
                  (n , τ) ∈ Γ →
                  Γ ⊢ X n => τ
       SAp     : {Γ : tctx} {e1 e2 : hexp} {τ τ1 τ2 : htyp} →
-                 holes-disjoint e1 e2 → -- need a premise that the hole names are disjoint and something to relate that to the dom(Δ)s in expansion
+                 holes-disjoint e1 e2 →
                  Γ ⊢ e1 => τ1 →
                  τ1 ▸arr τ2 ==> τ →
                  Γ ⊢ e2 <= τ2 →
@@ -109,7 +142,7 @@ module core where
       SEHole  : {Γ : tctx} {u : Nat} → Γ ⊢ ⦇⦈[ u ] => ⦇⦈
       SNEHole : {Γ : tctx} {e : hexp} {τ : htyp} {u : Nat} →
                  hole-name-new e u →
-                 Γ ⊢ e => τ →   -- premise here that u is disjoint from hole names of e
+                 Γ ⊢ e => τ →
                  Γ ⊢ ⦇ e ⦈[ u ] => ⦇⦈
       SLam    : {Γ : tctx} {e : hexp} {τ1 τ2 : htyp} {x : Nat} →
                  x # Γ →
@@ -153,6 +186,16 @@ module core where
   _gcomplete : tctx → Set
   Γ gcomplete = (x : Nat) (τ : htyp) → (x , τ) ∈ Γ → τ tcomplete
 
+  -- those d for which every cast inside is the identity cast and there are
+  -- no failed casts
+  data cast-id : dhexp → Set where
+    CIConst  : cast-id c
+    CIVar    : ∀{x} → cast-id (X x)
+    CILam    : ∀{x τ d} → cast-id d → cast-id (·λ x [ τ ] d)
+    CIHole   : ∀{u} → cast-id (⦇⦈⟨ u ⟩)
+    CINEHole : ∀{d u} → cast-id d → cast-id (⦇ d ⦈⟨ u ⟩)
+    CIAp     : ∀{d1 d2} → cast-id d1 → cast-id d2 → cast-id (d1 ∘ d2)
+    CICast   : ∀{d τ} → cast-id d → cast-id (d ⟨ τ ⇒ τ ⟩)
 
   -- expansion
   mutual
@@ -161,7 +204,7 @@ module core where
       ESVar   : ∀{Γ x τ} → (x , τ) ∈ Γ →
                          Γ ⊢ X x ⇒ τ ~> X x ⊣ ∅
       ESLam   : ∀{Γ x τ1 τ2 e d Δ } →
-                     (x # Γ) → -- todo: i added this
+                     (x # Γ) →
                      (Γ ,, (x , τ1)) ⊢ e ⇒ τ2 ~> d ⊣ Δ →
                       Γ ⊢ ·λ x [ τ1 ] e ⇒ (τ1 ==> τ2) ~> ·λ x [ τ1 ] d ⊣ Δ
       ESAp : ∀{Γ e1 τ τ1 τ1' τ2 τ2' d1 Δ1 e2 d2 Δ2 } →
@@ -218,6 +261,7 @@ module core where
       TAConst : ∀{Δ Γ} → Δ , Γ ⊢ c :: b
       TAVar : ∀{Δ Γ x τ} → (x , τ) ∈ Γ → Δ , Γ ⊢ X x :: τ
       TALam : ∀{ Δ Γ x τ1 d τ2} →
+              x # Γ →
               Δ , (Γ ,, (x , τ1)) ⊢ d :: τ2 →
               Δ , Γ ⊢ ·λ x [ τ1 ] d :: (τ1 ==> τ2)
       TAAp : ∀{ Δ Γ d1 d2 τ1 τ} →
@@ -244,25 +288,30 @@ module core where
              τ1 ≠ τ2 →
              Δ , Γ ⊢ d ⟨ τ1 ⇒⦇⦈⇏ τ2 ⟩ :: τ2
 
-  -- substitution;; todo: maybe get a premise that it's final; analagous to "value substitution"
+  -- substitution
+  --
+  -- todo: if substitution lemma is hard to prove, maybe get a premise that
+  -- it's final; analagous to "value substitution". or define it
+  -- judgementally instead of as a function.
   [_/_]_ : dhexp → Nat → dhexp → dhexp
   [ d / y ] c = c
   [ d / y ] X x
     with natEQ x y
   [ d / y ] X .y | Inl refl = d
   [ d / y ] X x  | Inr neq = X x
-  [ d / y ] (·λ x [ x₁ ] d') = ·λ x [ x₁ ] ( [ d / y ] d') -- TODO: i *think* barendrecht's saves us here, or at least i want it to. may need to reformulat this as a relation --> set
+  [ d / y ] (·λ x [ x₁ ] d') = ·λ x [ x₁ ] ( [ d / y ] d')
   [ d / y ] ⦇⦈⟨ u , σ ⟩ = ⦇⦈⟨ u , σ ⟩
   [ d / y ] ⦇ d' ⦈⟨ u , σ  ⟩ =  ⦇ [ d / y ] d' ⦈⟨ u , σ ⟩
   [ d / y ] (d1 ∘ d2) = ([ d / y ] d1) ∘ ([ d / y ] d2)
   [ d / y ] (d' ⟨ τ1 ⇒ τ2 ⟩ ) = ([ d / y ] d') ⟨ τ1 ⇒ τ2 ⟩
   [ d / y ] (d' ⟨ τ1 ⇒⦇⦈⇏ τ2 ⟩ ) = ([ d / y ] d') ⟨ τ1 ⇒⦇⦈⇏ τ2 ⟩
 
-  -- value
+  -- values
   data _val : (d : dhexp) → Set where
     VConst : c val
     VLam   : ∀{x τ d} → (·λ x [ τ ] d) val
 
+  -- boxed values
   data _boxedval : (d : dhexp) → Set where
     BVVal : ∀{d} → d val → d boxedval
     BVArrCast : ∀{ d τ1 τ2 τ3 τ4 } →
@@ -272,7 +321,7 @@ module core where
     BVHoleCast : ∀{ τ d } → τ ground → d boxedval → d ⟨ τ ⇒ ⦇⦈ ⟩ boxedval
 
   mutual
-    -- indeterminate
+    -- indeterminate forms
     data _indet : (d : dhexp) → Set where
       IEHole : ∀{u σ} → ⦇⦈⟨ u , σ ⟩ indet
       INEHole : ∀{d u σ} → d final → ⦇ d ⦈⟨ u , σ ⟩ indet
@@ -301,10 +350,10 @@ module core where
                     τ1 ≠ τ2 →
                     d ⟨ τ1 ⇒⦇⦈⇏ τ2 ⟩ indet
 
-    -- final
+    -- final expressions
     data _final : (d : dhexp) → Set where
       FBoxed : ∀{d} → d boxedval → d final
-      FIndet : ∀{d} → d indet → d final
+      FIndet : ∀{d} → d indet    → d final
 
 
   -- contextual dynamics
@@ -318,23 +367,21 @@ module core where
     _⟨_⇒_⟩ : ectx → htyp → htyp → ectx
     _⟨_⇒⦇⦈⇏_⟩ : ectx → htyp → htyp → ectx
 
- -- todo/ note: this judgement is redundant now; in the absence of the
- -- premises in the red brackets in the notes PDF, all syntactically well
- -- formed ectxs are valid; with finality premises, that's not true. so it
- -- might make sense to remove this judgement entirely, but need to make
- -- sure to describe why we don't have the redbox things and how we'd patch
- -- it up if we wanted to force a particular evaluation order in some
- -- document somewhere (probably a README for this repo, or a sentence in
- -- the paper text or both)
+  -- note: this judgement is redundant: in the absence of the premises in
+  -- the red brackets, all syntactically well formed ectxs are valid. with
+  -- finality premises, that's not true, and that would propagate through
+  -- additions to the calculus. so we leave it here for clarity but note
+  -- that, as written, in any use case its either trival to prove or
+  -- provides no additional information
 
- --ε is an evaluation context
+   --ε is an evaluation context
   data _evalctx : (ε : ectx) → Set where
     ECDot : ⊙ evalctx
     ECAp1 : ∀{d ε} →
             ε evalctx →
             (ε ∘₁ d) evalctx
     ECAp2 : ∀{d ε} →
-            -- d final → -- red box
+            -- d final → -- red brackets
             ε evalctx →
             (d ∘₂ ε) evalctx
     ECNEHole : ∀{ε u σ} →
@@ -354,7 +401,7 @@ module core where
            d1 == ε ⟦ d1' ⟧ →
            (d1 ∘ d2) == (ε ∘₁ d2) ⟦ d1' ⟧
     FHAp2 : ∀{d1 d2 d2' ε} →
-           -- d1 final → -- red box
+           -- d1 final → -- red brackets
            d2 == ε ⟦ d2' ⟧ →
            (d1 ∘ d2) == (d1 ∘₂ ε) ⟦ d2' ⟧
     FHNEHole : ∀{ d d' ε u σ} →
@@ -367,6 +414,7 @@ module core where
             d == ε ⟦ d' ⟧ →
             (d ⟨ τ1 ⇒⦇⦈⇏ τ2 ⟩) == (ε ⟨ τ1 ⇒⦇⦈⇏ τ2 ⟩) ⟦ d' ⟧
 
+  -- matched ground types
   data _▸gnd_ : htyp → htyp → Set where
     MGArr : ∀{τ1 τ2} →
             (τ1 ==> τ2) ≠ (⦇⦈ ==> ⦇⦈) →
@@ -375,34 +423,35 @@ module core where
   -- instruction transition judgement
   data _→>_ : (d d' : dhexp) → Set where
     ITLam : ∀{ x τ d1 d2 } →
-            -- d2 final → -- red box
+            -- d2 final → -- red brackets
             ((·λ x [ τ ] d1) ∘ d2) →> ([ d2 / x ] d1)
     ITCastID : ∀{d τ } →
-               -- d final → -- red box
+               -- d final → -- red brackets
                (d ⟨ τ ⇒ τ ⟩) →> d
     ITCastSucceed : ∀{d τ } →
-                    -- d final → -- red box
+                    -- d final → -- red brackets
                     τ ground →
                     (d ⟨ τ ⇒ ⦇⦈ ⇒ τ ⟩) →> d
     ITCastFail : ∀{ d τ1 τ2} →
-                 -- d final → -- red box
+                 -- d final → -- red brackets
                  τ1 ground →
                  τ2 ground →
                  τ1 ≠ τ2 →
                  (d ⟨ τ1 ⇒ ⦇⦈ ⇒ τ2 ⟩) →> (d ⟨ τ1 ⇒⦇⦈⇏ τ2 ⟩)
     ITApCast : ∀{d1 d2 τ1 τ2 τ1' τ2' } →
-               -- d1 final → -- red box
-               -- d2 final → -- red box
+               -- d1 final → -- red brackets
+               -- d2 final → -- red brackets
                ((d1 ⟨ (τ1 ==> τ2) ⇒ (τ1' ==> τ2')⟩) ∘ d2) →> ((d1 ∘ (d2 ⟨ τ1' ⇒ τ1 ⟩)) ⟨ τ2 ⇒ τ2' ⟩)
     ITGround : ∀{ d τ τ'} →
-               -- d final → -- red box
+               -- d final → -- red brackets
                τ ▸gnd τ' →
                (d ⟨ τ ⇒ ⦇⦈ ⟩) →> (d ⟨ τ ⇒ τ' ⇒ ⦇⦈ ⟩)
     ITExpand : ∀{d τ τ' } →
-               -- d final → -- red box
+               -- d final → -- red brackets
                τ ▸gnd τ' →
                (d ⟨ ⦇⦈ ⇒ τ ⟩) →> (d ⟨ ⦇⦈ ⇒ τ' ⇒ τ ⟩)
 
+  -- single step (in contextual evaluation sense)
   data _↦_ : (d d' : dhexp) → Set where
     Step : ∀{ d d0 d' d0' ε} →
            d == ε ⟦ d0 ⟧ →
@@ -410,6 +459,7 @@ module core where
            d' == ε ⟦ d0' ⟧ →
            d ↦ d'
 
+  -- reflexive transitive closure of single steps into multi steps
   data _↦*_ : (d d' : dhexp) → Set where
     MSRefl : ∀{d} → d ↦* d
     MSStep : ∀{d d' d''} →
@@ -432,7 +482,11 @@ module core where
   -- apply σ (d ⟨ τ1 ⇒ τ2 ⟩) = ((apply σ d) ⟨ τ1 ⇒ τ2 ⟩)
   -- apply σ (d ⟨ τ1 ⇒⦇⦈⇏ τ2 ⟩) = ((apply σ d) ⟨ τ1 ⇒⦇⦈⇏ τ2 ⟩)
 
-  --hole instantiation; todo: judgemental or functional?
+  -- hole instantiation
+  --
+  -- todo: as with substition, it may make sense to make this judgemental
+  -- rather than a metafunction. this probably also depends on how we solve
+  -- the problem with definition apply, above.
   ⟦_/_⟧_ : dhexp → Nat → dhexp → dhexp
   ⟦ d / u ⟧ c = c
   ⟦ d / u ⟧ X x = X x
