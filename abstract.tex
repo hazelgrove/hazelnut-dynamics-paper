@@ -13,7 +13,7 @@ with continuous feedback about a program's dynamic behavior as it is being edite
 The problem is that programming languages typically assign dynamic meaning only 
  to programs that are \emph{complete}, i.e. syntactically well-formed and free
 of type errors. Consequently,    
-live feedback presented to the programmer has gaps, i.e. it flickers in and out or it goes stale whenever the program becomes incomplete. 
+live feedback presented to the programmer has temporal or perceptive gaps, i.e. it flickers in and out or it goes stale whenever the program becomes incomplete. 
 % In some cases, these gaps persist over a substantial length of time.
 %
 % Defining a semantics for incomplete functional programs would help bridge the
@@ -24,7 +24,7 @@ live feedback presented to the programmer has gaps, i.e. it flickers in and out 
 %% PAR 2: This paper's approach: New (dynamic) semantics for incomplete programs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This paper confronts this \emph{gap problem} from type-theoretic first principles by developing 
+This paper confronts this ``{gap problem}'' from type-theoretic first principles by developing 
 \emph{a dynamic semantics for incomplete functional programs}, 
 starting from the static semantics for incomplete functional programs
 developed by \citet{popl-paper}. 
@@ -43,7 +43,7 @@ avoids the need to restart evaluation after edits that amount to hole filling.
 Formally, the semantics borrows machinery from both gradual type theory (to handle
 type holes) and contextual modal type theory (which provides a
 logical basis for tracking hole closures), combining these and developing additional machinery necessary 
-to continue evaluation past the hole forms in a manner that admits important metatheoretic properties. 
+to continue evaluation past holes while maintaining important metatheoretic properties. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% PAR 3: We have an implementation, and have proofs

@@ -18,9 +18,9 @@ However, the program is incomplete because the teacher has not yet completed the
 Thusfar in the body of \lismall{weighted_average}, the teacher has decomposed the function argument into variables by record destructuring, then multiplied the homework grade, \li{hw}, by \li{30.0} and finally inserted the \li{+} operator. The cursor now sits at an \emph{empty hole}, as indicated by the vertical bar and the green background. Each hole has a unique name (generated automatically in \Hazel), here simply \li{1}. 
 %In this case, there is only one hole in the program, but in general, there may be many such holes.
 
-Let us briefly digress: in a conventional ``batch'' programming system, writing \li{30.0*hw +} by itself would simply cause parsing to fail and there would be no static or dynamic feedback available to the programmer at all.
-In response, the programmer might insert a temporary universal placeholder, e.g. by raising an exception as suggested in Sec.~\ref{sec:intro} (note however that Elm does not support exceptions, by design). This would cause typechecking to succeed. 
-However, when the programming environment attempts to evaluate the program, 
+Let us briefly digress: in a conventional ``batch'' programming system, writing \li{30.0*hw +} by itself would simply cause parsing to fail and there would be no static or dynamic feedback.
+In response, the programmer might encode a hole by raising an exception. This would cause typechecking to succeed. 
+However, 
 evaluation would proceed only as far as the first \li{map} iteration, 
 which would call into \li{weighted_average} and then fail when attempting to evaluate the hole.%
 \footnote{In a lazy language, like Haskell, the result would be much the same because the environment forces the result for printing.}
@@ -47,13 +47,13 @@ actual behavior of the program (in this case, the magnitude of the arithmetic ex
 
 % The result itself is not the only live feedback that \Hazel reports to the programmer.
 % Programmers also keep track of the names and types of the variables that are in scope at the cursor. 
-Going further, \Hazel helps programmers reason about the dynamic behavior of expressions bound to variables in scope at a hole via the \emph{live context inspector}, normally displayed  as a sidebar but shown disembodied in three different states in Fig.~\ref{fig:grades-sidebar}. 
-In all three states, the live context inspector displays the names and types of the variables that are in scope, as is a common feature of programming environments. 
+Going further, \Hazel helps programmers reason about the dynamic behavior of expressions bound to variables in scope at a hole via the \emph{live context inspector}, normally displayed  as a sidebar but shown disembodied in three states in Fig.~\ref{fig:grades-sidebar}. 
+In all three states, the live context inspector displays the names and types of the variables that are in scope. 
 New to our approach are the values associated with bindings, which come from the environment associated with the selected hole instance in the result. 
 We call a hole instance paired with an  environment a \emph{hole closure}, by analogy to function closures (and also due to the logical connection detailed in Sec.~\ref{sec:calculus}). 
-In this case, there are three instances of hole \li{1} in the result, numbered sequentially: \li{1:1}, \li{1:2} and \li{1:3}, arising from the three calls to \li{weighted_averages}. 
+In this case, there are three instances of hole \li{1} in the result, numbered sequentially \li{1:1}, \li{1:2} and \li{1:3}, arising from the three calls to \li{weighted_averages} by \li{map}. 
 % An environment is a partial mapping of variables in scope to values. 
-The programmer can select different closures by clicking on a hole instance in the result (the first instance, \li{1:1}, is selected by default, as indicated by the purple outline), or cycle through all of the closures for the hole at the cursor by clicking the arrows, e.g. $\blacktriangleright$, or using hotkeys.
+The programmer can directly select different closures by clicking on a hole instance in the result (the first instance, \li{1:1}, is selected by default, as indicated by the purple outline in Fig.~\ref{fig:grades-cell-mockup}), or cycle through all of the closures for the hole at the cursor by clicking the arrows at the bottom of the context inspector, e.g. $\blacktriangleright$, or using hotkeys.
 
 \vspace{-4px}
 \subsection{Example 2: Recursive Functions}\label{sec:qsort1}\label{sec:paths}
@@ -61,11 +61,11 @@ The programmer can select different closures by clicking on a hole instance in t
 
 \input{qsort-example}
 
-Let us now consider a second more sophisticated example: an incomplete implementation of the recursive quicksort function, shown in Fig.~\ref{fig:qsort-example-code}. So far, the programmer (perhaps a student, or a lecturer using \Hazel as a presentational aid during class) has filled in the base case, and in the recursive case, has selected the head of the list as the pivot, partitioned the remainder of the list relative to the pivot and made the two recursive calls. A hole appears in the return position of the function body as the programmer contemplates how to combine the available variables to fill the hole with an appropriate list expression, as indicated by the type inspector in Fig.~\ref{fig:qsort-type-inspector}.
+Let us now consider a second more sophisticated example: an incomplete implementation of the recursive quicksort function, shown in Fig.~\ref{fig:qsort-example-code}. So far, the programmer (perhaps a student, or a lecturer using \Hazel as a presentational aid) has filled in the base case, and in the recursive case, partitioned the remainder of the list relative to the head, and made the two recursive calls. A hole appears in return position as the programmer contemplates how to fill the hole with an appropriate expression of list type, as indicated by the \emph{type inspector} in Fig.~\ref{fig:qsort-type-inspector}.
 
 At the bottom of the cell in Fig.~\ref{fig:qsort-example-code}, the programmer has applied \li{qsort} to an example list. However, 
 the indeterminate result of this function application is simply an instance of hole \li{1}, which serves only to confirm that evaluation went through the recursive case of \li{qsort}. 
-More interesting is the live context inspector, shown in three states in Fig.~\ref{fig:qsort-sidebars}, which provides feedback about the values of the variables in scope at hole \li{1} from the the various instances of hole \li{1} that appear in the result. For example, in its initial state (Fig.~\ref{fig:qsort-sidebars}, left) it shows the closure at the instance of hole \li{1} that appears immediately in the result due to the outermost application of \li{qsort}. From this, the programmer can confirm (or the lecturer can visually point out) that 
+More interesting is the live context inspector, shown in three states in Fig.~\ref{fig:qsort-sidebars}, which provides feedback about the values of the variables in scope at hole \li{1} from the the various instances of hole \li{1} that appear in the result, either immediately or within an outer closure. For example, in its initial state (Fig.~\ref{fig:qsort-sidebars}, left) it shows the closure at the instance of hole \li{1} that appears immediately in the result due to the outermost application of \li{qsort}. From this, the programmer can confirm (or the lecturer can visually point out) that 
 the lists \li{smaller} and \li{bigger} computed by the call to \li{partition} are appropriately named, and observe that they are not yet themselves sorted\todo{are there studies to cite here about how concrete examples help people in programming? math?}.
 
 The results from the subsequent recursive calls, \li{r_smaller} and \li{r_bigger}, are again hole instances, \li{1:2} and \li{1:3}. 

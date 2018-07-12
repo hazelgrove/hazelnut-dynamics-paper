@@ -28,55 +28,40 @@ and therefore conventionally meaningless, because of
 %
 Let us return to the quicksort example just described, 
 but assume that the programmer has filled in the previous hole
-as shown in Fig.~\ref{fig:qsort-type-error}. (In Sec.~\ref{sec:resumption}, we discuss
-how the programming environment might avoid restarting evaluation after such edits, but for small examples like this, restarting works fine.)
+as shown in Fig.~\ref{fig:qsort-type-error}. In Sec.~\ref{sec:resumption}, we discuss
+how the programming environment might avoid restarting evaluation after such edits, but for small examples like this, restarting works fine.
 
 The programmer appears to be on the right track conceptually
 in recognizing that the pivot needs to appear between the 
 smaller and bigger elements. 
 However, the types do not quite work out: the \li{@} operator here
 performs list concatenation, but the pivot is an integer. 
-Most compilers and editors will report a static error message, 
-of varying utility, to the programmer in this case (and \Hazel 
-follows suit, not shown). 
-Our argument is that this should not cause all feedback about 
-the dynamic behavior of the program to ``flicker out'' or ``go stale''. After all,
-the error is localized and there is perfectly good code elsewhere 
-in the program (if not nearby, then perhaps far away).
+Most compilers and editors will report a static error message
+to the programmer in this case, and \Hazel 
+follows suit in the type inspector (shown inset in Fig.~\ref{fig:qsort-type-error}). 
+However, our argument is that the presence of a static type error should not cause all feedback about 
+the dynamic behavior of the program to ``flicker out'' or ``go stale'' --
+after all, there are perfectly meaningful parts of the program (both nearby
+and far away from the error) 
+whose dynamic behavior may be of interest, or even assist the programmer in fixing the type error.
+% After all,
+% the error is localized and there is perfectly good code elsewhere 
+% in the program (if not nearby, then perhaps far away).
 
 Our approach, following the prior work of \citet{popl-paper}, 
 is to semantically internalize the ``red outline'' around
-type inconsistencies as a \emph{non-empty hole}.
-From the outside, a non-empty hole behaves statically much like an empty hole.
-Our approach takes the same approach for the dynamic semantics,
-i.e. evaluation safely proceeds past a non-empty hole just as if it were an empty hole.
-The semantics also associates an environment with each instance of a non-empty hole (not shown). 
+type inconsistencies, representing it as a \emph{non-empty hole}.
+Evaluation safely proceeds past a non-empty hole just as if it were an empty hole.
+The semantics also associates an environment with each instance of a non-empty hole,
+so we can use the live context inspector essentially as in Fig.~\ref{fig:qsort-sidebars} (not shown). 
 The difference is that evaluation also proceeds inside the hole, so that 
-feedback about an expression that might ``almost'' be correct is available. 
+feedback about the type-inconsistent expression, which might ``almost'' be correct, is available. 
 In this case, the result at the bottom of Fig.~\ref{fig:qsort-type-error}
 reveals that the programmer is on the right track: the list elements 
-(here, for a shorter example for the sake of exposition) are in the right order.
+appear in the correct order.
 They simply have not been combined correctly.
 
 
-asdfasdfa
-f
-asd
-fas
-df
-asdf
-
-afsfasdf
-
-
-asdfasdfa
-f
-asd
-fas
-df
-asdf
-
-afsfasdf
 
 % For example, consider the following two definitions.
 
