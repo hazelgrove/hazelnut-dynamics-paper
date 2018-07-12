@@ -26,23 +26,23 @@ live feedback presented to the programmer has temporal or perceptive gaps, i.e. 
 
 This paper confronts this ``{gap problem}'' from type-theoretic first principles by developing 
 \emph{a dynamic semantics for incomplete functional programs}, 
-starting from the static semantics for incomplete functional programs
+starting from the static semantics recently 
 developed by \citet{popl-paper}. 
 %
 We model incomplete functional programs as expressions with \emph{holes}, 
 with empty holes standing for missing expressions or types, and  non-empty holes 
 operating as membranes around static and dynamic type inconsistencies. 
 %
-Rather than aborting with an exception when evaluation encounters any of these holes as in
-several existing systems, evaluation proceeds around the holes,
-performing as much of the remaining computation as is possible and tracking the 
-closure around each hole instance as it flows through the program. Editor services can report information from these hole closures 
+Rather than aborting when evaluation encounters any of these holes as in
+several existing systems, evaluation proceeds around holes,
+tracking the 
+closure around each hole instance as it flows through the remainder of the program. Editor services can report information from these hole closures 
 to help the programmer decide how to fill the holes in the program. 
-Hole closures also enable a \emph{fill-and-resume} feature that 
+Hole closures also enable a \emph{fill-and-resume} operation that 
 avoids the need to restart evaluation after edits that amount to hole filling. 
 Formally, the semantics borrows machinery from both gradual type theory (to handle
 type holes) and contextual modal type theory (which provides a
-logical basis for tracking hole closures), combining these and developing additional machinery necessary 
+logical basis for hole closures), combining these and developing additional machinery necessary 
 to continue evaluation past holes while maintaining important metatheoretic properties. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,11 +54,10 @@ to continue evaluation past holes while maintaining important metatheoretic prop
 % from the perspective of CMTT) and cast failure holes (which provide a novel), and (2) a commutativity property that establishes that the
 % ``edit-and-resume'' feature is sound.
 %
-We have mechanized this core calculus, called \HazelnutLive{}, using the Agda proof assistant.
+We have mechanized the metatheory of this core calculus, called \HazelnutLive{}, using the Agda proof assistant.
 %
-We also describe a companion implementation 
-that inserts holes automatically to guarantee that every editor state has some (possibly incomplete)
-type, based on the \Hazelnut edit action calculus of \citet{popl-paper}.
+We have also implemented these ideas into the \Hazel programming environment. The implementation inserts holes automatically to guarantee that every editor state has some (possibly incomplete)
+type, following the \Hazelnut edit action calculus of \citet{popl-paper}.
 Taken together with this paper's type safety property, the 
 % The 
 result is  

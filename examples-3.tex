@@ -6,7 +6,7 @@
 % \begin{subfigure}[t]{\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=0.73\textwidth,interpolate=false,valign=t]{images/cast-errors.png}
+\includegraphics[width=0.71\textwidth,interpolate=false,valign=t]{images/cast-errors.png}
 % \includegraphics[width=0.28\textwidth,interpolate=false,valign=t]{images/type-inconsistency.png}
 \caption{Example 4: Type Holes and Dynamic Type Errors}
 \label{fig:cast-errors}
@@ -17,43 +17,43 @@
 
 % So far, we have only discussed incomplete programs where a hole appears within an expression.
 In \Hazel, the program can also be incomplete because holes appear in types. 
-\citet{popl-paper} confirmed that the literature on \emph{gradual type systems} \cite{Siek06a,DBLP:conf/snapl/SiekVCB15} is directly relevant to the problem of reasoning statically with type holes, by identifying the type hole with the unknown type. 
-Unsurprisingly, then, it is also relevant to the problem of running 
-programs with type holes. Indeed, that is the purpose of gradual typing: to be able to run programs that are not yet sufficiently annotated with types by inserting \emph{casts} only where necessary. As such, let us consider only a small synthetic example to demonstrate what is unique to our approach.
+\citet{popl-paper} confirmed that the literature on \emph{gradual type systems} \cite{Siek06a,DBLP:conf/snapl/SiekVCB15} is directly relevant to the problem of reasoning with type holes, by identifying the type hole with the unknown type. 
+% Unsurprisingly, then, it is also relevant to the problem of running 
+% programs with type holes. 
+Indeed, the purpose of gradual typing is to be able to run programs that are not yet sufficiently annotated with types by inserting \emph{casts} only where necessary. As such, let us consider only a small synthetic example to demonstrate what is unique to our approach.
 
 Fig.~\ref{fig:cast-errors} defines a simple function, \li{f}, of two arguments. 
 The type annotation on the first line leaves the type of those arguments unknown. 
 As such, the \Hazel type system, following the gradual typing approach,
 allows the body of the function to use those two
-arguments at any type at all (that is, the hole type is universally consistent). 
-In this case, the first argument, \li{simple}, is used at one type, \li{bool}, 
+arguments at any type (that is, the hole type is universally consistent). 
+Here, the first argument, \li{simple}, is used at one type, \li{bool}, 
 and the second argument, \li{x}, is used at two different types in the two branches (perhaps because the programmer made a mistake), 
-first as an \li{int} and second as a \li{string}  (we use \li{^} for string concatenation).
+ \li{int} and  \li{string}  ( \li{^} is string concatenation).
 Although \Hazel supports only local type inference as of this writing, 
 a system that uses ML-style type reconstruction to fill type holes statically, like GHC Haskell, would only be able to fill the first hole. Leaving the second hole unfilled is 
-a parsimonious alternative to arbitrarily or heuristically\todo{cite error localization papers?}{} choosing one of the possibilities and marking the
-other uses of \li{x} as ill-typed.
+a parsimonious alternative to arbitrarily or heuristically choosing one of the possibilities and marking the
+other uses of \li{x} as ill-typed (see \cite{DBLP:journals/jfp/ChenE18}).
 
 At the bottom of the cell in Fig.~\ref{fig:cast-errors}, we have three 
-example applications of \li{f}. In this case, we simply tuple the results, but we could also
-have made them into tests or put them into separate cells. All three are statically
-well-typed, again because the hole type is universally consistent.
+example applications of \li{f}, tupled together for concision. All three are statically
+well-typed, again because the hole type is universally consistent. 
 The result at the bottom of Fig.~\ref{fig:cast-errors} demonstrates that the first application
-of \li{f} is dynamically unproblematic. This might help the programmer confirm that at least
-the first branch of the function body has been implemented as intended without the need to comprehensively
-address all of the problems in the program. This flexibility is a common motivation for dynamic languages in programming folklore.
+of \li{f} is dynamically unproblematic. This allows the programmer confirm that 
+the first branch of the conditional operates as intended without the need to 
+address the typing problems in the other branch. 
+This flexibility is a common motivation for dynamic and gradual languages \cite{Bayne:2011:ASD:1985793.1985864}.
 
-The second application of \li{f}, in contrast, causes a dynamic type error because the second argument, \li{2}, is an \li{int} but evaluation takes the branch where \li{x} is used as a \li{string}. 
-Rather than aborting evaluation immediately when this occurs, as in existing gradual type systems, the problematic sub-term becomes a \emph{failed cast} term, shown shaded in red, which can be read ``\li{2} is an \li{int} that was used through a variable of hole type (\li{?}) as a \li{string}''. 
-A failed cast behaves much like a non-empty hole in that it simply becomes an opaque value of the target type, \li{string}, that causes the surrounding concatenation operation to become indeterminate. 
-Evaluation can continue on to the third application of \li{f}, which again is problematic, this time because the first argument is not a \li{bool} (perhaps because the programmer had an incorrect understanding of the argument order). 
-Again, this causes a failed cast to appear, this time in guard position. Like a hole in guard position, evaluation cannot determine which branch to take so the whole guard expression becomes indeterminate. 
+The second application of \li{f}, in contrast, causes a dynamic type error because the second argument, \li{2}, is an \li{int} but evaluation takes the branch where it is used as a \li{string}. 
+Rather than aborting evaluation when this occurs, as in existing gradual type systems, the problematic term becomes a \emph{failed cast} term, shown shaded in red, which can be read ``\li{2} is an \li{int} that was used through a variable of hole type (\li{?}) as a \li{string}''. 
+A failed cast acts much like a non-empty hole as a membrane around a problematic term. The surrounding concatenation operation becomes indeterminate, but  
+evaluation can continue on to the third application of \li{f}, which is also problematic, this time because the first argument is not a \li{bool} (perhaps because the programmer had an incorrect understanding of the argument order). 
+Again, this causes a failed cast to appear, this time in guard position. Like a hole in guard position, evaluation cannot determine which branch to take so the whole conditional becomes indeterminate. 
 The pretty printer
-hides the two branches behind ellipses.
+hides the two branches behind ellipses for concision.
 
-In this synthetic example, it might have only been a small burden for the programmer to provide the intended types in the signature of \li{f}, but there are situations (e.g. during rapid prototyping or a live performance) where the programmer may consider the burden more substantial. This approach ensures that dynamic feedback does not have gaps even when there is a dynamic type error.
+In this small example, it might have only been a small burden for the programmer to provide the intended types in the signature for \li{f}, but there are situations (e.g. during rapid prototyping or a live performance) where the programmer might consider the burden more substantial. This approach ensures that dynamic feedback does not exhibit gaps even when there is a dynamic type error.
 
-\subsection{Design Variations}
 
 
 \begin{comment}

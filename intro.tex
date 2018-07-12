@@ -9,7 +9,7 @@
 
 Programmers typically shift back and forth between program editing and program evaluation many times before converging upon a program that behaves as intended. 
 Live programming environments aim to support this workflow by interleaving editing and evaluation so as to   
-narrow what \citet{burckhardt2013s} call ``the temporal and perceptive gap'' between these activities.
+narrow what \citet{burckhardt2013s} call the ``temporal and perceptive gap'' between these activities.
 % In other words, the goal \IS to provide continuous feedback about the dynamic behavior of the program, in whole or in part,
 % directly alongside the program text itself.
 
@@ -128,13 +128,21 @@ an exception and so the traditional gradual typing approaches still leave the li
 
 \parahead{Contributions}
 
-This paper develops a theoretically well-grounded dynamic semantics for incomplete functional programs, starting from the static semantics developed by \citet{popl-paper},  that addresses these limitations of the exceptional approach. 
-In particular, rather than stopping with an exception when evaluation encounters an expression hole, evaluation continues ``around'' the hole, performing as much of the remaining computation as possible. 
-For programs with unfillable type holes, casts are inserted and evaluation also proceeds past failed casts in much the same way. 
+This paper develops a dynamic semantics for incomplete functional programs, starting from the static semantics developed by \citet{popl-paper},  that addresses these limitations of the exceptional approach. 
+In particular, rather than stopping when evaluation encounters an expression hole, evaluation continues ``around'' the hole so that dynamic feedback about other parts of the program remains available. 
+For programs with unfillable type holes, casts are inserted as in gradual type theory \cite{DBLP:conf/snapl/SiekVCB15}. Evaluation proceeds around failed casts in the same way. 
+
 The system tracks the closure around each expression hole instance as evaluation proceeds so that 
 the live programming environment can feed relevant information from the {hole closures} to the programmer as they work to fill the holes in the program.
-Then, when the programmer performs an edit that fills an empty expression hole or that replaces a non-empty hole with a type-correct expression, evaluation can resume from the paused, i.e. \emph{indeterminate}, evaluation state. We call this feature \emph{fill-and-resume}. We are integrating this approach into the \Hazel programming environment being developed by \citet{HazelnutSNAPL}. 
+Then, when the programmer performs an edit that fills an empty expression hole or that replaces a non-empty hole with a type-correct expression, evaluation can resume from the paused, i.e. \emph{indeterminate}, evaluation state. We call this operation \emph{fill-and-resume}. We observe that empty hole closures are closely related to metavariable closures from contextual modal type theory~(CMTT)~\cite{Nanevski2008} (which, by its Curry-Howard interpretation, provides a logical basis for reasoning about and operating on hole closures). These connections to well-established systems, together with our mechanized proofs, serve to support our claim that this approach is theoretically well-grounded.
 
+We are integrating this approach into the \Hazel programming environment being developed by \citet{HazelnutSNAPL}. \Hazel features a live context inspector that integrates static information with hole closure information and interactively presents recursive hole closures, which arise from incomplete recursive functions. The editor component of this implementation defines a language of structured edit actions, 
+based on the \Hazelnut structure editor calculus developed by \citet{popl-paper}, that inserts holes automatically to guarantee that
+every editor state has some, possibly incomplete, type. 
+The type safety invariant that we establish then guarantees that every editor state has dynamic meaning. Taken together, the result is a full solution to the gap problem, i.e. a proof-of-concept
+live functional programming environment that provides rich static and dynamic feedback that never suffers from temporal or perceptive gaps.
+
+\vspace{-2px}
 \parahead{Paper Outline}
 
 \newcommand{\contribution}[2]{\paragraph{#1. #2}} 
@@ -143,21 +151,14 @@ Then, when the programmer performs an edit that fills an empty expression hole o
 We begin in Sec.~\ref{sec:examples} by detailing the approach informally, with several example programming tasks, in the setting of the \Hazel design, which is based closely on well-established existing designs (in particular, on the Elm programming language and the Jupyter user interface). 
 % We also qualitatively describe some user interface features that may help manage visual complexity when working with larger programs.
 
-Sec.~\ref{sec:calculus} then abstracts away the inessential details of the language and user interface and makes the  intuitions developed in Sec.~\ref{sec:examples} formally precise by detailing the primary contribution of this paper: a core calculus, \HazelnutLive, that supports evaluating incomplete expressions and tracking hole closures. The dynamic semantics of \HazelnutLive is a small-step reduction semantics equipped with clean type safety theorems (including, notably, a Progress theorem for incomplete expressions). The semantics of \HazelnutLive borrows some technical machinery from gradual type theory~\cite{DBLP:conf/snapl/SiekVCB15}
-(to handle incomplete types) and contextual modal type theory~(CMTT)~\cite{Nanevski2008} (which, by its Curry-Howard interpretation, provides a logical basis for reasoning about and operating on hole closures), combining these and adding additional machinery necessary to continue evaluation past holes and cast failures.  
+Sec.~\ref{sec:calculus} then abstracts away the inessential details of the language and user interface and makes the  intuitions developed in Sec.~\ref{sec:examples} formally precise by detailing the primary contribution of this paper: a core calculus, \HazelnutLive, that supports evaluating incomplete expressions and tracking hole closures. 
+% The dynamic semantics of \HazelnutLive is a small-step reduction semantics equipped with clean type safety theorems (including, notably, a Progress theorem for incomplete expressions). 
 Sec.~\ref{sec:agda-mechanization} outlines our Agda-based mechanization of \HazelnutLive, which is included in the anonymized supplement.  
-These connections to well-established existing systems, together with the mechanized proofs, serve to support our claim that this approach is theoretically well-grounded.
-
-Sec.~\ref{sec:implementation} outlines our companion implementation of \HazelnutLive, which is also available in the anonymized supplement. This implementation is a slimmed-down version of \Hazel that implements the live programming features as shown in Sec.~\ref{sec:examples}, 
-but for the more austere language of Sec.~\ref{sec:calculus} extended with numbers, sum types, and product types (which, for the sake of simplicity, are specified separately in the anonymized supplement). 
-The editor component of this implementation defines a language of structured edit actions, 
-based on the \Hazelnut structure editor calculus developed by \citet{popl-paper}, that inserts holes automatically to guarantee that
-every editor state has some, possibly incomplete, type. 
-The type safety theorems then guarantee that every editor state has dynamic meaning. Taken together, the result is a full solution to the gap problem, i.e. a proof-of-concept
-live functional programming environment where the static and dynamic feedback never exhibits gaps. We formally state this continuity corrollary.
+Sec.~\ref{sec:implementation} provides some additional details on the implementation of these ideas into \Hazel, which is based on the \Hazelnut edit action calculus \cite{popl-paper}, and formally states the continuity invariant, i.e. the solution to the gap problem, as a corollary of the primary theorems of \Hazelnut and \HazelnutLive.
 
 Sec.~\ref{sec:resumption} defines the fill-and-resume operation, which is rooted in the contextual substitution operation from CMTT. We establish the correctness of fill-and-resume with a commutativity theorem. We also discuss how the fill-and-resume operation allows us to semantically interpret the act of editing and evaluating cells in a REPL or Jupyter-like live lab notebook environment.
 
-Sec.~\ref{sec:relatedWork} describes related work in more detail and simultaneously discusses directions for future work and Sec.~\ref{sec:discussion} concludes. 
+Sec.~\ref{sec:relatedWork} describes related work in detail and simultaneously discusses limitations and directions for future work. Sec.~\ref{sec:discussion} briefly concludes. 
 
-%The appendix includes some straightforward auxiliary definitions and proofs mentioned in the paper, some extensions to the core calculus, and some screenshots and additional details on the implementation. The supplemental material includes both the mechanization and the implementation.
+The anonymous supplement includes, in addition to the Agda mechanization, an appendix that (1) provides some straightforward auxiliary definitions and proofs that were omitted from the paper for concision; and (2) defines some simple extensions to the core calculus (namely, numbers, and sum types), together with a brief exposition on defining further extensions. 
+% These are not necessary to communicate the fundamental ideas of the paper, but may be of interest to some readers.

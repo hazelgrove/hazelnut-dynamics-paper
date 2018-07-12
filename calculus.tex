@@ -1,5 +1,4 @@
 % !TEX root = hazelnut-dynamics.tex
-\clearpage
 \newcommand{\calculusSec}{Hazelnut Live}
 \section{\protect\calculusSec}
 \label{sec:calculus}
@@ -15,12 +14,12 @@ We will now make the intuitions developed in the previous section formally preci
 We distinguish between {external} expressions, $e$, and {internal} expressions, $d$.
 External expressions correspond to programs as entered by the programmer
 (see Sec.~\ref{sec:intro} for discussion of implicit, manual, semi-automated and fully automated hole entry methods).
-Each well-typed external expression (as specified in Sec.~\ref{sec:external-statics} below) expands to a well-typed internal expression (see Sec.~\ref{sec:expansion}) before it is evaluated (see Sec.~\ref{sec:evaluation}).
+Each well-typed external expression (see Sec.~\ref{sec:external-statics} below) expands to a well-typed internal expression (see Sec.~\ref{sec:expansion}) before it is evaluated (see Sec.~\ref{sec:evaluation}).
 We take this approach, notably also taken in the ``redefinition'' of Standard ML by \citet{Harper00atype-theoretic}, because (1) the external language supports type inference and explicit type ascriptions, $\hexp : \htau$, but it is formally simpler to eliminate ascriptions and specify a type assignment system when defining the dynamic semantics; and
 (2) we need additional syntactic machinery during evaluation for tracking hole closures and dynamic type casts.
 This machinery is inserted by the expansion step, rather than entered explicitly by the programmer.
 In this regard, the internal language is analogous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects. We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently}
-(see Sec.~\ref{sec:agda-mechanization}). Rule names in this section, e.g. \rulename{SVar}, correspond to variable names used in the mechanization. We have also implemented \HazelnutLive in a manner that maintains a novel end-to-end well-definedness invariant (see Sec.~\ref{sec:implementation}).
+(see Sec.~\ref{sec:agda-mechanization}). Rule names in this section, e.g. \rulename{SVar}, correspond to variable names used in the mechanization. The \Hazel implementation substantially follows the formal specification of \Hazelnut (for the editor component) and \HazelnutLive (for the semantics), and we can formally state a continuity invariant for a putative combined calculus (see Sec.~\ref{sec:implementation}).
 
 % \rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
 % ITGround, and ITExpand. that's not many, and those rules don't look much more
@@ -97,7 +96,7 @@ For the familiar forms of the lambda calculus, the rules again follow prior work
 For simplicity, the core calculus includes only a single base type~$b$ with a single constant~$c$, governed by Rule \rulename{SConst} (i.e. $b$ is the unit type).
 %
 %\matt{Extraneous and uninteresting:}
-By contrast, \citet{popl-paper} instead defined a number type with a single operation. That paper also defined sum types as an extension to the core calculus. We follow suit on both counts in Appendix~\ref{sec:extensions}.
+By contrast, \citet{popl-paper} instead defined a number type with a single operation. That paper also defined sum types as an extension to the core calculus. We follow suit on both counts in the supplemental appendix.%Appendix~\ref{sec:extensions}.
 %
 
 Rule \rulename{SVar} synthesizes the corresponding type from $\hGamma$.
@@ -122,6 +121,9 @@ To avoid the need for two separate rules, Rule \rulename{ALam} uses the matching
 %%
 
 The rule governing function application, Rule \rulename{SAp}, similarly treats an expression of hole type in function position as if it were of type $\tarr{\tehole}{\tehole}$ using the same matched arrow type judgement.
+
+We do not formally need an explicit fixpoint operator because this calculus supports general recursion due to type holes, e.g. we can express the Y combinator as $(\halam{x}{\tehole}{x(x)}) (\halam{x}{\tehole}{x(x)})$. More generally, the untyped lambda calculus can be embedded as described by \citet{Siek06a}.
+%As such, we omit an explicit fixpoint operator for concision.\todo{fixpoint?}{}
 
 \vspace{-4px}
 \subsection{Expansion}
@@ -567,7 +569,8 @@ the sake of generality, and to support the specification of the fill-and-resume 
 \input{fig-ground-types}
 \input{fig-dynamics-aux}
 
-Substitution, written $[d/x]d'$, operates in the standard capture-avoiding manner~\cite{pfpl} (see Appendix~\ref{sec:additional-defns}).
+Substitution, written $[d/x]d'$, operates in the standard capture-avoiding manner~\cite{pfpl} (see the supplemental appendix for the full definition).
+% Appendix~\ref{sec:additional-defns}).
 %
 The only cases of special interest arise when substitution reaches a hole closure:
 \[
@@ -680,7 +683,7 @@ ground type that are not of
 the form $\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}$.
 %
 The need for this case is perhaps not obvious because in the cast calculus,  the only irreducible term of type $\tehole$
-is $\dcasttwo{\dexp}{\htau_1}{\tehole}$.
+is $\dcasttwo{\dexp}{\htau_1}{\tehole}$, but here there are holes as well.
 
 \subsubsection{Type Safety}
 %
@@ -711,7 +714,8 @@ the type of the result of reducing that expression.
 %
 The proof relies on an analogous preservation lemma for instruction
 transitions and a standard substitution lemma stated in
-Appendix~\ref{sec:additional-defns}.
+the supplemental appendix.
+% Appendix~\ref{sec:additional-defns}.
 %
 Hole closures can disappear during evaluation, so we rely on simple weakening
 of $\Delta$.
@@ -731,8 +735,8 @@ The key to establishing the progress theorem under a non-empty hole
 context is to explicitly account for indeterminate forms,
 i.e. those rooted at either a hole closure or a failed cast.
 %
-The proof relies on canonical forms lemmas stated in
-Appendix~\ref{sec:additional-defns}.
+The proof relies on canonical forms lemmas stated in the supplemental appendix.
+% Appendix~\ref{sec:additional-defns}.
 
 \subsubsection{Complete Programs}
 %
@@ -741,25 +745,25 @@ to know that the necessary machinery does not interfere
 with running \emph{complete} programs, i.e. those
 with no type or expression holes.
 %
-Appendix~\ref{sec:additional-defns} defines the predicates~$\isComplete{e}$, $\isComplete{\htau}$, $\isComplete{\hGamma}$ and~$\isComplete{d}$.
+% Appendix~\ref{sec:additional-defns}
+The supplemental appendix defines the predicates~$\isComplete{e}$, $\isComplete{\htau}$, $\isComplete{\hGamma}$ and~$\isComplete{d}$.
 %
 Of note, failed casts cannot appear in complete internal expressions.
 %
 The following theorem establishes that expansion preserves program completeness.
 
-% TODO Delta is always empty too!
-\begin{thm}[Complete Expansion] ~
-  \begin{enumerate}[nolistsep]
-    \item
+\begin{thm}[Complete Expansion] 
+% ~
+  % \begin{enumerate}[nolistsep]
       If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$
       and $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
       then $\isComplete{\htau}$ and $\isComplete{\dexp}$ and $\Delta = \emptyset$.
-    \item
-      If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$
-and $\isComplete{\htau}$
-      and $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
-      then $\isComplete{\dexp}$ and $\isComplete{\htau'}$ and $\Delta=\emptyset$
-  \end{enumerate}
+%     \item
+%       If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$
+% and $\isComplete{\htau}$
+%       and $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
+%       then $\isComplete{\dexp}$ and $\isComplete{\htau'}$ and $\Delta=\emptyset$
+  % \end{enumerate}
 \end{thm}
 
 The following preservation theorem establishes that stepping preserves program completeness.
@@ -795,10 +799,10 @@ indeterminate forms.
 %%   \caption{substitution type assignment}
 %% \end{figure}
 
-
+\vspace{-3px}
 \subsection{Agda Mechanization}
 \label{sec:agda-mechanization}
-\vspace{-3px}
+\vspace{-2px}
 
 The supplemental material includes our Agda
 mechanization  \cite{norell2009dependently,norell:thesis,Aydemir:2005fk}
@@ -823,39 +827,74 @@ contexts, hole contexts and finite substitutions using metafunctions.
 To support this encoding choice, we postulate function extensionality (which is independent of Agda's axioms) \cite{awodey2012inductive}.
 The documentation provided with the mechanization has more details.
 
-\subsection{Implementation}\label{sec:implementation}
+\vspace{-3px}
+\subsection{Implementation and Continuity}\label{sec:implementation}
+\vspace{-2px}
 
-The supplemental material includes a browser-based implementation
-of \HazelnutLive.
-% The implementation supports the core calculus of this section but with the notional base type $b$ replaced by the $\tnum$ type from Appendix~\ref{sec:extensions}. The implementation also includes the sum types extension from Appendix~\ref{sec:extensions} and a few minor  conveniences, e.g. \li{let} binding.
-All of the live programming features from \Secref{sec:examples} are available in the implementation essentially as shown, but for this more austere language (with some minor conveniences, notably let binding). Appendix~\ref{sec:impl-screenshots} provides screenshots of the full user interface.
+The \Hazel implementation demonstrated in Sec.~\ref{sec:examples} 
+includes an unoptimized interpreter, written in OCaml, that implements the semantics as described
+in this section, albeit for an \Elm-like language that goes somewhat beyond the simple
+calculus here. As with many full-scale systems, there is not currently a formal
+specification for the full \Elm{} or \Hazel language, but the supplemental appendix
+discusses how the standard approach for deriving a ``gradualized'' version of a 
+language construct provides most of the necessary scaffolding \cite{DBLP:conf/popl/CiminiS16}, and provides some examples.
 
- % which is a functional reactive program \cite{Elliott:1997jh,DBLP:conf/pldi/CzaplickiC13}
+% The supplemental material includes a browser-based implementation
+% of \HazelnutLive.
+% % The implementation supports the core calculus of this section but with the notional base type $b$ replaced by the $\tnum$ type from Appendix~\ref{sec:extensions}. The implementation also includes the sum types extension from Appendix~\ref{sec:extensions} and a few minor  conveniences, e.g. \li{let} binding.
+% All of the live programming features from \Secref{sec:examples} are available in the implementation essentially as shown, but for this more austere language (with some minor conveniences, notably let binding). Appendix~\ref{sec:impl-screenshots} provides screenshots of the full user interface.
+
+%  % which is a functional reactive program \cite{Elliott:1997jh,DBLP:conf/pldi/CzaplickiC13}
+% %
+% % Functional Reactive Animation (Hudak 1997) is the canonical FRP cite, not Elm, if you want one; we don't need one, I think. --Matt
+% %
+% %\cite{DBLP:conf/pldi/CzaplickiC13}
+
+% The implementation is written with the Reason toolchain for OCaml \cite{reason-what,leroy03:_ocaml}
+% together with the OCaml \lismall{React} library \cite{OcamlReact}
+% and the \lismall{js_of_ocaml} compiler and its associated libraries \cite{vouillon2014bytecode}. This follows the implementation of \Hazel, which, although tracking toward an Elm-like semantics, is implemented in OCaml because the Elm compiler is not yet self-hosted. The implementation of the dynamic semantics consists of a simple evaluator that closely follows the rules specified in this section.
+
+The editor component of the \Hazel implementation is derived
+from the structure editor calculus of~\Hazelnut, but with support for more natural cursor-based movement and infix operator sequences (the details of which are beyond the scope of this paper). It exposes a language of structured
+edit actions that automatically insert empty and non-empty holes as necessary
+to guarantee that every edit state has some (possibly incomplete) type. This corresponds to the top-level Sensibility invariant established for the \Hazelnut calculus by \citet{popl-paper}, reproduced below:
+\begin{prop}[Sensibility]
+  \label{thrm:actsafe} 
+  If $\hsyn{\Gamma}{\removeSel{\zexp}}{\htau}$ and
+    $\performSyn{\Gamma}{\zexp}{\htau}{\alpha}{\zexp'}{\tau'}$ then
+    $\hsyn{\hGamma}{\removeSel{\zexp'}}{\htau'}$.
+  % \item If $\hana{\hGamma}{\removeSel{\zexp}}{\htau}$ and
+  %   $\performAna{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}$ then
+  %   $\hana{\hGamma}{\removeSel{\zexp'}}{\htau}$.
+\end{prop}
+\noindent 
+Here, $\zexp$ is an editor state (an expression with a cursor), and $\removeSel{\zexp}$ drops the cursor, producing an expression ($e$ in this paper). So in words, ``if, ignoring the cursor, the editor state, $\removeSel{\zexp}$, initially has type $\htau$ and we perform an edit action $\alpha$ on it, then the resulting editor state, $\removeSel{\zexp'}$, will have type $\htau'$''.
+
+
+By composing this Sensibility property with
+the \Property{Expandability}, \Property{Typed Expansion}, \Property{Progress} and \Property{Preservation} properties from this section, we establish a
+uniquely powerful Continuity invariant:
+\begin{corol}[Continuity]
+  \label{thrm:actsafe} 
+  If $\hsyn{\emptyset}{\removeSel{\zexp}}{\htau}$ and
+    $\performSyn{\emptyset}{\zexp}{\htau}{\alpha}{\zexp'}{\tau'}$ then
+    $\expandSyn{\emptyset}{\removeSel{\zexp'}}{\htau'}{\dexp}{\Delta}$
+      for some $\dexp$ and $\Delta$ such that 
+$\hasType{\Delta}{\emptyset}{\dexp}{\htau'}$
+and either
+  (a) $\stepsToD{}{\dexp}{\dexp'}$ for some $d'$ such that $\hasType{\Delta}{\emptyset}{\dexp'}{\htau'}$; or
+  (b) $\isBoxedValue{\dexp}$ or
+  (c) $\isIndet{\dexp}$.
+  % \item If $\hana{\hGamma}{\removeSel{\zexp}}{\htau}$ and
+  %   $\performAna{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}$ then
+  %   $\hana{\hGamma}{\removeSel{\zexp'}}{\htau}$.
+\end{corol}
+
+This addresses the gap problem: \emph{every} editor state has a {static
+meaning} (so editor services like the type inspector from Fig.~\ref{fig:qsort-type-inspector} are always available) and a non-trivial {dynamic meaning} (a result is always available, evaluation does not stop when a hole or cast failure is encountered, and editor services that rely on hole closures, like the live context inspector from Fig.~\ref{fig:grades-sidebar}, are always available).
+
+In settings where the editor does not maintain this Sensibility invariant, our approach still helps to reduce the severity of the gap problem, i.e. \emph{more} editor states are meaningful, even if not \emph{all} are.% We can formally state this end-to-end continuity corollary as follows:
 %
-% Functional Reactive Animation (Hudak 1997) is the canonical FRP cite, not Elm, if you want one; we don't need one, I think. --Matt
-%
-%\cite{DBLP:conf/pldi/CzaplickiC13}
-
-The implementation is written with the Reason toolchain for OCaml \cite{reason-what,leroy03:_ocaml}
-together with the OCaml \lismall{React} library \cite{OcamlReact}
-and the \lismall{js_of_ocaml} compiler and its associated libraries \cite{vouillon2014bytecode}. This follows the implementation of \Hazel, which, although tracking toward an Elm-like semantics, is implemented in OCaml because the Elm compiler is not yet self-hosted. The implementation of the dynamic semantics consists of a simple evaluator that closely follows the rules specified in this section.
-
-The editor component of the implementation is derived
-from the structure editor calculus of~\Hazelnut, but with support for more natural cursor-based movement and infix operator sequences (the details are beyond the scope of this paper). It exposes a language of structured
-edit actions (summarized in the sidebar on the left of
-the screenshots in Appendix~\ref{sec:impl-screenshots}) that automatically inserts holes as necessary
-to guarantee that every edit state has some (possibly incomplete) type
-. This corresponds to the Sensibility invariant established by \citet{popl-paper}.
-By composing this metatheoretic property with
-the \Property{Expandability}, \Property{Typed Expansion}
-and \Property{Progress} properties from this paper, we establish a
-uniquely powerful invariant: \emph{every} edit state has a \emph{static
-meaning} (a la~\Hazelnut) and a \emph{dynamic meaning} (a la~\HazelnutLive).
-%
-In other words, live feedback never ``flickers in and out'' nor reflects ``stale'' edit states.
-%
-The implementation is intended as a proof-of-concept of this invariant, and as a companion to this paper.
-
 % We make no further claims about the usability or practicality of the implementation (and indeed, there remain many important and decidedly unresolved questions along these lines, which we leave beyond the scope of this paper).
 % We also reiterate that the essential ideas developed from type-theoretic first principles in this paper do not require that
 % the editor component of the programming environment be implemented as a structure editor (see Sec.~\ref{sec:intro}).
@@ -880,12 +919,12 @@ The implementation is intended as a proof-of-concept of this invariant, and as a
 
 
 %The result of evaluation is a final internal expression with hole closures, each with an associated hole environment, $\sigma$. These hole environments can be reported directly to the programmer, e.g. via the sidebar shown in Fig.~X\todo{fig}, to help them as they think about how to fill in the corresponding hole in the external expression. Hole environments might also be useful indirectly, e.g. by informing an edit action synthesis and suggestion system. In any case,
-When the programmer performs one or more edit actions to fill in a hole in the program, a new result must be computed, ideally quickly \cite{DBLP:conf/icse/Tanimoto13,DBLP:journals/vlc/Tanimoto90}. Na\"ively, the system would need to compute the result ``from scratch'' on each such edit. For small exploratory programming tasks, recomputation is acceptable, but in cases where a large amount of computation might occur, e.g. in data science tasks, a more efficient approach is to resume evaluation from where it left off after an edit that amounts to hole filling. This section briefly discusses the foundations of this feature, which we call \emph{fill-and-resume}. This approach is complementary to incremental computing techniques~\cite{Hammer2014}.
+When the programmer performs one or more edit actions to fill in a hole in the program, a new result must be computed, ideally quickly \cite{DBLP:conf/icse/Tanimoto13,DBLP:journals/vlc/Tanimoto90}. Na\"ively, the system would need to compute the result ``from scratch'' on each such edit. For small exploratory programming tasks, recomputation is acceptable, but in cases where a large amount of computation might occur, e.g. in data science tasks, a more efficient approach is to resume evaluation from where it left off after an edit that amounts to hole filling. This section develops a foundational account of this feature, which we call \emph{fill-and-resume}. This approach is complementary to, but distinct from, incremental computing (which is concerned with changes in input, not code insertions)~\cite{Hammer2014}.
 
 %%%%%%%%% New par
 Formally,
 %
-the key idea is to interpret hole environments as \emph{delayed substitutions}. This is the same interpretation suggested for closures in contextual modal
+the key idea is to interpret hole environments as \emph{delayed substitutions}. This is the same interpretation suggested for metavariable closures in contextual modal
 type theory (CMTT) by \citet{Nanevski2008}.
 %
 %In practice, it may be useful to cache results from several previous
@@ -937,8 +976,8 @@ terms at \emph{either} the beginning or at the end of that step
 sequence.
 %
 We write $\multiStepsTo{\dexp_1}{\dexp_2}$ for the reflexive,
-transitive closure of stepping (see \Figref{fig:multi-step} in
-Appendix~\ref{sec:additional-defns}).
+transitive closure of stepping (see the supplemental appendix).
+% Appendix~\ref{sec:additional-defns}).
 %
 \begin{thm}[Commutativity]
   If $\hasType{\hDelta, \Dbinding{u}{\hGamma'}{\htau'}}{\emptyset}{\dexp_1}{\tau}$
@@ -958,13 +997,15 @@ reduction sequence starting from $\instantiate{\dexp'}{u}{d_1}$.
 In other words, this notion of fill-and-resume only works for
 languages where evaluation order ``does not matter''.
 (There are various standard ways to formalize this intuition.
-For the sake of space, we review these in Appendix~\ref{sec:confluence}.)
+For the sake of space, we review these in the supplemental appendix.)
+% Appendix~\ref{sec:confluence}.)
 
 %% Everyone knows what confluence means, or they should.  We don't need to cite Church :)
 %%
 
-We describe the proof, which involves a
-number of lemmas and definitions, in Appendix~\ref{sec:hole-filling}.
+We describe the proof, which is straightforward but involves a
+number of lemmas and definitions, in the supplemental appendix.
+%Appendix~\ref{sec:hole-filling}.
 %
 In particular, care is needed to handle the situation where a
 now-filled non-empty hole had taken a step in the original evaluation.

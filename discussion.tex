@@ -8,28 +8,27 @@ To conclude, we quote Weinberg from The Psychology of Computer Programming (1998
 when the computer has something important to tell us, it starts
 speaking gibberish.''
 \end{comment}
-
+\vspace{3pt}
 \begin{quote}
-``[H]ow truly sad it is that just at the very moment
+\textit{``[H]ow truly sad it is that just at the very moment
 when the computer has something important to tell us, it starts
-speaking gibberish.''
+speaking gibberish.''}
 
 \vspace{3pt}
 
-\hfill{}---Gerald Weinberg, The Psychology of Computer Programming (1998)
+\hfill{}--- Gerald Weinberg, The Psychology of Computer Programming (1971)
 \end{quote}
-
 \vspace{3pt}
 
 \noindent
 %
-Weinberg's sentiment applies to countless situations that programmers routinely face---deciphering static error messages, deciphering run-time error messages, mentally simulating large parts of the evaluation process, and so on.
+Weinberg's sentiment applies to countless situations that programmers face as they work to develop and critically investigate the mental model of the program they are writing---at the very moment where rich feedback might be most helpful, e.g. when there is an error in the program or when the programmer is unsure how to fill a hole, the computer often has comparatively little feedback to offer (perhaps just a parser error message, or an explanation of one type error). 
 %
-Efforts to remediate this state of affairs have been increasingly common among programming languages, software engineering, and human-computer interaction researchers.
+% Efforts to develop tools that help programmers explore the behavior of parts of their program interactively, i.e. live programming tools, have been increasingly common in the literature on programming languages, software engineering, and human-computer interaction. 
 %
-Yet essentially all of this work towards next-generation programming environments assumes that the programmer has already written a complete program.
+% Yet much of this work has assumed that the programmer has already written a formally complete program, or relies on \emph{ad hoc} heuristics to handle some incomplete states. 
 %
-It is our hope that, by providing a foundation for how to reason about and run incomplete programs, future live programming environments can provide meaningful feedback to users, without temporal and perceptive gaps, throughout the program editing process.
+It is our hope that the well-behaved  type-theoretic foundations developed here will enable not only \Hazel but live programming tools of a wide variety of other designs to further narrow the temporal and perceptive gap and provide meaningful feedback to programmers at these important   moments. 
 
 
 \begin{comment}

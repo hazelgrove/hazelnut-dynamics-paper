@@ -156,6 +156,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 
 \judgbox{\selectEvalCtx{\dexp}{\evalctx}{\dexp'}}{$\dexp$ is obtained by placing $\dexp'$ at the mark in $\evalctx$}
 \begin{mathpar}
+\vspace{-3px}
 \inferrule[FHOuter]{ }{
   \selectEvalCtx{\dexp}{\evalhole}{\dexp}
 }
@@ -225,7 +226,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
 \vsepRule
 
 \judgbox{\stepsToD{}{\dexp}{\dexp'}}{$\dexp$ steps to $\dexp'$}
-\vspace{-10px}
+\vspace{-20px}
 \begin{mathpar}
 \inferrule[Step]{
   \selectEvalCtx{d}{\evalctx}{\dexp_0}\\
@@ -235,5 +236,7 @@ $\arraycolsep=4pt\begin{array}{rllllll}
   \stepsToD{}{\dexp}{\dexp'}
 }
 \end{mathpar}
+\vspace{-6px}
 \CaptionLabel{Evaluation Contexts and Steps}{fig:step}
+\vspace{-4px}
 \end{figure}

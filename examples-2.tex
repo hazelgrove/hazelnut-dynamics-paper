@@ -43,7 +43,7 @@ However, our argument is that the presence of a static type error should not cau
 the dynamic behavior of the program to ``flicker out'' or ``go stale'' --
 after all, there are perfectly meaningful parts of the program (both nearby
 and far away from the error) 
-whose dynamic behavior may be of interest, or even assist the programmer in fixing the type error.
+whose dynamic behavior may be of interest. Evaluation can also assist the programmer in understanding the type error by presenting concrete values \cite{Seidel2016}.
 % After all,
 % the error is localized and there is perfectly good code elsewhere 
 % in the program (if not nearby, then perhaps far away).
@@ -54,7 +54,7 @@ type inconsistencies, representing it as a \emph{non-empty hole}.
 Evaluation safely proceeds past a non-empty hole just as if it were an empty hole.
 The semantics also associates an environment with each instance of a non-empty hole,
 so we can use the live context inspector essentially as in Fig.~\ref{fig:qsort-sidebars} (not shown). 
-The difference is that evaluation also proceeds inside the hole, so that 
+Evaluation proceeds inside the hole, so that 
 feedback about the type-inconsistent expression, which might ``almost'' be correct, is available. 
 In this case, the result at the bottom of Fig.~\ref{fig:qsort-type-error}
 reveals that the programmer is on the right track: the list elements 
