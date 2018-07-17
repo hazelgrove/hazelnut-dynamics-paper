@@ -39,10 +39,10 @@ At the bottom of the cell in Fig.~\ref{fig:cast-errors}, we have three
 example applications of \li{f}, tupled together for concision. All three are statically
 well-typed, again because the hole type is universally consistent. 
 The result at the bottom of Fig.~\ref{fig:cast-errors} demonstrates that the first application
-of \li{f} is dynamically unproblematic. This allows the programmer confirm that 
-the first branch of the conditional operates as intended without the need to 
-address the typing problems in the other branch. 
-This flexibility is a common motivation for dynamic and gradual languages \cite{Bayne:2011:ASD:1985793.1985864}.
+of \li{f} is dynamically unproblematic. This allows the programmer to confirm that 
+the first branch operates as intended without the need to 
+address the typing problems in the other branch \cite{Bayne:2011:ASD:1985793.1985864}. 
+% This flexibility is a common motivation for dynamic and gradual languages .
 
 The second application of \li{f}, in contrast, causes a dynamic type error because the second argument, \li{2}, is an \li{int} but evaluation takes the branch where it is used as a \li{string}. 
 Rather than aborting evaluation when this occurs, as in existing gradual type systems, the problematic term becomes a \emph{failed cast} term, shown shaded in red, which can be read ``\li{2} is an \li{int} that was used through a variable of hole type (\li{?}) as a \li{string}''. 
@@ -52,8 +52,11 @@ Again, this causes a failed cast to appear, this time in guard position. Like a 
 The pretty printer
 hides the two branches behind ellipses for concision.
 
-In this small example, it might have only been a small burden for the programmer to provide the intended types in the signature for \li{f}, but there are situations (e.g. during rapid prototyping or a live performance) where the programmer might consider the burden more substantial. This approach ensures that dynamic feedback does not exhibit gaps even when there is a dynamic type error.
+\ifarxiv
 
+\else
+In this small example, it might have only been a small burden for the programmer to provide the intended types in the signature for \li{f}, but there are situations (e.g. during rapid prototyping or a live performance) where the programmer might consider the burden more substantial. This approach ensures that dynamic feedback does not exhibit gaps even when there is a dynamic type error.
+\fi
 
 
 \begin{comment}

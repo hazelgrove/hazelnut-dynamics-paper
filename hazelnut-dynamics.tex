@@ -1,10 +1,20 @@
 \PassOptionsToPackage{svgnames,dvipsnames,svgnames}{xcolor}
-%% For double-blind review submission
-%\documentclass[acmsmall,review]{acmart}
+\newif\ifarxiv
+\arxivtrue
+\ifarxiv
+\documentclass[acmsmall,nonacm]{acmart}
+\else
 %%% Note: arxiv does not want line numbers (they are detected somehow, and are not allowed)
 \documentclass[acmsmall,review,anonymous,nonacm]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 % \settopmatter{printccs=false,printacmref=false}
+\fi
+
+\ifarxiv
+\newcommand{\appendixName}{appendix}
+\else
+\newcommand{\appendixName}{supplemental appendix}
+\fi
 
 %% For single-blind review submission
 %\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
@@ -355,10 +365,14 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 %\clearpage
 \bibliography{references,all.short,hazel_NSF}
 
-% \clearpage
-% \appendix
-% \input{appendix-defns}
-% \input{extensions}
+\ifarxiv
+\clearpage
+\appendix
+\input{appendix-defns}
+\input{extensions}
+\else
+
+\fi
 % \input{misc}
 % \input{implementation-appendix}
 
