@@ -1,0 +1,67 @@
+Thank you for the careful readings and thoughtful feedback!
+
+# Review A 
+
+Very large inputs certainly do present scalability challenges, related both to
+the UI and to run-time performance. There is a brief discussion of some of the
+UI scalability challenges on p25 (lines 1184-1191), but it is confusingly under
+the "Structure Editors" heading. We will break out and expand the discussion of
+scalability into a separate heading in the final version of the paper. In
+particular, we will be sure to mention the specific issue of memory footprint
+when the result contains a very large number of hole instances. 
+
+# Review B
+
+The proof of Theorem 4.2 (see supplement) does not actually require formalizing
+the idea that "evaluation order does not matter" -- this point was not clear
+from the text on p21, so we will be sure to clarify it.
+
+TODO: other stuff from Review B
+
+# Review C
+
+> When, if even, does type checking of the initial program fail?
+
+In Hazel(nut) the Sensibility invariant (Prop. 3.14) implies that typechecking
+never fails.
+
+TODO: what about in Haskell etc.?
+
+> Term expansion and type checking from the theory seem slow
+
+The Sensibility invariant similarly implies that the program is not typechecked
+anew on each edit. Instead, the edit actions themselves enforce well-typedness
+as a structural invariant (by inserting holes as necessary). 
+
+The expander is a simple single-pass function over the syntax tree, so in
+programs with any non-trivial control flow, the cost of evaluation will far
+exceed the cost of expansion. Expansion is compositional so for edits that
+amount to hole filling (which would then be subject to the fill-and-resume
+operation), only the expansion of the hole filling needs to be computed anew. We
+will include these points in the new Scalability discussion section mentioned
+above in the response to Review A.
+
+We leave the topic of optimizing the run-time representation of hole closures
+and indeterminate forms as an interesting avenue for future work. The
+specification in this paper will serve as the baseline correctness specification
+for any such performance optimization research.
+
+> a user study seems to be needed to evaluate the claim made in this paper that
+> Hazelnut Live aids program development
+
+Lines 1180-1183 state that "we make no empirical claims regarding the usability
+of the particular user interface presented in this paper. The Hazel user
+interface as presented is a proof of concept [...]" 
+
+This disclaimer is again confusingly buried under the Structure Editors heading
+at the end of the paper. We will be sure to more clearly state in the
+introductory portion that that a comprehensive treatment of the  question of how
+best to present the additional information that our semantics generates,
+relative to a standard typechecker and evaluator, such that it helps human
+programmers in various real-world settings is left open. The UI in Sec. 2 is
+meant only to demonstrate one possible way to present that information to the
+programmer. We anticipate that there will be many possible designs rooted in the
+theory developed in this paper, as suggested in the conclusion of the paper.
+
+# Review D TODO: stuff from review D
+
