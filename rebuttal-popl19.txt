@@ -1,79 +1,100 @@
-Thank you for the thoughtful feedback!
+Thank you for your thoughtful feedback!
 
-# Review A 
+# A 
 
-We expect that even when writing functions much larger and more sophisticated
-than qsort, programmers will still prefer to work with small example inputs like
-those that might appear in documentation rather than very large inputs, which
-are too unwieldy for humans to meaningfully inspect. Of course, once a function
-is complete, Theorems 3.11-3.13 imply that the programmer can pass in much
-larger inputs without incurring run-time overhead.
+We expect that even while writing functions much larger 
+than `qsort`, programmers will prefer small example inputs
+(like those in documentation) because large inputs are
+difficult for humans to meaningfully inspect. Once complete,
+Theorems
+3.11-3.13 imply that larger inputs require no overhead.
 
-Having said that, we certainly agree that when the programmer does manage to
-produce an incomplete result containing a large number of hole closures or large
-indeterminate forms, there arise interesting scalability challenges related both
-to the UI and, for _very_ large results, run-time cost and memory usage. 
+We agree that when an indeterminate result is large or contains many hole closures,
+scalability challenges could arise. In the final paper, we will combine the discussion of UI scalability challenges (L1184) with discussion of future
+work on optimization of hole closures and
+indeterminate forms into a separate Scalability Challenges subsection.
 
-There is a brief discussion of some of the UI scalability challenges on p25
-(lines 1184-1191), but this appears perhaps confusingly in the "Structure
-Editors" section. In the final paper, we will break out this discussion of
-Scalability Challenges into its own section and briefly expand on it, in
-particular to mention the topic of optimizing the run-time representation of
-hole closures and indeterminate forms as an avenue for future work. The
-formalism in this paper can serve as the baseline correctness specification for
-this sort of performance optimization research.
+# B
 
-# Review B
+We will clarify that the proof of Theorem 4.2 does not require formalizing the notion that
+"evaluation order does not matter", which is why we left discussion to the
+supplement. 
 
-The proof of Theorem 4.2 (see supplement) does not actually require formalizing
-the notion that "evaluation order does not matter" -- this point was perhaps not
-clear from the text on p21, so we will clarify this in the final paper.
+Siek and Taha (2006) defined two application rules. Matching consolidates these.
 
-TODO: other stuff from Review B
+By "essentially standard...", we mean that Complete Progress coincides with 
+Progress for STLC (no mention of boxedval or indet).
 
-# Review C
+Per Line 884-887, X is complete when there are no holes or
+failed casts in X. Complete expressions cannot be indeterminate.
+
+# C
 
 > When, if even, does type checking of the initial program fail?
 
-In Hazel(nut), the Sensibility invariant (Prop. 3.14) implies that typechecking
-never fails (i.e. there are no gaps in the static semantics).
+In Hazel(nut), Sensibility (Proposition 3.14) implies that typechecking
+never fails.
 
 > Term expansion and type checking from the theory seem slow
 
-The Sensibility invariant also implies that the program is not typechecked anew
-on each edit. Instead, the edit actions themselves enforce well-typedness by
-inserting holes as necessary.
+Sensibility also implies that typechecking need not occur per edit -- edit actions insert holes as necessary.
 
-The expander is a simple single-pass function over the syntax tree, so in
-programs with any non-trivial control flow, the cost of evaluation will far
-exceed the cost of expansion. Expansion is compositional so for edits that
-amount to hole filling (which would then be subject to the fill-and-resume
-operation), only the expansion of the hole filling needs to be computed anew. We
-would be happy to emphasize these points in the new Scalability Challenges
-discussion section mentioned in the response to Review A above.
+The expander is a single pass over the expression, so in
+programs with any non-trivial control flow, the cost of evaluation dominates.
 
 > a user study seems to be needed to evaluate the claim made in this paper that
 > Hazelnut Live aids program development
 
 Our claim in this paper is that substantially more information about run-time
-behavior can be made available to programmers during the programming process by
-combining concepts from the Hazelnut calculus, gradual type theory and CMTT. The
-extent to which this information can be made useful to programmers by presenting
-it at the right time and place and in the right format is an open question
-worthy of substantial additional human factors research. Lines 1180-1183 state
+behavior can be made available when the program is incomplete by
+combining concepts from the Hazelnut calculus, gradual type theory and CMTT. How to best present this information to human programmers is an open question
+worthy of additional human factors research. Lines 1180-1183 state
 that "we make no empirical claims regarding the usability of the particular user
 interface presented in this paper. The Hazel user interface as presented is
-a proof of concept [...]".
+a proof of concept [...]". We will make this clearer in the final introduction. 
+We do plan to conduct user studies in classrooms as Hazel develops, but
+this is, as B suggests, part of a longer term research vision. We hope that there will be many
+other designs rooted in the semantics developed by this paper, as suggested
+in the conclusion.
 
-This disclaimer is again perhaps confusingly buried under the Structure Editors
-heading at the end of the paper. In the final paper, we will more clearly state
-in the introduction that a comprehensive treatment of the question of how best
-to present the additional information that our semantics generates to human
-programmers remains an open question. We anticipate that there will be many
-possible designs rooted in the semantics developed in this paper, as suggested
-in the conclusion of the paper. We do plan to conduct user studies in the future
-as Hazel develops further and is slowly integrated into classroom settings, but
-this is, as Review B suggests, part of a much longer term vision.
+
+
 
 # Review D TODO: stuff from review D
+
+
+---
+
+TODO: answer these below the 500 word fold? 
+
+# Review A
+
+
+
+# Review B 
+
+> In several places starting on page 15: "disequal"? Do you mean "unequal"? Or
+> do you mean something else? If the latter, then please define what is meant.
+
+TODO
+
+> Is there a reason you do not state Finality as "If d final then there exists
+> no d' such that d |-> d'"?
+
+TODO
+
+> Why does evaluation not stop if a cast fails. Shouldn't evaluation await the
+> programmer in this case?
+
+TODO
+
+> The conclusion of Theorem 3.12 should be that "either there exists a d' such
+> that d |-> d' or d val".
+
+TODO
+
+> more editor states are meaningful? More that what?
+
+TODO
+
 
