@@ -10,9 +10,10 @@ a Scalability Challenges subsection in Sec. 5.
 
 That said, we expect such situations to be rare because programmers will
 typically choose small example inputs (like those in documentation) even while
-writing functions much larger than `qsort` -- very large inputs are difficult
-for humans to meaningfully inspect. Sec 3.3.4 implies that there need not be any
-overhead once a function is tested successfully on small inputs.
+writing functions much larger than `qsort` because very large inputs are
+difficult for humans to meaningfully inspect. Sec 3.3.4 implies that there need
+not be any overhead once a function is completed successfully using small
+inputs.
 
 # B
 
