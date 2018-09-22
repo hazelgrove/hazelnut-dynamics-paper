@@ -119,5 +119,4 @@ Our approach is relevant even if holes have to be manually inserted -- those
 editor states where manual holes have been appropriately inserted are
 meaningful, whereas without support for holes given meaning as we describe,
 either the program remains malformed, there is a static type error or a hole
-causes evaluation to fail. We will clarify this sentence.auses evaluation to
-fail. We will clarify this sentence.
+causes evaluation to fail. We will clarify this sentence.
