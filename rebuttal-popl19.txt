@@ -1,67 +1,73 @@
 Thank you for your thoughtful feedback!
 
-# A 
+# A
 
-We expect that even while writing functions much larger 
-than `qsort`, programmers will prefer small example inputs
-(like those in documentation) because large inputs are
-difficult for humans to meaningfully inspect. Once complete,
-Theorems
-3.11-3.13 imply that larger inputs require no overhead.
+We expect that even while writing functions much larger than `qsort`,
+programmers will prefer small example inputs (like those in documentation)
+because very large inputs are difficult for humans to meaningfully inspect. Once
+complete, Theorems 3.11-3.13 imply no further overhead.
 
-We agree that when an indeterminate result is large or contains many hole closures,
-scalability challenges could arise. In the final paper, we will combine the discussion of UI scalability challenges (L1184) with discussion of future
-work on optimization of hole closures and
-indeterminate forms into a separate Scalability Challenges subsection.
+That said, we agree that when an indeterminate result is large or contains many hole
+closures, scalability challenges could arise. In the final paper, we will pull out 
+the discussion of UI scalability challenges from Line 1184 and combine it with a brief
+acknowledgement of memory overhead and other performance challenges to form a  Scalability Challenges subsection in Sec. 5.
 
 # B
 
-We will clarify that the proof of Theorem 4.2 does not require formalizing the notion that
-"evaluation order does not matter", which is why we left discussion to the
-supplement. 
+The proof of Theorem 4.2 does not require formalizing the
+notion that "evaluation order does not matter", so we left that
+discussion to the supplement. We will clarify.
 
 Siek and Taha (2006) defined two application rules. Matching consolidates these.
 
-By "essentially standard...", we mean that Complete Progress coincides with 
-Progress for STLC (no mention of boxedval or indet).
+By "essentially standard...", we mean that Complete Progress coincides with
+Progress for STLC (i.e. no mention of boxedval or indet).
 
-Per Line 884-887, X is complete when there are no holes or
-failed casts in X. Complete expressions cannot be indeterminate.
+X is complete when there are no holes or failed casts in X (Line 884). Complete expressions cannot be indeterminate.
 
 # C
 
 > When, if even, does type checking of the initial program fail?
 
-In Hazel(nut), Sensibility (Proposition 3.14) implies that typechecking
-never fails.
+In Hazel(nut), Sensibility (Proposition 3.14) implies that typechecking never
+fails.
 
 > Term expansion and type checking from the theory seem slow
 
-Sensibility also implies that typechecking need not occur per edit -- edit actions insert holes as necessary.
+Sensibility also implies that the typechecker does not run per edit -- edit
+actions insert holes as necessary.
 
-The expander is a single pass over the expression, so in
-programs with any non-trivial control flow, the cost of evaluation dominates.
+Expansion is a simple single pass, so the cost of evaluation dominates in programs with non-trivial control flow.
 
 > a user study seems to be needed to evaluate the claim made in this paper that
 > Hazelnut Live aids program development
 
-Our claim in this paper is that substantially more information about run-time
-behavior can be made available when the program is incomplete by
-combining concepts from the Hazelnut calculus, gradual type theory and CMTT. How to best present this information to human programmers is an open question
-worthy of additional human factors research. Lines 1180-1183 state
-that "we make no empirical claims regarding the usability of the particular user
-interface presented in this paper. The Hazel user interface as presented is
-a proof of concept [...]". We will make this clearer in the final introduction. 
-We do plan to conduct user studies in classrooms as Hazel develops, but
-this is, as B suggests, part of a longer term research vision. We hope that there will be many
-other designs rooted in the semantics developed by this paper, as suggested
-in the conclusion.
+Our claim is only that substantially more information about 
+incomplete programs can be made available by combining
+concepts from Hazelnut, GTLC and CMTT. The question of how to best
+present this information to humans will require 
+further human factors research. Line 1180 states "we make no
+empirical claims [...] The Hazel user interface as presented is a proof of
+concept [...]". We will make this clear in the final introduction. We do plan
+to study Hazel in classrooms, but this is, as B suggests, part of a long-term research program. We hope that there will be many designs rooted in these semantics.
 
+# D
 
+Once we make the non-obvious observation that combining Hazelnut+GTLC+CMTT can address the gap problem, many (but not all) technical details do "fall out" naturally, but we consider this a strength of our paper!
 
+> Why do you borrow typing rules from CMTT?
 
-# Review D TODO: stuff from review D
+The observation is that metavariable closures from CMTT correspond to expression hole closures, which enable various services, namely the live context inspector and fill-and-resume.
 
+> Isn't one of those unnecessary?
+
+We need to substitute inside to evaluate inside non-empty holes. To later perform hole filling, we also need to record the substitution.
+
+> partial evaluation
+
+We discussed partial evaluation briefly on Line 1102, but we agree that further
+discussion, specifically of the concept of residuals, is warranted in the final
+version.
 
 ---
 
