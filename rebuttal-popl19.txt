@@ -37,7 +37,7 @@ fails.
 Sensibility also implies that the typechecker does not run per edit -- edit
 actions insert holes as necessary.
 
-Expansion is a simple single pass, so the cost of evaluation dominates in programs with non-trivial control flow.
+Expansion is single-pass, so the cost of evaluation dominates in programs with non-trivial control flow.
 
 > a user study seems to be needed to evaluate the claim made in this paper that
 > Hazelnut Live aids program development
@@ -53,21 +53,23 @@ to study Hazel in classrooms, but this is, as B suggests, part of a long-term re
 
 # D
 
-Once we make the non-obvious observation that combining Hazelnut+GTLC+CMTT can address the gap problem, many (but not all) technical details do "fall out" naturally, but we consider this a strength of our paper!
+Once we make the non-obvious observation that combining Hazelnut+GTLC+CMTT can address the gap problem, many (but not all) technical details do "fall out" naturally, but we consider this a strength of the paper!
 
 > Why do you borrow typing rules from CMTT?
 
-The observation is that metavariable closures from CMTT correspond to expression hole closures, which enable various services, namely the live context inspector and fill-and-resume.
+The observation is that metavariable closures from CMTT correspond to hole closures, which enable various services, namely the live context inspector and fill-and-resume.
 
 > Isn't one of those unnecessary?
 
-We need to substitute inside to evaluate inside non-empty holes. To later perform hole filling, we also need to record the substitution.
+We need to substitute inside to evaluate inside non-empty holes. For hole filling, we also need to record the substitution.
 
 > partial evaluation
 
-We discussed partial evaluation briefly on Line 1102, but we agree that further
-discussion, specifically of the concept of residuals, is warranted in the final
-version.
+We discussed partial evaluation briefly on Line 1102. We agree that further discussion, specifically of residuals, is warranted in the final version.
+
+> Don't do that!
+
+Agreed, we will correct this in the final discussion.
 
 ---
 
