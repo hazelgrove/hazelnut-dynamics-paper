@@ -8,18 +8,38 @@
 \input{fig-syntax}
 \input{fig-bidirectional-typing}
 
-We will now make the intuitions developed in the previous section formally precise by specifying a core calculus, which we call \HazelnutLive, and developing its metatheory.
+We will now make the intuitions developed in the previous section formally
+precise by specifying a core calculus, which we call \HazelnutLive, and
+developing its metatheory.
 
-\parahead{Overview} The syntax of the core calculus given in Fig.~\ref{fig:hazelnut-live-syntax} consists of types and expressions with holes.
-We distinguish between {external} expressions, $e$, and {internal} expressions, $d$.
-External expressions correspond to programs as entered by the programmer
-(see Sec.~\ref{sec:intro} for discussion of implicit, manual, semi-automated and fully automated hole entry methods).
-Each well-typed external expression (see Sec.~\ref{sec:external-statics} below) expands to a well-typed internal expression (see Sec.~\ref{sec:expansion}) before it is evaluated (see Sec.~\ref{sec:evaluation}).
-We take this approach, notably also taken in the ``redefinition'' of Standard ML by \citet{Harper00atype-theoretic}, because (1) the external language supports type inference and explicit type ascriptions, $\hexp : \htau$, but it is formally simpler to eliminate ascriptions and specify a type assignment system when defining the dynamic semantics; and
-(2) we need additional syntactic machinery during evaluation for tracking hole closures and dynamic type casts.
-This machinery is inserted by the expansion step, rather than entered explicitly by the programmer.
-In this regard, the internal language is analogous to the cast calculus in the gradually typed lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the \HazelnutLive internal language goes beyond the cast calculus in several respects. We have mechanized these formal developments using the Agda proof assistant \cite{norell:thesis,norell2009dependently}
-(see Sec.~\ref{sec:agda-mechanization}). Rule names in this section, e.g. \rulename{SVar}, correspond to variable names used in the mechanization. The \Hazel implementation substantially follows the formal specification of \Hazelnut (for the editor component) and \HazelnutLive (for the semantics), and we can formally state a continuity invariant for a putative combined calculus (see Sec.~\ref{sec:implementation}).
+\parahead{Overview} The syntax of the core calculus given in
+Fig.~\ref{fig:hazelnut-live-syntax} consists of types and expressions with
+holes.  We distinguish between {external} expressions, $e$, and {internal}
+expressions, $d$.  External expressions correspond to programs as entered
+by the programmer (see Sec.~\ref{sec:intro} for discussion of implicit,
+manual, semi-automated and fully automated hole entry methods).  Each
+well-typed external expression (see Sec.~\ref{sec:external-statics} below)
+expands to a well-typed internal expression (see Sec.~\ref{sec:expansion})
+before it is evaluated (see Sec.~\ref{sec:evaluation}).  We take this
+approach, notably also taken in the ``redefinition'' of Standard ML by
+\citet{Harper00atype-theoretic}, because (1) the external language supports
+type inference and explicit type ascriptions, $\hexp : \htau$, but it is
+formally simpler to eliminate ascriptions and specify a type assignment
+system when defining the dynamic semantics; and (2) we need additional
+syntactic machinery during evaluation for tracking hole closures and
+dynamic type casts.  This machinery is inserted by the expansion step,
+rather than entered explicitly by the programmer.  In this regard, the
+internal language is analogous to the cast calculus in the gradually typed
+lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will
+see the \HazelnutLive internal language goes beyond the cast calculus in
+several respects. We have mechanized these formal developments using the
+Agda proof assistant \cite{norell:thesis,norell2009dependently} (see
+Sec.~\ref{sec:agda-mechanization}). Rule names in this section,
+e.g. \rulename{SVar}, correspond to variable names used in the
+mechanization. The \Hazel implementation substantially follows the formal
+specification of \Hazelnut (for the editor component) and \HazelnutLive
+(for the semantics), and we can formally state a continuity invariant for a
+putative combined calculus (see Sec.~\ref{sec:implementation}).
 
 % \rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
 % ITGround, and ITExpand. that's not many, and those rules don't look much more
@@ -190,9 +210,9 @@ Consequently, analytic expansion reports the type actually assigned to the expan
 %
 For example, we can derive that $\expandAna{\hGamma}{c}{\tehole}{c}{b}{\emptyset}$.% where $\emptyset$ is the empty hole context.
 
-Before describing the rules in detail, let us state two other guiding theorems.
-The following theorem establishes that an expansion exists for every well-typed external expression.
-The mechanization also establishes that when an expansion exists, it is unique (not shown).
+Before describing the rules in detail, let us state two other guiding
+theorems.  The following theorem establishes that an expansion exists for
+every well-typed external expression.
  \begin{thm}[Expandability] \label{thm:expandability}~
   \begin{enumerate}[nolistsep]
     \item
@@ -204,7 +224,8 @@ The mechanization also establishes that when an expansion exists, it is unique (
       then $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
       for some $\dexp$ and $\htau'$ and $\Delta$.
   \end{enumerate}
-\end{thm}
+ \end{thm}
+
 % \noindent
 % The following theorem establishes that when an expansion exists, it is unique.
 % \begin{thm}[Expansion Unicity] \label{thm:expansion-unicity}~
@@ -219,8 +240,9 @@ The mechanization also establishes that when an expansion exists, it is unique (
 %   %     then $\dexp=\dexp'$ and $\htau_2=\htau_2'$ and $\Delta=\Delta'$.
 %   % \end{enumerate}
 % \end{thm}
-% \noindent
-The following theorem establishes that expansion generalizes external typing.
+\noindent
+The following theorem establishes that expansion generalizes external
+typing.
 \begin{thm}[Expansion Generality] \label{thm:expansion-generality}~
   \begin{enumerate}[nolistsep]
     \item
@@ -229,6 +251,21 @@ The following theorem establishes that expansion generalizes external typing.
     \item
       If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
       then $\hana{\hGamma}{\hexp}{\htau}$.
+  \end{enumerate}
+\end{thm}
+
+We also establish that the elaboration produces unique results.
+\begin{thm}[Elaboration Unicity] \label{thm:expansion-unicity}~
+  \begin{enumerate}[nolistsep]
+  \item If $\expandSyn{\hGamma}{\hexp}{\htau_1}{\dexp{}_1}{\Delta_1}$ and
+    $\expandSyn{\hGamma}{\hexp}{\htau_2}{\dexp{}_2}{\Delta_2}$, then
+    $\htau_1 = \htau_2$ and $\dexp{}_1 = \dexp{}_2$ and $\Delta_1 =
+    \Delta_2$.
+  \item If
+    $\expandAna{\hGamma}{\hexp}{\htau}{\dexp{}_1}{\htau_1}{\Delta_1}$ and
+    $\expandAna{\hGamma}{\hexp}{\htau}{\dexp{}_2}{\htau_2}{\Delta_2}$, then
+    $\htau_1 = \htau_2$ and $\dexp{}_1 = \dexp{}_2$ and $\Delta_1 =
+    \Delta_2$
   \end{enumerate}
 \end{thm}
 
@@ -746,13 +783,15 @@ with running \emph{complete} programs, i.e. those
 with no type or expression holes.
 %
 % Appendix~\ref{sec:additional-defns}
-The \appendixName defines the predicates~$\isComplete{e}$, $\isComplete{\htau}$, $\isComplete{\hGamma}$ and~$\isComplete{d}$.
+The \appendixName{} defines the predicates~$\isComplete{e}$,
+$\isComplete{\htau}$, $\isComplete{\hGamma}$ and~$\isComplete{d}$.
 %
 Of note, failed casts cannot appear in complete internal expressions.
 %
-The following theorem establishes that expansion preserves program completeness.
+The following theorem establishes that expansion preserves program
+completeness.
 
-\begin{thm}[Complete Expansion] 
+\begin{thm}[Complete Expansion]
 % ~
   % \begin{enumerate}[nolistsep]
       If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$
@@ -831,12 +870,12 @@ The documentation provided with the mechanization has more details.
 \subsection{Implementation and Continuity}\label{sec:implementation}
 \vspace{-2px}
 
-The \Hazel implementation demonstrated in Sec.~\ref{sec:examples} 
+The \Hazel implementation demonstrated in Sec.~\ref{sec:examples}
 includes an unoptimized interpreter, written in OCaml, that implements the semantics as described
 in this section, albeit for an \Elm-like language that goes somewhat beyond the simple
 calculus here. As with many full-scale systems, there is not currently a formal
 specification for the full \Elm{} or \Hazel language, but the \appendixName
-discusses how the standard approach for deriving a ``gradualized'' version of a 
+discusses how the standard approach for deriving a ``gradualized'' version of a
 language construct provides most of the necessary scaffolding \cite{DBLP:conf/popl/CiminiS16}, and provides some examples.
 
 % The supplemental material includes a browser-based implementation
@@ -859,7 +898,7 @@ from the structure editor calculus of~\Hazelnut, but with support for more natur
 edit actions that automatically insert empty and non-empty holes as necessary
 to guarantee that every edit state has some (possibly incomplete) type. This corresponds to the top-level Sensibility invariant established for the \Hazelnut calculus by \citet{popl-paper}, reproduced below:
 \begin{prop}[Sensibility]
-  \label{thrm:actsafe} 
+  \label{thrm:actsafe}
   If $\hsyn{\Gamma}{\removeSel{\zexp}}{\htau}$ and
     $\performSyn{\Gamma}{\zexp}{\htau}{\alpha}{\zexp'}{\tau'}$ then
     $\hsyn{\hGamma}{\removeSel{\zexp'}}{\htau'}$.
@@ -867,7 +906,7 @@ to guarantee that every edit state has some (possibly incomplete) type. This cor
   %   $\performAna{\hGamma}{\zexp}{\htau}{\alpha}{\zexp'}$ then
   %   $\hana{\hGamma}{\removeSel{\zexp'}}{\htau}$.
 \end{prop}
-\noindent 
+\noindent
 Here, $\zexp$ is an editor state (an expression with a cursor), and $\removeSel{\zexp}$ drops the cursor, producing an expression ($e$ in this paper). So in words, ``if, ignoring the cursor, the editor state, $\removeSel{\zexp}$, initially has type $\htau$ and we perform an edit action $\alpha$ on it, then the resulting editor state, $\removeSel{\zexp'}$, will have type $\htau'$''.
 
 
@@ -875,11 +914,11 @@ By composing this Sensibility property with
 the \Property{Expandability}, \Property{Typed Expansion}, \Property{Progress} and \Property{Preservation} properties from this section, we establish a
 uniquely powerful Continuity invariant:
 \begin{corol}[Continuity]
-  \label{thrm:actsafe} 
+  \label{thrm:actsafe}
   If $\hsyn{\emptyset}{\removeSel{\zexp}}{\htau}$ and
     $\performSyn{\emptyset}{\zexp}{\htau}{\alpha}{\zexp'}{\tau'}$ then
     $\expandSyn{\emptyset}{\removeSel{\zexp'}}{\htau'}{\dexp}{\Delta}$
-      for some $\dexp$ and $\Delta$ such that 
+      for some $\dexp$ and $\Delta$ such that
 $\hasType{\Delta}{\emptyset}{\dexp}{\htau'}$
 and either
   (a) $\stepsToD{}{\dexp}{\dexp'}$ for some $d'$ such that $\hasType{\Delta}{\emptyset}{\dexp'}{\htau'}$; or
