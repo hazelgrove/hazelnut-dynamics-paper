@@ -593,13 +593,13 @@ indeterminate forms.%
         cleaner for our purposes, because we are distinguishing several
         classes of final forms.
 }
-The judgement $\isBoxedValue{d}$ defines (possibly-)boxed values as
-either ordinary values~(Rule~\rulename{BVVal}), or one of two cast forms: casts
-between disequal function types and casts from a ground
-type to the hole type. In each case, the cast must appear inductively on a boxed
-value.
-These forms are irreducible because they represent values that have been boxed
-but have never flowed into a corresponding ``unboxing'' cast, discussed below.
+The judgement $\isBoxedValue{d}$ defines (possibly-)boxed values as either
+ordinary values~(Rule~\rulename{BVVal}), or one of two cast forms: casts
+between unequal function types and casts from a ground type to the hole
+type. In each case, the cast must appear inductively on a boxed value.
+These forms are irreducible because they represent values that have been
+boxed but have never flowed into a corresponding ``unboxing'' cast,
+discussed below.
 %
 %, which correspond to the values from the cast calculus and include
 %the classic values from the lambda calculus, distingui%shed by
@@ -744,7 +744,7 @@ $\dcastfail{\dexp}{\htau_1}{\htau_2}$, arises.
 %
 Rule \rulename{TAFailedCast} specifies that a failed cast is well-typed exactly
 when $d$ has ground type $\tau_1$ and $\tau_2$ is a ground type
-disequal to $\tau_1$.
+not equal to $\tau_1$.
 %
 Rule \rulename{IFailedCast} specifies that a failed cast operates as an
 indeterminate form (once $d$ is final), i.e. evaluation does not stop. For simplicity, we do not include blame labels as found in some accounts of gradual typing \cite{DBLP:conf/esop/WadlerF09,DBLP:conf/snapl/SiekVCB15}, but it would be straightforward to do so by recording the blame labels from the two constituent casts on the two arrows of the failed cast.
