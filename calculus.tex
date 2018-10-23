@@ -822,7 +822,7 @@ necessary rules or premises.
 %
 \begin{thm}[Progress]
   If $\hasType{\Delta}{\emptyset}{\dexp}{\htau}$ then either
-  (a) $\stepsToD{}{\dexp}{\dexp'}$ or
+  (a) there exists $\dexp'$ such that $\stepsToD{}{\dexp}{\dexp'}$ or
   (b) $\isBoxedValue{\dexp}$ or
   (c) $\isIndet{\dexp}$.
 \end{thm}
@@ -879,10 +879,9 @@ program always results in classic values, not boxed values nor
 indeterminate forms.
 %
 \begin{thm}[Complete Progress]
-  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
-  and $\isComplete{\dexp}$
-  then either $\stepsToD{}{\dexp}{\dexp'}$
-  or $\isValue{\dexp}$.
+  If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$ and $\isComplete{\dexp}$
+  then either there exists a $\dexp'$ such that
+  $\stepsToD{}{\dexp}{\dexp'}$, or $\isValue{\dexp}$.
 \end{thm}
 
 %% \begin{figure}[!ht]
