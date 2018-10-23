@@ -1,12 +1,12 @@
 \PassOptionsToPackage{svgnames,dvipsnames,svgnames}{xcolor}
 \newif\ifarxiv
-\arxivtrue
+\arxivfalse
 \ifarxiv
 \documentclass[acmsmall,nonacm]{acmart}
 \else
 %%% Note: arxiv does not want line numbers (they are detected somehow, and are not allowed)
-\documentclass[acmsmall,review,anonymous,nonacm]{acmart}
-\settopmatter{printfolios=false,printccs=false,printacmref=false}
+\documentclass[acmsmall]{acmart}
+% \settopmatter{printfolios=false,printccs=false,printacmref=false}
 % \settopmatter{printccs=false,printacmref=false}
 \fi
 
@@ -142,8 +142,8 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 \acmVolume{1}
 \acmNumber{1}
 \acmArticle{1}
-\acmYear{2018}
-\acmMonth{3}
+\acmYear{2019}
+\acmMonth{1}
 \acmDOI{10.1145/nnnnnnn.nnnnnnn}
 \startPage{1}
 \else\makeatother
@@ -151,7 +151,7 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 %% Supplied to authors by publisher for camera-ready submission
 % \acmConference[]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2017}{New York, NY, USA}
 
-\acmYear{2018}
+\acmYear{2019}
 \acmISBN{978-x-xxxx-xxxx-x/YY/MM}
 \acmDOI{10.1145/nnnnnnn.nnnnnnn}
 \startPage{1}
