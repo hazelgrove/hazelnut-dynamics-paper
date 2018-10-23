@@ -545,11 +545,15 @@ transition system over internal expressions equipped with a meaningful
 notion of type safety even for incomplete programs, i.e. expressions typed
 under a non-empty hole context, $\Delta$.  We establish that evaluation
 does not stop immediately when it encounters a hole, nor when a cast fails,
-by precisely characterizing when evaluation \emph{does} stop.  We also
-establish that an essentially standard notion of type safety holds when
-running complete programs.
+by precisely characterizing when evaluation \emph{does} stop. In the case
+of complete programs, we also recover the familiar statements of progress
+and preservation for the simply typed lambda calculus.
 
-It is perhaps worth stating at the outset that a dynamic semantics equipped with these properties does not simply ``fall out'' from the observations made above that (1) empty hole closures correspond to metavariable closures from CMTT \cite{Nanevski2008} and (2) casts also arise in gradual type theory \cite{DBLP:conf/snapl/SiekVCB15}.
+It is perhaps worth stating at the outset that a dynamic semantics equipped
+with these properties does not simply ``fall out'' from the observations
+made above that (1) empty hole closures correspond to metavariable closures
+from CMTT \cite{Nanevski2008} and (2) casts also arise in gradual type
+theory \cite{DBLP:conf/snapl/SiekVCB15}.
 %
 We say more in Sec.~\ref{sec:relatedWork}.
 %
