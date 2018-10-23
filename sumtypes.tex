@@ -3,7 +3,7 @@
 \subsection{Sum Types}
 
 
-%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 %%%%%%% Syntax
 We extend the syntax for sum types as follows:
 \[
@@ -24,7 +24,7 @@ We extend the syntax for sum types as follows:
 \end{array}
 \]
 
-%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 %%%%%%% Definition of Join: a meta-level, binary function over types.
 
 %\newcommand{\JoinTypes}[2]{\textsf{join}~~#1~~#2}
@@ -59,19 +59,19 @@ We extend the syntax for sum types as follows:
 \]
 
 \begin{thm}[Joins]
-If $\JoinTypes{\tau_1}{\tau_2} = \tau$ 
+If $\JoinTypes{\tau_1}{\tau_2} = \tau$
 %
 then types $\tau_1$, $\tau_2$ and $\tau$ are pair-wise consistent, i.e.,
 %
-$\tconsistent{\tau_1}{\tau_2}$, 
-$\tconsistent{\tau_1}{\tau}$ and 
+$\tconsistent{\tau_1}{\tau_2}$,
+$\tconsistent{\tau_1}{\tau}$ and
 $\tconsistent{\tau_2}{\tau}$.
 \begin{proof}
 By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 \end{proof}
 \end{thm}
 
-%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 \vsepRule
 
 \judgbox
@@ -83,42 +83,42 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 \inferrule[]{~}{\summatch{\tehole}{\tsum{\tehole}{\tehole}}}
 \end{mathpar}
 
-%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 \vsepRule
 
 \judgbox
-  {\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}}
+  {\elabAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}}
   {$\hexp$ analyzes against type $\htau_1$ and
-   expands to $\dexp$ of consistent type $\htau_2$}
+   elaborates to $\dexp$ of consistent type $\htau_2$}
 \begin{mathpar}
 \inferrule[]{
   \summatch{\htau}{\tsum{\htau_1}{\htau_2}}
   \\
-  \expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau'_1}{\Delta}
+  \elabAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau'_1}{\Delta}
 }{
-  \expandAna{\hGamma}{\hinL{\hexp}}{\htau}{\dinL{\tau_2}{\dexp}}{\tsum{\htau_1'}{\htau_2}}{\Delta}
+  \elabAna{\hGamma}{\hinL{\hexp}}{\htau}{\dinL{\tau_2}{\dexp}}{\tsum{\htau_1'}{\htau_2}}{\Delta}
 }
 
 \inferrule[]{
   \summatch{\htau}{\tsum{\htau_1}{\htau_2}}
   \\
-  \expandAna{\hGamma}{\hexp}{\htau_2}{\dexp}{\htau'_2}{\Delta}
+  \elabAna{\hGamma}{\hexp}{\htau_2}{\dexp}{\htau'_2}{\Delta}
 }{
-  \expandAna{\hGamma}{\hinR{\hexp}}{\htau}{\dinL{\tau_1}{\dexp}}{\tsum{\htau_1}{\htau'_2}}{\Delta}
+  \elabAna{\hGamma}{\hinR{\hexp}}{\htau}{\dinL{\tau_1}{\dexp}}{\tsum{\htau_1}{\htau'_2}}{\Delta}
 }
 
 \inferrule[]{
-  \expandSyn{\hGamma}{\hexp_1}{\htau_1}{\dexp_1}{\Delta_1}
+  \elabSyn{\hGamma}{\hexp_1}{\htau_1}{\dexp_1}{\Delta_1}
   \\
   \summatch{\htau_1}{\tsum{\htau_{11}}{\htau_{12}}}
   \\
   \JoinTypes{\htau_2}{\htau_3} = {\htau'}
   \\
-  \expandAna{\hGamma, x:\htau_{11}}{\hexp_2}{\htau}{\dexp_2}{\htau_2}{\Delta_2}
+  \elabAna{\hGamma, x:\htau_{11}}{\hexp_2}{\htau}{\dexp_2}{\htau_2}{\Delta_2}
   \\
-  \expandAna{\hGamma, y:\htau_{12}}{\hexp_3}{\htau}{\dexp_3}{\htau_3}{\Delta_3}
+  \elabAna{\hGamma, y:\htau_{12}}{\hexp_3}{\htau}{\dexp_3}{\htau_3}{\Delta_3}
 }{
-  \expandAna{\hGamma}
+  \elabAna{\hGamma}
             {\hcase{e_1}{x}{e_2}{y}{e_3}}
             {\htau}
             {\dcase
@@ -131,7 +131,7 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
             }
 \end{mathpar}
 
-%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 
 \judgbox{\hasType{\Delta}{\hGamma}{\dexp}{\htau}}{$\dexp$ is assigned type $\htau$}
 \begin{mathpar}
@@ -151,15 +151,15 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
   \hasType{\Delta}{\hGamma}{\dexp_1}{\tsum{\htau_1}{\htau_2}}
   \\
   \hasType{\Delta}{\hGamma,x:\htau_1}{\dexp_2}{\htau}
-  \\  
+  \\
   \hasType{\Delta}{\hGamma,y:\htau_2}{\dexp_3}{\htau}
 }{
   \hasType{\Delta}{\hGamma}{\dcase{\dexp_1}{x}{\dexp_2}{y}{\dexp_3}}{\htau}
 }
 \end{mathpar}
 
-%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
-  
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
+
 \judgbox{\isValue{\dexp}}{$\dexp$ is a value}
 \begin{mathpar}
 \inferrule[]
@@ -193,7 +193,7 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 {\isBoxedValue{\dinR{\htau}{\dexp}}}
 
 \inferrule[]
-{\tsum{\htau_1}{\htau_2} \ne 
+{\tsum{\htau_1}{\htau_2} \ne
  \tsum{\htau_1'}{\htau_2'}
  \\
  \isBoxedValue{\dexp}
@@ -217,7 +217,7 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 {\isIndet{\dinR{\htau}{\dexp}}}
 
 \inferrule[]
-{\tsum{\htau_1}{\htau_2} \ne 
+{\tsum{\htau_1}{\htau_2} \ne
  \tsum{\htau_1'}{\htau_2'}
  \\
  \isIndet{\dexp}
@@ -236,13 +236,13 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
   \dexp_1 \ne \dcasttwo{\dexp_1'}{\tsum{\htau_1}{\htau_2}}{\tsum{\htau_1'}{\htau_2'}}
   \\
   \isIndet{\dexp_1}
-}  
+}
 {
   \dcase{\dexp_1}{x}{\dexp_2}{y}{\dexp_3}
 }
 \end{mathpar}
 
-%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 
 \begin{mathpar}
 \arraycolsep=4pt\begin{array}{rllllll}
@@ -314,35 +314,34 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 }
 \end{mathpar}
 
-%% \begin{thm}[Canonical value forms--Sums] 
+%% \begin{thm}[Canonical value forms--Sums]
 %% If $\hasType{\Delta}{\EmptyhGamma}{\dexp}{\tsum{\htau}{\htau}}$
 %% and $\isValue{\dexp}$ then either
 %% \begin{enumerate}
-%% \item 
-%% $\dexp = \dinL{\tau_2}{\dexp'}$ 
-%% where $\isValue{\dexp'}$ 
+%% \item
+%% $\dexp = \dinL{\tau_2}{\dexp'}$
+%% where $\isValue{\dexp'}$
 %% and $\hasType{\Delta}{\EmptyhGamma}{\dexp'}{\htau_1}$
 %% \item
-%% $\dexp = \dinR{\tau_1}{\dexp'}$ 
-%% where $\isValue{\dexp'}$ 
+%% $\dexp = \dinR{\tau_1}{\dexp'}$
+%% where $\isValue{\dexp'}$
 %% and $\hasType{\Delta}{\EmptyhGamma}{\dexp'}{\htau_1}$
 %% \end{enumerate}
 %% \end{thm}
 
-%% \begin{thm}[Canonical boxed value forms--Sums] 
+%% \begin{thm}[Canonical boxed value forms--Sums]
 %% If $\hasType{\Delta}{\EmptyhGamma}{\dexp}{\tsum{\htau}{\htau}}$
 %% and $\isValue{\dexp}$ then either
 %% \begin{enumerate}
-%% \item 
-%% $\dexp = \dinL{\tau_2}{\dexp'}$ 
-%% where $\isValue{\dexp'}$ 
+%% \item
+%% $\dexp = \dinL{\tau_2}{\dexp'}$
+%% where $\isValue{\dexp'}$
 %% and $\hasType{\Delta}{\EmptyhGamma}{\dexp'}{\htau_1}$
 %% \item
-%% $\dexp = \dinR{\tau_1}{\dexp'}$ 
-%% where $\isValue{\dexp'}$ 
+%% $\dexp = \dinR{\tau_1}{\dexp'}$
+%% where $\isValue{\dexp'}$
 %% and $\hasType{\Delta}{\EmptyhGamma}{\dexp'}{\htau_1}$
 %% \end{enumerate}
 %% \end{thm}
 
-%% %%%%%%% 
-
+%% %%%%%%%

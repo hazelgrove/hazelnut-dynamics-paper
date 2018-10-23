@@ -1,0 +1,161 @@
+% !TEX root = hazelnut-dynamics.tex
+
+\begin{figure}[p]
+\judgbox
+  {\elabSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}
+  {$\hexp$ synthesizes type $\htau$ and elaborates to $\dexp$}
+\begin{mathpar}
+\inferrule[ESConst]{ }{
+  \elabSyn{\hGamma}{c}{b}{c}{\emptyset}
+}
+\and
+\inferrule[ESVar]{
+  x : \htau \in \hGamma
+}{
+  \elabSyn{\hGamma}{x}{\htau}{x}{\emptyset}
+}
+\and
+\inferrule[ESLam]{
+  \elabSyn{\hGamma, x : \htau_1}{\hexp}{\htau_2}{\dexp}{\Delta}
+}{
+  \elabSyn{\hGamma}{\halam{x}{\htau_1}{\hexp}}{\tarr{\htau_1}{\htau_2}}{\halam{x}{\htau_1}{\dexp}}{\Delta}
+}
+\and
+\inferrule[ESAp]{
+  \hsyn{\hGamma}{\hexp_1}{\htau_1}\\
+  \arrmatch{\htau_1}{\tarr{\htau_2}{\htau}}
+  \\\\
+  \elabAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\htau_1'}{\Delta_1}\\
+  \elabAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau_2'}{\Delta_2}
+}{
+  \elabSyn
+    {\hGamma}
+    {\hap{\hexp_1}{\hexp_2}}
+    {\htau}
+    {\hap{(\dcasttwo{\dexp_1}{\htau_1'}{\tarr{\htau_2}{\htau}})}
+         {\dcasttwo{\dexp_2}{\htau_2'}{\htau_2}}}
+    {\Dunion{\Delta_1}{\Delta_2}}
+}
+%
+%% \inferrule[ESAp1]{
+%%   \hsyn{\hGamma}{\hexp_1}{\tehole}\\
+%%   \elabAna{\hGamma}{\hexp_1}{\tarr{\htau_2}{\tehole}}{\dexp_1}{\htau_1}{\Delta_1}\\
+%%   \elabAna{\hGamma}{\hexp_2}{\tehole}{\dexp_2}{\htau_2}{\Delta_2}
+%% }{
+%%   \elabSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\tehole}{\hap{(\dcast{\tarr{\htau_2}{\tehole}}{\dexp_1})}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+%% }
+%%
+%% \inferrule[ESAp2]{
+%%   \elabSyn{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\Delta_1}\\
+%%   \elabAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau'_2}{\Delta_2}\\
+%%   \htau_2 \neq \htau'_2
+%% }{
+%%   \elabSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{\dexp_1}{\dcast{\htau_2}{\dexp_2}}}{\Dunion{\Delta_1}{\Delta_2}}
+%% }
+%%
+%% \inferrule[ESAp3]{
+%%   \elabSyn{\hGamma}{\hexp_1}{\tarr{\htau_2}{\htau}}{\dexp_1}{\Delta_1}\\
+%%   \elabAna{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\htau_2}{\Delta_2}
+%% }{
+%%   \elabSyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}{\hap{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+%% }\\
+%
+%
+% \inferrule[expand-pair]{
+%   \elabSyn{\hGamma}{\hexp_1}{\htau_1}{\dexp_1}{\Delta_1}\\
+%   \elabSyn{\hGamma}{\hexp_2}{\htau_2}{\dexp_2}{\Delta_2}
+% }{
+%   \elabSyn{\hGamma}{\hpair{\hexp_1}{\hexp_2}}{\tprod{\htau_1}{\htau_2}}{\hpair{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+% }
+%
+% \inferrule[expand-prj]{
+%   a
+% }{
+%   b
+% }
+%
+% (inj)
+%
+%
+% \inferrule[expand-plus]{ }{
+%   \elabSyn{\hGamma}{\hadd{\hexp_1}{\hexp_2}}{\tnum}{\hadd{\dexp_1}{\dexp_2}}{\Dunion{\Delta_1}{\Delta_2}}
+% }
+\and
+\inferrule[ESEHole]{ }{
+  \elabSyn{\hGamma}{\hehole{u}}{\tehole}{\dehole{u}{\idof{\hGamma}}{}}{\Dbinding{u}{\hGamma}{\tehole}}
+}
+\and
+\inferrule[ESNEHole]{
+  \elabSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}
+}{
+  \elabSyn{\hGamma}{\hhole{\hexp}{u}}{\tehole}{\dhole{\dexp}{u}{\idof{\hGamma}}{}}{\Delta, \Dbinding{u}{\hGamma}{\tehole}}
+}
+\and
+\inferrule[ESAsc]{
+  \elabAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}
+}{
+  \elabSyn{\hGamma}{\hexp : \htau}{\htau}{\dcasttwo{\dexp}{\htau'}{\htau}}{\Delta}
+}
+%% \inferrule[ESAsc1]{
+%%   \elabAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}\\
+%%   \htau \neq \htau'
+%% }{
+%%   \elabSyn{\hGamma}{\hexp : \htau}{\htau}{\dcast{\htau}{\dexp}}{\Delta}
+%% }
+%%
+%% \inferrule[ESAsc2]{
+%%   \elabAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau}{\Delta}
+%% }{
+%%   \elabSyn{\hGamma}{\hexp : \htau}{\htau}{\dexp}{\Delta}
+%% }
+\end{mathpar}
+
+\vsepRule
+
+\judgbox
+  {\elabAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}}
+  {$\hexp$ analyzes against type $\htau_1$ and
+   elaborates to $\dexp$ of consistent type $\htau_2$}
+\begin{mathpar}
+\inferrule[EALam]{
+  \arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}\\
+  \elabAna{\hGamma, x : \htau_1}{\hexp}{\htau_2}{\dexp}{\htau'_2}{\Delta}
+}{
+  \elabAna{\hGamma}{\hlam{x}{\hexp}}{\htau}{\halam{x}{\htau_1}{\dexp}}{\tarr{\htau_1}{\htau_2'}}{\Delta}
+}
+
+%% \inferrule[EALam]{
+%%   \elabAna{\hGamma, x : \htau_1}{\hexp}{\htau_2}{\dexp}{\htau'_2}{\Delta}
+%% }{
+%%   \elabAna{\hGamma}{\hlam{x}{\hexp}}{\tarr{\htau_1}{\htau_2}}{\halam{x}{\htau_1}{\dexp}}{\tarr{\htau_1}{\htau_2'}}{\Delta}
+%% }
+%%
+%% \inferrule[EALamHole]{
+%%   \elabAna{\hGamma, x : \tehole}{\hexp}{\tehole}{\dexp}{\htau}{\Delta}
+%% }{
+%%   \elabAna{\hGamma}{\hlam{x}{\hexp}}{\tehole}{\halam{x}{\tehole}{\dexp}}{\tarr{\tehole}{\htau}}{\Delta}
+%% }
+%%
+\inferrule[EASubsume]{
+  \hexp \neq \hehole{u}\\
+  \hexp \neq \hhole{\hexp'}{u}\\\\
+  \elabSyn{\hGamma}{\hexp}{\htau'}{\dexp}{\Delta}\\
+  \tconsistent{\htau}{\htau'}
+}{
+  \elabAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}
+}
+
+\inferrule[EAEHole]{ }{
+  \elabAna{\hGamma}{\hehole{u}}{\htau}{\dehole{u}{\idof{\hGamma}}{}}{\htau}{\Dbinding{u}{\hGamma}{\htau}}
+}
+
+\inferrule[EANEHole]{
+  \elabSyn{\hGamma}{\hexp}{\htau'}{\dexp}{\Delta}\\
+}{
+  \elabAna{\hGamma}{\hhole{\hexp}{u}}{\htau}{\dhole{\dexp}{u}{\idof{\hGamma}}{}}{\htau}{\Delta, \Dbinding{u}{\hGamma}{\htau}}
+}
+\end{mathpar}
+\CaptionLabel{Elaboration}{fig:elaboration}
+\label{fig:expandSyn}
+\label{fig:expandAna}
+\end{figure}

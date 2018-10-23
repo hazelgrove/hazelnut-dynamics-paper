@@ -19,21 +19,22 @@ expressions, $d$.  External expressions correspond to programs as entered
 by the programmer (see Sec.~\ref{sec:intro} for discussion of implicit,
 manual, semi-automated and fully automated hole entry methods).  Each
 well-typed external expression (see Sec.~\ref{sec:external-statics} below)
-expands to a well-typed internal expression (see Sec.~\ref{sec:expansion})
-before it is evaluated (see Sec.~\ref{sec:evaluation}).  We take this
-approach, notably also taken in the ``redefinition'' of Standard ML by
-\citet{Harper00atype-theoretic}, because (1) the external language supports
-type inference and explicit type ascriptions, $\hexp : \htau$, but it is
-formally simpler to eliminate ascriptions and specify a type assignment
-system when defining the dynamic semantics; and (2) we need additional
-syntactic machinery during evaluation for tracking hole closures and
-dynamic type casts.  This machinery is inserted by the expansion step,
-rather than entered explicitly by the programmer.  In this regard, the
-internal language is analogous to the cast calculus in the gradually typed
-lambda calculus \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will
-see the \HazelnutLive internal language goes beyond the cast calculus in
-several respects. We have mechanized these formal developments using the
-Agda proof assistant \cite{norell:thesis,norell2009dependently} (see
+elaborates to a well-typed internal expression (see
+Sec.~\ref{sec:elaboration}) before it is evaluated (see
+Sec.~\ref{sec:evaluation}).  We take this approach, notably also taken in
+the ``redefinition'' of Standard ML by \citet{Harper00atype-theoretic},
+because (1) the external language supports type inference and explicit type
+ascriptions, $\hexp : \htau$, but it is formally simpler to eliminate
+ascriptions and specify a type assignment system when defining the dynamic
+semantics; and (2) we need additional syntactic machinery during evaluation
+for tracking hole closures and dynamic type casts.  This machinery is
+inserted by elaboration, rather than entered explicitly by the programmer.
+In this regard, the internal language is analogous to the cast calculus in
+the gradually typed lambda calculus
+\cite{DBLP:conf/snapl/SiekVCB15,Siek06a}, though as we will see the
+\HazelnutLive internal language goes beyond the cast calculus in several
+respects. We have mechanized these formal developments using the Agda proof
+assistant \cite{norell:thesis,norell2009dependently} (see
 Sec.~\ref{sec:agda-mechanization}). Rule names in this section,
 e.g. \rulename{SVar}, correspond to variable names used in the
 mechanization. The \Hazel implementation substantially follows the formal
@@ -146,41 +147,52 @@ We do not formally need an explicit fixpoint operator because this calculus supp
 %As such, we omit an explicit fixpoint operator for concision.\todo{fixpoint?}{}
 
 \vspace{-4px}
-\subsection{Expansion}
-\label{sec:expansion}
+\subsection{Elaboration}
+\label{sec:elaboration}
 \vspace{-1px}
 
-\input{fig-expansion}
+\input{fig-elab}
 \input{fig-typing-dexp}
 
-Each well-typed external expression~$e$ expands to a well-typed internal expression~$d$, for evaluation.
+Each well-typed external expression~$e$ elaborates to a well-typed internal
+expression~$d$, for evaluation.
 %
-\Figref{fig:expansion} specifies expansion, and \Figref{fig:hasType} specifies type assignment for internal expressions.
+\Figref{fig:elaboration} specifies elaboration, and \Figref{fig:hasType}
+specifies type assignment for internal expressions.
 %
 % \Secref{sec:evaluation} discusses internal expression evaluation.
 
-As with the type system for the external language (above),
-we specify expansion bidirectionally \cite{DBLP:conf/ppdp/FerreiraP14}.
+As with the type system for the external language (above), we specify
+elaboration bidirectionally \cite{DBLP:conf/ppdp/FerreiraP14}.
 %
-The synthetic expansion judgement~$\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+The synthetic elaboration
+judgement~$\elabSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
 %
-produces an expansion~$d$ and a hole context~$\hDelta$ when synthesizing type $\htau$ for $\hexp$.
+produces an elaboration~$d$ and a hole context~$\hDelta$ when synthesizing
+type $\htau$ for $\hexp$.
 %
 %We say more about hole contexts, which are used in the type assignment judgement, $\hasType{\Delta}{\hGamma}{d}{\htau}$, below.
-We describe hole contexts, which serve as ``inputs'' to the type assignment judgement~$\hasType{\Delta}{\hGamma}{d}{\htau}$, further below.
+We describe hole contexts, which serve as ``inputs'' to the type assignment
+judgement~$\hasType{\Delta}{\hGamma}{d}{\htau}$, further below.
 %
-The analytic expansion judgement~$\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$, produces an expansion~$d$ of type~$\htau'$, and a hole context~$\hDelta$, when checking~$\hexp$ against~$\htau$.
+The analytic elaboration
+judgement~$\elabAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$,
+produces an elaboration~$d$ of type~$\htau'$, and a hole context~$\hDelta$,
+when checking~$\hexp$ against~$\htau$.
 %
-The following theorem establishes that expansions are well-typed and in the analytic case that the assigned type, $\htau'$, is consistent with provided type, $\htau$.
+The following theorem establishes that elaborations are well-typed and in
+the analytic case that the assigned type, $\htau'$, is consistent with
+provided type, $\htau$.
 %
-\begin{thm}[Typed Expansion]\label{thm:typed-expansion} ~
+\begin{thm}[Typed Elaboration]\label{thm:typed-elaboration} ~
   \begin{enumerate}[nolistsep]
     \item
-      If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+      If $\elabSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
       then $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$.
     \item
-      If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
-      then $\tconsistent{\htau}{\htau'}$ and $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$.
+      If $\elabAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$ then
+      $\tconsistent{\htau}{\htau'}$ and
+      $\hasType{\Delta}{\hGamma}{\dexp}{\htau'}$.
   \end{enumerate}
 \end{thm}
 \noindent
@@ -194,11 +206,11 @@ The following theorem establishes that expansions are well-typed and in the anal
 %
 The reason that $\htau'$ is only consistent with the provided type $\htau$ is because
 %
- the subsumption rule permits us
-to check an external expression against any type consistent with the
-type that the expression \emph{actually} synthesizes, whereas every internal
-expression can be assigned at most one type, i.e. the following
-standard unicity property holds of the type assignment system.
+the subsumption rule permits us to check an external expression against any
+type consistent with the type that the expression \emph{actually}
+synthesizes, whereas every internal expression can be assigned at most one
+type, i.e. the following standard unicity property holds of the type
+assignment system.
 %
 \begin{thm}[Type Assignment Unicity]
   If $\hasType{\Delta}{\hGamma}{\dexp}{\htau}$
@@ -206,22 +218,25 @@ standard unicity property holds of the type assignment system.
   then $\htau=\htau'$.
 \end{thm}
 \noindent
-Consequently, analytic expansion reports the type actually assigned to the expansion it produces.
+Consequently, analytic elaboration reports the type actually assigned to
+the elaboration it produces.
 %
-For example, we can derive that $\expandAna{\hGamma}{c}{\tehole}{c}{b}{\emptyset}$.% where $\emptyset$ is the empty hole context.
+For example, we can derive that
+$\elabAna{\hGamma}{c}{\tehole}{c}{b}{\emptyset}$.
+% where $\emptyset$ is the empty hole context.
 
 Before describing the rules in detail, let us state two other guiding
-theorems.  The following theorem establishes that an expansion exists for
-every well-typed external expression.
- \begin{thm}[Expandability] \label{thm:expandability}~
+theorems.  The following theorem establishes that every well-typed external
+expression can be elaborated.
+ \begin{thm}[Elaborability] \label{thm:elaborability}~
   \begin{enumerate}[nolistsep]
     \item
       If $\hsyn{\hGamma}{\hexp}{\htau}$
-      then $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+      then $\elabSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
       for some $\dexp$ and $\Delta$.
     \item
       If $\hana{\hGamma}{\hexp}{\htau}$
-      then $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
+      then $\elabAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
       for some $\dexp$ and $\htau'$ and $\Delta$.
   \end{enumerate}
  \end{thm}
@@ -231,25 +246,25 @@ every well-typed external expression.
 % \begin{thm}[Expansion Unicity] \label{thm:expansion-unicity}~
 %   % \begin{enumerate}[nolistsep]
 %   %   \item
-%       If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
-%       and $\expandSyn{\hGamma}{\hexp}{\htau'}{\dexp'}{\Delta'}$
+%       If $\elabSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+%       and $\elabSyn{\hGamma}{\hexp}{\htau'}{\dexp'}{\Delta'}$
 %       then $\htau=\htau'$ and $\dexp=\dexp'$ and $\Delta=\Delta'$.
 %   %   \item
-%   %     If $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}$
-%   %     and $\expandAna{\hGamma}{\hexp}{\htau_1}{\dexp'}{\htau_2'}{\Delta'}$
+%   %     If $\elabAna{\hGamma}{\hexp}{\htau_1}{\dexp}{\htau_2}{\Delta}$
+%   %     and $\elabAna{\hGamma}{\hexp}{\htau_1}{\dexp'}{\htau_2'}{\Delta'}$
 %   %     then $\dexp=\dexp'$ and $\htau_2=\htau_2'$ and $\Delta=\Delta'$.
 %   % \end{enumerate}
 % \end{thm}
 \noindent
-The following theorem establishes that expansion generalizes external
+The following theorem establishes that elaboration generalizes external
 typing.
-\begin{thm}[Expansion Generality] \label{thm:expansion-generality}~
+\begin{thm}[Elaboration Generality] \label{thm:elaboration-generality}~
   \begin{enumerate}[nolistsep]
     \item
-      If $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+      If $\elabSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
       then $\hsyn{\hGamma}{\hexp}{\htau}$.
     \item
-      If $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
+      If $\elabAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
       then $\hana{\hGamma}{\hexp}{\htau}$.
   \end{enumerate}
 \end{thm}
@@ -257,67 +272,102 @@ typing.
 We also establish that the elaboration produces unique results.
 \begin{thm}[Elaboration Unicity] \label{thm:expansion-unicity}~
   \begin{enumerate}[nolistsep]
-  \item If $\expandSyn{\hGamma}{\hexp}{\htau_1}{\dexp{}_1}{\Delta_1}$ and
-    $\expandSyn{\hGamma}{\hexp}{\htau_2}{\dexp{}_2}{\Delta_2}$, then
+  \item If $\elabSyn{\hGamma}{\hexp}{\htau_1}{\dexp{}_1}{\Delta_1}$ and
+    $\elabSyn{\hGamma}{\hexp}{\htau_2}{\dexp{}_2}{\Delta_2}$, then
     $\htau_1 = \htau_2$ and $\dexp{}_1 = \dexp{}_2$ and $\Delta_1 =
     \Delta_2$.
   \item If
-    $\expandAna{\hGamma}{\hexp}{\htau}{\dexp{}_1}{\htau_1}{\Delta_1}$ and
-    $\expandAna{\hGamma}{\hexp}{\htau}{\dexp{}_2}{\htau_2}{\Delta_2}$, then
+    $\elabAna{\hGamma}{\hexp}{\htau}{\dexp{}_1}{\htau_1}{\Delta_1}$ and
+    $\elabAna{\hGamma}{\hexp}{\htau}{\dexp{}_2}{\htau_2}{\Delta_2}$, then
     $\htau_1 = \htau_2$ and $\dexp{}_1 = \dexp{}_2$ and $\Delta_1 =
     \Delta_2$
   \end{enumerate}
 \end{thm}
 
-The rules governing expansion of constants, variables and lambda expressions
---- Rules \rulename{ESConst}, \rulename{ESVar}, \rulename{ESLam} and \rulename{EALam}
---- mirror the corresponding type assignment rules
---- Rules \rulename{TAConst}, \rulename{TAVar} and \rulename{TALam}
---- and in turn, the corresponding bidirectional typing rules from Fig.~\ref{fig:bidirectional-typing}.
+The rules governing elaboration of constants, variables and lambda
+expressions---Rules \rulename{ESConst}, \rulename{ESVar}, \rulename{ESLam}
+and \rulename{EALam}---mirror the corresponding type assignment rules---
+Rules \rulename{TAConst}, \rulename{TAVar} and \rulename{TALam}---and in
+turn, the corresponding bidirectional typing rules from
+Fig.~\ref{fig:bidirectional-typing}.
 %
 % Consequently, the corresponding cases of
 % Theorem~\ref{thm:typed-expansion}, Theorem~\ref{thm:expandability} and
 % Theorem~\ref{thm:expansion-generality} are straightforward.
 %
 To support type assignment, all lambdas in the internal language are
-half-annotated---Rule \rulename{EALam} inserts the annotation when expanding an
-unannotated external lambda based on the given type.
+half-annotated---Rule \rulename{EALam} inserts the annotation when
+elaborating an unannotated external lambda based on the given type.
 %
-The rules governing hole expansion, and the rules that perform \emph{cast insertion}---those governing
-function application and type ascription---are more interesting. Let us consider each of these two groups of rules in turn in Sec.~\ref{sec:hole-expansion} and Sec.~\ref{sec:cast-insertion}, respectively.
+The rules governing hole elaboration, and the rules that perform \emph{cast
+  insertion}---those governing function application and type
+ascription---are more interesting. Let us consider each of these two groups
+of rules in turn in Sec.~\ref{sec:hole-elaboration} and
+Sec.~\ref{sec:cast-insertion}, respectively.
 
-\subsubsection{Hole Expansion}\label{sec:hole-expansion}
-Rules \rulename{ESEHole}, \rulename{ESNEHole}, \rulename{EAEHole} and \rulename{EANEHole} govern the expansion of empty and non-empty expression holes to empty and non-empty \emph{hole closures}, $\dehole{u}{\sigma}{}$ and $\dhole{\dexp}{u}{\sigma}{}$.
+\subsubsection{Hole Elaboration}\label{sec:hole-elaboration}
+Rules \rulename{ESEHole}, \rulename{ESNEHole}, \rulename{EAEHole} and
+\rulename{EANEHole} govern the elaboration of empty and non-empty
+expression holes to empty and non-empty \emph{hole closures},
+$\dehole{u}{\sigma}{}$ and $\dhole{\dexp}{u}{\sigma}{}$.
 %
-The hole name~$u$ on a hole closure identifies the external hole to which the hole closure corresponds.
+The hole name~$u$ on a hole closure identifies the external hole to which
+the hole closure corresponds.
 %
-While we assume each hole name to be unique in the external language, once evaluation begins, there may be multiple hole closures with the same name due to substitution.
+While we assume each hole name to be unique in the external language, once
+evaluation begins, there may be multiple hole closures with the same name
+due to substitution.
 %
-For example, the result from Fig.~\ref{fig:grades-example} shows three closures for the hole named 1.
+For example, the result from Fig.~\ref{fig:grades-example} shows three
+closures for the hole named 1.
 %
-There, we numbered each hole closure for a given hole sequentially, \li{1:1}, \li{1:2} and \li{1:3}, but this is strictly for the sake of presentation, so we omit hole closure numbers from the core calculus.
+There, we numbered each hole closure for a given hole sequentially,
+\li{1:1}, \li{1:2} and \li{1:3}, but this is strictly for the sake of
+presentation, so we omit hole closure numbers from the core calculus.
 
 %
-For each hole, $u$, in an external expression, the hole context generated by expansion, $\Delta$, contains a hypothesis of the form~$\Dbinding{u}{\hGamma}{\htau}$, which records the hole's type, $\tau$, and the typing context, $\Gamma$, from where it appears in the original expression.\footnote{
-We use a hole context, rather than recording the typing context and type directly on each hole closure, to ensure that all closures for a hole name have the same typing context and type.}
+For each hole, $u$, in an external expression, the hole context generated
+by elaboration, $\Delta$, contains a hypothesis of the
+form~$\Dbinding{u}{\hGamma}{\htau}$, which records the hole's type, $\tau$,
+and the typing context, $\Gamma$, from where it appears in the original
+expression.\footnote{ We use a hole context, rather than recording the
+  typing context and type directly on each hole closure, to ensure that all
+  closures for a hole name have the same typing context and type.}
 %
-We borrow this hole context notation from contextual modal type theory (CMTT) \cite{Nanevski2008}, identifying hole names with metavariables and hole contexts with modal contexts (we say more about the connection with CMTT below).
+We borrow this hole context notation from contextual modal type theory
+(CMTT) \cite{Nanevski2008}, identifying hole names with metavariables and
+hole contexts with modal contexts (we say more about the connection with
+CMTT below).
 %
 % Each hole expansion rule records the ``current'' typing context under which the hole is expanded.
 %
-In the synthetic hole expansion rules~\rulename{ESEHole} and~\rulename{ESNEHole}, the generated hole context assigns the hole type~$\tehole$ to hole name~$u$, as in the external typing rules.
+In the synthetic hole elaboration rules~\rulename{ESEHole}
+and~\rulename{ESNEHole}, the generated hole context assigns the hole
+type~$\tehole$ to hole name~$u$, as in the external typing rules.
 %
-However, the first two premises of the expansion subsumption rule~\rulename{EASubsume} disallow the use of subsumption for holes in analytic position.
+However, the first two premises of the elaboration subsumption
+rule~\rulename{EASubsume} disallow the use of subsumption for holes in
+analytic position.
 %
-Instead, we employ separate analytic rules~\rulename{EAEHole} and~\rulename{EANEHole}, which each record the checked type~$\tau$ in the hole context.
+Instead, we employ separate analytic rules~\rulename{EAEHole}
+and~\rulename{EANEHole}, which each record the checked type~$\tau$ in the
+hole context.
 %
-Consequently, we can use type assignment for the internal language --- the type assignment rules \rulename{TAEHole} and \rulename{TANEHole} in Fig.~\ref{fig:hasType} assign a hole closure for hole name~$u$ the corresponding type from the hole context.
+Consequently, we can use type assignment for the internal language --- the
+type assignment rules \rulename{TAEHole} and \rulename{TANEHole} in
+Fig.~\ref{fig:hasType} assign a hole closure for hole name~$u$ the
+corresponding type from the hole context.
 
-Each hole closure also has an associated environment~$\sigma$ which consists of a finite substitution of the form $[d_1/x_1, ~\cdots, d_n/x_n]$ for $n \geq 0$.
+Each hole closure also has an associated environment~$\sigma$ which
+consists of a finite substitution of the form $[d_1/x_1, ~\cdots, d_n/x_n]$
+for $n \geq 0$.
 %
 The closure environment keeps a record of the substitutions that occur around the hole as evaluation occurs.
 %
-Initially, when no evaluation has yet occurred, the hole expansion rules generate the identity substitution for the typing context associated with hole name~$u$ in hole context~$\Delta$, which we notate $\idof{\hGamma}$, and define as follows.
+Initially, when no evaluation has yet occurred, the hole elaboration rules
+generate the identity substitution for the typing context associated with
+hole name~$u$ in hole context~$\Delta$, which we notate $\idof{\hGamma}$,
+and define as follows.
 %
 \begin{defn}[Identity Substitution] $\idof{x_1 : \tau_1, ~\cdots, x_n : \tau_n} = [x_1/x_1, ~\cdots, x_n/x_n]$
 \end{defn}
@@ -389,23 +439,23 @@ the target type~$\htau_2$ \cite{Siek06a}, but it simplifies the dynamic semantic
 to include the assigned type~$\htau_1$ in the syntax \cite{DBLP:conf/snapl/SiekVCB15}.
 }
 
-Expansion inserts casts at function applications and ascriptions.
+Elaboration inserts casts at function applications and ascriptions.
 %
 The latter is more straightforward: Rule~\rulename{ESAsc}
-in \Figref{fig:expandSyn} inserts a cast from the assigned type to the
+in \Figref{fig:elabSyn} inserts a cast from the assigned type to the
 ascribed type.
 %
-Theorem~\ref{thm:typed-expansion} inductively ensures that the two
-types are consistent.
+Theorem~\ref{thm:typed-elaboration} inductively ensures that the two types
+are consistent.
 %
 We include ascription for exposition purposes---this form is derivable
 by using application together with the half-annotated identity, $e
 : \tau = \hap{(\halam{x}{\htau}{x})}{e}$; as such, application
-expansion, discussed below, is more general.
+elaboration, discussed below, is more general.
 
-Rule~\rulename{ESAp} expands function applications.
+Rule~\rulename{ESAp} elaborates function applications.
 %
-To understand the rule, consider the expansion of external
+To understand the rule, consider the elaboration of external
 expression~$\hap{(\halam{x}{\tehole}{\hap{x}{c}})}{c}$, the example
 discussed above:
 \[
@@ -413,7 +463,7 @@ discussed above:
         (\halam{x}{\tehole}{\underbrace{
                 \hap{\dcasttwo{x}{\tehole}{\tarr{\tehole}{\tehole}}}
                 {\dcasttwo{c}{b}{\tehole}}
-                }_{\textrm{expansion of function body}~x(c)}
+                }_{\textrm{elaboration of function body}~x(c)}
         }
         )}{\tarr{\tehole}{\tehole}}{
            \tarr{\tehole}{\tehole}}
@@ -422,13 +472,14 @@ discussed above:
 \]
 Consider the (indicated) function body,
 %
-where expansion inserts a cast on both the function expression~$x$ and its argument~$c$.
+where elaboration inserts a cast on both the function expression~$x$ and
+its argument~$c$.
 %
 Together, these casts for~$x$ and~$c$ permit assigning a type to the
 function body according to the rules in \Figref{fig:hasType}, where we
 could not do so under the same context without casts.
 %
-We separately consider the expansions of~$x$ and of~$c$.
+We separately consider the elaborations of~$x$ and of~$c$.
 
 First, consider the function position of this application, here variable~$x$.
 %
@@ -444,32 +495,33 @@ $\tehole$, then
 by determining the matched arrow type~$\tarr{\tehole}{\tehole}$, and
 finally,
 %
-by performing analytic expansion on the function expression with this
+by performing analytic elaboration on the function expression with this
 matched arrow type.
 %
-The resulting expansion has some type~$\tau_1'$ consistent with the matched arrow type.
+The resulting elaboration has some type~$\tau_1'$ consistent with the
+matched arrow type.
 %
 In this case, because the subexpression~$x$ is a variable, analytic
-expansion goes through subsumption so that type~$\tau_1'$ is
+elaboration goes through subsumption so that type~$\tau_1'$ is
 simply~$\tehole$.
 %
 The conclusion of the rule inserts the corresponding cast.
 %
-We go through type synthesis, \emph{then} analytic expansion, so that the hole
-context records the matched arrow type for holes in function position,
-rather than the type~$\tehole$ for all such holes, as would be the case
-in a variant of this rule using synthetic expansion for the function
+We go through type synthesis, \emph{then} analytic elaboration, so that the
+hole context records the matched arrow type for holes in function position,
+rather than the type~$\tehole$ for all such holes, as would be the case in
+a variant of this rule using synthetic elaboration for the function
 expression.
 
 Next, consider the application's argument, here constant~$c$.
 %
 The conclusion of Rule~\rulename{ESAp} inserts the cast on the argument's
-expansion, from the type it is assigned by the final premise of the
-rule~(type~$b$ here), to the argument type of the matched arrow type
-of the function expression~(type~$\tehole$ here).
+elaboration, from the type it is assigned by the final premise of the
+rule~(type~$b$ here), to the argument type of the matched arrow type of the
+function expression~(type~$\tehole$ here).
 
 The example's second, outermost application goes through the same
-application expansion rule.
+application elaboration rule.
 %
 In this case, the cast on the function is the identity cast for
 $\tarr{\tehole}{\tehole}$.
@@ -478,17 +530,24 @@ For simplicity, we do not attempt to avoid the insertion of identity
 casts in the core calculus; these will simply never fail during
 evaluation.
 %
-However, it is safe in practice to eliminate such identity casts during expansion,
-and some formal accounts of gradual typing do so by defining three
-application expansion rules, including the original account of \citet{Siek06a}.
+However, it is safe in practice to eliminate such identity casts during
+elaboration, and some formal accounts of gradual typing do so by defining
+three application elaboration rules, including the original account of
+\citet{Siek06a}.
 
 \subsection{Dynamic Semantics}
 \label{sec:evaluation}
 
-To recap, the result of expansion is a well-typed internal expression with appropriately initialized hole closures and casts.
-This section specifies the dynamic semantics of \HazelnutLive as a ``small-step'' transition system over internal expressions equipped with a meaningful notion of type safety even for incomplete programs, i.e. expressions typed under a non-empty hole context, $\Delta$.
-We establish that evaluation does not stop immediately when it encounters a hole, nor when a cast fails, by precisely characterizing when evaluation \emph{does} stop.
-We also establish that an essentially standard notion of type safety holds when running complete programs.
+To recap, the result of elaboration is a well-typed internal expression
+with appropriately initialized hole closures and casts.  This section
+specifies the dynamic semantics of \HazelnutLive as a ``small-step''
+transition system over internal expressions equipped with a meaningful
+notion of type safety even for incomplete programs, i.e. expressions typed
+under a non-empty hole context, $\Delta$.  We establish that evaluation
+does not stop immediately when it encounters a hole, nor when a cast fails,
+by precisely characterizing when evaluation \emph{does} stop.  We also
+establish that an essentially standard notion of type safety holds when
+running complete programs.
 
 It is perhaps worth stating at the outset that a dynamic semantics equipped with these properties does not simply ``fall out'' from the observations made above that (1) empty hole closures correspond to metavariable closures from CMTT \cite{Nanevski2008} and (2) casts also arise in gradual type theory \cite{DBLP:conf/snapl/SiekVCB15}.
 %
@@ -788,24 +847,25 @@ $\isComplete{\htau}$, $\isComplete{\hGamma}$ and~$\isComplete{d}$.
 %
 Of note, failed casts cannot appear in complete internal expressions.
 %
-The following theorem establishes that expansion preserves program
+The following theorem establishes that elaboration preserves program
 completeness.
 
-\begin{thm}[Complete Expansion]
+\begin{thm}[Complete Elaboration]
 % ~
   % \begin{enumerate}[nolistsep]
       If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$
-      and $\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
+      and $\elabSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}$
       then $\isComplete{\htau}$ and $\isComplete{\dexp}$ and $\Delta = \emptyset$.
 %     \item
 %       If $\isComplete{\hGamma}$ and $\isComplete{\hexp}$
 % and $\isComplete{\htau}$
-%       and $\expandAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
+%       and $\elabAna{\hGamma}{\hexp}{\htau}{\dexp}{\htau'}{\Delta}$
 %       then $\isComplete{\dexp}$ and $\isComplete{\htau'}$ and $\Delta=\emptyset$
   % \end{enumerate}
 \end{thm}
 
-The following preservation theorem establishes that stepping preserves program completeness.
+The following preservation theorem establishes that stepping preserves
+program completeness.
 \begin{thm}[Complete Preservation]
   If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$
   and $\isComplete{\dexp}$
@@ -910,14 +970,15 @@ to guarantee that every edit state has some (possibly incomplete) type. This cor
 Here, $\zexp$ is an editor state (an expression with a cursor), and $\removeSel{\zexp}$ drops the cursor, producing an expression ($e$ in this paper). So in words, ``if, ignoring the cursor, the editor state, $\removeSel{\zexp}$, initially has type $\htau$ and we perform an edit action $\alpha$ on it, then the resulting editor state, $\removeSel{\zexp'}$, will have type $\htau'$''.
 
 
-By composing this Sensibility property with
-the \Property{Expandability}, \Property{Typed Expansion}, \Property{Progress} and \Property{Preservation} properties from this section, we establish a
+By composing this Sensibility property with the \Property{Elaborability},
+\Property{Typed Elaboration}, \Property{Progress} and
+\Property{Preservation} properties from this section, we establish a
 uniquely powerful Continuity invariant:
 \begin{corol}[Continuity]
   \label{thrm:actsafe}
   If $\hsyn{\emptyset}{\removeSel{\zexp}}{\htau}$ and
     $\performSyn{\emptyset}{\zexp}{\htau}{\alpha}{\zexp'}{\tau'}$ then
-    $\expandSyn{\emptyset}{\removeSel{\zexp'}}{\htau'}{\dexp}{\Delta}$
+    $\elabSyn{\emptyset}{\removeSel{\zexp'}}{\htau'}{\dexp}{\Delta}$
       for some $\dexp$ and $\Delta$ such that
 $\hasType{\Delta}{\emptyset}{\dexp}{\htau'}$
 and either
@@ -1054,14 +1115,13 @@ now-filled non-empty hole had taken a step in the original evaluation.
 % its not really adding much to the discussion above,
 % but may be interesting to the very studious reader/prover; also, leaving it here also gives a lazy/cranky reviewer a nice weapon to hit us with}
 
-We do not separately define hole filling in the external language
-(i.e. we consider a change to an external expression to be a hole filling if the new expansion differs from
-the previous expansion up to hole filling).
-In practice, it may be useful to cache more than one recent edit state
-to take full advantage of hole filling.
-As an example, consider two edits, the first filling a hole~$u$ with
-the number~$2$, and the next applying operator~$+$, resulting in $2
-+ \dehole{v}{\sigma}{}$.
+We do not separately define hole filling in the external language (i.e. we
+consider a change to an external expression to be a hole filling if the new
+elaboration differs from the previous elaboration up to hole filling).  In
+practice, it may be useful to cache more than one recent edit state to take
+full advantage of hole filling.  As an example, consider two edits, the
+first filling a hole~$u$ with the number~$2$, and the next applying
+operator~$+$, resulting in $2 + \dehole{v}{\sigma}{}$.
 %
 This second edit is not a hole filling edit with respect to the
 immediately preceding edit state, $2$, but it can be understood as filling
@@ -1086,8 +1146,8 @@ missing from Jupyter/IPython, where editing and executing previous cells can cau
 \begin{comment}
 
 \begin{theorem}[Maximum Informativity]
-If the expansion produces $t1$, and there exists another possible type choice
-$t2$, then $t1 \sim t2$ and $t1 JOIN t2 = t1$
+If the elaboration produces $t1$, and there exists another possible type
+choice $t2$, then $t1 \sim t2$ and $t1 JOIN t2 = t1$
 \end{theorem}\footnote{idea is that special casing the holes in EANEHole gives you ``the
 most descriptive hole types'' for some sense of what that means -- they'd
 all just be hole other wise. from Matt:

@@ -1,6 +1,6 @@
 % !TEX root = hazelnut-dynamics.tex
 
-%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 %%%%%%% Syntax
 \subsection{Numbers}
 We extend the syntax as follows:
@@ -18,24 +18,24 @@ We extend the syntax as follows:
 \end{array}
 \]
 
-%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 
 \vsepRule
 
 \judgbox
-  {\expandSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}
-  {$\hexp$ synthesizes type $\htau$ and expands to $\dexp$}
+  {\elabSyn{\hGamma}{\hexp}{\htau}{\dexp}{\Delta}}
+  {$\hexp$ synthesizes type $\htau$ and elaborates to $\dexp$}
 \begin{mathpar}
 \inferrule[]{ ~ }{
-  \expandSyn{\hGamma}{\hnum{n}}{\tnum}{\hnum{n}}{\EmptyDelta}
+  \elabSyn{\hGamma}{\hnum{n}}{\tnum}{\hnum{n}}{\EmptyDelta}
 }
 
 %% \inferrule[]{
-%%   \expandSyn{\hGamma}{\hexp_1}{\tnum}{\dexp_1}{\Delta_1}
+%%   \elabSyn{\hGamma}{\hexp_1}{\tnum}{\dexp_1}{\Delta_1}
 %%   \\
-%%   \expandSyn{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\Delta_1}
+%%   \elabSyn{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\Delta_1}
 %% }{
-%%   \expandSyn{\hGamma}
+%%   \elabSyn{\hGamma}
 %%             {\dadd{\hexp_1}{\hexp_2}}
 %%             {\tnum}
 %%             {\dadd{\dexp_1}{\dexp_2}}
@@ -43,11 +43,11 @@ We extend the syntax as follows:
 %% }
 
 \inferrule[]{
-  \expandAna{\hGamma}{\hexp_1}{\tnum}{\dexp_1}{\tnum}{\Delta_1}
+  \elabAna{\hGamma}{\hexp_1}{\tnum}{\dexp_1}{\tnum}{\Delta_1}
   \\
-  \expandAna{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\tnum}{\Delta_1}
+  \elabAna{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\tnum}{\Delta_1}
 }{
-  \expandSyn{\hGamma}
+  \elabSyn{\hGamma}
             {\dadd{\hexp_1}{\hexp_2}}
             {\tnum}
             {\dadd{\dexp_1}{\dexp_2}}
@@ -55,7 +55,7 @@ We extend the syntax as follows:
 }
 \end{mathpar}
 
-%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 
 \judgbox{\hasType{\Delta}{\hGamma}{\dexp}{\htau}}{$\dexp$ is assigned type $\htau$}
 \begin{mathpar}
@@ -71,12 +71,12 @@ We extend the syntax as follows:
   \hasType{\Delta}{\hGamma}{\dexp_2}{\tnum}
 }{
   \hasType{\Delta}{\hGamma}{\dadd{\dexp_1}{\dexp_2}}{\tnum}
-} 
+}
 
 \end{mathpar}
 
-%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
-  
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
+
 \judgbox{\isValue{\dexp}}{$\dexp$ is a value}
 
 \begin{mathpar}
@@ -117,18 +117,18 @@ We extend the syntax as follows:
 {\isIndet{\dadd{\dexp_1}{\dexp_2}}}
 \end{mathpar}
 
-%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 
 \begin{mathpar}
 \arraycolsep=4pt\begin{array}{rllllll}
 \mathsf{EvalCtx} & \evalctx & ::= & \cdots ~\vert~
   \dadd{\evalctx}{\dexp_2}
-  ~\vert~  
+  ~\vert~
   \dadd{\dexp_1}{\evalctx}
 \end{array}
 \end{mathpar}
 
-%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 
 \judgbox{\selectEvalCtx{\dexp}{\evalctx}{\dexp'}}{$\dexp$ is obtained by placing $\dexp'$ at the mark in $\evalctx$}
 \begin{mathpar}
@@ -145,7 +145,7 @@ We extend the syntax as follows:
                {\dexp_2'}}
 \end{mathpar}
 
-%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% 
+%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 
 \judgbox{\reducesE{}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
 \begin{mathpar}
