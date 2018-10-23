@@ -609,10 +609,11 @@ discussed below.
 %the classic values from the lambda calculus, distingui%shed by
 %$\isValue{d}$,
 %
-The judgement $\isIndet{d}$ defines \emph{indeterminate} forms, so
-named because they are rooted at expression holes and
-failed casts, and so, conceptually, their ultimate value
-awaits programmer action (see Sec.~\ref{sec:resumption}).
+The judgement $\isIndet{d}$ defines \emph{indeterminate} forms, so named
+because they are rooted at expression holes and failed casts, and so,
+conceptually, their ultimate value awaits programmer action (see
+Sec.~\ref{sec:resumption}). Note that no term is both complete, i.e. has no
+holes, and indeterminate.
 %
 The first two rules specify that {empty} hole closures are always
 indeterminate, and that {non}-empty hole closures are indeterminate when
@@ -841,9 +842,8 @@ The proof relies on canonical forms lemmas stated in the \appendixName.
 \subsubsection{Complete Programs}
 %
 Although this paper focuses on running \emph{incomplete} programs, it helps
-to know that the necessary machinery does not interfere
-with running \emph{complete} programs, i.e. those
-with no type or expression holes.
+to know that the necessary machinery does not interfere with running
+\emph{complete} programs, i.e. those with no type or expression holes.
 %
 % Appendix~\ref{sec:additional-defns}
 The \appendixName{} defines the predicates~$\isComplete{e}$,
