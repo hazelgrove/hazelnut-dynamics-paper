@@ -7,8 +7,8 @@
 % Programming environments often operate in ``batch mode'', assuming that the programmer will spend a substantial amount 
 % of time editing the program text blindly before evaluating (i.e. running) the program. 
 
-Programmers typically shift back and forth between program editing and program evaluation many times before converging upon a program that behaves as intended. 
-Live programming environments aim to support this workflow by interleaving editing and evaluation so as to   
+Programmers typically shift between program editing and program evaluation many times before converging upon a program that behaves as intended. 
+Live programming environments aim to support this workflow by granularly interleaving editing and evaluation so as to   
 narrow what \citet{burckhardt2013s} call the ``temporal and perceptive gap'' between these activities.
 % In other words, the goal \IS to provide continuous feedback about the dynamic behavior of the program, in whole or in part,
 % directly alongside the program text itself.
@@ -34,17 +34,16 @@ Editor-integrated debuggers \cite{mccauley2008debugging} and other systems that 
 % the subject is 'programming languages' and not that noun phrase.  }
 %
 The problem at the heart of this paper is that
-programming languages typically assign meaning only to {complete programs}, i.e. programs that are syntactically well-formed and free of static type and binding errors. A program editor, however, frequently encounters incomplete, and therefore meaningless, editor states. As a result, live feedback either ``flickers out'', creating a temporal gap, or it ``goes stale'', i.e. it relies on the most recent complete editor state, creating a perceptive gap because the feedback may not accurately reflect what the programmer is seeing in the editor.
+programming languages typically assign meaning only to {complete programs}, i.e. programs that are syntactically well-formed and free of type and binding errors. A program editor, however, frequently encounters incomplete, and therefore conventionally meaningless, editor states. As a result, live feedback either ``flickers out'', creating a temporal gap, or it ``goes stale'', i.e. it relies on the most recent complete editor state, creating a perceptive gap because the feedback does not accurately reflect what the programmer is editing.
 
-In some cases these gaps are momentary, like while the programmer
-%\IS entering
-is entering  
-a short expression. In other cases, these gaps can persist over substantial lengths of time, such as when there are many branches of a case analysis whose bodies are initially left blank or when the programmer makes a mistake.
+In some cases these gaps are brief, like while the programmer
+is in the process of entering  
+a short expression. In other cases, these gaps can persist over substantial lengths of time, such as when there are many branches of a case analysis whose bodies are initially left blank or when the programmer is puzzling over a mistake.
 %
 Novice programmers, of course, make more mistakes \cite{mccauley2008debugging,fitzgerald2008debugging}.
 %
 %\matt{we are not really modeling a language with user type definitions -- what does the following sentence really add here? also, I just added this scenerio to the list above}
-The problem is particularly pronounced for languages with rich static type systems where certain program changes, such as a change to a type definition, can cause type errors to propagate throughout the program. Throughout the process of addressing these errors, the program text remains formally meaningless. 
+The problem is particularly pronounced for languages with rich static type systems where certain program changes, such as a change to a type definition, can cause type errors to propagate throughout the program. Throughout the process of addressing these errors, which can sometimes span many days, the program text remains formally meaningless. 
 Overall, about 40\% of edits performed by Java programmers using Eclipse left the program text malformed \cite{popl-paper,6883030} and some additional number, which could not be determined from the data, were well-formed but ill-typed.
 
  % From the perspective of the language definition, these edit states are wholly meaningless, so editor services cannot rely on the same operations and reasoning principles that would be available to, for example, the compiler. 
@@ -78,7 +77,7 @@ Overall, about 40\% of edits performed by Java programmers using Eclipse left th
 %general quesiton of ``incomplete program meaning''--- another reason
 %to do my edit above, and remove that specific phrase.
 %}
-In recognition of this ``{gap problem}''---that incomplete programs are formally meaningless---\citet{popl-paper} develop a static semantics (i.e. a type system) for incomplete 
+In recognition of this ``{gap problem}''---that incomplete programs are formally meaningless---\citet{popl-paper} developed a static semantics (i.e. a type system) for incomplete 
 functional programs, modeling them formally as typed expressions with \emph{holes} in 
 both expression and type position. 
 Empty holes stand for missing expressions or types,
@@ -86,8 +85,8 @@ and non-empty holes operate as ``membranes'' around static type inconsistencies
 (i.e. they internalize the ``red underline'' that editors commonly display under a type inconsistency).
 % For editor states into this language of incomplete programs, 
 % editor services can reason about types and binding in many more situations than previously possible.
-\citet{popl-paper,HazelnutSNAPL} discuss several ways to determine an incomplete expression from the editor state. When the editor state is a text buffer, error recovery mechanisms can insert holes implicitly \cite{DBLP:journals/siamcomp/AhoP72,charles1991practical,graham1979practical,DBLP:conf/oopsla/KatsJNV09}. Alternatively, the language might provide explicit syntax for holes, so that the programmer can insert them either manually  
-or semi-automatically via a code completion service \cite{Amorim2016}. For example, GHC Haskell supports the notation \li{_u} for empty holes, where \li{u} is an optional hole name \cite{GHCHoles}. Structure editors insert explicitly represented holes fully automatically \cite{popl-paper}; we say more about structure editors in Sec.~\ref{sec:implementation}.
+\citet{HazelnutSNAPL} discuss several ways to determine an incomplete expression from the editor state. When the editor state is a text buffer, error recovery mechanisms might insert holes implicitly \cite{DBLP:journals/siamcomp/AhoP72,charles1991practical,graham1979practical,DBLP:conf/oopsla/KatsJNV09}. Alternatively, the language might provide explicit syntax for holes, so that the programmer can insert them either manually  
+or semi-automatically via a code completion service \cite{Amorim2016}. For example, GHC Haskell supports the notation \li{_u} for empty holes, where \li{u} is an optional hole name \cite{GHCHoles}. When the editor state is a tree or graph structure, i.e. in a structure editor, the editor typically inserts explicitly represented holes fully automatically \cite{popl-paper}; we say more about structure editors in Sec.~\ref{sec:implementation}.
 
 %
 For the purposes of live programming, however, a static semantics does not suffice---%
@@ -102,45 +101,47 @@ The simplest approach would be to define a dynamic semantics that aborts with an
 %
 This mirrors a workaround that programmers commonly deploy: 
 raising an exception as a placeholder, e.g. \lismall{raise Unimplemented}. 
-GHC Haskell supports this mode of evaluation for programs with holes using the \lismall{-fdefer-typed-holes} flag.\footnote{
+GHC Haskell supports this ``exceptional approach'' using the \lismall{-fdefer-typed-holes} flag.\footnote{
 Without this flag, holes cause compilation to fail with an error message that reports information about each hole's type and typing context. 
 Proof assistants like Agda \cite{norell:thesis,norell2009dependently} and Idris \cite{brady2013idris} also respond to holes in this way.
 } 
-Although better than nothing, this ``exceptional approach'' to expression holes has limitations 
+Although better than nothing, the exceptional approach to expression holes has limitations 
 within a live programming environment because 
-(1)~it provides limited information about the dynamic state of the program where the exception occurs
-(typically only a stack trace);  
-(2)~it provides no information about the behavior of the remainder of program, 
-parts of which may not depend on the missing or erroneous expression (e.g. later cells in a lab notebook, or tests of those components of the program that are already complete); and 
+(1)~it provides no information about the behavior of the remainder of program, 
+parts of which may not depend on the missing or erroneous expression (e.g. subsequent cells in a lab notebook, or tests involving other components of the program);  
+(2)~it provides limited information about the dynamic state of the program where the hole appears 
+(typically only a stack trace);  and
 (3)~it provides no means by which to resume evaluation after filling a hole.
 
 Furthermore, exceptions can appear only in expressions, but we might also like to be able to evaluate programs that have type holes. Again, existing approaches do not support this situation well---GHC supports type holes, but compilation fails if type inference cannot automatically fill them \cite{GHCHoles}. 
-The static semantics developed by \citet{popl-paper} derives the machinery for 
+The static semantics developed by \citet{popl-paper} provides more hope because it derives the machinery for 
 reasoning statically about type holes from gradual type theory, 
 identifying the type hole with the unknown type \cite{DBLP:conf/snapl/SiekVCB15,Siek06a}.
 %
 As such, we might look to the dynamic semantics from
 gradual type theory, 
-which selectively inserts dynamic casts as necessitated by missing type information to maintain type safety. 
+which inserts dynamic casts as necessary to maintain type safety. 
 %However, this \IS again somewhat dissatisfying from the perspective of live programming because when a cast fails, evaluation again stops with 
 However, when a cast fails, evaluation again stops with 
-an exception and so the traditional gradual typing approaches still leave the live programming environment unable to provide rich, continuous feedback for the three reasons just enumerated.
+an exception, again leaving the live programming environment unable to provide rich, continuous feedback about the behavior of the remainder of the program.
 
 \parahead{Contributions}
 
-This paper develops a dynamic semantics for incomplete functional programs, starting from the static semantics developed by \citet{popl-paper},  that addresses these limitations of the exceptional approach. 
-In particular, rather than stopping when evaluation encounters an expression hole, evaluation continues ``around'' the hole so that dynamic feedback about other parts of the program remains available. 
-For programs with unfillable type holes, casts are inserted as in gradual type theory \cite{DBLP:conf/snapl/SiekVCB15}. Evaluation proceeds around failed casts in the same way. 
+This paper develops a dynamic semantics for incomplete functional programs, starting from the static semantics developed by \citet{popl-paper},  that addresses the three limitations of the exceptional approach enumerated above.
 
-The system tracks the closure around each expression hole instance as evaluation proceeds so that 
-the live programming environment can feed relevant information from the {hole closures} to the programmer as they work to fill the holes in the program.
-Then, when the programmer performs an edit that fills an empty expression hole or that replaces a non-empty hole with a type-correct expression, evaluation can resume from the paused, i.e. \emph{indeterminate}, evaluation state. We call this operation \emph{fill-and-resume}. We observe that empty hole closures are closely related to metavariable closures from contextual modal type theory~(CMTT)~\cite{Nanevski2008} (which, by its Curry-Howard interpretation, provides a logical basis for reasoning about and operating on hole closures). These connections to well-established systems, together with our mechanized proofs, serve to support our claim that this approach is theoretically well-grounded.
+In particular, rather than stopping when evaluation encounters an expression hole instance, evaluation continues ``around'' it.   
+The system tracks the closure around each expression hole instance as evaluation proceeds. The live programming environment can feed the incomplete result and relevant information from these {hole closures} to the programmer to help them develop and confirm their mental model of the portions of the program that are complete as they work to fill the remaining holes. 
+Then, when the programmer performs an edit that fills an empty expression hole or that replaces a non-empty hole with a type-correct expression, evaluation can resume from the previous evaluation state. We call this operation \emph{fill-and-resume}. For programs with unfilled type holes, casts are inserted as in gradual type theory (GTT) \cite{DBLP:conf/snapl/SiekVCB15} and, uniquely, evaluation proceeds around failed casts as it does around expression holes. 
 
-We are integrating this approach into the \Hazel programming environment being developed by \citet{HazelnutSNAPL}. \Hazel features a live context inspector that integrates static information with hole closure information and interactively presents recursive hole closures, which arise from incomplete recursive functions. The editor component of this implementation defines a language of structured edit actions, 
-based on the \Hazelnut structure editor calculus developed by \citet{popl-paper}, that inserts holes automatically to guarantee that
+The primary contribution of this paper is a type-theoretic account of these ideas in the form of a core calculus, \HazelnutLive. We observe that expression hole closures are closely related to metavariable closures from contextual modal type theory~(CMTT)~\cite{Nanevski2008}, which, by its Curry-Howard correspondence with contextual modal logic, provides a logical basis for reasoning about and operating on hole closures. These connections to well-established systems (GTT and CMTT), together with mechanized proofs of the metatheory of \HazelnutLive, serve to support our main claim: that this approach is theoretically well-grounded.
+
+There are many possible ways to present incomplete results and hole closure information to programmers. A secondary contribution of this paper is one  proof-of-concept user interface, which has been implemented into the \Hazel programming environment being developed by \citet{HazelnutSNAPL}. In particular, we describe \Hazel's novel live context inspector, which  combines static type information with hole closure information and interactively presents nested hole closures. We make no strong empirical claims about this particular user interface; we evaluate it with several suggestive example programming tasks where this interface presents information that would not otherwise be available and that we conjecture would be useful when teaching functional programming.
+
+The editor component of \Hazel is organized around a language of structured edit actions, 
+based on the \Hazelnut structure editor calculus developed by \citet{popl-paper}, that insert holes automatically to guarantee that
 every editor state has some, possibly incomplete, type. 
 The type safety invariant that we establish then guarantees that every editor state has dynamic meaning. Taken together, the result is a full solution to the gap problem, i.e. a proof-of-concept
-live functional programming environment that provides rich static and dynamic feedback that never suffers from temporal or perceptive gaps.
+live functional programming environment that continuously provides rich static and dynamic feedback.
 
 \vspace{-2px}
 \parahead{Paper Outline}
@@ -148,22 +149,32 @@ live functional programming environment that provides rich static and dynamic fe
 \newcommand{\contribution}[2]{\paragraph{#1. #2}} 
 
 
-We begin in Sec.~\ref{sec:examples} by detailing the approach informally, with several example programming tasks, in the setting of the \Hazel design, which is based closely on well-established existing designs (in particular, on the Elm programming language and the Jupyter user interface). 
+We begin in Sec.~\ref{sec:examples} by detailing the approach informally, with several example programming tasks, in the setting of the \Hazel design. 
 % We also qualitatively describe some user interface features that may help manage visual complexity when working with larger programs.
 
 Sec.~\ref{sec:calculus} then abstracts away the inessential details of the language and user interface and makes the  intuitions developed in Sec.~\ref{sec:examples} formally precise by detailing the primary contribution of this paper: a core calculus, \HazelnutLive, that supports evaluating incomplete expressions and tracking hole closures. 
 % The dynamic semantics of \HazelnutLive is a small-step reduction semantics equipped with clean type safety theorems (including, notably, a Progress theorem for incomplete expressions). 
-Sec.~\ref{sec:agda-mechanization} outlines our Agda-based mechanization of \HazelnutLive, which is included in the anonymized supplement.  
-Sec.~\ref{sec:implementation} provides some additional details on the implementation of these ideas into \Hazel, which is based on the \Hazelnut edit action calculus \cite{popl-paper}, and formally states the continuity invariant, i.e. the solution to the gap problem, as a corollary of the primary theorems of \Hazelnut and \HazelnutLive.
+Sec.~\ref{sec:agda-mechanization} outlines our Agda-based mechanization of \HazelnutLive, which is included in the supplemental material and is also available from the following URL: 
+
+\begin{center}
+\url{https://github.com/hazelgrove/hazelnut-dynamics-agda}
+\end{center}
+
+\noindent
+Sec.~\ref{sec:implementation} states the continuity invariant, which formally solves the gap problem, as a corollary of the primary theorems of \Hazelnut and \HazelnutLive. It also provides some additional details on the implementation of \Hazel. A snapshot of the implementation is included in the supplemental material. An online version of the ongoing implementation of \Hazel is available from \url{hazel.org}, and the source code is available from the following URL:
+
+\begin{center}
+\url{https://github.com/hazelgrove/hazel}
+\end{center}
 
 Sec.~\ref{sec:resumption} defines the fill-and-resume operation, which is rooted in the contextual substitution operation from CMTT. We establish the correctness of fill-and-resume with a commutativity theorem. We also discuss how the fill-and-resume operation allows us to semantically interpret the act of editing and evaluating cells in a REPL or Jupyter-like live lab notebook environment.
 
-Sec.~\ref{sec:relatedWork} describes related work in detail and simultaneously discusses limitations and directions for future work. Sec.~\ref{sec:discussion} briefly concludes. 
+Sec.~\ref{sec:relatedWork} describes related work in detail and simultaneously discusses limitations and a number of directions for future work. Sec.~\ref{sec:discussion} briefly concludes. 
 
 \ifarxiv
 The appendix 
 \else
-The anonymous supplement includes, in addition to the Agda mechanization, an appendix that 
+The extended version of the paper, which is included in the supplemental material and available from \url{https://arxiv.org/abs/1805.00155}, includes an appendix that 
 \fi
-(1) provides some straightforward auxiliary definitions and proofs that were omitted from the paper for concision; and (2) defines some simple extensions to the core calculus (namely, numbers, and sum types), together with a brief exposition on defining further extensions. 
+(1) provides some straightforward auxiliary definitions and proofs that were omitted from the paper for the sake of space; and (2) defines some simple extensions to the core calculus (namely, numbers, and sum types), together with a brief exposition on defining further extensions. 
 % These are not necessary to communicate the fundamental ideas of the paper, but may be of interest to some readers.
