@@ -42,7 +42,7 @@ avoids the need to restart evaluation after edits that amount to hole filling.
 Formally, the semantics borrows machinery from both gradual type theory (to handle unfillable 
 type holes) and contextual modal type theory (which supplies the
 logical basis for hole closures), combining these and developing additional machinery necessary 
-to continue evaluation past holes while maintaining important metatheoretic properties. 
+to continue evaluation past holes while maintaining type safety. We have mechanized the metatheory of the core calculus, called \HazelnutLive{}, using the Agda proof assistant.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% PAR 3: We have an implementation, and have proofs
@@ -53,15 +53,14 @@ to continue evaluation past holes while maintaining important metatheoretic prop
 % from the perspective of CMTT) and cast failure holes (which provide a novel), and (2) a commutativity property that establishes that the
 % ``edit-and-resume'' feature is sound.
 %
-We have mechanized the metatheory of the core calculus, called \HazelnutLive{}, using the Agda proof assistant.
 %
-We have also implemented these ideas into the \Hazel programming environment. The implementation inserts holes automatically to guarantee that every editor state has some (possibly incomplete)
-type, following the \Hazelnut edit action calculus of \citet{popl-paper}.
+We have also implemented these ideas into the \Hazel programming environment. The implementation inserts holes automatically, following the \Hazelnut edit action calculus of \citet{popl-paper}, to guarantee that every editor state has some (possibly incomplete)
+type.
 Taken together with this paper's type safety property, the 
 % The 
 result is  
 a proof-of-concept live programming environment where rich dynamic feedback 
-is truly available without gaps, i.e. it is available for every possible editor state.
+is truly available without gaps, i.e. for every reachable editor state.
 % i.e. \emph{every edit state is guaranteed to have
 % non-trivial static and dynamic meaning}.
 
