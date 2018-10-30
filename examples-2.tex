@@ -9,12 +9,12 @@
 % \begin{subfigure}[t]{\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth,interpolate=false,valign=t]{images/qsort-type-error-inset.png}
+\includegraphics[width=0.95\textwidth,interpolate=false,valign=t]{images/qsort-type-error-inset.png}
 % \includegraphics[width=0.28\textwidth,interpolate=false,valign=t]{images/type-inconsistency.png}
 \vspace{2px}
 \caption{Example 3: Ill-Typed Quicksort}
 \label{fig:qsort-type-error}
-\vspace{-4px}
+\vspace{-3px}
 \end{figure}
 % \end{subfigure}
 
@@ -29,7 +29,7 @@ and therefore conventionally meaningless, because of
 Let us return to the quicksort example just described, 
 but assume that the programmer has filled in the previous hole
 as shown in Fig.~\ref{fig:qsort-type-error}. In Sec.~\ref{sec:resumption}, we discuss
-how the programming environment could avoid restarting evaluation after such edits.
+how the programming environment could avoid restarting evaluation after such edits by using the values stored in the hole closures.
 
 The programmer appears to be on the right track conceptually
 in recognizing that the pivot needs to appear between the 
@@ -61,7 +61,11 @@ reveals that the programmer is on the right track: the list elements
 appear in the correct order.
 They simply have not been combined correctly.
 
-Although \Hazel inserts non-empty holes automatically, the earlier work on \Hazelnut allowed the programmer to explicitly insert non-empty holes. It may be that these are useful even when there is not a type inconsistency because the non-empty hole defers elimination of the enclosed expression and causes hole closure information to be tracked. For example, if we repaired the program in Fig.~\ref{fig:qsort-type-error} by replacing the erroneous variable \li{pivot} with \li{[pivot]} and then inserted a non-empty hole around this expression, the result would show all of the list concatenation operations that would be performed without actually performing them, producing a result much like that in Fig.~\ref{fig:qsort-type-error}. This provides another way to investigate the recursive structure of the \li{qsort} function.
+We are treating \li{@} as a primitive operator in this example. If it were defined as a function, then
+it would be possible to further reduce the example by proceeding into the function body. This is likely unhelpful for
+functions other than those that programmer is actively working on. Our semantics \emph{allows} beta reduction when the argument is a hole, but it does not \emph{require} it.
+
+Although \Hazel inserts non-empty holes automatically, the earlier work on \Hazelnut allowed the programmer to explicitly insert non-empty holes. It may be that these are useful even when there is not a type inconsistency because the non-empty hole defers elimination of the enclosed expression and causes hole closure information to be tracked. For example, if we repaired the program in Fig.~\ref{fig:qsort-type-error} by replacing the erroneous variable \li{pivot} with \li{[pivot]} and then inserted a non-empty hole around this expression, the result would show all of the list concatenation operations that would be performed without actually performing them, producing a result much like that in Fig.~\ref{fig:qsort-type-error}. This provides another way to explore the recursive structure of the \li{qsort} function.
 
 % For example, consider the following two definitions.
 
