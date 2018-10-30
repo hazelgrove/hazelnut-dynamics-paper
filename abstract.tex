@@ -13,7 +13,7 @@ with continuous feedback about a program's dynamic behavior as it is being edite
 The problem is that programming languages typically assign dynamic meaning only 
  to programs that are \emph{complete}, i.e. syntactically well-formed and free
 of type errors. Consequently,    
-live feedback presented to the programmer exhibits temporal or perceptive gaps, i.e. it flickers out or it goes stale whenever the program becomes incomplete. 
+live feedback presented to the programmer exhibits temporal or perceptive gaps. 
 % In some cases, these gaps persist over a substantial length of time.
 %
 % Defining a semantics for incomplete functional programs would help bridge the
@@ -39,8 +39,8 @@ closure around each hole instance as it flows through the remainder of the progr
 to help the programmer develop and confirm their mental model of the behavior of the complete portions of the program as they decide how to fill the remaining holes. 
 Hole closures also enable a \emph{fill-and-resume} operation that 
 avoids the need to restart evaluation after edits that amount to hole filling. 
-Formally, the semantics borrows machinery from both gradual type theory (to handle unfillable 
-type holes) and contextual modal type theory (which supplies the
+Formally, the semantics borrows machinery from both gradual type theory (which supplies the basis for handling unfilled 
+type holes) and contextual modal type theory (which supplies a
 logical basis for hole closures), combining these and developing additional machinery necessary 
 to continue evaluation past holes while maintaining type safety. We have mechanized the metatheory of the core calculus, called \HazelnutLive{}, using the Agda proof assistant.
 
