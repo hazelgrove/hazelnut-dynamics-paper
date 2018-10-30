@@ -29,7 +29,7 @@ and therefore conventionally meaningless, because of
 Let us return to the quicksort example just described, 
 but assume that the programmer has filled in the previous hole
 as shown in Fig.~\ref{fig:qsort-type-error}. In Sec.~\ref{sec:resumption}, we discuss
-how the programming environment might avoid restarting evaluation after such edits, but for small examples like this, restarting works fine.
+how the programming environment could avoid restarting evaluation after such edits.
 
 The programmer appears to be on the right track conceptually
 in recognizing that the pivot needs to appear between the 
@@ -43,14 +43,14 @@ However, our argument is that the presence of a static type error should not cau
 the dynamic behavior of the program to ``flicker out'' or ``go stale'' --
 after all, there are perfectly meaningful parts of the program (both nearby
 and far away from the error) 
-whose dynamic behavior may be of interest. Evaluation can also assist the programmer in understanding the type error by presenting concrete values \cite{Seidel2016}.
+whose dynamic behavior may be of interest. Concrete results can also help the programmer understand the implications of the type error \cite{Seidel2016}.
 % After all,
 % the error is localized and there is perfectly good code elsewhere 
 % in the program (if not nearby, then perhaps far away).
 
 Our approach, following the prior work of \citet{popl-paper}, 
 is to semantically internalize the ``red outline'' around
-type inconsistencies, representing it as a \emph{non-empty hole}.
+a type-inconsistent expression as a \emph{non-empty hole} around that expression.
 Evaluation safely proceeds past a non-empty hole just as if it were an empty hole.
 The semantics also associates an environment with each instance of a non-empty hole,
 so we can use the live context inspector essentially as in Fig.~\ref{fig:qsort-sidebars} (not shown). 
@@ -61,7 +61,7 @@ reveals that the programmer is on the right track: the list elements
 appear in the correct order.
 They simply have not been combined correctly.
 
-
+Although \Hazel inserts non-empty holes automatically, the earlier work on \Hazelnut allowed the programmer to explicitly insert non-empty holes. It may be that these are useful even when there is not a type inconsistency because the non-empty hole defers elimination of the enclosed expression and causes hole closure information to be tracked. For example, if we repaired the program in Fig.~\ref{fig:qsort-type-error} by replacing the erroneous variable \li{pivot} with \li{[pivot]} and then inserted a non-empty hole around this expression, the result would show all of the list concatenation operations that would be performed without actually performing them, producing a result much like that in Fig.~\ref{fig:qsort-type-error}. This provides another way to investigate the recursive structure of the \li{qsort} function.
 
 % For example, consider the following two definitions.
 
