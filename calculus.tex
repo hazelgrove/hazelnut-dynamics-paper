@@ -10,7 +10,7 @@
 
 We will now make the intuitions developed in the previous section formally
 precise by specifying a core calculus, which we call \HazelnutLive, and
-developing its metatheory.
+characterizing its metatheory.
 
 \parahead{Overview} The syntax of the core calculus given in
 Fig.~\ref{fig:hazelnut-live-syntax} consists of types and expressions with
@@ -39,7 +39,7 @@ Sec.~\ref{sec:agda-mechanization}). Rule names in this section,
 e.g. \rulename{SVar}, correspond to variable names used in the
 mechanization. The \Hazel implementation substantially follows the formal
 specification of \Hazelnut (for the editor component) and \HazelnutLive
-(for the semantics), and we can formally state a continuity invariant for a
+(for the evaluator), and we can formally state a continuity invariant for a
 putative combined calculus (see Sec.~\ref{sec:implementation}).
 
 % \rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
