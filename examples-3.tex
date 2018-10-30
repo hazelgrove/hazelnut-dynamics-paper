@@ -3,16 +3,6 @@
 \subsection{Example 4: Type Holes and Dynamic Type Errors}
 \label{sec:dynamic-type-errors}
 
-% \begin{subfigure}[t]{\textwidth}
-\begin{figure}
-\centering
-\includegraphics[width=0.71\textwidth,interpolate=false,valign=t]{images/cast-errors.png}
-% \includegraphics[width=0.28\textwidth,interpolate=false,valign=t]{images/type-inconsistency.png}
-\caption{Example 4: Type Holes and Dynamic Type Errors}
-\label{fig:cast-errors}
-\vspace{-6px}
-\end{figure}
-% \end{subfigure}
 
 
 % So far, we have only discussed incomplete programs where a hole appears within an expression.
@@ -20,7 +10,7 @@ In \Hazel, the program can also be incomplete because holes appear in types.
 \citet{popl-paper} confirmed that the literature on \emph{gradual type systems} \cite{Siek06a,DBLP:conf/snapl/SiekVCB15} is directly relevant to the problem of reasoning with type holes, by identifying the type hole with the unknown type. 
 % Unsurprisingly, then, it is also relevant to the problem of running 
 % programs with type holes. 
-Indeed, the purpose of gradual typing is to be able to run programs that are not yet sufficiently annotated with types by inserting \emph{casts} only where necessary. As such, let us consider only a small synthetic example to demonstrate what is unique to our approach.
+Gradual type systems can run programs that are not yet sufficiently annotated with types by inserting \emph{casts}  where necessary. We take the same well-studied approach in \Hazel. As such, let us consider only a small synthetic example to demonstrate what is unique to our approach.
 
 Fig.~\ref{fig:cast-errors} defines a simple function, \li{f}, of two arguments. 
 The type annotation on the first line leaves the type of those arguments unknown. 
@@ -34,6 +24,18 @@ Although \Hazel supports only local type inference as of this writing,
 a system that uses ML-style type reconstruction to fill type holes statically, like GHC Haskell, would only be able to fill the first hole. Leaving the second hole unfilled is 
 a parsimonious alternative to arbitrarily or heuristically choosing one of the possibilities and marking the
 other uses of \li{x} as ill-typed (see \cite{DBLP:journals/jfp/ChenE18}).
+
+
+% \begin{subfigure}[t]{\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth,interpolate=false,valign=t]{images/cast-errors.png}
+% \includegraphics[width=0.28\textwidth,interpolate=false,valign=t]{images/type-inconsistency.png}
+\caption{Example 4: Type Holes and Dynamic Type Errors}
+\label{fig:cast-errors}
+\vspace{-6px}
+\end{figure}
+% \end{subfigure}
 
 At the bottom of the cell in Fig.~\ref{fig:cast-errors}, we have three 
 example applications of \li{f}, tupled together for concision. All three are statically
