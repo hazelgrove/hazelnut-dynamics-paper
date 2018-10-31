@@ -19,12 +19,12 @@ More specialized examples include live direct manipulation programming environme
 \cite{McDirmid:2007}, \sns{}~\cite{sns-pldi,sns-uist}, and the tools
 demonstrated by \citet{victor2012inventing} in his lectures;
 %
-live user interface frameworks \cite{burckhardt2013s};
+live GUI frameworks \cite{burckhardt2013s};
 %
 live image processing languages~\cite{DBLP:journals/vlc/Tanimoto90};
 %
-and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98}, which can support live coding as a performance art.
-Editor-integrated debuggers \cite{mccauley2008debugging} and other systems that support inspecting run-time state in the editor, like Smalltalk environments \cite{Goldberg:1983cn}, are also live programming environments. 
+and live visual and auditory dataflow languages \cite{DBLP:conf/vl/BurnettAW98}, which can support live coding as performance art \cite{DBLP:journals/programming/ReinRLHP19}.
+Editor-integrated debuggers \cite{mccauley2008debugging} and editors that support inspecting run-time state, like Smalltalk environments \cite{Goldberg:1983cn}, are also live programming environments. 
 % Live programming, in its various incarnations \cite{DBLP:journals/vlc/Tanimoto90,DBLP:conf/icse/Tanimoto13},
 %has been and continues to be an active area of research and development.
 % has been, and continues to be, an active area of research and development.
@@ -43,7 +43,7 @@ a short expression. In other cases, these gaps can persist over substantial leng
 This is particularly problematic for novice programmers, who make more mistakes \cite{mccauley2008debugging,fitzgerald2008debugging}.
 %
 %\matt{we are not really modeling a language with user type definitions -- what does the following sentence really add here? also, I just added this scenerio to the list above}
-The problem is particularly pronounced for languages with rich static type systems where certain program changes, such as a change to a type definition, can cause type errors to propagate throughout the program. Throughout the process of addressing these errors, which can sometimes span many days, the program text remains formally meaningless. 
+The problem is also particularly pronounced for languages with rich static type systems where certain program changes, such as a change to a type definition, can cause type errors to propagate throughout the program. Throughout the process of addressing these errors, which can sometimes span many days, the program text remains formally meaningless. 
 About 40\% of edits performed by Java programmers using Eclipse left the program text malformed \cite{popl-paper} and some additional number, which could not be determined from the data gathered by \citet{6883030}, were well-formed but ill-typed.
 
  % From the perspective of the language definition, these edit states are wholly meaningless, so editor services cannot rely on the same operations and reasoning principles that would be available to, for example, the compiler. 
@@ -86,7 +86,7 @@ and non-empty holes operate as ``membranes'' around static type inconsistencies
 % For editor states into this language of incomplete programs, 
 % editor services can reason about types and binding in many more situations than previously possible.
 \citet{HazelnutSNAPL} discuss several ways to determine an incomplete expression from the editor state. When the editor state is a text buffer, error recovery mechanisms might insert holes implicitly \cite{DBLP:journals/siamcomp/AhoP72,charles1991practical,graham1979practical,DBLP:conf/oopsla/KatsJNV09}. Alternatively, the language might provide explicit syntax for holes, so that the programmer can insert them either manually  
-or semi-automatically via a code completion service \cite{Amorim2016}. For example, GHC Haskell supports the notation \li{_u} for empty holes, where \li{u} is an optional hole name \cite{GHCHoles}. When the editor state is instead a tree or graph structure, i.e. in a structure editor, the editor typically inserts explicitly represented holes fully automatically \cite{popl-paper}; we say more about structure editors in Sec.~\ref{sec:implementation}.
+or semi-automatically via a code completion service \cite{Amorim2016}. For example, GHC Haskell supports the notation \li{_u} for empty holes, where \li{u} is an optional hole name \cite{GHCHoles}. When the editor state is instead a tree or graph structure, i.e. in a structure editor, the editor inserts explicitly represented holes fully automatically \cite{popl-paper}; we say more about structure editors in Sec.~\ref{sec:implementation}.
 
 %
 A static semantics for incomplete programs is useful, but for the purposes of live programming, it does not suffice---%
