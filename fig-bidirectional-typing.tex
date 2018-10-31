@@ -2,8 +2,8 @@
 
 \begin{figure}[t]
 \judgbox{\hsyn{\hGamma}{\hexp}{\htau}}{$\hexp$ synthesizes type $\htau$}
-\begin{mathpar}
 \vspace{-10px}
+\begin{mathpar}
 \inferrule[SConst]{ }{
   \hsyn{\hGamma}{c}{b}
 }
@@ -21,13 +21,9 @@
 }
 
 \inferrule[SAp]{
-  \arrayenvbr{
-    \hsyn{\hGamma}{\hexp_1}{\htau_1}    
-    \\
-    \hana{\hGamma}{\hexp_2}{\htau_2}
-  }
-  \\
-    \arrmatch{\htau_1}{\tarr{\htau_2}{\htau}}
+    \hsyn{\hGamma}{\hexp_1}{\htau_1}    \\
+    \arrmatch{\htau_1}{\tarr{\htau_2}{\htau}}\\\\
+        \hana{\hGamma}{\hexp_2}{\htau_2}
 }{
   \hsyn{\hGamma}{\hap{\hexp_1}{\hexp_2}}{\htau}
 }
