@@ -75,7 +75,7 @@ expression~$\hexp$ against a given type~$\htau$.
 Algorithmically, analysis accepts a type as input, and synthesis gives
 a type as output.
 %
-We start with synthesis for the programmer's ``top level'' external
+We start with synthesis for the programmer's top level external
 expression.
 
 % Algorithmically, the type is an output of type synthesis but an input of type analysis.
@@ -125,9 +125,9 @@ For the sake of exposition, \HazelnutLive includes ``half-annotated'' lambdas, $
 %
 Half-annotated lambdas may appear in synthetic position according to Rule \rulename{SLam}, which is standard \cite{Chlipala:2005da}.
 %
-Unannotated lambdas may only appear where the expected type is known to be either an arrow type or the hole type, which is treated as if it were $\tarr{\tehole}{\tehole}$.
+Unannotated lambdas may only appear where the expected type is known to be either an arrow type or the hole type, which is treated as if it were $\tarr{\tehole}{\tehole}$.\footnote{A system supporting ML-style type reconstruction \cite{damas1982principal} might also include a synthetic rule for unannotated lambdas, e.g. as outlined by \citet{DBLP:conf/icfp/DunfieldK13}, but we stick to this simpler ``Scala-style'' local type inference scheme in this paper \cite{Pierce:2000ve,Odersky:2001lb}.} 
 %
-To avoid the need for two separate rules, Rule \rulename{ALam} uses the matching relation $\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$ defined in \Figref{fig:arrmatch}, which produces the matched arrow type $\tarr{\tehole}{\tehole}$ given the hole type, and operates as the identity on arrow types \cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/popl/GarciaC15}.\footnote{A system supporting ML-style type reconstruction \cite{damas1982principal} might also include a synthetic rule for unannotated lambdas, e.g. as outlined by \citet{DBLP:conf/icfp/DunfieldK13}, but we stick to this simpler ``Scala-style'' local type inference scheme in this paper \cite{Pierce:2000ve,Odersky:2001lb}.}
+To avoid the need for separate rules for these two cases, Rule \rulename{ALam} uses the matching relation $\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$ defined in \Figref{fig:arrmatch}, which produces the matched arrow type $\tarr{\tehole}{\tehole}$ given the hole type, and operates as the identity on arrow types \cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/popl/GarciaC15}.
 %
 % \Secref{sec:related} dicusses how \HazelnutLive might be enriched with
 % with ML-style type reconstruction~\cite{damas1982principal}, perhaps via
@@ -141,7 +141,7 @@ To avoid the need for two separate rules, Rule \rulename{ALam} uses the matching
 %Note that
 %%
 
-The rule governing function application, Rule \rulename{SAp}, similarly treats an expression of hole type in function position as if it were of type $\tarr{\tehole}{\tehole}$ using the same matched arrow type judgement.
+The rule governing function application, Rule \rulename{SAp}, similarly treats an expression of hole type in function position as if it were of type $\tarr{\tehole}{\tehole}$ using the same matching relation.
 
 We do not formally need an explicit fixpoint operator because this calculus supports general recursion due to type holes, e.g. we can express the Y combinator as $(\halam{x}{\tehole}{x(x)}) (\halam{x}{\tehole}{x(x)})$. More generally, the untyped lambda calculus can be embedded as described by \citet{Siek06a}.
 %As such, we omit an explicit fixpoint operator for concision.\todo{fixpoint?}{}
@@ -428,7 +428,7 @@ By our interpretation of hole types as unknown types from gradual type
 theory, we can address the problem by performing cast insertion.
 %
 
-The cast form in Hazelnut Live is $\dcasttwo{\dexp}{\htau_1}{\htau_2}$.
+The cast form in \HazelnutLive is $\dcasttwo{\dexp}{\htau_1}{\htau_2}$.
 %
 This form serves to ``box'' an expression of type $\htau_1$ for
 treatment as an expression of a consistent type $\htau_2$
@@ -442,22 +442,21 @@ to include the assigned type~$\htau_1$ in the syntax \cite{DBLP:conf/snapl/SiekV
 Elaboration inserts casts at function applications and ascriptions.
 %
 The latter is more straightforward: Rule~\rulename{ESAsc}
-in \Figref{fig:elabSyn} inserts a cast from the assigned type to the
+in \Figref{fig:expandSyn} inserts a cast from the assigned type to the
 ascribed type.
 %
 Theorem~\ref{thm:typed-elaboration} inductively ensures that the two types
 are consistent.
 %
-We include ascription for exposition purposes---this form is derivable
+We include ascription for expository purposes---this form is derivable
 by using application together with the half-annotated identity, $e
 : \tau = \hap{(\halam{x}{\htau}{x})}{e}$; as such, application
 elaboration, discussed below, is more general.
 
 Rule~\rulename{ESAp} elaborates function applications.
 %
-To understand the rule, consider the elaboration of external
-expression~$\hap{(\halam{x}{\tehole}{\hap{x}{c}})}{c}$, the example
-discussed above:
+To understand the rule, consider the elaboration of the example
+discussed above, $\hap{(\halam{x}{\tehole}{\hap{x}{c}})}{c}$:
 \[
         \hap{\dcasttwo{
         (\halam{x}{\tehole}{\underbrace{
@@ -517,8 +516,8 @@ Next, consider the application's argument, here constant~$c$.
 %
 The conclusion of Rule~\rulename{ESAp} inserts the cast on the argument's
 elaboration, from the type it is assigned by the final premise of the
-rule~(type~$b$ here), to the argument type of the matched arrow type of the
-function expression~(type~$\tehole$ here).
+rule~(type~$b$), to the argument type of the matched arrow type of the
+function expression~(type~$\tehole$).
 
 The example's second, outermost application goes through the same
 application elaboration rule.
@@ -670,7 +669,7 @@ the sake of generality, and to support the specification of the fill-and-resume 
 \input{fig-ground-types}
 \input{fig-dynamics-aux}
 
-Substitution, written $[d/x]d'$, operates in the standard capture-avoiding manner~\cite{pfpl} (see the \appendixName for the full definition).
+Substitution, written $[d/x]d'$, operates in the standard capture-avoiding manner~\cite{pfpl} (see the \appendixName~for the full definition).
 % Appendix~\ref{sec:additional-defns}).
 %
 The only cases of special interest arise when substitution reaches a hole closure:
@@ -754,7 +753,7 @@ not equal to $\tau_1$.
 Rule \rulename{IFailedCast} specifies that a failed cast operates as an
 indeterminate form (once $d$ is final), i.e. evaluation does not stop. For simplicity, we do not include blame labels as found in some accounts of gradual typing \cite{DBLP:conf/esop/WadlerF09,DBLP:conf/snapl/SiekVCB15}, but it would be straightforward to do so by recording the blame labels from the two constituent casts on the two arrows of the failed cast.
 
-Rules \rulename{ITCastSucceed} and \rulename{ITCastFail} rules just described only operate at ground type.
+% Rules \rulename{ITCastSucceed} and \rulename{ITCastFail} only operate at ground type.
 %
 The two remaining instruction transition rules, Rule~\rulename{ITGround}
 and~\rulename{ITExpand}, insert intermediate casts from non-ground type to a
@@ -783,8 +782,6 @@ Of note, Rule \rulename{ICastHoleGround} handles casts from hole to
 ground type that are not of
 the form $\dcastthree{\dexp}{\htau_1}{\tehole}{\htau_2}$.
 %
-The need for this case is perhaps not obvious because in the cast calculus,  the only irreducible term of type $\tehole$
-is $\dcasttwo{\dexp}{\htau_1}{\tehole}$, but here there are holes as well.
 
 \subsubsection{Type Safety}
 %
@@ -818,7 +815,7 @@ transitions and a standard substitution lemma stated in
 the \appendixName.
 % Appendix~\ref{sec:additional-defns}.
 %
-Hole closures can disappear during evaluation, so we rely on simple weakening
+Hole closures can disappear during evaluation, so we must have structural weakening 
 of $\Delta$.
 
 The progress theorem establishes that the dynamic semantics accounts
@@ -911,7 +908,6 @@ mechanization  \cite{norell2009dependently,norell:thesis,Aydemir:2005fk}
 of the semantics and metatheory of \HazelnutLive,
 %including proofs of all of the
 including all of the theorems stated above and necessary lemmas.
-We take as assumptions only a few standard properties of general hypothetical judgements, substitution and finite maps.
 %
 %We choose the
 %(as did the mechanization of \Hazelnut by \citet{popl-paper}, though only a few definitions are common).
@@ -921,25 +917,24 @@ We take as assumptions only a few standard properties of general hypothetical ju
 %Agda itself was also an inspiration for this work because it supports holes, albeit in a more limited form than described here (cf. Sec.~\ref{sec:intro}).
 %
 %
-Our approach is otherwise standard: we model judgements as
+Our approach is standard: we model judgements as
 inductive datatypes, and rules as dependently typed constructors of these judgements.
 %
-We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and hole names and encode typing
-contexts, hole contexts and finite substitutions using metafunctions.
-To support this encoding choice, we postulate function extensionality (which is independent of Agda's axioms) \cite{awodey2012inductive}.
+We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and hole names, and avoid certain other complications relted to substitution by enforcing the requirement that all bound variables in a term are unique when convenient (this requirement can always be discharged by alpha-variation). We encode typing
+contexts and hole contexts using metafunctions.
+To support this encoding choice, we postulate function extensionality (which is independent of Agda's axioms) \cite{awodey2012inductive}. We encode finite substitutions as an inductive datatype with a base case representing the identity substitution and an inductive case that records a single substitution. Every finite substitution can be represented in this scheme. This makes it easier for Agda to see why certain inductions that we perform are well-founded.  
 The documentation provided with the mechanization has more details.
 
 \vspace{-3px}
 \subsection{Implementation and Continuity}\label{sec:implementation}
 \vspace{-2px}
 
-The \Hazel implementation demonstrated in Sec.~\ref{sec:examples}
+The \Hazel implementation described in Sec.~\ref{sec:examples}
 includes an unoptimized interpreter, written in OCaml, that implements the semantics as described
-in this section, albeit for an \Elm-like language that goes somewhat beyond the simple
-calculus here. As with many full-scale systems, there is not currently a formal
-specification for the full \Elm{} or \Hazel language, but the \appendixName
+in this section, with some simple extensions. As with many full-scale systems, there is not currently a formal
+specification for the full \Hazel language, but the \appendixName
 discusses how the standard approach for deriving a ``gradualized'' version of a
-language construct provides most of the necessary scaffolding \cite{DBLP:conf/popl/CiminiS16}, and provides some examples.
+language construct provides most of the necessary scaffolding \cite{DBLP:conf/popl/CiminiS16}, and provides some examples (sum types and numbers).
 
 % The supplemental material includes a browser-based implementation
 % of \HazelnutLive.
@@ -961,7 +956,7 @@ from the structure editor calculus of~\Hazelnut, but with support for more natur
 edit actions that automatically insert empty and non-empty holes as necessary
 to guarantee that every edit state has some (possibly incomplete) type. This corresponds to the top-level Sensibility invariant established for the \Hazelnut calculus by \citet{popl-paper}, reproduced below:
 \begin{prop}[Sensibility]
-  \label{thrm:actsafe}
+  \label{thrm:sensibility}
   If $\hsyn{\Gamma}{\removeSel{\zexp}}{\htau}$ and
     $\performSyn{\Gamma}{\zexp}{\htau}{\alpha}{\zexp'}{\tau'}$ then
     $\hsyn{\hGamma}{\removeSel{\zexp'}}{\htau'}$.
@@ -978,7 +973,7 @@ By composing this Sensibility property with the \Property{Elaborability},
 \Property{Preservation} properties from this section, we establish a
 uniquely powerful Continuity invariant:
 \begin{corol}[Continuity]
-  \label{thrm:actsafe}
+  \label{thrm:continuity}
   If $\hsyn{\emptyset}{\removeSel{\zexp}}{\htau}$ and
     $\performSyn{\emptyset}{\zexp}{\htau}{\alpha}{\zexp'}{\tau'}$ then
     $\elabSyn{\emptyset}{\removeSel{\zexp'}}{\htau'}{\dexp}{\Delta}$
@@ -996,7 +991,7 @@ and either
 This addresses the gap problem: \emph{every} editor state has a {static
 meaning} (so editor services like the type inspector from Fig.~\ref{fig:qsort-type-inspector} are always available) and a non-trivial {dynamic meaning} (a result is always available, evaluation does not stop when a hole or cast failure is encountered, and editor services that rely on hole closures, like the live context inspector from Fig.~\ref{fig:grades-sidebar}, are always available).
 
-In settings where the editor does not maintain this Sensibility invariant, our approach still helps to reduce the severity of the gap problem, i.e. \emph{more} editor states are meaningful, even if not \emph{all} are.% We can formally state this end-to-end continuity corollary as follows:
+In settings where the editor does not maintain this Sensibility invariant, but where programmers can manually insert holes, our approach still helps to reduce the severity of the gap problem, i.e. \emph{more} editor states are dynamically meaningful, even if not \emph{all} of them are.% We can formally state this end-to-end continuity corollary as follows:
 %
 % We make no further claims about the usability or practicality of the implementation (and indeed, there remain many important and decidedly unresolved questions along these lines, which we leave beyond the scope of this paper).
 % We also reiterate that the essential ideas developed from type-theoretic first principles in this paper do not require that
