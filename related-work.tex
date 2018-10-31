@@ -23,40 +23,43 @@ pure functional programming and carefully integrate imperative features, e.g. ML
 %
 %% These require particular care, as recognized by \citet{Siek06a} and \citet{DBLP:conf/esop/SiekVCTG15}, but the techniques are known and we see no reason why the type safety properties  established in this paper would not be conserved, with suitable modifications to account for a store.
 %
-\citet{DBLP:conf/esop/SiekVCTG15} show how to incorporate such features into gradual type theory; we expect that this approach would also work for the semantics of Sec.~\ref{sec:calculus}, i.e. it would conserve the type safety properties established there, with suitable modifications to account for a store. However, the commutativity property we establish in Sec.~\ref{sec:resumption} will not hold for a language that supports non-commutative effects. We leave to future work the task of defining more restricted special cases of the fill-and-resume operation that respects a suitable commutativity property in effectful settings (perhaps by checkpointing).
+\citet{DBLP:conf/esop/SiekVCTG15} show how to incorporate such features into gradual type theory; we expect that this approach would also work for the semantics of Sec.~\ref{sec:calculus}, i.e. it would conserve the type safety properties established there, with suitable modifications to account for a store. However, the commutativity property we establish in Sec.~\ref{sec:resumption} will not hold for a language that supports non-commutative effects. We leave to future work the task of defining more restricted special cases of the fill-and-resume operation that respects a suitable commutativity property in effectful settings (perhaps by checkpointing or by using a type and effect system to granularly determine where re-evaluation is needed \cite{burckhardt2013s}).
 
 %
 Going beyond references to incorporate external effects, e.g. IO effects, raises some additional practical concerns, however---we do not want to continue past a hole or error and in so doing haphazardly trigger an unintended effect. In this setting, it is likely better to explicitly ask the programmer whether to continue evaluation past a hole or cast failure. The small step specification in this paper is suitable as the basis for a  step-based evaluator like this. \citet{ocaml-stepper} discuss some unresolved usability issues relevant to single steppers for functional languages. 
 
-We did not give type holes unique names nor did we define a commutative type hole filling operation, but we conjecture that it is possible to do so by replacing casts that go from the filled hole to an inconsistent type with non-empty expression holes. We leave the details to future work. 
+We did not give type holes unique names nor did we define a commutative type hole filling operation, but we conjecture that it is possible to do so by using non-empty expression holes to replace casts that go from the filled hole to an inconsistent type.
 
 
-\parahead{Contextual Modal Type Theory}
+\parahead{Metavariables in Type Theory}
 
-The other major pillar of related work is the work on contextual modal type theory (CMTT) by \citet{Nanevski2008}, which we also discussed at length throughout the paper. To reiterate, there is a close relationship between expression holes in this paper and metavariables in CMTT. Hole contexts correspond to modal contexts.
+The other major pillar of related work is the work on contextual modal type theory (CMTT) by \citet{Nanevski2008}, which we also discussed at length throughout the paper. To reiterate, there is a close relationship between expression holes in this paper and metavariables in CMTT: both are associated with a type and a typing context. 
 Empty hole closures 
-relate to the concept of a {metavariable closure} in CMTT, which consists
+relate to the concept of a {metavariable closure} (delayed substitution) in CMTT, which consists
 of a metavariable paired with a substitution for all of the variables in the
-typing context associated with that metavariable. Hole filling relates to contextual substitution. 
+typing context associated with that metavariable. 
+Empty expression hole filling relates to contextual substitution. 
 
 %% Although these connections with gradual typing and CMTT are encouraging, our contributions do not neatly fall out from this prior work.
 %
-These connections with gradual typing and CMTT are instructive, but our contributions do not neatly fall out from this prior work.
+These connections with gradual typing and CMTT are encouraging, but our contributions do not immediately fall out from this prior work.
 %
 The problem is first that \citet{Nanevski2008} defined only the logical reductions for CMTT, viewing it as a proof system for intuitionistic contextual modal logic via the propositions-as-types (Curry-Howard) principle. 
-The paper therefore proved only a subject reduction property (which is closely related to type preservation). 
-This is not a full dynamic semantics, and in particular, there is no notion of \emph{progress}, i.e. that well-typed terms cannot get ``stuck'' in an undefined state \cite{wright94:_type_soundness}. 
-In any case, a conventional dynamic semantics for CMTT would not be immediately relevant to our goal of evaluating incomplete programs because, by our interpretation of hole closures, we would need a dynamic semantics for terms with free metavariables (and, of course, with casts, i.e. \emph{gradual contextual modal type theory}).
-
-\citet{Nanevski2008} sketched an interpretation of CMTT into the simply-typed lambda calculus with sums under permutation conversion, %, 
+The paper therefore proved only a subject reduction property (which is closely related to type preservation) and sketched an interpretation of CMTT into the simply-typed lambda calculus with sums under permutation conversion, %, 
 which has been studied by \citet{DBLP:journals/iandc/Groote02}. 
-Permutation conversions are necessary to encode the commuting reductions of CMTT, which in turn are necessary to prove a strong normalization property. 
-These issues are not relevant in \HazelnutLive because, as in gradual type theory, type holes admit non-termination \cite{Siek06a}.  
-In any case, under this interpretation an analogous problem arises---metavariables become variables of a function type, so we cannot rely on the standard notion of progress on closed terms. 
+% Permutation conversions are necessary to encode the commuting reductions of CMTT, which in turn are necessary to prove a strong normalization property.
+\citet{DBLP:conf/ppdp/PientkaD08} more directly defines a dynamic semantics for an extension of CMTT. In both cases, the issue is that these systems can evaluate only closed terms, while we need to consider terms with free metavariables. 
 
-While there has been some formal work on reduction of open terms, leading to programs in a \emph{weak head normal form} \cite{barendregt84:_lambda_calculus,DBLP:journals/corr/abs-1009-2789,Abramsky:1990vv}, there is no clear progress theorem in this setting: in the setting of an evaluator for a programming language, we do not want to evaluate under arbitrary binders but rather only around holes when they would otherwise have been evaluated \cite{DBLP:conf/birthday/BlancLM05}. Another important distinction is that simple evaluation of open terms will not support hole closure tracking, which is an essential component of our approach. CMTT makes the appropriate distinctions between variables and metavariables, and our notion of an indeterminate form allows us to prove a progress theorem of familiar form (where there are no free variables). Weak head normal forms are more useful when using evaluation to perform optimizations throughout a program, e.g. when using supercompilation-by-evaluation \cite{DBLP:conf/haskell/BolingbrokeJ10} or symbolic evaluation \cite{King:1976,SurveySymExec-CSUR18}, or when using evaluation in the service of equational reasoning (e.g. in Beluga \cite{DBLP:journals/corr/abs-1009-2789}).
+There has been much formal work on reduction of open terms. In particular, the typical approach is to define the \emph{weak head normal forms} \cite{barendregt84:_lambda_calculus,DBLP:journals/corr/abs-1009-2789,Abramsky:1990vv}, and a weak head normalization procedure. 
+This is useful when using reduction to perform optimizations throughout a program, e.g. when using supercompilation-by-evaluation \cite{DBLP:conf/haskell/BolingbrokeJ10} or symbolic evaluation \cite{King:1976,SurveySymExec-CSUR18}, or when using evaluation in the service of equational reasoning as in dependently typed proof assistants. Notably, \citet{DBLP:journals/corr/abs-1009-2789} considered weak head normalization for CMTT, which forms the basis for equational reasoning in the Beluga proof assistant \cite{DBLP:conf/flops/Pientka10}. There are two points of note here. First, the addition of type holes allow us to express general recursion \cite{Siek06a}, so we cannot rely on normalization arguments and instead need a more conventional dynamic semantics with a progress theorem. Second, we do not want to evaluate under arbitrary binders but rather only around holes when they would otherwise have been evaluated \cite{DBLP:conf/birthday/BlancLM05}. As such, we do not need to consider terms with free variables, and can restrict our interest to only those with free metavariables. These considerations together lead us to the indeterminate forms and to the progress theorem that we established.
 
-It is also worth emphasizing that we use the machinery 
+There are various other systems similar in many ways to CMTT in 
+that they consider the problem of reasoning about metavariables. 
+For example, McBride's OLEG is another system for reasoning contextually about metavariables
+\cite{DBLP:phd/ethos/McBride00}, and it is the conceptual basis of certain hole refinement features in Idris \cite{brady2013idris}. \citet{DBLP:conf/csl/GeuversJ02} discuss similar ideas, again in the setting of hole refinement in proof assistants. However, these systems do not account for substitutions around metavariables. The systems underlying TypeLab \cite{Strecker:98a} and Alf \cite{magnusson1994implementation} do record substitutions around metavariables. These can be considered predecessors of CMTT, which is unique in that it has a clear Curry-Howard interpretation. The discussion above applies similarly to these systems.
+
+
+We use the machinery 
 borrowed from CMTT only extralinguistically.
 %
 A key feature of CMTT that we have not yet touched on is the
@@ -65,47 +68,30 @@ substitution via the contextual modal types, $[\hGamma]\htau$, which
 are introduced by the operation $\mathsf{box}(\hGamma.d)$ and
 eliminated by the operation $\mathsf{letbox}(d_1, u.d_2)$.
 %
-A hole filling can be interpreted as a value of contextual modal
-type, and the act of hole filling followed by evaluation to the next
-possibly-indeterminate edit state as evaluation under the binder of a
-suitable $\mathsf{letbox}$ construct, which is enabled by the dynamic
-semantics in Sec.~\ref{sec:calculus}.
+A program with expression holes can be interpretted as being bound under a number of these $\mathsf{letbox}$ constructs, i.e. CMTT serves as a ``{development calculus}'' \cite{DBLP:phd/ethos/McBride00}. Live programming corresponds to reduction under the metavariable binders interleaved with elimination steps. 
 %
-This interpretation could be generalized to allow us to \emph{compute} a hole filling, rather
-than simply stating it, by specifying a non-trivial expression, rather than just a value, of
-modal type.
+This suggests the possibility of \emph{computing} hole fillings by specifying a non-trivial expression of the appropriate contextual 
+modal type in this development calculus.
 %
-This could, in turn, serve as the basis for a \emph{live} computational hole
-refinement system, extending the capabilities of purely static hole
-refinement systems like those available in some proof assistants,
-e.g. the elaborator reflection system of Idris
-\cite{brady2013idris,DBLP:conf/icfp/ChristiansenB16} and the refinement system of Beluga
+This could, in turn, serve as the basis for a computational hole
+refinement system that supports efficient live programming, extending the capabilities of purely static hole
+refinement systems like those available in many languages,
+e.g. the editor-integrated system of Idris
+\cite{brady2013idris,Korkut:2018:ETE:3240719.3241791} and the hole refinement system of Beluga
 \cite{DBLP:conf/flops/Pientka10,pientka2015inductive}.
 %
-Each applied hole filling serves as a boundary between dynamic
-\emph{edit stages}.
+Each applied hole filling can be interpretted as inducing a new dynamic
+\emph{edit stage}.
 %
-This contextual modal interpretation of live staged hole refinement
-mirrors the modal interpretation of staged argument evaluation
-\cite{Davies:2001op}. 
+This contextual modal interpretation of live hole refinement
+nicely mirrors the modal interpretation of staging and partial evaluation
+\cite{Davies:2001op}, with indeterminate forms corresponding to the residual programs that arise when performing partial evaluation. 
 %
-This parallel neatly explains
-the difference between our dynamics and existing work on staging and
-partial evaluation---
-existing staging and partial evaluation systems are focused on partial evaluation with respect to an input that sits outside of a
-function \cite{Jones:1993uq}, whereas holes have  contexts.
+The difference is that staging and partial evaluation systems evaluate around an input that sits outside of a
+function \cite{Jones:1993uq}, whereas holes are contextual, i.e. they are located inside the program. 
 
-There are various other systems similar in certain ways to CMTT in 
-that they consider the problem of reasoning about metavariables. 
-For example, McBride's OLEG is another system for reasoning contextually about metavariables
-\cite{DBLP:phd/ethos/McBride00}, and it is the conceptual basis of certain hole refinement features in Idris \cite{brady2013idris}. \citet{DBLP:conf/csl/GeuversJ02} discuss similar ideas. CMTT is unique relative to prior approaches in that it has a clear Curry-Howard interpretation and that it was designed with commutativity properties in mind.
 %
-This paper bears out that the basic constructs of CMTT are ideally suited for a purpose previously not considered: live functional programming with typed expression holes, with commutative edits.
-
-Work on explicit substitutions confronts problems similar to the problem of tracking the environment around a closure using delayed substitutions \cite{Abadi:1991fr,levy1999explicit,Abadi:1990ys}.  \citet{DBLP:journals/corr/abs-1009-2789} have developed a theory of explicit substitutions for CMTT, which, following other work on explicit substitutions and environmental abstract machines \cite{DBLP:journals/tcs/Curien91}, would be useful in implementing \HazelnutLive more efficiently by delaying both standard and contextual substitutions until needed during evaluation. We leave this and other questions of fast implementation (e.g. using thunks to encapsulate indeterminate sub-expressions) to future work. 
-
-\todo{integrate me}Another direction that we leave to future work is the integration of type holes into dependently typed proof assistants, 
-where evaluation is primarily at the service of equational reasoning \cite{DBLP:journals/corr/abs-1009-2789}. Several modern proof assistants, e.g. Agda \cite{norell2009dependently,norell:thesis}, Idris \cite{brady2013idris} and Beluga \cite{DBLP:conf/flops/Pientka10} already provide syntactic and static support for holes (see Sec.~\ref{sec:intro}) and interactive, expression-hole-driven development is standard practice, but type holes are less well-supported.
+There is also more general work on explicit substitutions, which records all  substitutions, not just substitutions around metavariables, explicitly \cite{Abadi:1991fr,levy1999explicit,Abadi:1990ys}.  \citet{DBLP:journals/corr/abs-1009-2789} have developed a theory of explicit substitutions for CMTT, which, following other work on explicit substitutions and environmental abstract machines \cite{DBLP:journals/tcs/Curien91}, could be useful in implementing \HazelnutLive more efficiently by delaying both standard and contextual substitutions until needed during evaluation. We leave this and other questions of fast implementation (e.g. using thunks to encapsulate indeterminate sub-expressions) to future work. 
 
 % We also cannot rely on, for example, weak head normalization because \HazelnutLive admits non-termination (due to casts).\todo{citation} 
 
@@ -180,17 +166,18 @@ been fully resolved, though recent studies have started to show productivity
 gains for blocks-based structure editors like Scratch for novice programmers \cite{Resnick:2009:SP:1592761.1592779,DBLP:conf/chi/WeintropASFLSF18,DBLP:conf/acmidc/WeintropW15}, and for keyboard-driven structure
 editors like \li{mbeddr} in professional programming settings~\cite{DBLP:conf/vl/Asenov014,DBLP:conf/sle/VolterSBK14,voelter_mbeddr:_2012}.
 %
-Some structure editors support live programming in various ways, e.g. Lamdu is a structure editor for a typed functional language that displays variable values inline based on recorded execution traces (see above) \cite{lamdu}. However, they do not generally support execution of incomplete programs, which was our focus in this paper. Scratch will execute a program with holes by simply skipping over incomplete commands, but this is a limited protocol because rerunning the program after filling the hole may produce a result unrelated to initial result. Though in some situations, skipping over problematic commands has been observed to work surprisingly well \cite{DBLP:conf/dac/Rinard12}, this paper contributes a semantically sound approach (Sec.~\ref{sec:resumption}). 
+Some structure editors support live programming in various ways, e.g. Lamdu is a structure editor for a typed functional language that displays variable values inline based on recorded execution traces (see above) \cite{lamdu}. However, Lamdu takes the exceptional approach to holes. Scratch will execute a program with holes by simply skipping over incomplete commands, but this is a limited protocol because rerunning the program after filling the hole may produce a result unrelated to initial result. Though in some situations, skipping over problematic commands has been observed to work surprisingly well \cite{DBLP:conf/dac/Rinard12}, this paper focuses on a sound approach. 
+
+\parahead{Scaling Challenges}
 
 We make no empirical claims regarding the usability of the particular user interface presented in this paper. The \Hazel user interface as presented is a proof of concept
 that demonstrates (1) a comprehensive solution to the gap problem, as described in Sec.~\ref{sec:implementation}; and 
-(2) one possible user interface for presenting hole closures, including recursive hole closures, to the programmer (Fig.~\ref{fig:qsort-sidebars}). 
+(2) one possible user interface for presenting hole closures, including deeply nested hole closures, to the programmer. We leave detailed empirical evaluation to future work, and note that the purpose of defining a formal semantics is to provide a foundation for a variety of user interface experiments.
 
-For larger programs, there are some limitations that call for further UI refinement. 
+For larger programs, there are some limitations that will certainly require further UI refinement. 
 Indeterminate results can get to be quite large, particularly when a hole or failed cast
 appears in guard position as in Fig.~\ref{fig:cast-errors}. 
-Although the pretty printer elides irrelevant branches, 
-the semantics in Sec.~\ref{sec:calculus} would also allow for evaluation to pause when such
+One approach is for the pretty printer can elide irrelevant branches. The semantics in Sec.~\ref{sec:calculus} would also allow for evaluation to pause when such
 a form is produced, continuing only if requested. 
 
 In larger programs, there can be many dozens of variables in scope, so search and sorting tools in the live context inspector would be useful. It would also be useful
@@ -198,12 +185,16 @@ to support the evaluation of arbitrary ``watched'' expressions in the selected
 closure. There are other ways to display the variable values, e.g. intercalated
 into the code \cite{DBLP:journals/corr/abs-1806-07449,lamdu}.
 
-Finally, it is not always helpful to continue evaluation as far as possible.
-In particular, when there is a hole or cast failure in the argument position
-of a function application, it may often be more helpful to stop before 
-beta reduction, to avoid exposing the internals of the applied function to 
-the client. The semantics in Sec.~\ref{sec:calculus} leaves evaluation order
-undefined, so various heuristic approaches are possible (e.g. we might wish avoid beta reduction  for functions from imported libraries).
+Finally, we have not yet investigated nor attempted to optimize the memory and performance overhead of tracking hole closures. We note simply that it is often the case that 
+programmers use small example inputs during initial development, providing larger inputs
+only after the program is complete. There is no run-time overhead when there are no holes remaining.
+
+% Finally, it is not always helpful to continue evaluation as far as possible.
+% In particular, when there is a hole or cast failure in the argument position
+% of a function application, it may often be more helpful to stop before 
+% beta reduction, to avoid exposing the internals of the applied function to 
+% the client. The semantics in Sec.~\ref{sec:calculus} leaves evaluation order
+% undefined, so various heuristic approaches are possible (e.g. we might wish to avoid beta reduction  for functions from imported libraries).
 
 % With sufficient UI advances, there is reason to believe that structure editing could be the foundation for a powerful ``next-generation'' live programming experience, and the \Hazel effort, with the contributions of our dynamic semantics, is actively exploring this direction. We emphasize, however,   
 % that our proposed contributions will be relevant no matter how holes come to appear in a program, including when they are inserted manually (see Sec.~\ref{sec:implementation}). % We will say more about all of these systems later. 
@@ -251,9 +242,7 @@ Hole-like constructs also appear in work on program slicing
 Expression holes also often appear in the context of program synthesis, serving as
 placeholders in \emph{templates}~\cite{srivastava2013template} or
 \emph{sketches}~\cite{solar2009sketching} to be filled in by an expression
-synthesis engine. We leave to future work the exciting possibility of combining these approaches. For example, one can imagine running an incomplete program as described in this paper and then adding tests or assertions about the value that a variable should take on in the different hole closures where it appears, via the live context inspector. These could serve as  constraints for use by a type-and-example-driven synthesis engine \cite{DBLP:conf/popl/FrankleOWZ16}. 
-
-
+synthesis engine. We leave to future work the exciting possibility of combining these approaches. For example, one can imagine running an incomplete program as described in this paper and then adding tests or assertions about the value that a hole should take on under each of the different associated hole closures, via the live context inspector. These could serve as  constraints for use by a type-and-example-driven synthesis engine \cite{DBLP:conf/popl/FrankleOWZ16}. Relatedly, \emph{prorogued programming} proposes soliciting an external source, e.g. the programmer, for a suitable value when a hole is encountered \cite{DBLP:conf/oopsla/AfshariBS12}.
 
 % \begin{itemize}
 % 	\item work on debuggers that allow you to inspect environments
