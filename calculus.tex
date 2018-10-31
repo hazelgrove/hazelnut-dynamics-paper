@@ -920,9 +920,9 @@ including all of the theorems stated above and necessary lemmas.
 Our approach is standard: we model judgements as
 inductive datatypes, and rules as dependently typed constructors of these judgements.
 %
-We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and hole names, and avoid certain other complications relted to substitution by enforcing the requirement that all bound variables in a term are unique when convenient (this requirement can always be discharged by alpha-variation). We encode typing
+We adopt Barendregt's convention for bound variables \cite{urban,barendregt84:_lambda_calculus} and hole names, and avoid certain other complications related to substitution by enforcing the requirement that all bound variables in a term are unique when convenient (this requirement can always be discharged by alpha-variation). We encode typing
 contexts and hole contexts using metafunctions.
-To support this encoding choice, we postulate function extensionality (which is independent of Agda's axioms) \cite{awodey2012inductive}. We encode finite substitutions as an inductive datatype with a base case representing the identity substitution and an inductive case that records a single substitution. Every finite substitution can be represented in this scheme. This makes it easier for Agda to see why certain inductions that we perform are well-founded.  
+To support this encoding choice, we postulate function extensionality (which is independent of Agda's axioms) \cite{awodey2012inductive}. We encode finite substitutions as an inductive datatype with a base case representing the identity substitution and an inductive case that records a single substitution. Every finite substitution can be represented this way. This makes it easier for Agda to see why certain inductions that we perform are well-founded.  
 The documentation provided with the mechanization has more details.
 
 \vspace{-3px}
@@ -932,7 +932,7 @@ The documentation provided with the mechanization has more details.
 The \Hazel implementation described in Sec.~\ref{sec:examples}
 includes an unoptimized interpreter, written in OCaml, that implements the semantics as described
 in this section, with some simple extensions. As with many full-scale systems, there is not currently a formal
-specification for the full \Hazel language, but the \appendixName
+specification for the full \Hazel language, but the \appendixName~
 discusses how the standard approach for deriving a ``gradualized'' version of a
 language construct provides most of the necessary scaffolding \cite{DBLP:conf/popl/CiminiS16}, and provides some examples (sum types and numbers).
 
