@@ -5,18 +5,17 @@
 \label{sec:relatedWork}
 \vspace{-2px}
 
-This paper defined a dynamic semantics for incomplete functional programs,
-building on the static semantics developed by \citet{popl-paper}. That paper, as well as a subsequent ``vision paper'' introducing \Hazel, suggested as future work  
-a corresponding dynamic semantics for the purposes of live programming without semantic gaps \cite{HazelnutSNAPL}. Others have extensively argued the value of assigning meaning even to incomplete and erroneous programs \cite{Bayne:2011:ASD:1985793.1985864}. 
-This paper delivers conceptual and type-theoretic details necessary to further advance this  vision.
+This paper builds directly on the static semantics developed by \citet{popl-paper}. That paper, as well as a subsequent ``vision paper'' introducing \Hazel \cite{HazelnutSNAPL}, suggested as future work  
+a corresponding dynamic semantics for the purposes of live programming without gaps. \citet{Bayne:2011:ASD:1985793.1985864} have also extensively argued the value of assigning meaning even to incomplete and erroneous programs. 
+This paper delivers conceptual and type-theoretic details necessary to advance these visions.
 
 \parahead{Gradual Type Theory}
 
 The semantics borrows machinery related to type holes from gradual type theory \cite{Siek06a,DBLP:conf/snapl/SiekVCB15}, as discussed
 at length in Sec.~\ref{sec:calculus}. The main innovation relative to this
 prior work is the treatment of cast failures like holes, rather than errors.
-Many of the methods developed to make gradual typing more expressive and practical are directly relevant to future directions for \Hazel and other implementations of the ideas herein \cite{takikawa_et_al:LIPIcs:2015:5215}. For example, there has been substantial work on the problem of implementing casts efficiently \cite{herman2010space,siek2010threesomes,garcia2013threesomes}, and on integrating gradual typing with polymorphism \cite{DBLP:conf/esop/XieBO18,DBLP:journals/pacmpl/DevriesePP18,Igarashi:2017:PGT:3136534.3110284}, and with refinement types \cite{DBLP:conf/popl/LehmannT17}. Another direction that we leave to future work is the integration of these ideas into dependently typed proof assistants, 
-where evaluation is primarily at the service of equational reasoning \cite{DBLP:journals/corr/abs-1009-2789}. Several modern proof assistants, e.g. Agda \cite{norell2009dependently,norell:thesis}, Idris \cite{brady2013idris} and Beluga \cite{DBLP:conf/flops/Pientka10} already provide  syntactic and static support for holes (see Sec.~\ref{sec:intro}) and interactive, hole-driven development is standard practice.
+Many of the methods developed to make gradual type systems more expressive and practical are directly relevant to future directions for \Hazel and other implementations of the ideas herein \cite{takikawa_et_al:LIPIcs:2015:5215}. For example, there has been substantial work on the problem of implementing casts efficiently \cite{herman2010space,siek2010threesomes,garcia2013threesomes}. There has also been substantial work on integrating gradual typing with polymorphism \cite{DBLP:conf/esop/XieBO18,DBLP:journals/pacmpl/DevriesePP18,Igarashi:2017:PGT:3136534.3110284}, and with refinement types \cite{DBLP:conf/popl/LehmannT17}. Another direction that we leave to future work is the integration of these ideas into dependently typed proof assistants, 
+where evaluation is primarily at the service of equational reasoning \cite{DBLP:journals/corr/abs-1009-2789}. Several modern proof assistants, e.g. Agda \cite{norell2009dependently,norell:thesis}, Idris \cite{brady2013idris} and Beluga \cite{DBLP:conf/flops/Pientka10} already provide syntactic and static support for holes (see Sec.~\ref{sec:intro}) and interactive, hole-driven development is standard practice.
 
 %% Although our expectation is that \Hazel will remain a pure functional language \emph{a la} \Elm~or Haskell,
 %
@@ -29,6 +28,8 @@ pure functional programming and carefully integrate imperative features, e.g. ML
 
 %
 Going beyond references to incorporate external effects, e.g. IO effects, raises some additional practical concerns, however---we do not want to continue past a hole or error and in so doing haphazardly trigger an unintended effect. In this setting, it is likely better to explicitly ask the programmer whether to continue evaluation past a hole or cast failure. The small step specification in this paper is suitable as the basis for a  step-based evaluator like this. \citet{ocaml-stepper} discuss some unresolved usability issues relevant to single steppers for functional languages. 
+
+We did not give type holes unique names nor did we define a commutative type hole filling operation, but we conjecture that it is possible to do so by converting casts that go from the filled hole to an inconsistent type into non-empty expression holes. We leave the details to future work. 
 
 
 \parahead{Contextual Modal Type Theory}
