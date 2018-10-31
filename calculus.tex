@@ -1084,18 +1084,14 @@ transitive closure of stepping (see the \appendixName).
                      {\instantiate{\dexp'}{u}{\dexp_2}}$.
 \end{thm}
 %
-Critically, this property relies on the version of
-the semantics from \Secref{sec:calculus} where evaluation order is
-unspecified (i.e. where we omit the bracketed premises).
+The key idea is that we can resume evaluation by replaying the substitutions that were recorded in the closures and then taking the necessary ``catch up'' steps that evaluate the hole fillings that now appear.
 %
-In general, resuming from $\instantiate{\dexp'}{u}{d_2}$ will not
-reduce sub-expressions in the same order as a ``fresh'' left-to-right
-reduction sequence starting from $\instantiate{\dexp'}{u}{d_1}$.
-%
-In other words, this notion of fill-and-resume only works for
-languages where evaluation order ``does not matter''.
-(There are various standard ways to formalize this intuition.
-For the sake of space, we review these in the \appendixName.)
+The caveat is that resuming from $\instantiate{\dexp'}{u}{d_2}$ will not
+reduce sub-expressions in the same order as a ``fresh'' eager left-to-right
+reduction sequence starting from $\instantiate{\dexp'}{u}{d_1}$ so 
+filling commutes with reduction only for 
+languages where evaluation order ``does not matter'', e.g. pure functional languages like \HazelnutLive.\footnote{There are various standard ways to formalize this intuition, e.g. by stating a suitable confluence property. 
+For the sake of space, we review confluence in the \appendixName.} Languages with non-commutative effects do not enjoy this property.
 % Appendix~\ref{sec:confluence}.)
 
 %% Everyone knows what confluence means, or they should.  We don't need to cite Church :)
@@ -1106,7 +1102,7 @@ number of lemmas and definitions, in the \appendixName.
 %Appendix~\ref{sec:hole-filling}.
 %
 In particular, care is needed to handle the situation where a
-now-filled non-empty hole had taken a step in the original evaluation.
+now-filled non-empty hole had taken a step in the original evaluation trace.
 
 % \matt{We could (should?) move the next paragraph to the appendix,
 % before/after the proofs mentioned above;
