@@ -2,6 +2,7 @@
 
 \begin{figure}[t]
 \judgbox{\tconsistent{\htau_1}{\htau_2}}{$\htau_1$ is consistent with $\htau_2$}
+\vspace{-5px}
 \begin{mathpar}
 \inferrule[TCHole1]{ }{
   \tconsistent{\tehole}{\htau}
@@ -65,6 +66,7 @@
 \vsepRule
 
 \judgbox{\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}}{$\htau$ has matched arrow type $\tarr{\htau_1}{\htau_2}$}
+\vspace{-4px}
 \begin{mathpar}
 \inferrule[MAHole]{ }{
   \arrmatch{\tehole}{\tarr{\tehole}{\tehole}}
@@ -98,4 +100,5 @@
 % \end{mathpar}
 \CaptionLabel{Type Consistency and Matching}{fig:tconsistent}
 \label{fig:arrmatch}
+\vspace{-4px}
 \end{figure}

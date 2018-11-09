@@ -48,6 +48,7 @@
 \vsepRule
 
 \judgbox{\hana{\hGamma}{\hexp}{\htau}}{$\hexp$ analyzes against type $\htau$}
+\vspace{-4px}
 \begin{mathpar}
 \inferrule[ALam]{
   \arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}\\
@@ -63,5 +64,7 @@
   \hana{\hGamma}{\hexp}{\htau'}
 }
 \end{mathpar}
+\vspace{-2px}
 \CaptionLabel{Bidirectional Typing of External Expressions}{fig:bidirectional-typing}
+\vspace{-2px}
 \end{figure}

@@ -1,6 +1,6 @@
 % !TEX root = hazelnut-dynamics.tex
 \newcommand{\calculusSec}{Hazelnut Live}
-\section{\protect\calculusSec}
+\section{\calculusSec}
 \label{sec:calculus}
 % \def \TirNameStyle \Vtexttt{#1}{{#1}}
 
@@ -127,7 +127,7 @@ Half-annotated lambdas may appear in synthetic position according to Rule \rulen
 %
 Unannotated lambdas may only appear where the expected type is known to be either an arrow type or the hole type, which is treated as if it were $\tarr{\tehole}{\tehole}$.\footnote{A system supporting ML-style type reconstruction \cite{damas1982principal} might also include a synthetic rule for unannotated lambdas, e.g. as outlined by \citet{DBLP:conf/icfp/DunfieldK13}, but we stick to this simpler ``Scala-style'' local type inference scheme in this paper \cite{Pierce:2000ve,Odersky:2001lb}.} 
 %
-To avoid the need for separate rules for these two cases, Rule \rulename{ALam} uses the matching relation $\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$ defined in \Figref{fig:arrmatch}, which produces the matched arrow type $\tarr{\tehole}{\tehole}$ given the hole type, and operates as the identity on arrow types \cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/popl/GarciaC15}.
+To avoid the need for separate rules for these two cases, Rule \rulename{ALam} uses the matching relation $\arrmatch{\htau}{\tarr{\htau_1}{\htau_2}}$ defined in \Figref{fig:arrmatch}, which produces the matched arrow type $\tarr{\tehole}{\tehole}$ given the hole type, and operates as the identity on arrow types \cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/popl/GarciaC15}. The rule governing function application, Rule \rulename{SAp}, similarly treats an expression of hole type in function position as if it were of type $\tarr{\tehole}{\tehole}$ using the same matching relation.
 %
 % \Secref{sec:related} dicusses how \HazelnutLive might be enriched with
 % with ML-style type reconstruction~\cite{damas1982principal}, perhaps via
@@ -141,7 +141,6 @@ To avoid the need for separate rules for these two cases, Rule \rulename{ALam} u
 %Note that
 %%
 
-The rule governing function application, Rule \rulename{SAp}, similarly treats an expression of hole type in function position as if it were of type $\tarr{\tehole}{\tehole}$ using the same matching relation.
 
 We do not formally need an explicit fixpoint operator because this calculus supports general recursion due to type holes, e.g. we can express the Y combinator as $(\halam{x}{\tehole}{x(x)}) (\halam{x}{\tehole}{x(x)})$. More generally, the untyped lambda calculus can be embedded as described by \citet{Siek06a}.
 %As such, we omit an explicit fixpoint operator for concision.\todo{fixpoint?}{}
