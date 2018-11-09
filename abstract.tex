@@ -26,7 +26,7 @@ live feedback presented to the programmer exhibits temporal or perceptive gaps.
 
 This paper confronts this ``{gap problem}'' from type-theoretic first principles by developing 
 \emph{a dynamic semantics for incomplete functional programs}, 
-starting from the static semantics of \citet{popl-paper}. 
+starting from the static semantics for incomplete functional programs developed in our recent work on \Hazelnut. 
 %
 We model incomplete functional programs as expressions with \emph{holes}, 
 with empty holes standing for missing expressions or types, and  non-empty holes 
@@ -54,7 +54,7 @@ to continue evaluation past holes while maintaining type safety. We have mechani
 % ``edit-and-resume'' feature is sound.
 %
 %
-We have also implemented these ideas into the \Hazel programming environment. The implementation inserts holes automatically, following the \Hazelnut edit action calculus of \citet{popl-paper}, to guarantee that every editor state has some (possibly incomplete)
+We have also implemented these ideas into the \Hazel programming environment. The implementation inserts holes automatically, following the \Hazelnut edit action calculus, to guarantee that every editor state has some (possibly incomplete)
 type.
 Taken together with this paper's type safety property, the 
 % The 
