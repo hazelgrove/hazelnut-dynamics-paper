@@ -1018,7 +1018,7 @@ In settings where the editor does not maintain this Sensibility invariant, but w
 %The result of evaluation is a final internal expression with hole closures, each with an associated hole environment, $\sigma$. These hole environments can be reported directly to the programmer, e.g. via the sidebar shown in Fig.~X\todo{fig}, to help them as they think about how to fill in the corresponding hole in the external expression. Hole environments might also be useful indirectly, e.g. by informing an edit action synthesis and suggestion system. In any case,
 When the programmer performs one or more edit actions to fill in an expression hole in the program, a new result must be computed, ideally quickly \cite{DBLP:conf/icse/Tanimoto13,DBLP:journals/vlc/Tanimoto90}. Na\"ively, the system would need to compute the result ``from scratch'' on each such edit. For small exploratory programming tasks, recomputation is acceptable, but in cases where a large amount of computation might occur, e.g. in data science tasks, a more efficient approach is to resume evaluation from where it left off after an edit that amounts to hole filling. This section develops a foundational account of this feature, which we call \emph{fill-and-resume}. This approach is complementary to, but distinct from, incremental computing (which is concerned with changes in input, not code insertions)~\cite{Hammer2014}.
 
-%%%%%%%%% New par
+%%%%%%%%% New par 
 Formally,
 %
 the key idea is to interpret hole environments as \emph{delayed substitutions}. This is the same interpretation suggested for metavariable closures in contextual modal

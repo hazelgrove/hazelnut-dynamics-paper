@@ -20,6 +20,7 @@
 %% original source files, as listed above, are part of the
 %% same distribution. (The sources need not necessarily be
 %% in the same archive or directory.)
+
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -37,7 +38,7 @@
 %%   Right brace   \}     Tilde         \~}
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{acmart}
-[2018/05/27 v1.54 Typesetting articles for the Association for
+[2018/10/20 v1.55 Typesetting articles for the Association for
 Computing Machinery]
 \def\@classname{acmart}
 \InputIfFileExists{acmart-preload-hook.tex}{%
@@ -260,7 +261,7 @@ Computing Machinery]
    \def\@tempb{compress}\ifx\@tempa\@tempb
      \def\NAT@cmprs{\@ne}\fi
    \def\@tempb{nocompress}\ifx\@tempa\@tempb
-     \def\NAT@cmprs{\@z}\fi
+     \def\NAT@cmprs{\z@}\fi
    \def\@tempb{sort&compress}\ifx\@tempa\@tempb
      \def\NAT@sort{\@ne}\def\NAT@cmprs{\@ne}\fi
    \def\@tempb{mcite}\ifx\@tempa\@tempb
@@ -422,6 +423,32 @@ Computing Machinery]
 \def\l@section{\@tocline{1}{0pt}{1pc}{2pc}{}}
 \def\l@subsection{\@tocline{2}{0pt}{1pc}{3pc}{}}
 \def\l@subsubsection{\@tocline{2}{0pt}{1pc}{5pc}{}}
+\def\@makefntext{\noindent\@makefnmark}
+\if@ACM@sigchiamode
+\long\def\@footnotetext#1{\marginpar{%
+    \reset@font\small
+    \interlinepenalty\interfootnotelinepenalty
+    \protected@edef\@currentlabel{%
+       \csname p@footnote\endcsname\@thefnmark
+    }%
+    \color@begingroup
+      \@makefntext{%
+        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
+    \color@endgroup}}%
+\fi
+\long\def\@mpfootnotetext#1{%
+  \global\setbox\@mpfootins\vbox{%
+    \unvbox\@mpfootins
+    \reset@font\footnotesize
+    \hsize\columnwidth
+    \@parboxrestore
+    \protected@edef\@currentlabel
+         {\csname p@mpfootnote\endcsname\@thefnmark}%
+    \color@begingroup\centering
+      \@makefntext{%
+        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
+    \color@endgroup}}
+\def\@makefnmark{\hbox{\@textsuperscript{\normalfont\@thefnmark}}}
 \let\@footnotemark@nolink\@footnotemark
 \let\@footnotetext@nolink\@footnotetext
 \RequirePackage[bookmarksnumbered,unicode]{hyperref}
@@ -448,13 +475,15 @@ Computing Machinery]
 \AtEndPreamble{%
   \if@ACM@screen
     \hypersetup{colorlinks,
-      linkcolor=ACMRed,
+      linkcolor=ACMPurple,
       citecolor=ACMPurple,
       urlcolor=ACMDarkBlue,
       filecolor=ACMDarkBlue}
     \else
     \hypersetup{hidelinks}
-  \fi}
+  \fi
+  \hypersetup{pdflang={English},
+    pdfdisplaydoctitle}}
 \if@ACM@natbib
   \let\citeN\cite
   \let\cite\citep
@@ -598,32 +627,6 @@ Computing Machinery]
   \color@endgroup
   \egroup
   \expandafter\@iiiparbox\@mpargs{\unvbox\@tempboxa}}
-\def\@makefntext{\noindent\@makefnmark}
-\if@ACM@sigchiamode
-\long\def\@footnotetext#1{\marginpar{%
-    \reset@font\small
-    \interlinepenalty\interfootnotelinepenalty
-    \protected@edef\@currentlabel{%
-       \csname p@footnote\endcsname\@thefnmark
-    }%
-    \color@begingroup
-      \@makefntext{%
-        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
-    \color@endgroup}}%
-\fi
-\long\def\@mpfootnotetext#1{%
-  \global\setbox\@mpfootins\vbox{%
-    \unvbox\@mpfootins
-    \reset@font\footnotesize
-    \hsize\columnwidth
-    \@parboxrestore
-    \protected@edef\@currentlabel
-         {\csname p@mpfootnote\endcsname\@thefnmark}%
-    \color@begingroup\centering
-      \@makefntext{%
-        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
-    \color@endgroup}}
-\def\@makefnmark{\hbox{\@textsuperscript{\normalfont\@thefnmark}}}
 \def\@textbottom{\vskip \z@ \@plus 1pt}
 \let\@texttop\relax
 \RequirePackage{iftex}
@@ -633,9 +636,9 @@ Computing Machinery]
 \pdfglyphtounicode{f_f_i}{FB03}
 \pdfglyphtounicode{f_f_l}{FB04}
 \pdfglyphtounicode{f_i}{FB01}
-\pdfglyphtounicode{t_t}{00740074}
-\pdfglyphtounicode{f_t}{00660074}
-\pdfglyphtounicode{T_h}{00540068}
+\pdfglyphtounicode{t_t}{0074 0074}
+\pdfglyphtounicode{f_t}{0066 0074}
+\pdfglyphtounicode{T_h}{0054 0068}
 \pdfgentounicode=1
 \fi
 \RequirePackage{cmap}
@@ -651,6 +654,7 @@ Computing Machinery]
     have the newtxmath package installed.  Please upgrade your
     TeX}\@ACM@newfontsfalse}
 \if@ACM@newfonts
+  \RequirePackage[T1]{fontenc}
 \ifxetex
   \RequirePackage[tt=false]{libertine}
 \else
@@ -658,9 +662,6 @@ Computing Machinery]
 \fi
 \RequirePackage[varqu]{zi4}
 \RequirePackage[libertine]{newtxmath}
-\ifxetex\else
-  \RequirePackage[T1]{fontenc}
-\fi
 \fi
 \let\liningnums\@undefined
 \AtEndPreamble{%
@@ -691,8 +692,12 @@ Computing Machinery]
   \or % sigchi
     \captionsetup[figure]{labelfont={bf, small},
       textfont={bf, small}}
+    \captionsetup[table]{labelfont={bf, small},
+      textfont={bf, small}}
   \or % sigchi-a
     \captionsetup[figure]{labelfont={bf, small},
+      textfont={bf, small}}
+    \captionsetup[table]{labelfont={bf, small},
       textfont={bf, small}}
   \fi
 \fi
@@ -1126,7 +1131,9 @@ Computing Machinery]
   \fi
   \ifx\addresses\@empty
     \if@ACM@anonymous
-      \gdef\addresses{\@author{Anonymous Author(s)}}%
+      \gdef\addresses{\@author{Anonymous Author(s)%
+        \ifx\@acmSubmissionID\@empty\else\\Submission Id:
+          \@acmSubmissionID\fi}}%
       \gdef\authors{Anonymous Author(s)}%
     \else
       \gdef\addresses{\@author{#2}}%
@@ -1140,7 +1147,9 @@ Computing Machinery]
   \fi
   \if@ACM@anonymous
     \ifx\shortauthors\@empty
-      \gdef\shortauthors{Anon.}%
+      \gdef\shortauthors{Anon.
+        \ifx\@acmSubmissionID\@empty\else Submission Id:
+        \@acmSubmissionID\fi}%
     \fi
   \else
     \def\@tempa{#1}%
@@ -1590,9 +1599,6 @@ Computing Machinery]
   \let\@footnotemark\@footnotemark@nolink
   \let\@footnotetext\@footnotetext@nolink
   \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
-  \global\@topnum\z@ % this prevents floats from falling
-                     % at the top of page 1
-  \global\@botnum\z@ % we do not want them to be on the bottom either
   \hsize=\textwidth
   \def\@makefnmark{\hbox{\@textsuperscript{\@thefnmark}}}%
   \@mktitle\if@ACM@sigchiamode\else\@mkauthors\fi\@mkteasers
@@ -1695,8 +1701,6 @@ Computing Machinery]
      \@mkbibcitation
   \fi
   \hypersetup{%
-    pdflang={English},
-    pdfdisplaydoctitle,
     pdfauthor={\authors},
     pdftitle={\@title},
     pdfsubject={\@concepts},
@@ -1705,6 +1709,9 @@ Computing Machinery]
       \csname ver@acmart.cls\endcsname\space
       and hyperref
       \csname ver@hyperref.sty\endcsname}}%
+  \global\@topnum\z@ % this prevents floats from falling
+                     % at the top of page 1
+  \global\@botnum\z@ % we do not want them to be on the bottom either
   \@printendtopmatter
   \@afterindentfalse
   \@afterheading
@@ -2150,7 +2157,7 @@ Computing Machinery]
     \if@ACM@journal
        \everypar{\setbox\z@\lastbox\everypar{}}\small
     \else
-      \section*{Abstract}%
+      \section*{\abstractname}%
     \fi
    \ignorespaces\@abstract\par}%
   \fi\egroup}
@@ -2164,7 +2171,8 @@ Computing Machinery]
   \def\@article@string{\ifx\@acmArticle\@empty{\ }\else,
     Article~\@acmArticle\ \fi}%
   \par\medskip\small\noindent{\bfseries ACM Reference Format:}\par\nobreak
-  \noindent\authors. \@acmYear. \@title
+  \noindent\bgroup
+    \def\\{\unskip{}, \ignorespaces}\authors\egroup. \@acmYear. \@title
   \ifx\@subtitle\@empty. \else: \@subtitle. \fi
   \if@ACM@nonacm\else
     % The 'nonacm' option disables 'printacmref' by default,
@@ -2236,7 +2244,11 @@ Computing Machinery]
     Page \thepage\ of \@startPage--\pageref*{TotPages}.%
   }
 \fi
-\def\@shortauthors{\if@ACM@anonymous Anon.\else\shortauthors\fi}
+\def\@shortauthors{%
+  \if@ACM@anonymous
+    Anon.
+    \ifx\@acmSubmissionID\@empty\else Submission Id: \@acmSubmissionID\fi
+  \else\shortauthors\fi}
 \def\@headfootfont{\sffamily}
 \fancypagestyle{standardpagestyle}{%
   \fancyhf{}%
@@ -2410,29 +2422,56 @@ Computing Machinery]
   \let\ps@myheadings\ACM@ps@myheadings
   \let\ps@headings\ACM@ps@headings}
 \AtBeginDocument{\ACM@restore@pagestyle}
-%% \changes{v1.54}{2018/05/27}{Deleted indent for subsubsection}
+\def\ACM@NRadjust#1{%
+ \begingroup
+  \expandafter\ifx\csname Sectionformat\endcsname\relax
+  % do nothing when  \Sectionformat  is unknown
+   \def\next{\endgroup #1}%
+ \else
+  \def\next{\endgroup
+   \let\realSectionformat\Sectionformat
+   \def\ACM@sect@format@{#1}%
+   \let\Sectionformat\ACM@NR@adjustedSectionformat
+ %%  next lines added 2018-06-17 to ensure section number is styled
+   \let\real@adddotafter\@adddotafter
+   \let\@adddotafter\ACM@adddotafter
+   #1{}% imposes the styles, but nullifies  \MakeUppercase
+   \let\@adddotafter\real@adddotafter
+  }%
+ \fi \next
+}
+\def\ACM@NR@adjustedSectionformat#1#2{%
+ \realSectionformat{\ACM@sect@format{#1}}{#2}%
+ \let\Sectionformat\realSectionformat}
+\DeclareRobustCommand{\ACM@sect@format}{\ACM@sect@format@}
+\def\ACM@sect@format@null#1{#1}
+\let\ACM@sect@format@\ACM@sect@format@null
+\AtBeginDocument{%
+ \expandafter\ifx\csname LTX@adddotafter\endcsname\relax
+  \let\LTX@adddotafter\@adddotafter
+ \fi
+}
+\def\ACM@adddotafter#1{\ifx\relax#1\relax\else\LTX@adddotafter{#1}\fi}
 \renewcommand\section{\@startsection{section}{1}{\z@}%
   {-.75\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {.25\baselineskip}%
-  {\@secfont}}
+  {\ACM@NRadjust\@secfont}}
 \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
   {-.75\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {.25\baselineskip}%
-  {\@subsecfont}}
+  {\ACM@NRadjust\@subsecfont}}
 \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {-3.5\p@}%
-  {\@subsubsecfont\@adddotafter}}
-%% rkc
-%% \renewcommand\paragraph{\@startsection{paragraph}{4}{\parindent}%
-\renewcommand\paragraph{\@startsection{paragraph}{4}{0pt}%
+  {\ACM@NRadjust{\@subsubsecfont\@adddotafter}}}
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\parindent}%
   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {-3.5\p@}%
-  {\@parfont\@adddotafter}}
+  {\ACM@NRadjust{\@parfont\@adddotafter}}}
 \renewcommand\part{\@startsection{part}{9}{\z@}%
   {-10\p@ \@plus -4\p@ \@minus -2\p@}%
   {4\p@}%
-  {\@parfont}}
+  {\ACM@NRadjust\@parfont}}
 \def\section@raggedright{\@rightskip\@flushglue
   \rightskip\@rightskip
   \leftskip\z@skip
