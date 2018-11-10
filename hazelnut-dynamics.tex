@@ -1,8 +1,8 @@
 \PassOptionsToPackage{svgnames,dvipsnames,svgnames}{xcolor}
 \newif\ifarxiv
-\arxivfalse
+\arxivtrue
 \ifarxiv
-\documentclass[acmsmall,nonacm]{acmart}
+\documentclass[acmsmall,screen,nonacm]{acmart}
 \else
 %%% Note: arxiv does not want line numbers (they are detected somehow, and are not allowed)
 \documentclass[acmsmall,screen]{acmart}
@@ -135,28 +135,6 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 
 
 
-\makeatletter\if@ACM@journal\makeatother
-%% Journal information (used by PACMPL format)
-%% Supplied to authors by publisher for camera-ready submission
-\acmJournal{PACMPL}
-\acmVolume{1}
-\acmNumber{1}
-\acmArticle{1}
-\acmYear{2019}
-\acmMonth{1}
-\acmDOI{10.1145/nnnnnnn.nnnnnnn}
-\startPage{1}
-\else\makeatother
-%% Conference information (used by SIGPLAN proceedings format)
-%% Supplied to authors by publisher for camera-ready submission
-% \acmConference[]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2017}{New York, NY, USA}
-
-\acmYear{2019}
-\acmISBN{978-x-xxxx-xxxx-x/YY/MM}
-\acmDOI{10.1145/nnnnnnn.nnnnnnn}
-\startPage{1}
-\fi
-
 
 %% Copyright information
 %% Supplied to authors (based on authors' rights management selection;
@@ -168,7 +146,8 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 %\copyrightyear{2017}           %% If different from \acmYear
 \setcopyright{rightsretained} 
 \acmJournal{PACMPL}
-\acmYear{2019} \acmVolume{3} \acmNumber{POPL} \acmArticle{14} \acmMonth{1} \acmPrice{}\acmDOI{10.1145/3290327}
+\acmYear{2019} \acmVolume{3} \acmNumber{POPL} \ifarxiv \acmArticle{1} \else \acmArticle{14} \fi \acmMonth{1} \acmPrice{}\acmDOI{10.1145/3290327}
+\copyrightyear{2019}
 
 
 % \fancyfoot{} % suppresses the footer (also need \thispagestyle{empty} after \maketitle below)
@@ -192,6 +171,8 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 
 %% Title information
 \title{Live Functional Programming with Typed Holes}         %% [Short Title] is optional;
+\subtitle{Extended Version}
+\subtitlenote{The original version of this article appears as ...}
                                         %% when present, will be used in
                                         %% header instead of Full Title.
 % \titlenote{with title note}             %% \titlenote is optional;

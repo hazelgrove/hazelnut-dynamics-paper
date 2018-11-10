@@ -89,7 +89,7 @@ The difference is that staging and partial evaluation systems evaluate around an
 function \cite{Jones:1993uq}, whereas holes are contextual, i.e. they are located inside the program. 
 
 %
-There is also more general work on explicit substitutions, which records all  substitutions, not just substitutions around metavariables, explicitly \cite{Abadi:1991fr,levy1999explicit,Abadi:1990ys}.  \citet{DBLP:journals/corr/abs-1009-2789} have developed a theory of explicit substitutions for CMTT, which, following other work on explicit substitutions and environmental abstract machines \cite{DBLP:journals/tcs/Curien91}, could be useful in implementing \HazelnutLive more efficiently by delaying both standard and contextual substitutions until needed during evaluation. We leave this and other questions of fast implementation (e.g. using thunks to encapsulate indeterminate sub-expressions) to future work. 
+There is also more general work on explicit substitutions, which records all  substitutions, not just substitutions around metavariables, explicitly \cite{Abadi:1991fr,levy1999explicit}.  \citet{DBLP:journals/corr/abs-1009-2789} have developed a theory of explicit substitutions for CMTT, which, following other work on explicit substitutions and environmental abstract machines \cite{DBLP:journals/tcs/Curien91}, could be useful in implementing \HazelnutLive more efficiently by delaying both standard and contextual substitutions until needed during evaluation. We leave this and other questions of fast implementation (e.g. using thunks to encapsulate indeterminate sub-expressions) to future work. 
 
 % We also cannot rely on, for example, weak head normalization because \HazelnutLive admits non-termination (due to casts).\todo{citation} 
 
@@ -240,7 +240,7 @@ Hole-like constructs also appear in work on program slicing
 Expression holes also often appear in the context of program synthesis, serving as
 placeholders in \emph{templates}~\cite{srivastava2013template} or
 \emph{sketches}~\cite{solar2009sketching} to be filled in by an expression
-synthesis engine. We leave to future work the exciting possibility of combining these approaches. For example, one can imagine running an incomplete program as described in this paper and then adding tests or assertions about the value that a hole should take on under each of the different associated hole closures, via the live context inspector. These could serve as  constraints for use by a type-and-example-driven synthesis engine \cite{DBLP:conf/popl/FrankleOWZ16}. Relatedly, \emph{prorogued programming} proposes soliciting an external source, e.g. the programmer, for a suitable value when a hole is encountered \cite{DBLP:conf/oopsla/AfshariBS12}.
+synthesis engine. We leave to future work the exciting possibility of combining these approaches. For example, one can imagine running an incomplete program as described in this paper and then adding tests or assertions about the value that a hole should take on under each of the different associated hole closures, via the live context inspector. These could serve as  constraints for use by a type-and-example-driven synthesis engine \cite{DBLP:conf/popl/FrankleOWZ16}. Relatedly, \emph{prorogued programming} proposes soliciting an external source, e.g. the programmer, for a suitable value when a hole instance is encountered \cite{DBLP:conf/oopsla/AfshariBS12}.
 
 % \begin{itemize}
 % 	\item work on debuggers that allow you to inspect environments

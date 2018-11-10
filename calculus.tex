@@ -5,10 +5,14 @@
 % \def \TirNameStyle \Vtexttt{#1}{{#1}}
 
 
+
+\input{fig-syntax}
+
 We will now make the intuitions developed in the previous section formally
 precise by specifying a core calculus, which we call \HazelnutLive, and
 characterizing its metatheory.
 
+\noindent
 \parahead{Overview} The syntax of the core calculus given in
 Fig.~\ref{fig:hazelnut-live-syntax} consists of types and expressions with
 holes.  We distinguish between {external} expressions, $e$, and {internal}
@@ -33,10 +37,10 @@ the gradually typed lambda calculus
 respects. We have mechanized these formal developments using the Agda proof
 assistant \cite{norell:thesis,norell2009dependently} (see
 Sec.~\ref{sec:agda-mechanization}). Rule names in this section,
-e.g. \rulename{SVar}, correspond to variable names used in the
+e.g. \rulename{SVar}, correspond to variables from the
 mechanization. The \Hazel implementation substantially follows the formal
-specification of \Hazelnut (for the editor component) and \HazelnutLive
-(for the evaluator), and we can formally state a continuity invariant for a
+specification of \Hazelnut (for the editor) and \HazelnutLive
+(for the evaluator). We can formally state a continuity invariant for a
 putative combined calculus (see Sec.~\ref{sec:implementation}).
 
 % \rkc{this syntactic sugar is used in four places: ITCastSucceed, ITCastFail,
@@ -47,9 +51,6 @@ putative combined calculus (see Sec.~\ref{sec:implementation}).
 \subsection{Static Semantics of the External Language}
 \label{sec:external-statics}
 
-
-
-\input{fig-syntax}
 \input{fig-bidirectional-typing}
 
 We start with the type system of the \HazelnutLive external language,
@@ -544,16 +545,16 @@ notion of type safety even for incomplete programs, i.e. expressions typed
 under a non-empty hole context, $\Delta$.  We establish that evaluation
 does not stop immediately when it encounters a hole, nor when a cast fails,
 by precisely characterizing when evaluation \emph{does} stop. In the case
-of complete programs, we also recover the familiar statements of progress
-and preservation for the simply typed lambda calculus.
+of complete programs, we also recover the familiar statements of preservation
+and progress for the simply typed lambda calculus.
 
-It is perhaps worth stating at the outset that a dynamic semantics equipped
-with these properties does not simply ``fall out'' from the observations
-made above that (1) empty hole closures correspond to metavariable closures
-from CMTT \cite{Nanevski2008} and (2) casts also arise in gradual type
-theory \cite{DBLP:conf/snapl/SiekVCB15}.
+% It is perhaps worth stating at the outset that a dynamic semantics equipped
+% with these properties does not simply ``fall out'' from the observations
+% made above that (1) empty hole closures correspond to metavariable closures
+% from CMTT \cite{Nanevski2008} and (2) casts also arise in gradual type
+% theory \cite{DBLP:conf/snapl/SiekVCB15}.
 %
-We say more in Sec.~\ref{sec:relatedWork}.
+% We say more in Sec.~\ref{sec:relatedWork}.
 %
 
 %  specify the dynamic semantics of \HazelnutLive.
@@ -564,6 +565,8 @@ We say more in Sec.~\ref{sec:relatedWork}.
 
 
 
+\input{fig-ground-types}
+\input{fig-dynamics-aux}
 
 
 
@@ -652,6 +655,7 @@ The rules maintain the property that final expressions truly cannot take a step.
 %% \input{fig-dynamics-steps}
 
 \subsubsection{Application and Substitution}
+\input{fig-dynamics-contexts}
 %
 Rule \rulename{ITLam} in Fig.~\ref{fig:instruction-transitions} defines the
 standard beta reduction transition.
@@ -665,8 +669,6 @@ In our metatheory, we exclude these premises, both for
 the sake of generality, and to support the specification of the fill-and-resume operation~(see \Secref{sec:resumption}).
 
 
-\input{fig-ground-types}
-\input{fig-dynamics-aux}
 
 Substitution, written $[d/x]d'$, operates in the standard capture-avoiding manner~\cite{pfpl} (see the \appendixName~for the full definition).
 % Appendix~\ref{sec:additional-defns}).
@@ -724,7 +726,6 @@ In this case, the application is indeterminate (Rule~\rulename{IAp}
 in \Figref{fig:isFinal}), and the application reduces no
 further.
 
-\input{fig-dynamics-contexts}
 
 \subsubsection{Casts}
 Rule \rulename{ITCastId} strips identity casts. The remaining instruction
@@ -902,7 +903,7 @@ indeterminate forms.
 \label{sec:agda-mechanization}
 \vspace{-2px}
 
-The supplemental material includes our Agda
+The archived artifact includes our Agda
 mechanization  \cite{norell2009dependently,norell:thesis,Aydemir:2005fk}
 of the semantics and metatheory of \HazelnutLive,
 %including proofs of all of the

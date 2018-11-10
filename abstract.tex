@@ -1,37 +1,19 @@
 % !TEX root = hazelnut-dynamics.tex
 
 \begin{abstract}
-
-  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% PAR 1: Live programming environments --- Problem statement
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
 Live programming environments aim to provide programmers (and sometimes audiences) 
 with continuous feedback about a program's dynamic behavior as it is being edited. 
-%
 The problem is that programming languages typically assign dynamic meaning only 
- to programs that are \emph{complete}, i.e. syntactically well-formed and free
+to programs that are \emph{complete}, i.e. syntactically well-formed and free
 of type errors. Consequently,    
 live feedback presented to the programmer exhibits temporal or perceptive gaps. 
-% In some cases, these gaps persist over a substantial length of time.
-%
-% Defining a semantics for incomplete functional programs would help bridge the
-% gap between well-formed states and allow live programming environments to
-% provide continuous, uninterrupted, and meaningful feedback.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% PAR 2: This paper's approach: New (dynamic) semantics for incomplete programs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This paper confronts this ``{gap problem}'' from type-theoretic first principles by developing 
 \emph{a dynamic semantics for incomplete functional programs}, 
-starting from the static semantics for incomplete functional programs developed in our recent work on \Hazelnut. 
-%
+starting from the static semantics for incomplete functional programs developed in recent work on \Hazelnut. 
 We model incomplete functional programs as expressions with \emph{holes}, 
 with empty holes standing for missing expressions or types, and  non-empty holes 
 operating as membranes around static and dynamic type inconsistencies. 
-%
 Rather than aborting when evaluation encounters any of these holes as in
 some existing systems, evaluation proceeds around holes,
 tracking the 
@@ -44,25 +26,12 @@ type holes) and contextual modal type theory (which supplies a
 logical basis for hole closures), combining these and developing additional machinery necessary 
 to continue evaluation past holes while maintaining type safety. We have mechanized the metatheory of the core calculus, called \HazelnutLive{}, using the Agda proof assistant.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% PAR 3: We have an implementation, and have proofs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% , including 
-% (1) a type safety property that accounts for expression holes (i.e. free metavariables, 
-% from the perspective of CMTT) and cast failure holes (which provide a novel), and (2) a commutativity property that establishes that the
-% ``edit-and-resume'' feature is sound.
-%
-%
 We have also implemented these ideas into the \Hazel programming environment. The implementation inserts holes automatically, following the \Hazelnut edit action calculus, to guarantee that every editor state has some (possibly incomplete)
 type.
 Taken together with this paper's type safety property, the 
-% The 
 result is  
 a proof-of-concept live programming environment where rich dynamic feedback 
 is truly available without gaps, i.e. for every reachable editor state.
-% i.e. \emph{every edit state is guaranteed to have
-% non-trivial static and dynamic meaning}.
 
 %In our system, evaluation treats failed casts much like it treats expression holes (rather than immediately failing with a cast error, as in gradual type theory). Prior work on contextual modal type theory did not develop an operational semantics for programs with free metavariables, which correspond to programs with holes in our formulation. 
 
