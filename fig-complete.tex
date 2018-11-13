@@ -108,5 +108,5 @@ When two types are complete and consistent, they are equal.
 This implies that in a well-typed and complete internal expression, every cast is 
 an identity cast.
 
-\begin{lem}[Complete Casts] If $\hasType{\hGamma}{\hDelta}{\dcasttwo{\dexp}{\htau_1}{\htau_2}}$ and $\isComplete{\dcasttwo{\dexp}{\htau_1}{\htau_2}}$ then $\htau_1 = \htau_2$. \end{lem}
+\begin{lem}[Complete Casts] If $\hasType{\hGamma}{\hDelta}{\dcasttwo{\dexp}{\htau_1}{\htau_2}}{\htau_2}$ and $\isComplete{\dcasttwo{\dexp}{\htau_1}{\htau_2}}$ then $\htau_1 = \htau_2$. \end{lem}
 \begin{proof} By straightforward rule induction and Lemma~\ref{lem:complete-consistency}. \end{proof}
