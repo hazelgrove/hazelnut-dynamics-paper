@@ -80,6 +80,8 @@ y
 % \begin{proof} By rule induction on the first assumption in each case. The conclusion follows from the definition of substitution in each case. \end{proof}
 
 \subsection{Canonical Forms}
+\label{sec:canonical-forms}
+
 \begin{lem}[Canonical Value Forms]\label{thm:canonincal-value-forms}
   If $\hasType{\hDelta}{\emptyset}{\dexp}{\htau}$ and $\isValue{\dexp}$
   then $\htau\neq\tehole$ and
@@ -219,10 +221,13 @@ y
 % If $\hasType{\Delta, \Dbinding{u}{\hGamma}{\tau}}{\hGamma'}{d}{\tau'}$ then $\hasType{\Delta, \Dbinding{u}{\hGamma, x : \tau''}{\tau}}{\hGamma'}{d}{\tau'}$.
 
 \subsection{Complete Programs}
+\label{sec:complete-programs}
 
 \input{fig-complete}
 
 \subsection{Multiple Steps}
+\label{sec:multi-step}
+
 \input{fig-multi-step}
 
 \subsection{Hole Filling}\label{sec:hole-filling}
