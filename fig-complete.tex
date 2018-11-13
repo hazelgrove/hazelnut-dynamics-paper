@@ -101,10 +101,12 @@ $\isComplete{\hGamma}$ iff for each $x : \htau \in \hGamma$, we have $\isComplet
 
 When two types are complete and consistent, they are equal.
 
-\begin{lem}[Complete Consistency] If $\tconsistent{\htau_1}{\htau_2}$ and $\isComplete{\htau_1}$ and $\isComplete{\htau_2}$ then $\htau_1 = \htau_2$.
+\begin{lem}[Complete Consistency]\label{lem:complete-consistency} If $\tconsistent{\htau_1}{\htau_2}$ and $\isComplete{\htau_1}$ and $\isComplete{\htau_2}$ then $\htau_1 = \htau_2$.
 \end{lem}
 \begin{proof} By straightforward rule induction. \end{proof}
 
 This implies that in a well-typed and complete internal expression, every cast is 
 an identity cast.
 
+\begin{lem}[Complete Casts] If $\hasType{\hGamma}{\hDelta}{\dcasttwo{\dexp}{\htau_1}{\htau_2}}$ and $\isComplete{\dcasttwo{\dexp}{\htau_1}{\htau_2}}$ then $\htau_1 = \htau_2$. \end{lem}
+\begin{proof} By straightforward rule induction and Lemma~\ref{lem:complete-consistency}. \end{proof}
