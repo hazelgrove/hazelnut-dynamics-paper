@@ -33,7 +33,7 @@ We extend the syntax for sum types as follows:
 %\fbox{$\JoinTypes{\htau_1}{\htau_2} = \htau_3$}
 \judgbox
  {\JoinTypes{\htau_1}{\htau_2} = \htau_3}
- {Types~$\htau_1$ and $\htau_2$ join (consistently), forming type~$\htau_3$}
+ {Types~$\htau_1$ and $\htau_2$ join consistently, forming type~$\htau_3$}
 \[
 \begin{array}{lcl}
 \JoinTypes{\htau}{\htau} &=&  \htau
@@ -76,11 +76,46 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 
 \judgbox
  {\summatch{\htau}{\tsum{\htau_1}{\htau_2}}}
- {Type~$\htau$ matches the sum type~$\tsum{\htau_1}{\htau_2}$}
+ {Type~$\htau$ has matched sum type~$\tsum{\htau_1}{\htau_2}$}
 \begin{mathpar}
 \inferrule[]{~}{\summatch{\tsum{\tau_1}{\tau_2}}{\tsum{\tau_1}{\tau_2}}}
 \and
 \inferrule[]{~}{\summatch{\tehole}{\tsum{\tehole}{\tehole}}}
+\end{mathpar}
+
+%%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
+\vsepRule
+
+\judgbox
+  {\hana{\hGamma}{\hexp}{\htau}}
+  {$\hexp$ analyzes against type $\htau$}
+\begin{mathpar}
+\inferrule[]{
+  \summatch{\htau}{\tsum{\htau_1}{\htau_2}}\\
+  \hana{\hGamma}{\hexp}{\htau_1}
+}{
+  \hana{\hGamma}{\hinL{\hexp}}{\htau}
+}
+
+\inferrule[]{
+  \summatch{\htau}{\tsum{\htau_1}{\htau_2}}\\
+  \hana{\hGamma}{\hexp}{\htau_2}
+}{
+  \hana{\hGamma}{\hinR{\hexp}}{\htau}
+}
+
+\inferrule[]{
+  \hsyn{\hGamma}{\hexp_1}{\htau_1}\\
+  \summatch{\htau_1}{\tsum{\htau_{11}}{\htau_{12}}}\\\\
+  \hana{\hGamma, x : \htau_{11}}{\hexp_2}{\htau}\\\\
+  \hana{\hGamma, y : \htau_{12}}{\hexp_3}{\htau}
+}{
+  \hana{\hGamma}{
+    \hcase{\hexp_1}{x}{\hexp_2}{y}{\hexp_3}
+  }{
+    \htau
+  }
+}
 \end{mathpar}
 
 %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
@@ -111,12 +146,14 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
   \elabSyn{\hGamma}{\hexp_1}{\htau_1}{\dexp_1}{\Delta_1}
   \\
   \summatch{\htau_1}{\tsum{\htau_{11}}{\htau_{12}}}
-  \\
-  \JoinTypes{\htau_2}{\htau_3} = {\htau'}
-  \\
+  \\\\
   \elabAna{\hGamma, x:\htau_{11}}{\hexp_2}{\htau}{\dexp_2}{\htau_2}{\Delta_2}
   \\
   \elabAna{\hGamma, y:\htau_{12}}{\hexp_3}{\htau}{\dexp_3}{\htau_3}{\Delta_3}
+  \\\\
+  \JoinTypes{\htau_2}{\htau_3} = {\htau'}
+  \\
+  \Delta = \Delta_1 \cup \Delta_2 \cup \Delta_3
 }{
   \elabAna{\hGamma}
             {\hcase{e_1}{x}{e_2}{y}{e_3}}
@@ -127,7 +164,7 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
                 {y}{\dcasttwo{d_3}{\htau_3}{\htau'}}
             }
             {\htau'}
-            {\Delta_1 \cup \Delta_2 \cup \Delta_3}
+            {\Delta}
             }
 \end{mathpar}
 
@@ -177,6 +214,15 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 \begin{mathpar}
 \inferrule[]{~}{
   \isGround{\tsum{\tehole}{\tehole}}
+}
+\end{mathpar}
+
+\judgbox{\groundmatch{\htau}{\htau'}}{$\htau$ has matched ground type $\htau'$}
+\begin{mathpar}
+\inferrule[]{
+  \tsum{\htau_1}{\htau_2}\neq\tsum{\tehole}{\tehole}
+}{
+  \groundmatch{\tsum{\htau_1}{\htau_2}}{\tsum{\tehole}{\tehole}}
 }
 \end{mathpar}
 
@@ -278,7 +324,7 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
                {\dcase{\evalctx}{x}{\dexp_2}{y}{\dexp_3}}{\dexp_1'}}
 \end{mathpar}
 
-\judgbox{\reducesE{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ steps to $\dexp_2$}
+\judgbox{\reducesE{\Delta}{\dexp_1}{\dexp_2}}{$\dexp_1$ transitions to $\dexp_2$}
 \begin{mathpar}
 \inferrule[]
 {\maybePremise{\isFinal{\dexp_1}}}
@@ -290,7 +336,7 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 {\maybePremise{\isFinal{\dexp_1}}}
 {\reducesE{\Delta}
   {\dcase{\dinR{\htau}{\dexp_1}}{x}{\dexp_2}{y}{\dexp_3}}
-  {\DoSubst{\dexp_1}{x}{\dexp_3}}}
+  {\DoSubst{\dexp_1}{y}{\dexp_3}}}
 
 \inferrule[]
 {\maybePremise{\isFinal{\dexp_1}}}
@@ -305,14 +351,6 @@ By induction on the derivation of $\JoinTypes{\tau_1}{\tau_2} = \tau$.
 }
 \end{mathpar}
 
-\judgbox{\groundmatch{\htau}{\htau'}}{$\htau$ has matched ground type $\htau'$}
-\begin{mathpar}
-\inferrule[]{
-  \tsum{\htau_1}{\htau_2}\neq\tsum{\tehole}{\tehole}
-}{
-  \groundmatch{\tsum{\htau_1}{\htau_2}}{\tsum{\tehole}{\tehole}}
-}
-\end{mathpar}
 
 %% \begin{thm}[Canonical value forms--Sums]
 %% If $\hasType{\Delta}{\EmptyhGamma}{\dexp}{\tsum{\htau}{\htau}}$
