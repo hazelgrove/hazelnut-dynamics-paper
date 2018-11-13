@@ -1,0 +1,123 @@
+Thank you for your thoughtful feedback!
+
+# A
+
+We agree that when an indeterminate result is large or contains many hole
+closures, scalability challenges could arise. In the final paper, we will pull
+out the discussion of UI scalability challenges from Line 1184 and combine it
+with an acknowledgement of memory overhead and performance challenges to form
+a Scalability Challenges subsection in Sec. 5.
+
+That said, we expect such situations to be rare because programmers will
+typically choose small example inputs (like those in documentation) even while
+writing functions much larger than `qsort` because very large inputs are
+difficult for humans to meaningfully inspect. Sec 3.3.4 implies that there need
+not be any overhead once a function is completed successfully using small
+inputs.
+
+# B
+
+The proof of Theorem 4.2 does not require formalizing the notion that
+"evaluation order does not matter", so we left that discussion to the
+supplement. We will clarify.
+
+Siek and Taha (2006) defined two application rules. Matching consolidates these.
+
+By "essentially standard...", we mean that Complete Progress coincides with
+Progress for STLC (no boxedval or indet).
+
+X is complete when there are no holes or failed casts in X (Line 884). Complete
+expressions cannot be indeterminate.
+
+# C
+
+> When, if even, does type checking of the initial program fail?
+
+In Hazel(nut), Sensibility (Proposition 3.14) implies that typechecking never
+fails.
+
+> Term expansion and type checking from the theory seem slow
+
+Sensibility also implies that the typechecker does not run per edit -- edit
+actions insert holes as necessary.
+
+Expansion is single-pass, so the cost of evaluation dominates in programs with
+non-trivial control flow.
+
+> a user study seems to be needed to evaluate the claim made in this paper that
+> Hazelnut Live aids program development
+
+Our claim is only that meaningful information about incomplete programs can be
+made available by drawing from Hazelnut+GTT+CMTT. The question of how to best
+present this information to humans will require further human factors research.
+Line 1180 states "we make no empirical claims [...] The Hazel user interface as
+presented is a proof of concept [...]". We will make this clear in the final
+introduction. We do plan to study Hazel in classrooms, but this is, as
+B suggests, part of a long-term research program. We hope that there will be
+many designs rooted in these semantics.
+
+# D
+
+Developing the right conceptual+theoretical framing -- here, of the gap problem
+in terms of Hazelnut+GTT+CMTT -- often leads to a solution where many technical
+details seem to "fall out" quite naturally. This was encouraging!
+
+> What problem that are you solving by using [CMTT]?
+
+Metavariable closures from CMTT correspond to hole closures, which enable both
+the live context inspector and fill-and-resume.
+
+> Isn't one of those unnecessary?
+
+We need to substitute inside to evaluate inside non-empty holes. We also need to
+record the substitution on the outside for hole filling.
+
+> partial evaluation
+
+We discussed partial evaluation briefly on Line 1102. We agree that further
+discussion, specifically of residuals, is warranted in the final version.
+
+> Don't do that!
+
+Yes thanks, we will correct this in the final discussion.
+
+-------- We answer the additional small questions asked by B below the fold.
+
+# B (additional questions) 
+
+>  "disequal"? Do you mean "unequal"?
+
+Yes, we will change it to "unequal".
+
+> Is there a reason you do not state Finality as "If d final then there exists
+> no d' such that d |-> d'"?
+
+Then we would also want to state "If d |-> d' then it is not the case that
+d final". We followed the more symmetric formulation of finality from PFPL (see
+Lemma 5.2 in http://www.cs.cmu.edu/~rwh/pfpl/2nded.pdf).
+
+> Why does evaluation not stop if a cast fails. Shouldn't evaluation await the
+> programmer in this case?
+
+This is discussed in Sec. 2.4, but briefly, we do so in order to treat cast
+failures as membranes around dynamic type errors much like non-empty holes serve
+as membranes around static type errors. There may be portions of the program
+where the cast failure has no bearing. An editor could of course choose to wait
+for programmer confirmation before continuing past a cast failure -- our
+semantics only specifies how to continue, not whether to continue.
+
+> The conclusion of Theorem 3.12 should be that "either there exists a d' such
+> that d |-> d' or d val".
+
+We follow typical on-paper conventions in omitting existentials when a variable
+appears only to the right of an implication and the scope is obvious. The fully
+quantified statement of the theorem is in the mechanization, which is the
+"actual" definition of Hazelnut Live.
+
+> more editor states are meaningful? More that what?
+
+Our approach is relevant even if holes have to be manually inserted -- those
+editor states where manual holes have been appropriately inserted are
+meaningful, whereas without support for holes given meaning as we describe,
+either the program remains malformed, there is a static type error or a hole
+causes evaluation to fail. We will clarify this sentence.

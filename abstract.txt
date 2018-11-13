@@ -1,31 +1,5 @@
-This paper develops a dynamic semantics for incomplete functional programs,
-based in part on the static semantics for incomplete functional
-programs developed in our recent work. We model
-incomplete functional programs as expressions with holes, with empty
-holes standing for missing expressions or types, and non-empty holes
-operating as "membranes" around static and dynamic type
-inconsistencies. Rather than aborting with an exception when
-evaluation encounters any of these holes (as in several existing
-systems), evaluation proceeds "around" the holes, performing as much
-of the remaining computation as is possible and tracking the closure
-around each hole instance as it flows through the program. Various
-editor services can report information from these hole closures to
-help the programmer decide how to fill a hole. They also enable a
-"fill-and-resume" feature that avoids the need to restart evaluation
-after edits that amount to hole filling. Formally, the semantics
-draws from both gradual type theory (to handle type holes) and
-contextual modal type theory (which provides a logical foundation for
-hole closures), and develops additional technical machinery necessary
-to continue evaluation past the various hole forms and to prove
-important metatheoretic properties.
+Live programming environments aim to provide programmers (and sometimes audiences)  with continuous feedback about a program's dynamic behavior as it is being edited.  The problem is that programming languages typically assign dynamic meaning only  to programs that are complete, i.e. syntactically well-formed and free of type errors. Consequently,     live feedback presented to the programmer exhibits temporal or perceptive gaps.  
 
-We have mechanized the core formal development using the Agda proof
-assistant. We also describe a simple implementation, called
-HazelnutLive, that inserts holes as necessary during the editing
-process to guarantee that every edit state has some (possibly
-incomplete) type, based in part on the Hazelnut edit action calculus
-in our recent work. Taken together with the type
-safety property that this paper establishes, the result is a
-proof-of-concept live typed functional programming environment where
-dynamic feedback is truly continuous, i.e. it is available for every
-possible edit state.
+This paper confronts this "{gap problem}" from type-theoretic first principles by developing  a dynamic semantics for incomplete functional programs,  starting from the static semantics for incomplete functional programs developed in recent work on \Hazelnut.  We model incomplete functional programs as expressions with holes,  with empty holes standing for missing expressions or types, and  non-empty holes  operating as membranes around static and dynamic type inconsistencies.  Rather than aborting when evaluation encounters any of these holes as in some existing systems, evaluation proceeds around holes, tracking the  closure around each hole instance as it flows through the remainder of the program. Editor services can use the information in these hole closures  to help the programmer develop and confirm their mental model of the behavior of the complete portions of the program as they decide how to fill the remaining holes.  Hole closures also enable a fill-and-resume operation that  avoids the need to restart evaluation after edits that amount to hole filling.  Formally, the semantics borrows machinery from both gradual type theory (which supplies the basis for handling unfilled  type holes) and contextual modal type theory (which supplies a logical basis for hole closures), combining these and developing additional machinery necessary  to continue evaluation past holes while maintaining type safety. We have mechanized the metatheory of the core calculus, called \HazelnutLive{}, using the Agda proof assistant. 
+
+We have also implemented these ideas into the \Hazel programming environment. The implementation inserts holes automatically, following the \Hazelnut edit action calculus, to guarantee that every editor state has some (possibly incomplete) type. Taken together with this paper's type safety property, the  result is   a proof-of-concept live programming environment where rich dynamic feedback  is truly available without gaps, i.e. for every reachable editor state. 
