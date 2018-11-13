@@ -1,12 +1,11 @@
 % !TEX root = hazelnut-dynamics.tex
-\clearpage
 \newcommand{\extensionsSec}{Extensions to Hazelnut Live}
 \section{\protect\extensionsSec} % don't like the all-caps thing that the template does, so protecting it from that
 \label{sec:extensions}
 
 We give two extensions here, numbers and sum types, to maintain parity with \Hazelnut as specified by \citet{popl-paper}.
 
-It is worth observing that these extensions do not make explicit mention of expression holes. The ``non-obvious'' machinery is almost entirely related to casts. Fortunately, there has been excellent work of late on generating ``gradualized'' specifications from standard specifications \cite{DBLP:conf/popl/CiminiS16,DBLP:conf/popl/CiminiS17}. The extensions below, and other extensions of interest, closely follow the output of the gradualizer: \url{http://cimini.info/gradualizerDynamicSemantics/} (which, like our work, is based on the refined account of gradual typing by \cite{DBLP:conf/snapl/SiekVCB15}). The rules for indeterminate forms are mainly where the gradualizer is not sufficient. We leave to future work the related question of automatically generating a hole-aware static and dynamic semantics from a standard language specification.
+It is worth observing that these extensions do not make explicit mention of expression holes. The ``non-obvious'' machinery is almost entirely related to casts. Fortunately, there has been progress on the problem of generating ``gradualized'' specifications from standard specifications \cite{DBLP:conf/popl/CiminiS16,DBLP:conf/popl/CiminiS17}. The extensions below, and other extensions of interest, closely follow the output of the gradualizer: \url{http://cimini.info/gradualizerDynamicSemantics/} (which, like our work, is based on the refined account of gradual typing by \cite{DBLP:conf/snapl/SiekVCB15}). The rules for indeterminate forms are mainly where the gradualizer is not sufficient. We leave to future work the related question of automatically generating a hole-aware static and dynamic semantics from a standard language specification.
 
 \include{numbers} %(from Hazelnut)
 

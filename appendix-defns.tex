@@ -225,7 +225,6 @@ y
 \subsection{Multiple Steps}
 \input{fig-multi-step}
 
-\clearpage
 \subsection{Hole Filling}\label{sec:hole-filling}
 \begin{lem}[Filling] ~
   \begin{enumerate}[nolistsep]
@@ -241,8 +240,10 @@ y
 In each case, we proceed by rule induction on the first assumption, appealing to the Substitution Lemma as necessary.
 \end{proof}
 
-We need the following auxiliary definitions, which lift hole filling to evaluation contexts taking care to consider the special situation where the mark is inside the hole that is being filled, to prove the Commutativity theorem.
+To prove the Commutativity theorem, we need the auxiliary definitions in Fig.~\ref{fig:evalctx-filling}, which lift hole filling to evaluation contexts taking care to consider the special situation where the mark is inside the hole that is being filled.
 \input{fig-evalctx-instantiation}
+
+We also need the following lemmas, which characterize how hole filling interacts with substitution and instruction transitions. 
 \begin{lem}[Substitution Commutativity]
   If
   \begin{enumerate}[nolistsep]
@@ -311,31 +312,31 @@ Either $\inhole{u}{\evalctx}$ or $\instantiate{d}{u}{\evalctx}=\evalctx'$ for so
 By rule induction on assumption (3). The reflexive case is immediate. In the inductive case, we proceed by rule induction on the stepping premise. There is one rule, Rule~\rulename{Step}. By Filling Totality, either $\inhole{u}{\evalctx}$ or $\instantiate{d}{u}{\evalctx} = \evalctx'$. In the former case, by Discarding, we can conclude by \rulename{MultiStepRefl}. In the latter case, by Instruction Commutativity and Filling Distribution we can take a \rulename{Step}, and we can conclude via \rulename{MultiStepSteps} by applying Filling, Preservation and then the induction hypothesis.
 \end{proof}
 
-We exclude these proofs and definitions from the Agda mechanization
-for two reasons.
-%
-First, fill-and-resume is merely an optimization, and unlike the meta
-theory of \Secref{sec:calculus}, these properties are generally not
-conserved by certain reasonable extensions of the core
-calculus~(e.g., reference cells and other non-commuting effects).
-%
-Second, to properly encode the hole filling operation, such a
-mechanization requires a significantly more complex representation of
-hole environments; unfortunately, Agda cannot be easily convinced that
-the definition of hole filling is well-founded (\citet{Nanevski2008}
-establish that it is in fact well-founded).
-%
-By contrast, the developments in \Secref{sec:calculus} do not require
-these more complex (and somewhat problematic) representations.
+% We excluded these proofs and definitions from the Agda mechanization
+% for two reasons.
+% %
+% First, fill-and-resume is merely an optimization, and unlike the meta
+% theory of \Secref{sec:calculus}, these properties are generally not
+% conserved by certain reasonable extensions of the core
+% calculus~(e.g., reference cells and other non-commuting effects).
+% %
+% Second, to properly encode the hole filling operation, such a
+% mechanization requires a more complex representation of
+% hole environments; unfortunately, Agda cannot be easily convinced that
+% the definition of hole filling is well-founded (\citet{Nanevski2008}
+% establish that it is in fact well-founded).
+% %
+% By contrast, the developments in \Secref{sec:calculus} do not require
+% these more complex representations. 
 
 
-\subsection{Confluence, and Friends}\label{sec:confluence}
+\subsection{Confluence and Resumption}\label{sec:confluence}
 There are various ways to encode the intuition that ``evaluation order does not matter''. One way to do so is
 by establishing a confluence property (which is closely related to
 the Church-Rosser property \cite{church1936some}).
 
 The most general confluence property does not hold for the dynamic
-semantics in Sec.~\ref{sec:calculus} for the usual reason: We do not
+semantics in Sec.~\ref{sec:calculus} for the usual reason: we do not
 reduce under binders (\citet{DBLP:conf/birthday/BlancLM05} discuss the
 standard counterexample).
 %

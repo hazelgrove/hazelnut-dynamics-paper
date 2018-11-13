@@ -3,7 +3,7 @@
 %%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
 %%%%%%% Syntax
 \subsection{Numbers}
-We extend the syntax as follows:
+We extend the syntax as follows, assuming $n$ ranges over mathematical numbers of suitable sort:
 \[
 \begin{array}{rllllll}
 \mathsf{HTyp} & \htau & ::= \cdots ~\vert~ \tnum
@@ -19,6 +19,22 @@ We extend the syntax as follows:
 \]
 
 %%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%%%%%%%%
+
+\vsepRule
+
+\judgbox{
+  \hsyn{\hGamma}{\hexp}{\htau}
+}{$\hexp$ synthesizes type $\htau$}
+\begin{mathpar}
+\inferrule[]{~}{\hsyn{\hGamma}{\hnum{n}}{\tnum}}
+
+\inferrule[]{
+  \hana{\hGamma}{\hexp_1}{\tnum}\\
+  \hana{\hGamma}{\hexp_2}{\tnum}
+}{
+  \hsyn{\hGamma}{\hadd{\hexp_1}{\hexp_2}}{\tnum}
+}
+\end{mathpar}
 
 \vsepRule
 
@@ -45,7 +61,7 @@ We extend the syntax as follows:
 \inferrule[]{
   \elabAna{\hGamma}{\hexp_1}{\tnum}{\dexp_1}{\tnum}{\Delta_1}
   \\
-  \elabAna{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\tnum}{\Delta_1}
+  \elabAna{\hGamma}{\hexp_2}{\tnum}{\dexp_2}{\tnum}{\Delta_2}
 }{
   \elabSyn{\hGamma}
             {\dadd{\hexp_1}{\hexp_2}}
@@ -99,8 +115,7 @@ We extend the syntax as follows:
 \judgbox{\isIndet{\dexp}}{$\dexp$ is indeterminate}
 \begin{mathpar}
 \inferrule[]
-{\dexp_1 \ne \dnum{n}
- \\
+{
  \isIndet{\dexp_1}
  \\
  \isFinal{\dexp_2}
@@ -108,8 +123,7 @@ We extend the syntax as follows:
 {\isIndet{\dadd{\dexp_1}{\dexp_2}}}
 
 \inferrule[]
-{\dexp_2 \ne \dnum{n}
- \\
+{
  \isFinal{\dexp_1}
  \\
  \isIndet{\dexp_2}
@@ -139,7 +153,9 @@ We extend the syntax as follows:
                {\dexp_1'}}
 
 \inferrule[]
-{\selectEvalCtx{\dexp_2}{\evalctx}{\dexp_2'}}
+{
+\maybePremise{\isFinal{\dexp_1}}\\
+\selectEvalCtx{\dexp_2}{\evalctx}{\dexp_2'}}
 {\selectEvalCtx{\dadd{\dexp_1}{\dexp_2}}
                {(\dadd{\dexp_1}{\evalctx})}
                {\dexp_2'}}
